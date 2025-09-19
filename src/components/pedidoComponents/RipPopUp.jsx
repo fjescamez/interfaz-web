@@ -68,18 +68,18 @@ function RipPopUp({ setRipModal, idMontaje, orderId }) {
                         {/* <div className="ripImage">
                             <PdfAsImage url={montaje.replace("cloudflow://", "").replace("PEDIDOS_", "Pedidos ")} />
                         </div> */}
-                        <GeneralForm
-                            formData={ripFormData}
-                            itemsData={ripData}
-                            endpoint={""}
-                            tableSelection={colorIds}
-                        />
                         <Table
                             actions={ripActions}
                             checkedRows={colorIds}
                             setCheckedRows={setColorIds}
                             dinamicTableInfo={ripTableInfo}
                             orderFilter={montaje}
+                        />
+                        <GeneralForm
+                            formData={ripFormData}
+                            itemsData={ripData}
+                            endpoint={""}
+                            tableSelection={colorIds}
                         />
                     </div>
                 </div>

@@ -442,7 +442,7 @@ function Table({
                                         if (column.check) {
                                             return (
                                                 <td key={column.key} className="checkTd">
-                                                    <input type="checkbox" className="check" checked={value === "-1"} readOnly />
+                                                    <input type="checkbox" className="check" checked={value === "-1" || value === "X"} readOnly />
                                                 </td>
                                             );
                                         }

@@ -504,6 +504,12 @@ export const orderTableInfo = {
             check: true
         },
         {
+            header: "Plotter",
+            active: true,
+            key: "xml.tecnicos.plotter",
+            check: true
+        },
+        {
             header: "Prioridad",
             active: true,
             key: "xml.numero.prioridad"

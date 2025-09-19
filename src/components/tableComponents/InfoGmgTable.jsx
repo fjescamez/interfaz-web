@@ -31,6 +31,11 @@ function InfoGmgTable({ setGmgPopup, setPlotterModal, orderId }) {
     const gmgActions = async (variables) => {
         const { action, data } = variables;
         if (action === "infoGmg") {
+            if (!data.xmp) {
+                notify(toast.error, 'error', 'Error', 'No hay info para mostrar');
+                return { status: "error" };
+            }
+
             setShowInfo(true);
             const response = await postData("plotter/infoGmg", { rowObject: data });
 

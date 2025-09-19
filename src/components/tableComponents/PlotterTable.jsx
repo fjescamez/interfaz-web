@@ -4,12 +4,16 @@ import Table from '../Table';
 import { postData } from '../../helpers/fetchData';
 import InfoGmgTable from './InfoGmgTable';
 import PlotterKiosk from '../pedidoComponents/PlotterKiosk';
+import { notify } from '../../helpers/notify';
+import { toast } from 'react-toastify';
+import ExecutingComponent from '../ExecutingComponent';
 
 function PlotterTable({ setPlotterModal, orderId, fullOrder, filePath }) {
     const [plotterIds, setPlotterIds] = useState([]);
     const [gmgPopup, setGmgPopup] = useState(false);
     const [tareaGmg, setTareaGmg] = useState(undefined);
     const [plotterKiosk, setPlotterKiosk] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const plotterActions = (variables) => {
         const { action, data } = variables;
@@ -26,6 +30,8 @@ function PlotterTable({ setPlotterModal, orderId, fullOrder, filePath }) {
             setPlotterIds([]);
             return postData("plotter/imprimirFerro", body);
         } else if (action === "openRow") {
+            setPlotterKiosk(true);
+            setLoading(true);
             const getTareaGmg = async () => {
                 const body = {
                     id: data._id,
@@ -38,10 +44,17 @@ function PlotterTable({ setPlotterModal, orderId, fullOrder, filePath }) {
                 }
 
                 const tareaGmg = await postData("plotter/tareaGmg", body);
-                setTareaGmg(tareaGmg.tarea);
+
+                if (tareaGmg.status === "success") {
+                    setTareaGmg(tareaGmg.tarea);
+                    setLoading(false);
+                } else {
+                    setPlotterKiosk(false);
+                    setLoading(false);
+                    notify(toast.error, tareaGmg.status, tareaGmg.title, tareaGmg.message);
+                }
             }
             getTareaGmg();
-            setPlotterKiosk(true);
         }
     }
 
@@ -49,7 +62,7 @@ function PlotterTable({ setPlotterModal, orderId, fullOrder, filePath }) {
         <>
             <div className="overlay"></div>
             {!plotterKiosk ?
-                !gmgPopup ?
+                (!gmgPopup ?
                     <div className="popUpTable">
                         <Table
                             actions={plotterActions}
@@ -66,9 +79,15 @@ function PlotterTable({ setPlotterModal, orderId, fullOrder, filePath }) {
                         setGmgPopup={setGmgPopup}
                         setPlotterModal={setPlotterModal}
                         orderId={orderId}
-                    />
+                    />)
                 :
-                <PlotterKiosk setPlotterKiosk={setPlotterKiosk} tareaGmg={tareaGmg} setTareaGmg={setTareaGmg} />}
+                (loading ?
+                    <ExecutingComponent message={"Cargando"} />
+                    :
+                    <PlotterKiosk setPlotterKiosk={setPlotterKiosk} tareaGmg={tareaGmg} setTareaGmg={setTareaGmg} />
+                )
+            }
+
         </>
     )
 }
