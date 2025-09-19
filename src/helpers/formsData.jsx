@@ -99,23 +99,12 @@ export const gmgFormData = {
                 },
                 {
                     groups: [
-                        "tipo_iso"
-                    ]
-                },
-                {
-                    groups: [
                         "curva"
                     ]
                 },
                 {
                     groups: [
-                        "perfilColor"
-                    ]
-                },
-                {
-                    groups: [
-                        "certificado",
-                        "sinCertificar"
+                        "perfil"
                     ]
                 }
             ]
@@ -127,10 +116,7 @@ export const gmgFormData = {
             labelId: "configuracionLabel",
             labelTitle: "Configuración",
             select: "simple",
-            options: [
-                "Automática",
-                "Manual"
-            ],
+            options: [],
             inputId: "configuracion",
             inputName: "configuracion"
         },
@@ -156,16 +142,6 @@ export const gmgFormData = {
             disableField: true
         },
         {
-            htmlFor: "tipo_iso",
-            labelId: "tipo_isoLabel",
-            labelTitle: "Tipo ISO",
-            select: "simple",
-            options: ["Continuo", "Tramado"],
-            inputId: "tipo_iso",
-            inputName: "tipo_iso",
-            hideField: true
-        },
-        {
             htmlFor: "curva",
             labelId: "curvaLabel",
             labelTitle: "Curva",
@@ -175,32 +151,14 @@ export const gmgFormData = {
             disableField: true
         },
         {
-            htmlFor: "perfilColor",
-            labelId: "perfilColorLabel",
+            htmlFor: "perfil",
+            labelId: "perfilLabel",
             labelTitle: "Perfil de color",
             inputType: "text",
-            inputId: "perfilColor",
-            inputName: "perfilColor",
+            inputId: "perfil",
+            inputName: "perfil",
             disableField: true
-        },
-        {
-            htmlFor: "certificado",
-            labelId: "certificadoLabel",
-            labelTitle: "Certificado",
-            inputType: "radio",
-            inputId: "certificado",
-            inputName: "iso",
-            hideField: true
-        },
-        {
-            htmlFor: "sinCertificar",
-            labelId: "sinCertificarLabel",
-            labelTitle: "Sin certificar",
-            inputType: "radio",
-            inputId: "sinCertificar",
-            inputName: "iso",
-            hideField: true
-        },
+        }
     ]
 }
 
