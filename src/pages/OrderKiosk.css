@@ -1,0 +1,79 @@
+.detailsContainer {
+    .kioskAction {
+        width: 55%;
+        margin: 0 auto;
+        margin-top: 3rem;
+
+        .kioskSwitch {
+            width: 4.5rem;
+            height: 2.6rem;
+            padding: 0;
+            outline: 2px solid white;
+            border-radius: 1.5rem;
+
+            .MuiSwitch-switchBase {
+                padding: 1rem;
+                padding: 3px;
+            }
+
+            .MuiSwitch-thumb {
+                width: 1.9rem;
+                height: 1.9rem;
+            }
+
+            .MuiSwitch-track {
+                border-radius: 1rem;
+                background-color: white;
+                border: 2px solid var(--pantone431c);
+                border-radius: 1.5rem;
+                opacity: 1;
+            }
+
+            .MuiSwitch-switchBase.Mui-checked {
+                color: var(--highlight);
+            }
+        }
+
+        .actionHeader {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            column-gap: 3.5%;
+            padding: 1rem 2rem;
+            background: var(--pantone431c);
+            background: linear-gradient(0deg, rgba(87, 102, 113, 1) 65%, rgba(255, 255, 255, 1) 110%);
+            border: 2px solid var(--pantone431c);
+            border-radius: 1rem;
+            align-items: center;
+
+            p {
+                color: white;
+                font-family: 'Museo Slab 700';
+                padding-top: 5px;
+                font-size: 2.5rem;
+
+                span {
+                    font-family: 'Museo Sans 700 Italic';
+                    font-size: 2.3rem;
+                    color: var(--backgrounds);
+                }
+            }
+
+            svg {
+                width: 3.5rem;
+                height: 3.5rem;
+                color: white;
+                background-color: var(--backgrounds);
+                border: 2px solid white;
+                border-radius: 50%;
+            }
+        }
+
+        .open {
+            border-radius: 1rem 1rem 0 0;
+
+            svg {
+                background-color: var(--highlight);
+            }
+        }
+    }
+}

@@ -1,0 +1,74 @@
+.sideBarHover {
+    height: 100%;
+    width: 74px;
+    position: absolute;
+    left: -2px;
+}
+
+.sideBar {
+    position: absolute;
+    left: -55px;
+    background-color: var(--details);
+    display: grid;
+    width: auto;
+    border: 2px solid var(--header);
+    border-top: none;
+    border-radius: 0 0 4rem 4rem;
+    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateX(0);
+}
+
+.sideBarHover:hover .sideBar {
+    transform: translateX(55px);
+}
+
+.icons {
+    padding: 1.5rem;
+    height: 7rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &:hover {
+        background-color: var(--hover);
+        cursor: pointer;
+        transition: background-color 0.5s;
+    }
+
+    &:last-child {
+        &:hover {
+            border-radius: 0 0 4rem 4rem;
+        }
+    }
+
+    svg {
+        fill: var(--pantone431c);
+
+        .cls-1 {
+            fill: var(--pantone431c);
+        }
+    }
+
+}
+
+.active {
+    svg {
+        fill: var(--highlight) !important;
+
+        .cls-1 {
+            fill: var(--highlight) !important;
+        }
+    }
+}
+
+.activeStroke {
+    svg {
+        stroke: var(--highlight);
+    }
+}
+
+.border {
+    width: 65%;
+    border-bottom: 2px solid var(--backgrounds);
+    margin: 0 auto;
+}

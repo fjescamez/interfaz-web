@@ -1,0 +1,207 @@
+.detailsContainer {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    width: 92%;
+    background-image: url("../assets/img/FONDO_CLARO.png");
+    background-size: cover;
+    height: 100%;
+    border-left: 2px solid var(--header);
+    border-right: 2px solid var(--header);
+    overflow-y: auto;
+    padding-bottom: 2rem;
+
+    .header {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem 4.5rem;
+
+        .title {
+            display: flex;
+            align-items: center;
+            column-gap: 3rem;
+            z-index: 1;
+
+            img {
+                width: 11rem;
+                height: 11rem;
+                object-fit: cover;
+            }
+
+            .details {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                color: white;
+                font-style: italic;
+
+                h1 {
+                    font-size: 4.5rem;
+                    margin: 0;
+
+                    span {
+                        font-size: 3rem;
+                    }
+                }
+
+                p {
+                    font-size: 2.5rem;
+
+                    span {
+                        font-size: 2rem;
+                    }
+                }
+            }
+
+            svg {
+                color: white;
+                width: 4rem;
+                height: 4rem;
+                border: 3px solid var(--highlight);
+                border-radius: 50%;
+                cursor: pointer;
+            }
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: 4rem auto 4rem;
+            column-gap: 1.5rem;
+            align-items: center;
+            margin-right: 5.5rem;
+            z-index: 2;
+
+            svg {
+                cursor: pointer;
+                color: white;
+            }
+
+            img {
+                border-radius: 50%;
+                outline: 2px solid white;
+                width: 11rem;
+                height: 11rem;
+                object-fit: cover;
+                cursor: pointer;
+            }
+
+            .edit {
+                grid-column: 1;
+            }
+
+            .avatarImage {
+                grid-column: 2;
+            }
+
+            .delete {
+                grid-column: 3;
+            }
+        }
+    }
+
+    .decoration {
+        position: relative;
+        top: -1rem;
+        background: #F8AF3D;
+        background: linear-gradient(90deg, rgba(248, 175, 61, 1) 14%, rgba(255, 255, 255, 0) 100%);
+        min-height: 3rem;
+        width: 65%;
+    }
+
+    .detailsScroll {
+        flex: 1;
+        overflow-y: auto;
+        margin-top: 5rem;
+        padding-top: 1.5rem;
+
+        .gridTitle {
+            margin: 3rem;
+        }
+
+        .gridContainer {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(23rem, 1fr));
+            gap: 5rem 0;
+            width: fit-content;
+            max-width: 100%;
+            margin: 0 auto;
+
+            .gridItem {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                row-gap: 1.5rem;
+                transition: all 0.2s ease-in-out;
+                width: 80%;
+                max-width: 40rem;
+                margin: 0 auto;
+
+                .icon {
+                    display: flex;
+                    cursor: pointer;
+                    width: 145px;
+                    height: 122px;
+                    background-image: url("../assets/img/fondo-iconos-grid.png");
+                    background-size: cover;
+                    border: 3px solid var(--header);
+                    border-radius: 1.5rem;
+                    justify-content: center;
+                    align-items: center;
+                    transition: all 0.2s ease-in-out;
+
+                    svg {
+                        width: 8rem;
+                        height: 8rem;
+                        color: white;
+                    }
+                }
+
+                .text {
+                    cursor: pointer;
+                    text-align: center;
+                    display: flex;
+                    flex-direction: column;
+                    row-gap: 0.5rem;
+
+                    .title {
+                        font-family: 'Museo Slab 700 italic', serif;
+                        font-size: 2.3rem;
+                        color: var(--pantone431c);
+                    }
+
+                    .body {
+                        font-family: 'Museo Sans 500 Italic', serif;
+                        font-size: 1.3rem;
+                    }
+                }
+
+                &:hover {
+                    scale: 1.06;
+
+                    .title {
+                        color: black;
+                    }
+
+                    .icon {
+                        box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.3);
+                    }
+                }
+
+                &:active {
+                    scale: 1.03;
+                }
+            }
+        }
+
+        .formSections {
+            margin: 0 auto;
+            width: 75%;
+        }
+    }
+
+    .tableContainer {
+        margin-top: 5rem;
+    }
+}

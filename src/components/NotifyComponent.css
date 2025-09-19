@@ -1,0 +1,40 @@
+.toast {
+    right: -0.6rem;
+    width: 33rem;
+}
+
+.Toastify__toast-container {
+    top: 6.5rem;
+}
+
+.notiContainer {
+    width: 95%;
+
+    .title {
+        font-size: 3.5rem;
+        width: 100%;
+        display: flex;
+        column-gap: 1.5rem;
+        align-items: center;
+        height: auto;
+        color: black;
+    }
+
+    svg {
+        width: 4rem;
+        height: 4rem;
+    }
+
+    .body {
+        margin: 1rem 0;
+
+        p {
+            font-size: 1.5rem;
+
+            strong {
+                font-size: 1.6rem;
+                color: black;
+            }
+        }
+    }
+}

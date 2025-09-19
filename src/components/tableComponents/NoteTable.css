@@ -1,0 +1,54 @@
+.noteTableContainer {
+    width: 55%;
+    z-index: 4;
+
+    .actions {
+        color: white;
+        display: flex;
+        justify-content: center;
+        column-gap: 2rem;
+        margin-bottom: 1rem;
+
+        svg {
+            cursor: pointer;
+        }
+    }
+
+    .noteTable {
+        max-height: 63rem;
+        overflow-y: auto;
+    }
+
+    .rowLight,
+    .rowDark {
+        td:nth-child(1),
+        td:nth-child(2) {
+            text-align: center;
+        }
+    }
+
+    .rowLight {
+        cursor: pointer;
+        background-color: white;
+    }
+
+    .rowDark {
+        cursor: pointer;
+        background-color: var(--backgrounds);
+    }
+
+    .rowDetail {
+        border-top: 2px solid var(--pantone431c);
+        border-bottom: 2px solid var(--pantone431c);
+        background-color: white;
+        
+        .noteContainer {
+            height: 15rem;
+            padding: 1rem;
+
+            p {
+                font-size: 2.5rem;
+            }
+        }
+    }
+}

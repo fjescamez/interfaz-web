@@ -1,0 +1,468 @@
+@import "./variables.css";
+@import "chosen-js/chosen.css";
+
+@font-face {
+    font-family: 'Museo';
+    src: url('./assets/fonts/Museo-700.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Museo Sans';
+    src: url('./assets/fonts/MuseoSans-700.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Museo Sans 500 Italic';
+    src: url('./assets/fonts/MuseoSans-500Italic.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Museo Sans 700 Italic';
+    src: url('./assets/fonts/MuseoSans-700Italic.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Museo Sans 900 Italic';
+    src: url('./assets/fonts/MuseoSans-900Italic.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Museo Slab 500';
+    src: url('./assets/fonts/MuseoSlab-500.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Museo Slab 700';
+    src: url('./assets/fonts/MuseoSlab-700.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Museo Slab 700 italic';
+    src: url('./assets/fonts/MuseoSlab-700Italic.otf') format('opentype');
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-size: 62.5%;
+    /* 1rem = 10px */
+    font-family: 'Museo', sans-serif;
+    /* Para que no se pueda subrayar nada en la web */
+    user-select: none;
+}
+
+html,
+body {
+    height: 100%;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+h1 {
+    font-size: 4rem;
+}
+
+#root {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    height: 100vh;
+}
+
+.main {
+    grid-row: 2;
+    overflow: auto;
+    scrollbar-gutter: stable;
+    background-image: url("assets/img/background.jpg");
+    background-position: center;
+    background-size: cover;
+}
+
+.Toastify {
+    font-size: 6rem;
+}
+
+#my-tooltip {
+    z-index: 500;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.react-tooltip {
+    font-size: 2rem !important;
+}
+
+p {
+    font-family: 'Museo Sans', sans-serif;
+}
+
+svg {
+    width: 4rem;
+    height: 4rem;
+}
+
+/* Flecha de scroll */
+
+.scrollTopArrow {
+    position: fixed;
+    bottom: 2rem;
+    right: 3.5rem;
+    width: 5.5rem;
+    height: 5.5rem;
+    background-color: var(--highlight);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+
+    svg {
+        width: 100%;
+        height: 100%;
+        fill: white;
+    }
+
+    &:hover {
+        box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    &:active {
+        transform: scale(0.99);
+    }
+}
+
+.arrowVisible {
+    cursor: pointer;
+    opacity: 1;
+}
+
+/* FORMULARIOS */
+/* Fondo negro para los formularios */
+
+.overlay {
+    z-index: 4;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    background: rgba(65, 65, 65, 0.8);
+}
+
+.executingOverlay {
+    z-index: 12;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    background: rgba(65, 65, 65, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .executingContainer {
+        background-color: var(--details);
+        display: flex;
+        flex-direction: column;
+        row-gap: 2rem;
+        align-items: center;
+        width: fit-content;
+        padding: 3rem;
+        padding-top: 5rem;
+        border-radius: 1rem;
+        border: 2px solid var(--pantone431c);
+
+        h1 {
+            font-size: 3rem;
+            color: black;
+        }
+    }
+}
+
+/* Estilos comunes para los formularios */
+.formContainer {
+    z-index: 5;
+    background-color: var(--header);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120rem;
+    border-radius: 3rem;
+    padding: 0.3rem;
+    max-height: 80%;
+
+    .formHeaderBackground {
+        border-radius: 3rem 3rem 0 0;
+        background: var(--grey-gradient);
+
+        .formHeader {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            margin: 0 1rem 1rem 1rem;
+            padding: 1.5rem 0.75rem;
+            padding-bottom: 0;
+
+            svg {
+                width: 5rem;
+                height: 5rem;
+                fill: white;
+
+                .cls-1 {
+                    fill: white;
+                    stroke: white;
+                    color: white;
+                }
+            }
+
+            h1 {
+                font-size: 4rem;
+                color: white;
+                margin: 0;
+            }
+
+            button {
+                background-color: transparent;
+                border: none;
+                cursor: pointer;
+                width: auto;
+            }
+        }
+    }
+
+    .formBody {
+        height: 100%;
+    }
+
+    /* .narrow {
+        display: flex;
+        flex-direction: column;
+        row-gap: 1rem;
+    }
+
+    .wide {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 2rem;
+    } */
+
+    form {
+        background-image: url("./assets/img/FONDO_CLARO.png");
+        background-size: cover;
+        padding: 3.5rem 5rem;
+        border-radius: 0 0 2.75rem 2.75rem;
+        display: flex;
+        flex-direction: column;
+        row-gap: 2.5rem;
+        max-height: 80vh;
+        overflow-y: auto;
+
+        p {
+            font-size: 2.5rem;
+            text-align: center;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .imageButton {
+            cursor: pointer;
+            margin: 0 auto;
+            font-size: 2rem;
+            background-color: var(--details);
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+            border: 2px solid var(--header);
+
+            &:active {
+                transform: scale(0.99);
+            }
+
+            &:hover {
+                box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        .deleteImage {
+            background: var(--red-gradient);
+        }
+
+        .imageName {
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            column-gap: 1.5rem;
+            font-size: 1.8rem;
+
+            svg {
+                cursor: pointer;
+                width: 1.5rem;
+                height: 1.5rem;
+
+                &:hover {
+                    .cls-2 {
+                        stroke: black;
+                    }
+                }
+            }
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            column-gap: 1.5rem;
+        }
+
+        button {
+            background: var(--orange-gradient);
+            color: black;
+            font-size: 2rem;
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--header);
+            border-radius: 1.5rem;
+            cursor: pointer;
+            width: fit-content;
+            align-self: center;
+
+            &:active {
+                transform: scale(0.99);
+            }
+
+            &:hover {
+                box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        .delete {
+            background: var(--red-gradient);
+        }
+
+        .error {
+            border: 2px solid red !important;
+        }
+
+        .errorLabel {
+            border: 2px solid red !important;
+            border-bottom: none !important;
+        }
+
+        .errorMessage {
+            text-align: center;
+            background-color: white;
+            color: red;
+            border: 2px solid red;
+            border-radius: 1.5rem;
+            width: fit-content;
+            padding: 0.5rem 1.5rem;
+            margin: 0 auto;
+            font-size: 1.6rem;
+        }
+    }
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+
+    label {
+        background: var(--orange-gradient);
+        border: 2px solid var(--header);
+        border-bottom: none;
+        border-radius: 1rem 1rem 0 0;
+        padding: 0.25rem 1rem;
+        font-size: 2rem;
+        width: fit-content;
+    }
+
+    .radioLabel {
+        align-self: center;
+        margin-bottom: 1rem;
+        border-radius: 1rem;
+        border: 2px solid var(--pantone431c);
+    }
+
+    input,
+    select,
+    textarea {
+        background-color: white;
+        font-family: 'Museo Sans', sans-serif;
+        font-size: 2rem;
+        border: 2px solid var(--header);
+        border-radius: 0 1.5rem 1.5rem 1.5rem;
+        padding: 0.80rem;
+
+        &::placeholder {
+            color: var(--backgrounds);
+        }
+
+        &:focus {
+            outline: var(--highlight);
+        }
+    }
+
+    textarea {
+        resize: none;
+        min-width: 100%;
+        max-width: 100%;
+        min-height: 30rem;
+    }
+
+    .chosen-container {
+        font-size: 5rem;
+        background-color: white;
+        font-family: 'Museo Sans', sans-serif;
+        border: 2px solid var(--header);
+        border-radius: 0 1.5rem 1.5rem 1.5rem;
+        padding: 0.80rem;
+    }
+
+    .chosen-single,
+    .chosen-choices {
+        padding: 0;
+        color: black;
+        background: none;
+        border: none;
+        box-shadow: none;
+
+        input {
+            color: var(--backgrounds) !important;
+            font-family: 'Museo Sans', sans-serif !important;
+        }
+    }
+
+    /* La búsqueda está desactivada de momento
+    .chosen-search-input {
+        font-size: 2rem;
+        font-family: 'Museo Sans', sans-serif !important;
+    } */
+
+    .active-result,
+    .active-result em,
+    .disabled-result,
+    .no-results {
+        font-size: 1.7rem;
+
+        span {
+            font-size: 1.7rem;
+            text-decoration: underline;
+        }
+    }
+}
+
+.deleteForm {
+    z-index: 6;
+
+    svg {
+        color: white !important;
+    }
+}

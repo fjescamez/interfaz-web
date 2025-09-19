@@ -1,0 +1,48 @@
+import { useState } from 'react';
+import { fileTableInfo } from '../../helpers/tablesInfo';
+import Table from '../Table';
+import { postData } from '../../helpers/fetchData';
+import { notify } from '../../helpers/notify';
+import { toast } from 'react-toastify';
+
+function FileTable({ setFilesModal, orderId, filePath }) {
+    const [fileIds, setFileIds] = useState([]);
+
+    const fileActions = async (variables) => {
+        const { action } = variables;
+        const data = {
+            ids: fileIds,
+            action
+        };
+
+        setFileIds([]);
+        const response = await postData("files/print", data);
+        console.log(response);
+
+        if (response.status === "success") {
+            notify(toast.success, response.status, response.title, response.message);
+        } else {
+            notify(toast.error, response.status, response.title, response.message);
+        }
+        return response;
+    }
+
+    return (
+        <>
+            <div className="overlay"></div>
+            <div className="popUpTable">
+                <Table
+                    actions={fileActions}
+                    checkedRows={fileIds}
+                    setCheckedRows={setFileIds}
+                    setPopUpTable={setFilesModal}
+                    dinamicTableInfo={fileTableInfo}
+                    orderFilter={orderId}
+                    filePath={filePath}
+                />
+            </div>
+        </>
+    )
+}
+
+export default FileTable

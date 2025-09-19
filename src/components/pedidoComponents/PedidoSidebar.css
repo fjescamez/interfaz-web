@@ -1,0 +1,47 @@
+.pedidoSideBar {
+    position: absolute;
+    right: -2px;
+    background-color: var(--details);
+    display: grid;
+    width: auto;
+    border: 2px solid var(--header);
+    border-top: none;
+    border-radius: 0 0 4rem 4rem;
+
+    .refresh {
+        path {
+            fill: none;
+            stroke: var(--pantone431c);
+        }
+    }
+
+    .icons {
+        padding: 1rem 1.5rem;
+        height: 6.5rem;
+    }
+}
+
+@media only screen and (max-height: 1070px) {
+    .pedidoSideBar {
+        position: absolute;
+        right: -2px;
+        background-color: var(--details);
+        display: grid;
+        width: auto;
+        border: 2px solid var(--header);
+        border-top: none;
+        border-radius: 0 0 4rem 4rem;
+
+        .refresh {
+            path {
+                fill: none;
+                stroke: var(--pantone431c);
+            }
+        }
+
+        .icons {
+            padding: 1rem 1.5rem;
+            height: 6rem;
+        }
+    }
+}

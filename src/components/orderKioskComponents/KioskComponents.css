@@ -1,0 +1,101 @@
+.actionBody {
+    padding: 2rem;
+    align-items: center;
+    background: white;
+    background: linear-gradient(0deg, rgb(255, 255, 255) 60%, rgb(184, 190, 195) 100%);
+    border: 2px solid var(--pantone431c);
+    border-top: none;
+    border-radius: 0 0 1rem 1rem;
+}
+
+.boceto {
+    .separator {
+        background-color: rgb(185, 185, 185);
+        width: 95%;
+        height: 2px;
+        margin: 2rem auto;
+    }
+
+    .row {
+        display: grid;
+        grid-template-columns: auto auto auto auto;
+        justify-content: space-between;
+
+        .firstGroup {
+            display: flex;
+            column-gap: 3rem;
+            align-items: center;
+
+            .kioskSwitch {
+                outline: none;
+            }
+
+            p {
+                font-size: 3.5rem;
+            }
+
+            .lpiGroup {
+                display: flex;
+                column-gap: 0.3rem;
+                align-items: center;
+                justify-content: center;
+                border: 1px solid var(--pantone431c);
+                border-radius: 0.5rem;
+                height: 4rem;
+                width: 9rem;
+                background-color: white;
+
+                input {
+                    border: none;
+                    border-radius: 0.5rem;
+                    text-align: right;
+                    width: 4.3rem;
+                    height: 100%;
+                    font-size: 2rem;
+                    color: var(--pantone431c);
+
+                    &:focus {
+                        outline: none;
+                    }
+                }
+
+                .lpi {
+                    p {
+                        font-size: 2rem;
+                        color: var(--pantone431c);
+                    }
+                }
+            }
+        }
+
+        .chosen-container {
+            width: 16rem !important;
+        }
+        
+        .chosen-single,
+        .chosen-drop {
+            background: white;
+            box-shadow: none;
+            width: 16rem;
+            font-size: 3.5rem;
+            color: black;
+        }
+
+        .chosen-results {
+            color: black;
+        }
+        
+        .chosen-single {
+            display: flex;
+            align-items: center;
+            height: 4rem;
+        }
+
+        svg {
+            width: 3.5rem;
+            height: 3.5rem;
+            color: var(--highlight);
+            cursor: pointer;
+        }
+    }
+}

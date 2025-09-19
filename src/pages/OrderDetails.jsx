@@ -1,0 +1,429 @@
+import "./OrderDetails.css"
+import { GoDownload, GoUpload } from "react-icons/go";
+import { PiClockUser } from "react-icons/pi";
+import { LuCheck } from "react-icons/lu";
+import { IoHandLeftOutline } from "react-icons/io5";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useTabs } from "../context/TabsContext";
+import PedidoMadera from "../components/pedidoComponents/PedidoMadera";
+import PedidoCarton from "../components/pedidoComponents/PedidoCarton";
+import PedidoFlexible from "../components/pedidoComponents/PedidoFlexible";
+import PedidoEtiquetas from "../components/pedidoComponents/PedidoEtiquetas";
+import PedidoSideBar from "../components/pedidoComponents/PedidoSideBar";
+import { notify } from "../helpers/notify";
+import { toast } from "react-toastify";
+import { fetchData } from "../helpers/fetchData";
+import PdfAsImage from "../components/pedidoComponents/PdfAsImage";
+
+function OrderDetails() {
+  const [fullOrder, setFullOrder] = useState({});
+  const [orderXml, setOrderXml] = useState({});
+  const [orderColors, setOrderColors] = useState([]);
+  const location = useLocation();
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { closeTab, tabs, setTabs } = useTabs();
+
+  const getOrderDetails = async (id) => {
+    try {
+      const response = await fetch(`http://192.4.26.112:3000/orders/getOrder/${id}`);
+      const orderData = await response.json();
+      if (!orderData) {
+        closeTab(location.pathname);
+        navigate("/orders");
+        return
+      };
+      setOrderXml(orderData.xml);
+      setFullOrder(orderData);
+    } catch (error) {
+      notify(toast.error, "error", "Error en el pedido", "Ha ocurrido un error al cargar los datos del pedido");
+    }
+  }
+
+  const getOrderColors = async () => {
+    try {
+      const response = await fetch(`http://192.4.26.112:3000/colors/get?unitario=${fullOrder?.unitario}`);
+      const orderColors = await response.json();
+      setOrderColors(orderColors?.results);
+    } catch (error) {
+      notify(toast.error, "error", "Error en los colores", "Ha ocurrido un error al cargar los colores del pedido");
+    }
+  }
+
+  const openClient = async () => {
+    const cliente = await fetchData("clients", orderXml.numero?.cliente_codigo, 1);
+    const { _id } = cliente[0];
+    const path = `/clientes/${_id}`;
+    const tabTitle = orderXml.numero?.cliente_nombre;
+
+    if (!tabs.some(tab => tab.path === path)) {
+      setTabs(prev => {
+        if (prev.some(tab => tab.path === path)) return prev;
+        return [...prev, { path, title: tabTitle }];
+      });
+    }
+    navigate(path);
+  }
+
+  useEffect(() => {
+    getOrderDetails(id);
+  }, [id]);
+
+  useEffect(() => {
+    getOrderColors();
+  }, [fullOrder]);
+
+  const fechaHora = orderXml.actividad?.revisiones.revision[0].revision_fechahora;
+  const fechaRevision = fechaHora?.split(" ");
+  const filePath = fullOrder.unitario?.includes("sinUnitario.png") ? "" : fullOrder.unitario?.replace("cloudflow://", "").replace("PEDIDOS_", "Pedidos ");
+
+  return (
+    <>
+      <PedidoSideBar
+        getOrderDetails={getOrderDetails}
+        fullOrder={fullOrder}
+        setFullOrder={setFullOrder}
+        filePath={filePath}
+      />
+      <div className="detailsContainer">
+        <div className="orderFile">
+          <div className="row1">
+            <div className="acciones flex">
+              <div className="title">
+                <p>ACCIONES DE PEDIDO</p>
+              </div>
+              <div className="body">
+                <div className="botones">
+                  <div className="buttonGroup">
+                    <button className="boton">
+                      <p>ASIGNAR</p>
+                    </button>
+                    <button className="boton2">
+                      <GoDownload />
+                    </button>
+                  </div>
+                  <div className="buttonGroup">
+                    <button className="boton">
+                      <p>DESASIGNAR</p>
+                    </button>
+                    <button className="boton2">
+                      <GoUpload />
+                    </button>
+                  </div>
+                  <div className="buttonGroup">
+                    <button className="boton">
+                      <p>PTE. VERIFICACIÓN</p>
+                    </button>
+                    <button className="boton2">
+                      <PiClockUser />
+                    </button>
+                  </div>
+                  <div className="buttonGroup">
+                    <button className="boton">
+                      <p>VERIFICAR</p>
+                    </button>
+                    <button className="boton2">
+                      <LuCheck />
+                    </button>
+                  </div>
+                  <div className="buttonGroup">
+                    <button className="boton">
+                      <p>PARADO</p>
+                    </button>
+                    <button className="boton2">
+                      <IoHandLeftOutline />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="estado flex">
+              <div className="title">
+                <p>ESTADO DE PEDIDO</p>
+              </div>
+              <div className="body">
+                <p>SAMPLE SAMPLE SAMPLE SAMPLE SAMPLE</p>
+              </div>
+            </div>
+          </div>
+          <div className="row2">
+            <div className="pedido flex">
+              <div className="group1">
+                <div className="title">
+                  <p>PEDIDO</p>
+                </div>
+                <div className="body">
+                  <p>{orderXml.numero?.id}</p>
+                </div>
+              </div>
+              <div className="group2">
+                <div className="title version">
+                  <p>VERSIÓN</p>
+                </div>
+                <div className="body">
+                  <p>{orderXml.numero?.version}</p>
+                </div>
+              </div>
+              <div className="footer">
+                <div className="body">
+                  <p>{typeof orderXml.numero?.prioridad === "object" ? "NORMAL" : orderXml.numero?.prioridad}</p>
+                </div>
+              </div>
+            </div>
+            <div className="datosPedido flex">
+              <div className="title">
+                <p>DATOS DEL PEDIDO</p>
+              </div>
+              <div className="body">
+                <table>
+                  <tbody>
+                    <tr>
+                      <td><p><span className="highlight">CLIENTE:</span></p></td>
+                      <td><p className="openClient" onClick={openClient}>{orderXml.numero?.cliente_nombre}</p></td>
+                    </tr>
+                    <tr>
+                      <td><p><span className="highlight">MARCA:</span></p></td>
+                      <td>{orderXml.numero?.marca}</td>
+                    </tr>
+                    <tr>
+                      <td><p><span className="highlight">REF. CLIENTE:</span></p></td>
+                      <td>{orderXml.numero?.ref_cliente}</td>
+                    </tr>
+                    <tr>
+                      <td><p><span className="highlight">CONTACTO:</span></p></td>
+                      <td>{orderXml.numero?.contacto}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div className="footer">
+                <div className="opcionPedido">
+                  <p>BOCETO</p>
+                  <input type="checkbox" className="check" checked={orderXml.numero?.boceto === "-1"} readOnly />
+                </div>
+                <div className="opcionPedido">
+                  <p>CLICHE</p>
+                  <input type="checkbox" className="check" checked={orderXml.numero?.cliche === "-1"} readOnly />
+                </div>
+                <div className="opcionPedido">
+                  <p>MONTAJE</p>
+                  <input type="checkbox" className="check" checked={orderXml.numero?.montaje === "-1"} readOnly />
+                </div>
+              </div>
+            </div>
+            <div className="datosVersion flex">
+              <div className="title">
+                <p>DATOS DE VERSIÓN</p>
+              </div>
+              <div className="body">
+                <table>
+                  <tbody>
+                    <tr>
+                      <td><p><span className="highlight">REVISIÓN:</span></p></td>
+                      <td>{orderXml.actividad?.revisiones.revision[0].revision_id}</td>
+                    </tr>
+                    <tr>
+                      <td><p><span className="highlight">FECHA REV.:</span></p></td>
+                      <td>{fechaRevision && fechaRevision[0]} <span className="highlight">{fechaRevision && `(${fechaRevision[1]})`}</span></td>
+                    </tr>
+                    <tr>
+                      <td><p><span className="highlight">FECHA SOL.:</span></p></td>
+                      <td>{orderXml.numero?.fecha_solicitud}</td>
+                    </tr>
+                    <tr>
+                      <td><p><span className="highlight">FECHA ENT.:</span></p></td>
+                      <td>{orderXml.numero?.fecha_entrega}</td>
+                    </tr>
+                    <tr>
+                      <td><p><span className="highlight">MOT. VER.:</span></p></td>
+                      <td>{orderXml.numero?.motivo_version}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div className="datosPlancha flex">
+              <div className="title">
+                <p>DATOS DE PLANCHA</p>
+              </div>
+              <div className="body">
+                <table>
+                  <tbody>
+                    <tr>
+                      <td><p><span className="highlight">TIPO CLICHÉ:</span></p></td>
+                      <td>{orderXml.tecnicos?.tipo_cliche}</td>
+                    </tr>
+                    <tr>
+                      <td><p><span className="highlight">ESPESOR:</span></p></td>
+                      <td>{orderXml.tecnicos?.espesor}</td>
+                    </tr>
+                    <tr>
+                      <td><p><span className="highlight">TIPO IMPRESIÓN:</span></p></td>
+                      <td>{orderXml.tecnicos?.tipo_impresion}</td>
+                    </tr>
+                    <tr>
+                      <td><p><span className="highlight">DISTORSIÓN:</span></p></td>
+                      <td>{orderXml.tecnicos?.distorsion}</td>
+                    </tr>
+                    <tr>
+                      <td><p><span className="highlight">DIST. TRAPPING:</span></p></td>
+                      <td>{orderXml.tecnicos?.trapping}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div className="documentacion flex">
+              <div className="title">
+                <p>DOCUMENTACIÓN</p>
+              </div>
+              <div className="body">
+                <table>
+                  <tbody>
+                    <tr>
+                      <td><p><span className="highlight">FICHA IMPRESA:</span></p></td>
+                      <td>{orderXml.tecnicos?.ficha_impresa === "-1" ? "SÍ" : "NO"}</td>
+                    </tr>
+                    <tr>
+                      <td><p><span className="highlight">FICHA EMAIL:</span></p></td>
+                      <td>{orderXml.tecnicos?.ficha_por_email === "X" ? "SÍ" : "NO"}</td>
+                    </tr>
+                    <tr>
+                      <td><p><span className="highlight">FORMATO PDF:</span></p></td>
+                      <td>{orderXml.tecnicos?.pdf === "X" ? "SÍ" : "NO"}</td>
+                    </tr>
+                    <tr>
+                      <td><p><span className="highlight">FORMATO JPG:</span></p></td>
+                      <td>{orderXml.tecnicos?.jpg === "X" ? "SÍ" : "NO"}</td>
+                    </tr>
+                    <tr>
+                      <td><p><span className="highlight">HACER PLOTTER:</span></p></td>
+                      <td>{orderXml.tecnicos?.plotter === "X" ? "SÍ" : "NO"}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div className="row3">
+            <div className="divPrevio flex">
+              <div className="title">
+                <p>PREVIO DEL TRABAJO</p>
+              </div>
+              <div className="body">
+                <div className="imgPrevio">
+                  <PdfAsImage url={filePath} />
+                </div>
+              </div>
+            </div>
+            <div className="gridMaterial">
+              <div className="docuRecibida flex">
+                <div className="title">
+                  <p>DOCUMENTACIÓN RECIBIDA</p>
+                </div>
+                <div className="body">
+                  <p>{orderXml.numero?.recibido_con}</p>
+                </div>
+              </div>
+              <div className="materialMaquina">
+                <div className="material flex">
+                  <div className="title">
+                    <p>MATERIAL</p>
+                  </div>
+                  <div className="body">
+                    <p>{orderXml.actividad?.material} <span className="highlight">(VER ESTRATEGIA COMPLETA)</span></p>
+                  </div>
+                </div>
+                <div className="maquina flex">
+                  <div className="title">
+                    <p>MÁQUINA</p>
+                  </div>
+                  <div className="body">
+                    {/* PARCHE MIENTRAS QUE LA MÁQUINA (FICHA TÉCNICA) PUEDA LLEGAR COMO OBJETO VACIO */}
+                    <p>{typeof orderXml.tecnicos?.ficha_tecnica !== "object" && orderXml.tecnicos?.ficha_tecnica} <span className="highlight">(VER FICHA)</span></p>
+                  </div>
+                </div>
+              </div>
+              <div className="instrucciones flex">
+                <div className="title">
+                  <p>INSTRUCCIONES DE PEDIDO</p>
+                </div>
+                <div className="body">
+                  {orderXml.actividad?.revisiones.revision.map((revision) => (
+                    <div className="revisiones" key={revision.revision_id}>
+                      <p className="revision">Revisión Nº {revision.revision_id} | Fecha: {revision.revision_fechahora} | Motivo: {revision.revision_mot}</p>
+                      <br />
+                      <p>{revision.revision_obs}</p>
+                      <br />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="row4">
+            <div className="tipoMaterial">
+              {/* No se si switch es lo más recomendable */}
+              {(() => {
+                switch (orderXml.actividad?.id) {
+                  case 'MADERA':
+                    return <PedidoMadera orderXml={orderXml} />
+                  case 'CARTON':
+                    return <PedidoCarton orderXml={orderXml} />
+                  case 'FLEXIBLE':
+                    return <PedidoFlexible orderXml={orderXml} />
+                  case 'ETIQUETAS':
+                    return <PedidoEtiquetas orderXml={orderXml} />
+                  default:
+                    return null;
+                }
+              })()}
+              <div className="datosTecnicos flex">
+                <div className="title">
+                  <p>DATOS TÉCNICOS</p>
+                </div>
+                <div className="body">
+                  <p><span className="obs">Observaciones dpto. cliche:</span><br /><br />{orderXml.tecnicos?.obs_dpto_cliche}</p>
+                  <p>-------------------</p>
+                  <p><span className="obs">Observaciones dpto. dibujo:</span><br /><br />{orderXml.tecnicos?.obs_dpto_dibujo}</p>
+                  <p>-------------------</p>
+                  <p><span className="obs">Observaciones dpto. montaje:</span><br /><br />{/* orderXml.tecnicos?.obs_dpto_montaje */}</p>
+                </div>
+              </div>
+            </div>
+            <div className="colores flex">
+              <div className="title">
+                <p>TINTAS DEL TRABAJO</p>
+              </div>
+              <div className="body">
+                <table>
+                  <tbody>
+                    <tr>
+                      <td><p className="highlight">NOMBRE DE TINTA</p></td>
+                      <td><p className="highlight">LPI</p></td>
+                      <td><p className="highlight">ANG.</p></td>
+                      <td><p className="highlight">TRAMA</p></td>
+                      <td><p className="highlight">PLANCHA</p></td>
+                    </tr>
+                    {orderColors.map((color) => (
+                      <tr key={color._id}>
+                        <td><p>{color.color}</p></td>
+                        <td><p>{color.lineatura}</p></td>
+                        <td><p>{color.angulo}</p></td>
+                        <td><p>{color.trama}</p></td>
+                        <td><p>{color.planchaArchivo}</p></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
+export default OrderDetails

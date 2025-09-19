@@ -1,0 +1,11 @@
+:root {
+    --backgrounds: #cdccc7;
+    --header: #5b6670;
+    --pantone431c: #576671;
+    --details: #efeeec;
+    --hover: #fedba7;
+    --highlight: #f9af3c;
+    --orange-gradient: linear-gradient(0deg, rgba(248, 175, 61, 1) 30%, rgba(255, 255, 255, 1) 100%);
+    --grey-gradient: linear-gradient(0deg, rgba(87, 102, 113, 1) 65%, rgba(255, 255, 255, 1) 110%);
+    --red-gradient: linear-gradient(0deg, red 20%, rgba(255, 255, 255, 1) 100%);
+}

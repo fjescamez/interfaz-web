@@ -1,0 +1,93 @@
+.tabsCross {
+    .cls-1 {
+        opacity: 0.5;
+    }
+
+    .cls-2 {
+        fill: none;
+        stroke: #576671;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.47px;
+    }
+}
+
+.clientsIcon {
+    .cls-1 {
+        fill: white;
+    }
+}
+
+.arrowDown {
+    .cls-1 {
+        fill: none;
+        stroke: #000;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 2.84px;
+    }
+}
+
+.checkIcon {
+    .cls-1 {
+        fill: #00df52;
+    }
+}
+
+.errorIcon {
+    .cls-1 {
+        fill: #cd1d2e;
+    }
+}
+
+.edit {
+    .cls-1 {
+        fill: white;
+    }
+}
+
+.close {
+    fill: white;
+    width: 3.5rem;
+    height: 3.5rem;
+}
+
+.capiculado {
+    width: 5rem;
+    height: 5rem;
+}
+
+.testing {
+    position: absolute;
+    z-index: 1;
+    top: 6.25rem;
+    width: 85%;
+    height: 14rem;
+}
+
+.testing2 {
+    position: absolute;
+    top: 6.25rem;
+    right: 12rem;
+    z-index: 0;
+    width: 55%;
+    height: 9.5rem;
+}
+
+.plotterSvg {
+    .cls-1 {
+        fill: #576671;
+        stroke: #576671;
+        stroke-miterlimit: 10;
+        stroke-width: 0.71px;
+    }
+}
+
+.montajeSvg {
+    .cls-1 {
+        fill: #576671;
+        stroke: #576671;
+        stroke-miterlimit: 10;
+        stroke-width: 0.43px;
+    }
+}

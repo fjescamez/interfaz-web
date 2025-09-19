@@ -1,0 +1,59 @@
+.formSections {
+    display: flex;
+    flex-direction: column;
+    row-gap: 2rem;
+
+    .formSection {
+        padding: 1.5rem 3rem;
+        background-color: rgb(240, 240, 240);
+        border: 2px solid var(--pantone431c);
+        border-radius: 0.35rem;
+        display: flex;
+        flex-direction: column;
+        row-gap: 1rem;
+        font-size: 5rem;
+
+        p {
+            text-align: left;
+        }
+
+        .color {
+            font-size: 5rem;
+
+            ul {
+                display: flex;
+                flex-direction: column;
+                row-gap: 0.85rem;
+                list-style: disc;
+                margin-left: 3rem;
+
+                .tramasList {
+                    p {
+                        font-size: 2rem;
+                    }
+
+                    .tramasSpecs {
+                        li {
+                            font-size: 2rem;
+                        }
+                    }
+                }
+            }
+        }
+
+        .display8020 {
+            display: grid;
+            grid-template-columns: minmax(0, 75%) 1fr;
+            column-gap: 2rem;
+        }
+
+        .displayAuto {
+            display: flex;
+            gap: 1rem 2rem;
+
+            * {
+                flex: 1;
+            }
+        }
+    }
+}

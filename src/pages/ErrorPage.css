@@ -1,0 +1,36 @@
+.errorPage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url("../assets/img/background.jpg");
+    background-size: cover;
+    background-position: center;
+    font-size: 6rem;
+    text-align: center;
+
+    .errorContainer {
+        background-color: var(--highlight);
+        display: flex;
+        flex-direction: column;
+        row-gap: 3rem;
+        align-items: center;
+        width: 80rem;
+        padding: 5rem;
+        border-radius: 4rem;
+
+        h1 {
+            margin: 0;
+            font-size: 6.5rem;
+        }
+
+        .goBack {
+            cursor: pointer;
+            color: royalblue;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}
