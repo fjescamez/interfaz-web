@@ -8,7 +8,6 @@ import LenFile from "../assets/svg/LenFile";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
 import { SlBriefcase } from "react-icons/sl";
-import { BiSolidColorFill } from "react-icons/bi";
 import GroupsSvg from "../assets/svg/GroupsSvg";
 
 export const infoGmgTableInfo = {
@@ -43,8 +42,8 @@ export const infoGmgTableInfo = {
 export const ripTableInfo = {
     tableName: "rip",
     endPoint: "montajes/rip",
-    headerIcon: <BiSolidColorFill />,
-    headerTitle: "LISTADO DE TINTAS",
+    headerIcon: <MontajeSvg />,
+    headerTitle: "RIP MONTAJE",
     tableChecks: true,
     tableColumns: [
         {
@@ -72,6 +71,34 @@ export const ripTableInfo = {
             active: true,
             key: "planchaArchivo"
         },
+    ],
+    actions: [
+        {
+            title: "Rip Auto",
+            action: "ripAuto"
+        },
+        {
+            title: "Rip Interior",
+            action: "ripInterior"
+        },
+        {
+            title: "Rip Exterior",
+            action: "ripExterior"
+        },
+        {
+            title: "Rip Pixel",
+            action: "ripPixel"
+        },
+        {
+            title: "Arrastrador",
+            action: "arrastradores",
+            hidden: true
+        },
+        {
+            title: "Marcas Corte Desarrollo",
+            action: "cortes_desarrollo",
+            hidden: true
+        }
     ]
 }
 

@@ -365,6 +365,7 @@ function Table({
                                                     setActionEnded(false);
                                                     const actionResult = await actions({
                                                         action: action.action,
+                                                        title: action.title,
                                                         data: tableData,
                                                         setTableData
                                                     });

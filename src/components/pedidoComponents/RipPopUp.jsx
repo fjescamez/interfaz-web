@@ -1,17 +1,15 @@
 import { useEffect, useState } from "react"
 import { ripTableInfo } from '../../helpers/tablesInfo';
 import Table from "../Table"
-import { fetchOneItem } from "../../helpers/fetchData";
-// import PdfAsImage from "../pedidoComponents/PdfAsImage";
-import { IoMdCloseCircleOutline } from "react-icons/io";
-import MontajeSvg from "../../assets/svg/MontajeSvg";
+import { fetchOneItem, postData } from "../../helpers/fetchData";
 import ExecutingComponent from "../ExecutingComponent";
-import { ripFormData } from "../../helpers/formsData";
-import GeneralForm from "../formComponents/GeneralForm";
+import { notify } from "../../helpers/notify";
+import { toast } from "../../../node_modules/react-toastify/dist/index";
 
 function RipPopUp({ setRipModal, idMontaje, orderId }) {
     const [colorIds, setColorIds] = useState([]);
-    const [montaje, setMontaje] = useState();
+    const [montaje, setMontaje] = useState(undefined);
+    const [tableInfo, setTableInfo] = useState(ripTableInfo);
 
     const getMontaje = async () => {
         const response = await fetchOneItem("montajes", idMontaje);
@@ -23,10 +21,88 @@ function RipPopUp({ setRipModal, idMontaje, orderId }) {
 
     useEffect(() => {
         getMontaje();
-    }, [])
+    }, []);
 
-    const ripActions = (action) => {
-        console.log(action);
+    useEffect(() => {
+        if (montaje !== undefined) {
+            // Poner la actividad que tiene arrastradores y cortes_desarrollo
+            if (montaje.indexOf("/MADERA/") !== -1) {
+                setTableInfo(prev => ({
+                    ...prev,
+                    actions: prev.actions.map((action) => {
+                        if (action.action === "arrastradores" || action.action === "cortes_desarrollo") {
+                            return {
+                                ...action,
+                                hidden: false
+                            };
+                        }
+                        return action;
+                    })
+                }));
+            }
+        }
+    }, [montaje]);
+
+    const ripActions = async (action) => {
+        const ripeos = ["ripAuto", "ripInterior", "ripExterior", "ripPixel"];
+
+        if (ripeos.includes(action.action)) {
+            const ripData = {
+                ids: colorIds,
+                action: action.title,
+                extraInputs: {
+                    id_pedido: orderId,
+                    archivo: montaje,
+                    id_archivo: montaje ? decodeURIComponent(montaje.replace("cloudflow://PEDIDOS_", "").split("/").pop()) : ""
+                }
+            };
+
+            const response = await postData("montajes/rip", ripData);
+
+            if (response.status === "success") {
+                notify(toast.success, response.status, response.title, response.message);
+            } else {
+                notify(toast.error, response.status, response.title, response.message);
+            }
+
+            return { status: response.status };
+        } else if (action.action === "arrastradores") {
+            const data = {
+                ids: colorIds,
+                action: "arrastrador",
+                extraInputs: {
+                    archivo: montaje
+                }
+            }
+
+            const response = await postData("montajes/rip/arrastradores", data);
+
+            if (response.status === "success") {
+                notify(toast.success, response.status, response.title, response.message);
+            } else {
+                notify(toast.error, response.status, response.title, response.message);
+            }
+
+            return { status: response.status };
+        } else if (action.action === "cortes_desarrollo") {
+            const data = {
+                ids: colorIds,
+                action: "cortes desarrollo",
+                extraInputs: {
+                    id_pedido: orderId
+                }
+            }
+
+            const response = await postData("montajes/rip/cortes_desarrollo", data);
+
+            if (response.status === "success") {
+                notify(toast.success, response.status, response.title, response.message);
+            } else {
+                notify(toast.error, response.status, response.title, response.message);
+            }
+
+            return { status: response.status };
+        }
     };
 
     /* Variables para salida_rip
@@ -44,44 +120,18 @@ function RipPopUp({ setRipModal, idMontaje, orderId }) {
     }
     */
 
-    const ripData = {
-        ids: colorIds,
-        action: "Rip Auto",
-        extraInputs: {
-            id_pedido: orderId,
-            archivo: montaje,
-            id_archivo: montaje ? montaje.replace("cloudflow://PEDIDOS_", "").split("/").pop() : ""
-        }
-    };
-
     return (
         <>
-            <div className="overlay deleteForm"></div>
             {montaje ?
-                <div className="popUpTable ripPopUp">
-                    <div className="header">
-                        <MontajeSvg />
-                        <p>RIP MONTAJE</p>
-                        <IoMdCloseCircleOutline className="close" onClick={() => setRipModal(false)} />
-                    </div>
-                    <div className="ripContainer">
-                        {/* <div className="ripImage">
-                            <PdfAsImage url={montaje.replace("cloudflow://", "").replace("PEDIDOS_", "Pedidos ")} />
-                        </div> */}
-                        <Table
-                            actions={ripActions}
-                            checkedRows={colorIds}
-                            setCheckedRows={setColorIds}
-                            dinamicTableInfo={ripTableInfo}
-                            orderFilter={montaje}
-                        />
-                        <GeneralForm
-                            formData={ripFormData}
-                            itemsData={ripData}
-                            endpoint={""}
-                            tableSelection={colorIds}
-                        />
-                    </div>
+                <div className="popUpTable">
+                    <Table
+                        actions={ripActions}
+                        checkedRows={colorIds}
+                        setCheckedRows={setColorIds}
+                        dinamicTableInfo={tableInfo}
+                        orderFilter={montaje}
+                        setPopUpTable={setRipModal}
+                    />
                 </div>
                 :
                 <ExecutingComponent />

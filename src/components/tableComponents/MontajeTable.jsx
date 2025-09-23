@@ -81,17 +81,18 @@ function MontajeTable({ setMontajeModal, orderId }) {
     return (
         <>
             <div className="overlay"></div>
-            <div className="popUpTable">
-                <Table
-                    actions={montajeActions}
-                    checkedRows={montajeIds}
-                    setCheckedRows={setMontajeIds}
-                    setPopUpTable={setMontajeModal}
-                    dinamicTableInfo={tableInfo}
-                    orderFilter={orderId}
-                />
-            </div>
-            {ripPopup &&
+            {!ripPopup ?
+                <div className="popUpTable">
+                    <Table
+                        actions={montajeActions}
+                        checkedRows={montajeIds}
+                        setCheckedRows={setMontajeIds}
+                        setPopUpTable={setMontajeModal}
+                        dinamicTableInfo={tableInfo}
+                        orderFilter={orderId}
+                    />
+                </div>
+                :
                 <RipPopUp
                     setRipModal={setRipPopup}
                     idMontaje={ripId}
