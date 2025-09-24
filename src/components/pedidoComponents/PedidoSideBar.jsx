@@ -16,12 +16,14 @@ import { notify } from "../../helpers/notify";
 import { toast } from "react-toastify";
 import ComparePopUp from "./ComparePopUp";
 import EmailPopUp from "./EmailPopUp";
+import DocKiosk from "./DocKiosk";
 
 function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
     const navigate = useNavigate();
     const location = useLocation();
     const [noteModal, setNoteModal] = useState(false);
     const [versionsModal, setVersionsModal] = useState(false);
+    const [docModal, setDocModal] = useState(false);
     const [emailModal, setEmailModal] = useState(false);
     const [compareModal, setCompareModal] = useState(false);
     const [lenModal, setLenModal] = useState(false);
@@ -86,6 +88,9 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
             case "versions":
                 setVersionsModal(true);
                 break;
+            case "kioscoDoc":
+                setDocModal(true);
+                break;
             case "email":
                 setEmailModal(true);
                 break;
@@ -131,6 +136,7 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
                     pedido={fullOrder.xml.numero.id}
                 />}
             {versionsModal && <VersionTable setVersionsModal={setVersionsModal} fullOrder={fullOrder} />}
+            {docModal && <DocKiosk setDocModal={setDocModal} fullOrder={fullOrder} />}
             {emailModal && <EmailPopUp setEmailModal={setEmailModal} fullOrder={fullOrder} />}
             {compareModal && <ComparePopUp setCompareModal={setCompareModal} rutaTrabajo={fullOrder.rutaTrabajo} />}
             {lenModal && <OrderLenTable setLenModal={setLenModal} orderId={fullOrder.id_pedido} />}

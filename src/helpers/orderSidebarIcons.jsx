@@ -32,15 +32,15 @@ export const orderIcons = [
     },
     {
         id: 5,
-        icon: "",
-        action: "",
-        tooltip: ""
+        icon: <p style={{ fontSize: "2rem" }}>DOC</p>,
+        action: "kioscoDoc",
+        tooltip: "Kiosco DOC"
     },
     {
         id: 6,
-        icon: "",
-        action: "",
-        tooltip: ""
+        icon: <p style={{ fontSize: "2rem" }}>XML</p>,
+        action: "kioskoXml",
+        tooltip: "Kiosco XML"
     },
     {
         id: 7,
@@ -91,4 +91,4 @@ export const orderIcons = [
         tooltip: "PLOTTER",
         last: true
     }
-]
+];

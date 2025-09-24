@@ -157,26 +157,13 @@ function PlotterKiosk({ setPlotterKiosk, tareaGmg, setTareaGmg }) {
     return (
         <>
             {(tareaGmg && gmgData.perfil) &&
-                <div className="popUpTable ripPopUp">
-                    <div className="header">
-                        <Plotter />
-                        <p>TAREA GMG</p>
-                        <IoMdCloseCircleOutline className="close"
-                            onClick={() => {
-                                setPlotterKiosk(false);
-                                setTareaGmg(undefined);
-                            }}
-                        />
-                    </div>
-                    <div className="ripContainer">
-                        <GeneralForm
-                            formData={formData}
-                            itemsData={gmgData}
-                            endpoint={"plotter/lanzarGmg"}
-                            onInputChange={handleFormChange}
-                        />
-                    </div>
-                </div>
+                <GeneralForm
+                    setModal={setPlotterKiosk}
+                    formData={formData}
+                    itemsData={gmgData}
+                    endpoint={"plotter/lanzarGmg"}
+                    onInputChange={handleFormChange}
+                />
             }
         </>
     )

@@ -3,6 +3,212 @@ import { TiContacts } from "react-icons/ti";
 import { PiEnvelopeLight, PiNoteLight } from "react-icons/pi";
 import { SlBriefcase } from "react-icons/sl";
 import GroupsSvg from "../assets/svg/GroupsSvg";
+import Plotter from "../assets/svg/Plotter";
+
+export const docFormData = {
+    headerIcon: <h1>DOC</h1>,
+    headerTitle: "CREAR DOCUMENTOS",
+    formSections: [
+        {
+            title: "",
+            rows: [
+                {
+                    groups: [
+                        "illustrator",
+                        "artPro"
+                    ]
+                },
+                {
+                    groups: [
+                        "fichaBoceto"
+                    ]
+                },
+                {
+                    groups: [
+                        "fichaImpresion"
+                    ]
+                },
+                {
+                    groups: [
+                        "plotter"
+                    ]
+                },
+                {
+                    groups: [
+                        "montaje"
+                    ]
+                },
+                {
+                    groups: [
+                        "montajeEspecial"
+                    ]
+                },
+                {
+                    groups: [
+                        "separaciones"
+                    ]
+                },
+                {
+                    groups: [
+                        "etiquetasMontaje"
+                    ]
+                },
+                {
+                    groups: [
+                        "certificado"
+                    ]
+                },
+                {
+                    groups: [
+                        "certificadoContinuos"
+                    ]
+                },
+                {
+                    groups: [
+                        "etiquetasPlotter"
+                    ]
+                },
+                {
+                    groups: [
+                        "certificadoCodigos"
+                    ]
+                },
+                {
+                    groups: [
+                        "unitarioPng"
+                    ]
+                },
+                {
+                    groups: [
+                        "paradaFreecut"
+                    ]
+                }
+            ]
+        },
+    ],
+    formFields: [
+        {
+            htmlFor: "illustrator",
+            labelId: "illustratorLabel",
+            labelTitle: "Illustrator",
+            inputType: "radio",
+            inputId: "illustrator",
+            inputName: "tipoUnitario"
+        },
+        {
+            htmlFor: "artPro",
+            labelId: "artProLabel",
+            labelTitle: "ArtPro+",
+            inputType: "radio",
+            inputId: "artPro",
+            inputName: "tipoUnitario"
+        },
+        {
+            htmlFor: "fichaBoceto",
+            labelId: "fichaBocetoLabel",
+            labelTitle: "Ficha Boceto",
+            inputType: "checkbox",
+            inputId: "fichaBoceto",
+            inputName: "fichaBoceto"
+        },
+        {
+            htmlFor: "fichaImpresion",
+            labelId: "fichaImpresionLabel",
+            labelTitle: "Ficha Impresión",
+            inputType: "checkbox",
+            inputId: "fichaImpresion",
+            inputName: "fichaImpresion"
+        },
+        {
+            htmlFor: "plotter",
+            labelId: "plotterLabel",
+            labelTitle: "Plotter",
+            inputType: "checkbox",
+            inputId: "plotter",
+            inputName: "plotter"
+        },
+        {
+            htmlFor: "montaje",
+            labelId: "montajeLabel",
+            labelTitle: "Montaje",
+            inputType: "checkbox",
+            inputId: "montaje",
+            inputName: "montaje"
+        },
+        {
+            htmlFor: "montajeEspecial",
+            labelId: "montajeEspecialLabel",
+            labelTitle: "Montaje Especial",
+            inputType: "checkbox",
+            inputId: "montajeEspecial",
+            inputName: "montajeEspecial"
+        },
+        {
+            htmlFor: "separaciones",
+            labelId: "separacionesLabel",
+            labelTitle: "Hacer Separaciones",
+            inputType: "checkbox",
+            inputId: "separaciones",
+            inputName: "separaciones"
+        },
+        {
+            htmlFor: "etiquetasMontaje",
+            labelId: "etiquetasMontajeLabel",
+            labelTitle: "Etiquetas de Montaje",
+            inputType: "checkbox",
+            inputId: "etiquetasMontaje",
+            inputName: "etiquetasMontaje"
+        },
+        {
+            htmlFor: "certificado",
+            labelId: "certificadoLabel",
+            labelTitle: "Certificado",
+            inputType: "checkbox",
+            inputId: "certificado",
+            inputName: "certificado"
+        },
+        {
+            htmlFor: "certificadoContinuos",
+            labelId: "certificadoContinuosLabel",
+            labelTitle: "Certificado Continuos",
+            inputType: "checkbox",
+            inputId: "certificadoContinuos",
+            inputName: "certificadoContinuos"
+        },
+        {
+            htmlFor: "etiquetasPlotter",
+            labelId: "etiquetasPlotterLabel",
+            labelTitle: "Etiquetas Plotter",
+            inputType: "checkbox",
+            inputId: "etiquetasPlotter",
+            inputName: "etiquetasPlotter"
+        },
+        {
+            htmlFor: "certificadoCodigos",
+            labelId: "certificadoCodigosLabel",
+            labelTitle: "Certificado Códigos",
+            inputType: "checkbox",
+            inputId: "certificadoCodigos",
+            inputName: "certificadoCodigos"
+        },
+        {
+            htmlFor: "unitarioPng",
+            labelId: "unitarioPngLabel",
+            labelTitle: "Unitario PNG",
+            inputType: "checkbox",
+            inputId: "unitarioPng",
+            inputName: "unitarioPng"
+        },
+        {
+            htmlFor: "paradaFreecut",
+            labelId: "paradaFreecutLabel",
+            labelTitle: "Parada Freecut",
+            inputType: "checkbox",
+            inputId: "paradaFreecut",
+            inputName: "paradaFreecut"
+        },
+    ]
+}
 
 export const emailFormData = {
     headerIcon: <PiEnvelopeLight />,
@@ -76,7 +282,8 @@ export const emailFormData = {
 }
 
 export const gmgFormData = {
-    headerTitle: "noFormContainer",
+    headerTitle: "TAREA GMG",
+    headerIcon: <Plotter />,
     formSections: [
         {
             title: "",
@@ -159,61 +366,6 @@ export const gmgFormData = {
             inputName: "perfil",
             disableField: true
         }
-    ]
-}
-
-export const ripFormData = {
-    headerTitle: "noFormContainer",
-    formSections: [
-        {
-            title: "",
-            rows: [
-                {
-                    groups: [
-                        "impresion",
-                        "curva",
-                        "resolucion"
-                    ]
-                }
-            ]
-        }
-    ],
-    formFields: [
-        {
-            htmlFor: "impresion",
-            labelId: "impresionLabel",
-            labelTitle: "Tipo de impresión",
-            select: "simple",
-            options: [
-                "Interior",
-                "Exterior"
-            ],
-            inputId: "impresion",
-            inputName: "impresion"
-        },
-        {
-            htmlFor: "curva",
-            labelId: "curvaLabel",
-            labelTitle: "Curva",
-            select: "simple",
-            options: [
-                "Lineal"
-            ],
-            inputId: "curva",
-            inputName: "curva"
-        },
-        {
-            htmlFor: "resolucion",
-            labelId: "resolucionLabel",
-            labelTitle: "Resolución",
-            select: "simple",
-            options: [
-                "4000",
-                "2400"
-            ],
-            inputId: "resolucion",
-            inputName: "resolucion"
-        },
     ]
 }
 

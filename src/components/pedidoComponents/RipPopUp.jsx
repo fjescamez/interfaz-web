@@ -44,9 +44,9 @@ function RipPopUp({ setRipModal, idMontaje, orderId }) {
     }, [montaje]);
 
     const ripActions = async (action) => {
-        const ripeos = ["ripAuto", "ripInterior", "ripExterior", "ripPixel"];
+        const ripTypes = ["ripAuto", "ripInterior", "ripExterior", "ripPixel"];
 
-        if (ripeos.includes(action.action)) {
+        if (ripTypes.includes(action.action)) {
             const ripData = {
                 ids: colorIds,
                 action: action.title,

@@ -16,7 +16,7 @@ function FormSection({
             {sectionData.rows.map((row) => (
                 <div key={row.groups[0]} className={row.rowDisplay || "displayAuto"}>
                     {formFields.filter(field => row.groups.includes(field.htmlFor)).map((field, i) => (
-                        <div key={field.htmlFor} className="formGroup">
+                        <div key={field.htmlFor} className={`formGroup ${field.inputType === "checkbox" ? "formGroupRow" : ""}`}>
                             <FormGroup
                                 error={fieldErrors ? fieldErrors[field.inputName] : ""}
                                 value={inputData ? inputData[field.inputName] ?? "" : fieldsData}

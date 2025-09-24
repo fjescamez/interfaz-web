@@ -24,13 +24,15 @@ const FormGroup = React.memo(function FormGroup({
         <>
             {!hideField &&
                 <>
-                    <label
-                        htmlFor={htmlFor}
-                        id={labelId}
-                        className={error ? "errorLabel" : "" + inputType === "radio" ? "radioLabel" : ""}
-                    >
-                        {`${labelTitle}:`}
-                    </label>
+                    {(!inputType || (inputType && inputType !== "checkbox")) &&
+                        <label
+                            htmlFor={htmlFor}
+                            id={labelId}
+                            className={error ? "errorLabel" : "" + inputType === "radio" ? "radioLabel" : ""}
+                        >
+                            {`${labelTitle}:`}
+                        </label>
+                    }
                     {(inputType && inputType !== "radio") &&
                         <input
                             type={inputType}
@@ -39,10 +41,19 @@ const FormGroup = React.memo(function FormGroup({
                             placeholder={(disable || disableField) ? "" : (minLength ? `Mínimo ${minLength} caracteres` : `Introducir ${labelTitle}`)}
                             onChange={handleForm}
                             value={value}
-                            className={error ? "error" : ""}
+                            className={error ? "error" : "" + inputType === "checkbox" ? "checkInput" : ""}
                             autoComplete="on"
                             disabled={disable ? disable : disableField}
                         />
+                    }
+                    {(inputType && inputType === "checkbox") &&
+                        <label
+                            htmlFor={htmlFor}
+                            id={labelId}
+                            className={error ? "errorLabel" : "" + inputType === "checkbox" ? "checkLabel" : ""}
+                        >
+                            {`${labelTitle}`}
+                        </label>
                     }
                     {inputType === "radio" &&
                         <input
