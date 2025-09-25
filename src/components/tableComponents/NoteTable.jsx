@@ -7,7 +7,6 @@ import { HiOutlinePlusCircle } from 'react-icons/hi';
 import { BsTrash3Fill } from 'react-icons/bs';
 import NoteForm from "../formComponents/NoteForm";
 import DeleteForm from "../formComponents/DeleteForm";
-import { PiNoteLight } from "react-icons/pi";
 import { MdKeyboardArrowDown, MdKeyboardArrowRight } from "react-icons/md";
 import { GrEdit } from "react-icons/gr";
 import { notify } from "../../helpers/notify";

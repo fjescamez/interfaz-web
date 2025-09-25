@@ -21,6 +21,7 @@
 
     .rowLight,
     .rowDark {
+
         td:nth-child(1),
         td:nth-child(2) {
             text-align: center;
@@ -41,13 +42,19 @@
         border-top: 2px solid var(--pantone431c);
         border-bottom: 2px solid var(--pantone431c);
         background-color: white;
-        
+
         .noteContainer {
             height: 15rem;
             padding: 1rem;
 
             p {
                 font-size: 2.5rem;
+                word-wrap: break-word;
+                /* rompe palabras largas */
+                overflow-wrap: break-word;
+                /* soporte moderno */
+                word-break: break-word;
+                /* rompe palabras si es necesario */
             }
         }
     }

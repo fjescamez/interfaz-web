@@ -1,21 +1,279 @@
 import { FaUserCircle } from "react-icons/fa";
 import { TiContacts } from "react-icons/ti";
 import { PiEnvelopeLight, PiNoteLight } from "react-icons/pi";
+import { BsFiletypeDoc, BsFiletypeXml } from "react-icons/bs";
 import { SlBriefcase } from "react-icons/sl";
 import GroupsSvg from "../assets/svg/GroupsSvg";
 import Plotter from "../assets/svg/Plotter";
 
-export const docFormData = {
-    headerIcon: <h1>DOC</h1>,
-    headerTitle: "CREAR DOCUMENTOS",
+export const xmlFormData = {
+    headerIcon: <BsFiletypeXml />,
+    headerTitle: "LANZAR XML",
     formSections: [
         {
-            title: "",
             rows: [
                 {
                     groups: [
-                        "illustrator",
-                        "artPro"
+                        "tipoUnitario"
+                    ]
+                },
+                {
+                    groups: [
+                        "trapping"
+                    ]
+                },
+                {
+                    groups: [
+                        "separaciones"
+                    ]
+                },
+                {
+                    groups: [
+                        "montaje"
+                    ]
+                },
+                {
+                    groups: [
+                        "compararUnitario"
+                    ]
+                },
+                {
+                    groups: [
+                        "eliminarTintas"
+                    ]
+                },
+                {
+                    groups: [
+                        "bocetoRasterizado"
+                    ]
+                },
+                {
+                    groups: [
+                        "paradaFreecut"
+                    ]
+                },
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "tipoUnitario",
+            labelId: "tipoUnitarioLabel",
+            labelTitle: "Unitario",
+            inputType: "radioGroup",
+            radioButtons: [
+                {
+                    htmlFor: "illustrator",
+                    labelId: "illustratorLabel",
+                    labelTitle: "Illustrator",
+                    inputId: "illustrator",
+                    inputName: "tipoUnitario"
+                },
+                {
+                    htmlFor: "artPro",
+                    labelId: "artProLabel",
+                    labelTitle: "ArtPro+",
+                    inputId: "artPro",
+                    inputName: "tipoUnitario"
+                },
+            ],
+            inputId: "tipoUnitario",
+            inputName: "tipoUnitario"
+        },
+        {
+            htmlFor: "trapping",
+            labelId: "trappingLabel",
+            labelTitle: "Trapping/Preimpresión",
+            inputType: "radioGroup",
+            radioButtons: [
+                {
+                    htmlFor: "siAuto",
+                    labelId: "siAutoLabel",
+                    labelTitle: "Automático",
+                    inputId: "siAuto",
+                    inputName: "trapping"
+                },
+                {
+                    htmlFor: "siManual",
+                    labelId: "siManualLabel",
+                    labelTitle: "Manual",
+                    inputId: "siManual",
+                    inputName: "trapping"
+                },
+                {
+                    htmlFor: "noTrapping",
+                    labelId: "noTrappingLabel",
+                    labelTitle: "No",
+                    inputId: "noTrapping",
+                    inputName: "trapping"
+                },
+            ],
+            inputId: "trapping",
+            inputName: "trapping"
+        },
+        {
+            htmlFor: "separaciones",
+            labelId: "separacionesLabel",
+            labelTitle: "Hacer Separaciones",
+            inputType: "radioGroup",
+            radioButtons: [
+                {
+                    htmlFor: "siSeparaciones",
+                    labelId: "siSeparacionesLabel",
+                    labelTitle: "Sí",
+                    inputId: "siSeparaciones",
+                    inputName: "separaciones"
+                },
+                {
+                    htmlFor: "noSeparaciones",
+                    labelId: "noSeparacionesLabel",
+                    labelTitle: "No",
+                    inputId: "noSeparaciones",
+                    inputName: "separaciones"
+                },
+            ],
+            inputId: "separaciones",
+            inputName: "separaciones"
+        },
+        {
+            htmlFor: "montaje",
+            labelId: "montajeLabel",
+            labelTitle: "Hacer Montaje",
+            inputType: "radioGroup",
+            radioButtons: [
+                {
+                    htmlFor: "nuevo",
+                    labelId: "nuevoLabel",
+                    labelTitle: "Nuevo",
+                    inputId: "nuevo",
+                    inputName: "montaje"
+                },
+                {
+                    htmlFor: "especial",
+                    labelId: "especialLabel",
+                    labelTitle: "Especial",
+                    inputId: "especial",
+                    inputName: "montaje"
+                },
+                {
+                    htmlFor: "noMontaje",
+                    labelId: "noMontajeLabel",
+                    labelTitle: "No",
+                    inputId: "noMontaje",
+                    inputName: "montaje"
+                },
+            ],
+            inputId: "montaje",
+            inputName: "montaje"
+        },
+        {
+            htmlFor: "compararUnitario",
+            labelId: "compararUnitarioLabel",
+            labelTitle: "Comparar Unitario",
+            inputType: "radioGroup",
+            radioButtons: [
+                {
+                    htmlFor: "siComparar",
+                    labelId: "siCompararLabel",
+                    labelTitle: "Sí",
+                    inputId: "siComparar",
+                    inputName: "compararUnitario"
+                },
+                {
+                    htmlFor: "noComparar",
+                    labelId: "noCompararLabel",
+                    labelTitle: "No",
+                    inputId: "noComparar",
+                    inputName: "compararUnitario"
+                },
+            ],
+            inputId: "compararUnitario",
+            inputName: "compararUnitario"
+        },
+        {
+            htmlFor: "eliminarTintas",
+            labelId: "eliminarTintasLabel",
+            labelTitle: "Eliminar tintas sin uso",
+            inputType: "radioGroup",
+            radioButtons: [
+                {
+                    htmlFor: "siEliminar",
+                    labelId: "siEliminarLabel",
+                    labelTitle: "Sí",
+                    inputId: "siEliminar",
+                    inputName: "eliminarTintas"
+                },
+                {
+                    htmlFor: "noEliminar",
+                    labelId: "noEliminarLabel",
+                    labelTitle: "No",
+                    inputId: "noEliminar",
+                    inputName: "eliminarTintas"
+                },
+            ],
+            inputId: "eliminarTintas",
+            inputName: "eliminarTintas"
+        },
+        {
+            htmlFor: "bocetoRasterizado",
+            labelId: "bocetoRasterizadoLabel",
+            labelTitle: "Boceto Rasterizado",
+            inputType: "radioGroup",
+            radioButtons: [
+                {
+                    htmlFor: "siBoceto",
+                    labelId: "siBocetoLabel",
+                    labelTitle: "Sí",
+                    inputId: "siBoceto",
+                    inputName: "bocetoRasterizado"
+                },
+                {
+                    htmlFor: "noBoceto",
+                    labelId: "noBocetoLabel",
+                    labelTitle: "No",
+                    inputId: "noBoceto",
+                    inputName: "bocetoRasterizado"
+                },
+            ],
+            inputId: "bocetoRasterizado",
+            inputName: "bocetoRasterizado"
+        },
+        {
+            htmlFor: "paradaFreecut",
+            labelId: "paradaFreecutLabel",
+            labelTitle: "Parada Freecut",
+            inputType: "radioGroup",
+            radioButtons: [
+                {
+                    htmlFor: "siParada",
+                    labelId: "siParadaLabel",
+                    labelTitle: "Sí",
+                    inputId: "siParada",
+                    inputName: "paradaFreecut"
+                },
+                {
+                    htmlFor: "noParada",
+                    labelId: "noParadaLabel",
+                    labelTitle: "No",
+                    inputId: "noParada",
+                    inputName: "paradaFreecut"
+                },
+            ],
+            inputId: "paradaFreecut",
+            inputName: "paradaFreecut"
+        },
+    ]
+}
+
+export const docFormData = {
+    headerIcon: <BsFiletypeDoc />,
+    headerTitle: "CREAR DOCUMENTOS",
+    formSections: [
+        {
+            rows: [
+                {
+                    groups: [
+                        "tipoUnitario"
                     ]
                 },
                 {
@@ -88,19 +346,27 @@ export const docFormData = {
     ],
     formFields: [
         {
-            htmlFor: "illustrator",
-            labelId: "illustratorLabel",
-            labelTitle: "Illustrator",
-            inputType: "radio",
-            inputId: "illustrator",
-            inputName: "tipoUnitario"
-        },
-        {
-            htmlFor: "artPro",
-            labelId: "artProLabel",
-            labelTitle: "ArtPro+",
-            inputType: "radio",
-            inputId: "artPro",
+            htmlFor: "tipoUnitario",
+            labelId: "tipoUnitarioLabel",
+            labelTitle: "Unitario",
+            inputType: "radioGroup",
+            radioButtons: [
+                {
+                    htmlFor: "illustrator",
+                    labelId: "illustratorLabel",
+                    labelTitle: "Illustrator",
+                    inputId: "illustrator",
+                    inputName: "tipoUnitario"
+                },
+                {
+                    htmlFor: "artPro",
+                    labelId: "artProLabel",
+                    labelTitle: "ArtPro+",
+                    inputId: "artPro",
+                    inputName: "tipoUnitario"
+                },
+            ],
+            inputId: "tipoUnitario",
             inputName: "tipoUnitario"
         },
         {
@@ -215,7 +481,6 @@ export const emailFormData = {
     headerTitle: "EMAIL",
     formSections: [
         {
-            title: "",
             rows: [
                 {
                     groups: [
@@ -286,7 +551,6 @@ export const gmgFormData = {
     headerIcon: <Plotter />,
     formSections: [
         {
-            title: "",
             rows: [
                 {
                     groups: [
@@ -297,7 +561,6 @@ export const gmgFormData = {
             ]
         },
         {
-            title: "",
             rows: [
                 {
                     groups: [
@@ -375,7 +638,6 @@ export const noteFormData = {
     editTitle: "EDITAR NOTA",
     formSections: [
         {
-            title: "",
             rows: [
                 {
                     groups: [

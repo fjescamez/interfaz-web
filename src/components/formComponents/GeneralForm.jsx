@@ -19,7 +19,8 @@ function GeneralForm({
     setData,
     tableSelection,
     clienteDato,
-    onInputChange
+    onInputChange,
+    submitText
 }) {
     const { headerIcon, headerTitle, editTitle, formFields, clientsMap, codesMap } = formData;
     const [errorMessage, setErrorMessage] = useState(false);
@@ -44,8 +45,8 @@ function GeneralForm({
     }, [itemsData]);
 
     const handleForm = useCallback((e) => {
-        const { name, value } = e.target;
-        let newValue = value;
+        const { name, type, value, checked } = e.target;
+        let newValue = type === "checkbox" ? checked : value;
 
         if (name === "departments" && !value) {
             newValue = [];
@@ -216,7 +217,7 @@ function GeneralForm({
                             {errorMessage && (
                                 <div className="errorMessage">{error}</div>
                             )}
-                            <button type="submit">Guardar</button>
+                            <button type="submit">{submitText || "Guardar"}</button>
                         </form>
                         <div className="filler"></div>
                     </div>

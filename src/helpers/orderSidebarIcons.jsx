@@ -1,5 +1,6 @@
 import { HiOutlineRefresh } from "react-icons/hi"
 import { PiNoteLight, PiFoldersLight, PiEnvelopeLight, PiStackLight, PiStorefrontLight, PiImagesLight } from "react-icons/pi"
+import { BsFiletypeDoc, BsFiletypeXml } from "react-icons/bs";
 import LenFile from "../assets/svg/LenFile"
 import Plotter from "../assets/svg/Plotter"
 import MontajeSvg from "../assets/svg/MontajeSvg"
@@ -32,14 +33,14 @@ export const orderIcons = [
     },
     {
         id: 5,
-        icon: <p style={{ fontSize: "2rem" }}>DOC</p>,
+        icon: <BsFiletypeDoc />,
         action: "kioscoDoc",
         tooltip: "Kiosco DOC"
     },
     {
         id: 6,
-        icon: <p style={{ fontSize: "2rem" }}>XML</p>,
-        action: "kioskoXml",
+        icon: <BsFiletypeXml />,
+        action: "kioscoXml",
         tooltip: "Kiosco XML"
     },
     {

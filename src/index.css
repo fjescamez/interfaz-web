@@ -376,8 +376,28 @@ svg {
 
     &.formGroupRow {
         flex-direction: row;
-        column-gap: 1.5rem;
+        column-gap: 2rem;
         align-items: center;
+
+        label {
+            max-width: fit-content;
+        }
+
+        input {
+            max-width: 2rem;
+            min-height: 2rem;
+        }
+    }
+
+    .radioGroup {
+        display: flex;
+        column-gap: 2.5rem;
+
+        div,
+        input,
+        label {
+            max-width: fit-content;
+        }
     }
 
     label {
@@ -390,16 +410,14 @@ svg {
         max-width: fit-content;
     }
 
-    .checkLabel {
+    .fullLabel {
         border-radius: 1rem;
         border: 2px solid var(--pantone431c);
     }
 
-    .radioLabel {
-        border-radius: 1rem;
-        border: 2px solid var(--pantone431c);
-        align-self: center;
-        margin-bottom: 1rem;
+    .noStyleLabel {
+        border: none;
+        background: none;
     }
 
     .checkInput {
@@ -416,7 +434,7 @@ svg {
         font-size: 2rem;
         border: 2px solid var(--header);
         border-radius: 0 1.5rem 1.5rem 1.5rem;
-        padding: 3rem;
+        padding: 1rem;
 
         &::placeholder {
             color: var(--backgrounds);

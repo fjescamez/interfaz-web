@@ -4,8 +4,7 @@ import { docFormData } from '../../helpers/formsData'
 
 function DocKiosk({ setDocModal, fullOrder }) {
     const docData = {
-        illustrator: true,
-        artPro: false,
+        tipoUnitario: "illustrator",
         fichaBoceto: false,
         fichaImpresion: false,
         plotter: false,
