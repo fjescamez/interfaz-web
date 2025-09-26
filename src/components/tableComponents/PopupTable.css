@@ -11,6 +11,22 @@
         margin: 0;
         width: auto;
 
+        .tableHeader {
+            .headerTitle {
+
+                .montajeSvg,
+                .plotterSvg {
+                    width: 6rem;
+                    height: 6rem;
+
+                    .cls-1 {
+                        fill: white;
+                        stroke: white;
+                    }
+                }
+            }
+        }
+
         .tableScroll {
             max-height: 55rem;
             overflow-y: auto;
@@ -31,12 +47,11 @@
 .ripPopUp {
     display: flex;
     flex-direction: column;
-    row-gap: 2rem;
     z-index: 7;
     background-color: var(--details);
     border: 2px solid var(--pantone431c);
     border-radius: 3rem;
-    max-height: 85%;
+    max-height: 93%;
 
     .header {
         display: flex;
@@ -55,6 +70,7 @@
 
             .cls-1 {
                 fill: white;
+                stroke: white;
             }
         }
 
@@ -120,6 +136,10 @@
 
         .tableContainer {
             margin: 0;
+
+            .tableScroll {
+                max-height: 33.1rem;
+            }
         }
 
         .ripImage {

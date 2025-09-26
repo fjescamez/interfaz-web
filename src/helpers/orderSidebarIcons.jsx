@@ -1,5 +1,6 @@
 import { HiOutlineRefresh } from "react-icons/hi"
 import { PiNoteLight, PiFoldersLight, PiEnvelopeLight, PiStackLight, PiStorefrontLight, PiImagesLight } from "react-icons/pi"
+import { BsFiletypeDoc, BsFiletypeXml } from "react-icons/bs";
 import LenFile from "../assets/svg/LenFile"
 import Plotter from "../assets/svg/Plotter"
 import MontajeSvg from "../assets/svg/MontajeSvg"
@@ -32,15 +33,15 @@ export const orderIcons = [
     },
     {
         id: 5,
-        icon: "",
-        action: "",
-        tooltip: ""
+        icon: <BsFiletypeDoc />,
+        action: "kioscoDoc",
+        tooltip: "Kiosco DOC"
     },
     {
         id: 6,
-        icon: "",
-        action: "",
-        tooltip: ""
+        icon: <BsFiletypeXml />,
+        action: "kioscoXml",
+        tooltip: "Kiosco XML"
     },
     {
         id: 7,
@@ -91,4 +92,4 @@ export const orderIcons = [
         tooltip: "PLOTTER",
         last: true
     }
-]
+];

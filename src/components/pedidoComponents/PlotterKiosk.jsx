@@ -1,6 +1,5 @@
 import Plotter from '../../assets/svg/Plotter'
 import { IoMdCloseCircleOutline } from 'react-icons/io'
-import ExecutingComponent from '../ExecutingComponent'
 import GeneralForm from '../formComponents/GeneralForm'
 import { gmgFormData } from '../../helpers/formsData'
 import { useEffect, useState } from 'react'
@@ -142,42 +141,29 @@ function PlotterKiosk({ setPlotterKiosk, tareaGmg, setTareaGmg }) {
                 tipo: tareaGmg.tipo,
                 curva: tareaGmg.curva,
                 perfil: tareaGmg.perfil,
-                cliente: tareaGmg.cliente,
-                carpeta: tareaGmg.carpeta,
-                id_pedido: tareaGmg.id_pedido,
-                archivo: tareaGmg.archivo,
-                id_archivo: tareaGmg.id_archivo,
-                material: tareaGmg.material,
-                estrategia: tareaGmg.estrategia
+                estrategia: tareaGmg.estrategia,
+                fileItem: tareaGmg.fileItem,
+                registroPedido: tareaGmg.registroPedido
+                // cliente: tareaGmg.cliente,
+                // carpeta: tareaGmg.carpeta,
+                // id_pedido: tareaGmg.id_pedido,
+                // archivo: tareaGmg.archivo,
+                // id_archivo: tareaGmg.id_archivo,
+                // material: tareaGmg.material,
             }))
         }
     }, [tareaGmg]);
 
     return (
         <>
-            {(tareaGmg && gmgData.perfil) ?
-                <div className="popUpTable ripPopUp">
-                    <div className="header">
-                        <Plotter />
-                        <p>TAREA GMG</p>
-                        <IoMdCloseCircleOutline className="close"
-                            onClick={() => {
-                                setPlotterKiosk(false);
-                                setTareaGmg(undefined);
-                            }}
-                        />
-                    </div>
-                    <div className="ripContainer">
-                        <GeneralForm
-                            formData={formData}
-                            itemsData={gmgData}
-                            endpoint={"plotter/lanzarGmg"}
-                            onInputChange={handleFormChange}
-                        />
-                    </div>
-                </div>
-                :
-                <ExecutingComponent />
+            {(tareaGmg && gmgData.perfil) &&
+                <GeneralForm
+                    setModal={setPlotterKiosk}
+                    formData={formData}
+                    itemsData={gmgData}
+                    endpoint={"plotter/lanzarGmg"}
+                    onInputChange={handleFormChange}
+                />
             }
         </>
     )

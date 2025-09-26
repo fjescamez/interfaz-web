@@ -19,7 +19,8 @@ function GeneralForm({
     setData,
     tableSelection,
     clienteDato,
-    onInputChange
+    onInputChange,
+    submitText
 }) {
     const { headerIcon, headerTitle, editTitle, formFields, clientsMap, codesMap } = formData;
     const [errorMessage, setErrorMessage] = useState(false);
@@ -44,8 +45,8 @@ function GeneralForm({
     }, [itemsData]);
 
     const handleForm = useCallback((e) => {
-        const { name, value } = e.target;
-        let newValue = value;
+        const { name, type, value, checked } = e.target;
+        let newValue = type === "checkbox" ? checked : value;
 
         if (name === "departments" && !value) {
             newValue = [];
@@ -181,21 +182,34 @@ function GeneralForm({
     return (
         <>
             {executing && <ExecutingComponent />}
-            {headerTitle === "noFormContainer"
-                ?
-                <>
-                    <div className="formRip">
+            <>
+                <div className="overlay"></div>
+                <div className="formContainer">
+                    <div className="formHeaderBackground">
+                        <div className="formHeader">
+                            {headerIcon}
+                            <h1>{mode === "edit" ? editTitle : headerTitle}</h1>
+                            <button onClick={() => {
+                                setModal(false);
+                                if (setMode) setMode("");
+                            }}>
+                                <IoMdCloseCircleOutline className="close" />
+                            </button>
+                        </div>
+                    </div>
+                    <div className="formBody">
                         <form onSubmit={handleSubmit}>
                             <div className="formSections">
-                                {formData.formSections.map((section, index) => (
-                                    <div key={index} className="formSection">
+                                {formData.formSections.map((section) => (
+                                    <div key={section.title} className="formSection">
                                         <FormSection
                                             fieldErrors={fieldErrors}
-                                            inputData={inputData}
                                             sectionData={section}
                                             formFields={formData.formFields}
                                             fieldsData={itemsData}
                                             handleForm={handleForm}
+                                            inputData={inputData}
+                                            disable={!!clienteDato && !!section.disableIfFilter}
                                         />
                                     </div>
                                 ))}
@@ -203,53 +217,12 @@ function GeneralForm({
                             {errorMessage && (
                                 <div className="errorMessage">{error}</div>
                             )}
-                            <button type="submit">Enviar</button>
+                            <button type="submit">{submitText || "Guardar"}</button>
                         </form>
+                        <div className="filler"></div>
                     </div>
-                </>
-                :
-                <>
-                    <div className="overlay"></div>
-                    <div className="formContainer">
-                        <div className="formHeaderBackground">
-                            <div className="formHeader">
-                                {headerIcon}
-                                <h1>{mode === "edit" ? editTitle : headerTitle}</h1>
-                                <button onClick={() => {
-                                    setModal(false);
-                                    if (setMode) setMode("");
-                                }}>
-                                    <IoMdCloseCircleOutline className="close" />
-                                </button>
-                            </div>
-                        </div>
-                        <div className="formBody">
-                            <form onSubmit={handleSubmit}>
-                                <div className="formSections">
-                                    {formData.formSections.map((section) => (
-                                        <div key={section.title} className="formSection">
-                                            <FormSection
-                                                fieldErrors={fieldErrors}
-                                                sectionData={section}
-                                                formFields={formData.formFields}
-                                                fieldsData={itemsData}
-                                                handleForm={handleForm}
-                                                inputData={inputData}
-                                                disable={!!clienteDato && !!section.disableIfFilter}
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
-                                {errorMessage && (
-                                    <div className="errorMessage">{error}</div>
-                                )}
-                                <button type="submit">Guardar</button>
-                            </form>
-                            <div className="filler"></div>
-                        </div>
-                    </div>
-                </>
-            }
+                </div>
+            </>
         </>
     );
 }

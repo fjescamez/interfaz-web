@@ -12,6 +12,7 @@ const FormGroup = React.memo(function FormGroup({
         labelId,
         labelTitle,
         inputType,
+        radioButtons,
         textarea,
         select,
         options,
@@ -19,19 +20,22 @@ const FormGroup = React.memo(function FormGroup({
         inputName,
         minLength,
         disableField,
-        hideField } = field;
+        hideField
+    } = field;
     return (
         <>
             {!hideField &&
                 <>
-                    <label
-                        htmlFor={htmlFor}
-                        id={labelId}
-                        className={error ? "errorLabel" : "" + inputType === "radio" ? "radioLabel" : ""}
-                    >
-                        {`${labelTitle}:`}
-                    </label>
-                    {(inputType && inputType !== "radio") &&
+                    {(!inputType || (inputType && inputType !== "checkbox")) &&
+                        <label
+                            htmlFor={htmlFor}
+                            id={labelId}
+                            className={error ? "errorLabel" : "" + inputType === "radioGroup" ? "fullLabel" : ""}
+                        >
+                            {`${labelTitle}:`}
+                        </label>
+                    }
+                    {(inputType && (inputType !== "radioGroup" && inputType !== "checkbox")) &&
                         <input
                             type={inputType}
                             id={inputId}
@@ -39,21 +43,54 @@ const FormGroup = React.memo(function FormGroup({
                             placeholder={(disable || disableField) ? "" : (minLength ? `Mínimo ${minLength} caracteres` : `Introducir ${labelTitle}`)}
                             onChange={handleForm}
                             value={value}
-                            className={error ? "error" : ""}
+                            className={error ? "error" : "" + inputType === "checkbox" ? "checkInput" : ""}
                             autoComplete="on"
-                            disabled={disable ? disable : disableField}
+                            disabled={disable || disableField}
                         />
                     }
-                    {inputType === "radio" &&
+                    {(inputType && inputType === "radioGroup") &&
+                        <div className="radioGroup">
+                            {radioButtons.map((radioButton) => (
+                                <div key={radioButton.inputId}>
+                                    <input
+                                        type="radio"
+                                        id={radioButton.inputId}
+                                        name={radioButton.inputName}
+                                        value={radioButton.inputId}
+                                        checked={value === radioButton.inputId}
+                                        onChange={handleForm}
+                                        disabled={disable || disableField}
+                                    />
+                                    <label
+                                        htmlFor={radioButton.inputId}
+                                        className="noStyleLabel"
+                                    >
+                                        {radioButton.labelTitle}
+                                    </label>
+                                </div>
+                            ))}
+                        </div>
+                    }
+                    {(inputType && inputType === "checkbox") &&
                         <input
-                            type="radio"
+                            type="checkbox"
                             id={inputId}
                             name={inputName}
-                            onChange={handleForm}
-                            value={inputId}
-                            autoComplete="on"
-                            disabled={disable ? disable : disableField}
+                            checked={!!value}
+                            onChange={(e) =>
+                                handleForm({ target: { name: inputName, value: e.target.checked } })
+                            }
+                            disabled={disable || disableField}
                         />
+                    }
+                    {(inputType && inputType === "checkbox") &&
+                        <label
+                            htmlFor={htmlFor}
+                            id={labelId}
+                            className={error ? "errorLabel" : "" + inputType === "checkbox" ? "fullLabel" : ""}
+                        >
+                            {labelTitle}
+                        </label>
                     }
                     {textarea &&
                         <textarea
@@ -73,7 +110,7 @@ const FormGroup = React.memo(function FormGroup({
                             onChange={handleForm}
                             value={value}
                             className={error ? "error" : ""}
-                            disabled={disable ? disable : disableField}
+                            disabled={disable || disableField}
                         />
                     }
                     {select === "multiple" &&
@@ -84,7 +121,7 @@ const FormGroup = React.memo(function FormGroup({
                             value={value}
                             multiple
                             className={error ? "error" : ""}
-                            disabled={disable ? disable : disableField}
+                            disabled={disable || disableField}
                         />
                     }
                 </>

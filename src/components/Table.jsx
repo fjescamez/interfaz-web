@@ -308,7 +308,7 @@ function Table({
                                     </svg>
                                 </button>
                             )}
-                            {(tableInfo.actions && showChecks)
+                            {(tableInfo.actions?.some(a => a.action === "eliminar") && showChecks)
                                 &&
                                 <BsTrash3Fill
                                     onClick={() => checkedRows.length > 0 && setDeletePopup(true)}
@@ -365,6 +365,7 @@ function Table({
                                                     setActionEnded(false);
                                                     const actionResult = await actions({
                                                         action: action.action,
+                                                        title: action.title,
                                                         data: tableData,
                                                         setTableData
                                                     });
@@ -442,7 +443,7 @@ function Table({
                                         if (column.check) {
                                             return (
                                                 <td key={column.key} className="checkTd">
-                                                    <input type="checkbox" className="check" checked={value === "-1"} readOnly />
+                                                    <input type="checkbox" className="check" checked={value === "-1" || value === "X"} readOnly />
                                                 </td>
                                             );
                                         }

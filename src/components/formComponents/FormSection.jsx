@@ -12,11 +12,11 @@ function FormSection({
 
     return (
         <>
-            <h2>{sectionData.title}</h2>
-            {sectionData.rows.map((row) => (
-                <div key={row.groups[0]} className={row.rowDisplay || "displayAuto"}>
-                    {formFields.filter(field => row.groups.includes(field.htmlFor)).map((field, i) => (
-                        <div key={field.htmlFor} className="formGroup">
+            {sectionData.title && <h2>{sectionData.title}</h2>}
+            {sectionData.rows.map((row, index) => (
+                <div key={index} className={row.rowDisplay || "displayAuto"}>
+                    {formFields.filter(field => row.groups.includes(field.htmlFor)).map((field) => (
+                        <div key={field.htmlFor} className={`formGroup ${(field.inputType === "checkbox" || field.inputType === "radioGroup") ? "formGroupRow" : ""}`}>
                             <FormGroup
                                 error={fieldErrors ? fieldErrors[field.inputName] : ""}
                                 value={inputData ? inputData[field.inputName] ?? "" : fieldsData}
