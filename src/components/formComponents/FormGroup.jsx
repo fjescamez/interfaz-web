@@ -22,11 +22,12 @@ const FormGroup = React.memo(function FormGroup({
         disableField,
         hideField
     } = field;
+
     return (
         <>
             {!hideField &&
                 <>
-                    {(!inputType || (inputType && inputType !== "checkbox")) &&
+                    {(labelId && (!inputType || (inputType && inputType !== "checkbox"))) &&
                         <label
                             htmlFor={htmlFor}
                             id={labelId}
@@ -83,7 +84,7 @@ const FormGroup = React.memo(function FormGroup({
                             disabled={disable || disableField}
                         />
                     }
-                    {(inputType && inputType === "checkbox") &&
+                    {(labelId && inputType && inputType === "checkbox") &&
                         <label
                             htmlFor={htmlFor}
                             id={labelId}

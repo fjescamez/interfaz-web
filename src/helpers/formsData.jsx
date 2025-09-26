@@ -5,6 +5,18 @@ import { BsFiletypeDoc, BsFiletypeXml } from "react-icons/bs";
 import { SlBriefcase } from "react-icons/sl";
 import GroupsSvg from "../assets/svg/GroupsSvg";
 import Plotter from "../assets/svg/Plotter";
+import MontajeSvg from "../assets/svg/MontajeSvg";
+
+export const metodosImpresionFormData = {
+    headerIcon: <MontajeSvg />,
+    headerTitle: "CONFIGURAR PLANCHAS",
+    formSections: [
+        {
+            rows: []
+        }
+    ],
+    formFields: []
+}
 
 export const xmlFormData = {
     headerIcon: <BsFiletypeXml />,

@@ -22,6 +22,8 @@ function GeneralForm({
     onInputChange,
     submitText
 }) {
+    console.log("itemsdata en generalform: ", itemsData);
+    
     const { headerIcon, headerTitle, editTitle, formFields, clientsMap, codesMap } = formData;
     const [errorMessage, setErrorMessage] = useState(false);
     const [executing, setExecuting] = useState(false);
@@ -200,8 +202,8 @@ function GeneralForm({
                     <div className="formBody">
                         <form onSubmit={handleSubmit}>
                             <div className="formSections">
-                                {formData.formSections.map((section) => (
-                                    <div key={section.title} className="formSection">
+                                {formData.formSections.map((section, index) => (
+                                    <div key={index} className="formSection">
                                         <FormSection
                                             fieldErrors={fieldErrors}
                                             sectionData={section}

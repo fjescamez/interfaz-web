@@ -5,6 +5,7 @@ import { fetchOneItem, postData } from "../../helpers/fetchData";
 import ExecutingComponent from "../ExecutingComponent";
 import { notify } from "../../helpers/notify";
 import { toast } from "../../../node_modules/react-toastify/dist/index";
+import MetodosImpresion from "./MetodosImpresion";
 
 function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
     const [colorIds, setColorIds] = useState([]);
@@ -44,13 +45,14 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
         }
     }, [montaje]);
 
-    const ripActions = async (action) => {
+    const ripActions = async (variables) => {
+        const { action, title } = variables;
         const ripTypes = ["ripAuto", "ripInterior", "ripExterior", "ripPixel"];
 
-        if (ripTypes.includes(action.action)) {
+        if (ripTypes.includes(action)) {
             const ripData = {
                 ids: colorIds,
-                action: action.title,
+                action: title,
                 extraInputs: {
                     id_pedido: fullOrder.id_pedido,
                     archivo: montaje,
@@ -67,7 +69,7 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
             }
 
             return { status: response.status };
-        } else if (action.action === "arrastradores") {
+        } else if (action === "arrastradores") {
             const data = {
                 ids: colorIds,
                 action: "arrastrador",
@@ -85,7 +87,7 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
             }
 
             return { status: response.status };
-        } else if (action.action === "cortes_desarrollo") {
+        } else if (action === "cortes_desarrollo") {
             const data = {
                 ids: colorIds,
                 action: "cortes desarrollo",
@@ -103,26 +105,11 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
             }
 
             return { status: response.status };
-        } else if (action.action === "configPlancha") {
+        } else if (action === "configPlancha") {
             setPlanchasModal(true);
             return { status: "success" };
         }
     };
-
-    /* Variables para salida_rip
-    array de tintas:
-    ids[
-        "686ccb159c470000f30051db",
-        "686ccb159c470000f30051dd"
-    ]
-    accion (habrá que añadir tipoImpresion, curva y resolucion para más personalización):
-    action"Rip Interior"
-    extraInputs{
-        id_pedido: "100237-2",
-        archivo: "cloudflow://PEDIDOS_2025/ETIQUETAS/100237%20ATLANTICA%20ENRAIZA/PREIMPRESION/V2/MONTAJES/100237-2M%20ATLANTICA%20ENRAIZA.pdf",
-        id_archivo: "100237-2M ATLANTICA ENRAIZA.pdf"
-    }
-    */
 
     return (
         <>
@@ -139,7 +126,12 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
                         />
                     </div>
                     :
-                    <h1>Ey</h1>
+                    <MetodosImpresion
+                        setPlanchasModal={setPlanchasModal}
+                        id_pedido={fullOrder.id_pedido}
+                        file={montaje}
+                    />
+
                 )
                 :
                 <ExecutingComponent />
