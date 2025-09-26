@@ -26,6 +26,7 @@ function DocKiosk({ setDocModal, fullOrder }) {
             formData={docFormData}
             itemsData={docData}
             endpoint={""}
+            submitText={"Iniciar Tarea"}
         />
     )
 }

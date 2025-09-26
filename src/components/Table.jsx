@@ -308,7 +308,7 @@ function Table({
                                     </svg>
                                 </button>
                             )}
-                            {(tableInfo.actions && showChecks)
+                            {(tableInfo.actions?.some(a => a.action === "eliminar") && showChecks)
                                 &&
                                 <BsTrash3Fill
                                     onClick={() => checkedRows.length > 0 && setDeletePopup(true)}

@@ -33,14 +33,14 @@ function EmailPopUp({ setEmailModal, fullOrder }) {
     };
 
     const getPara = async () => {
+        const contacts = await fetchData("contacts", "", 1, null, null, cliente_codigo);
+        const groups = await fetchData("groups", "", 1, null, null, cliente_codigo);
+
         if ((contacts.length + groups.length) < 1) {
             setIsExecuting(false);
             setEmailModal(false);
             return notify(toast.error, 'error', 'Error', 'Este cliente no tiene contactos');
         }
-        
-        const contacts = await fetchData("contacts", "", 1, null, null, cliente_codigo);
-        const groups = await fetchData("groups", "", 1, null, null, cliente_codigo);
 
         const options = [];
 

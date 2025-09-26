@@ -6,10 +6,11 @@ import ExecutingComponent from "../ExecutingComponent";
 import { notify } from "../../helpers/notify";
 import { toast } from "../../../node_modules/react-toastify/dist/index";
 
-function RipPopUp({ setRipModal, idMontaje, orderId }) {
+function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
     const [colorIds, setColorIds] = useState([]);
     const [montaje, setMontaje] = useState(undefined);
     const [tableInfo, setTableInfo] = useState(ripTableInfo);
+    const [planchasModal, setPlanchasModal] = useState(false);
 
     const getMontaje = async () => {
         const response = await fetchOneItem("montajes", idMontaje);
@@ -26,7 +27,7 @@ function RipPopUp({ setRipModal, idMontaje, orderId }) {
     useEffect(() => {
         if (montaje !== undefined) {
             // Poner la actividad que tiene arrastradores y cortes_desarrollo
-            if (montaje.indexOf("/MADERA/") !== -1) {
+            if (fullOrder.xml.actividad.id === "MADERA") {
                 setTableInfo(prev => ({
                     ...prev,
                     actions: prev.actions.map((action) => {
@@ -51,7 +52,7 @@ function RipPopUp({ setRipModal, idMontaje, orderId }) {
                 ids: colorIds,
                 action: action.title,
                 extraInputs: {
-                    id_pedido: orderId,
+                    id_pedido: fullOrder.id_pedido,
                     archivo: montaje,
                     id_archivo: montaje ? decodeURIComponent(montaje.replace("cloudflow://PEDIDOS_", "").split("/").pop()) : ""
                 }
@@ -89,7 +90,7 @@ function RipPopUp({ setRipModal, idMontaje, orderId }) {
                 ids: colorIds,
                 action: "cortes desarrollo",
                 extraInputs: {
-                    id_pedido: orderId
+                    id_pedido: fullOrder.id_pedido
                 }
             }
 
@@ -102,6 +103,9 @@ function RipPopUp({ setRipModal, idMontaje, orderId }) {
             }
 
             return { status: response.status };
+        } else if (action.action === "configPlancha") {
+            setPlanchasModal(true);
+            return { status: "success" };
         }
     };
 
@@ -123,16 +127,20 @@ function RipPopUp({ setRipModal, idMontaje, orderId }) {
     return (
         <>
             {montaje ?
-                <div className="popUpTable">
-                    <Table
-                        actions={ripActions}
-                        checkedRows={colorIds}
-                        setCheckedRows={setColorIds}
-                        dinamicTableInfo={tableInfo}
-                        orderFilter={montaje}
-                        setPopUpTable={setRipModal}
-                    />
-                </div>
+                (!planchasModal ?
+                    <div className="popUpTable">
+                        <Table
+                            actions={ripActions}
+                            checkedRows={colorIds}
+                            setCheckedRows={setColorIds}
+                            dinamicTableInfo={tableInfo}
+                            orderFilter={montaje}
+                            setPopUpTable={setRipModal}
+                        />
+                    </div>
+                    :
+                    <h1>Ey</h1>
+                )
                 :
                 <ExecutingComponent />
             }

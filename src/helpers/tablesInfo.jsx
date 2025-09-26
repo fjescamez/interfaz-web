@@ -90,6 +90,11 @@ export const ripTableInfo = {
             action: "ripPixel"
         },
         {
+            title: "Config. Plancha",
+            action: "configPlancha",
+            noCheck: true
+        },
+        {
             title: "Arrastrador",
             action: "arrastradores",
             hidden: true

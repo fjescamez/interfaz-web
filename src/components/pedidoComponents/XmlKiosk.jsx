@@ -19,6 +19,7 @@ function XmlKiosk({ setXmlModal, fullOrder }) {
             formData={xmlFormData}
             itemsData={xmlData}
             endpoint={""}
+            submitText={"Iniciar Tarea"}
         />
     )
 }

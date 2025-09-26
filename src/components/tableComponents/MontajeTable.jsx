@@ -6,7 +6,7 @@ import RipPopUp from '../pedidoComponents/RipPopUp';
 import { notify } from '../../helpers/notify';
 import { toast } from 'react-toastify';
 
-function MontajeTable({ setMontajeModal, orderId }) {
+function MontajeTable({ setMontajeModal, fullOrder }) {
     const [montajeIds, setMontajeIds] = useState([]);
     const [ripId, setRipId] = useState("");
     const [ripPopup, setRipPopup] = useState(false);
@@ -89,14 +89,14 @@ function MontajeTable({ setMontajeModal, orderId }) {
                         setCheckedRows={setMontajeIds}
                         setPopUpTable={setMontajeModal}
                         dinamicTableInfo={tableInfo}
-                        orderFilter={orderId}
+                        orderFilter={fullOrder.id_pedido}
                     />
                 </div>
                 :
                 <RipPopUp
                     setRipModal={setRipPopup}
                     idMontaje={ripId}
-                    orderId={orderId}
+                    fullOrder={fullOrder}
                 />
             }
         </>

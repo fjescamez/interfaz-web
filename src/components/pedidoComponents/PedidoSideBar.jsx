@@ -147,7 +147,7 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
             {compareModal && <ComparePopUp setCompareModal={setCompareModal} rutaTrabajo={fullOrder.rutaTrabajo} />}
             {lenModal && <OrderLenTable setLenModal={setLenModal} orderId={fullOrder.id_pedido} />}
             {filesModal && <FileTable setFilesModal={setFilesModal} orderId={fullOrder.id_pedido} filePath={filePath} />}
-            {montajeModal && <MontajeTable setMontajeModal={setMontajeModal} orderId={fullOrder.id_pedido} filePath={filePath} />}
+            {montajeModal && <MontajeTable setMontajeModal={setMontajeModal} fullOrder={fullOrder} filePath={filePath} />}
             {plotterModal && <PlotterTable setPlotterModal={setPlotterModal} orderId={fullOrder.id_pedido} fullOrder={fullOrder} filePath={filePath} />}
             <div className="pedidoSideBar">
                 {orderIcons.map((icon) => (
