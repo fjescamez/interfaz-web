@@ -90,7 +90,7 @@ export const ripTableInfo = {
             action: "ripPixel"
         },
         {
-            title: "Config. Plancha",
+            title: "Config. Planchas",
             action: "configPlancha",
             noCheck: true
         },
@@ -111,7 +111,7 @@ export const montajeTableInfo = {
     tableName: "montajes",
     endPoint: "montajes",
     headerIcon: <MontajeSvg />,
-    headerTitle: "MONTAJE",
+    headerTitle: "MONTAJES",
     tableColumns: [
         {
             header: "Previo",
@@ -754,6 +754,7 @@ export const emailTableInfo = {
 
 export const strategyTableInfo = {
     endPoint: "strategies",
+    tableName: "estrategias",
     headerIcon: <TbColorSwatch />,
     headerTitle: "ESTRATEGIAS DE COLOR",
     tableColumns: [

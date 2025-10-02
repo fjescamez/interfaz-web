@@ -291,8 +291,12 @@
 
         .gridMaterial {
             display: grid;
-            grid-template-rows: 6.4rem 6.4rem 35.15rem;
+            grid-template-rows: minmax(6.4rem, 6.4rem) minmax(6.4rem, 6.4rem) 35.2rem;
             row-gap: 1rem;
+
+            .docuRecibida .body {
+                overflow-y: auto;
+            }
 
             .materialMaquina {
                 display: grid;

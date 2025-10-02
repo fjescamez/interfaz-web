@@ -324,6 +324,7 @@ function OrderDetails() {
                 </div>
                 <div className="body">
                   <p>{orderXml.numero?.recibido_con}</p>
+                  <p>{orderXml.numero?.recibido_con}</p>
                 </div>
               </div>
               <div className="materialMaquina">
@@ -352,6 +353,10 @@ function OrderDetails() {
                 <div className="body">
                   {orderXml.actividad?.revisiones.revision.map((revision) => (
                     <div className="revisiones" key={revision.revision_id}>
+                      <p className="revision">Revisión Nº {revision.revision_id} | Fecha: {revision.revision_fechahora} | Motivo: {revision.revision_mot}</p>
+                      <br />
+                      <p>{revision.revision_obs}</p>
+                      <br />
                       <p className="revision">Revisión Nº {revision.revision_id} | Fecha: {revision.revision_fechahora} | Motivo: {revision.revision_mot}</p>
                       <br />
                       <p>{revision.revision_obs}</p>

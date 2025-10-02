@@ -3,9 +3,232 @@ import { TiContacts } from "react-icons/ti";
 import { PiEnvelopeLight, PiNoteLight } from "react-icons/pi";
 import { BsFiletypeDoc, BsFiletypeXml } from "react-icons/bs";
 import { SlBriefcase } from "react-icons/sl";
+import { TbColorSwatch } from "react-icons/tb";
 import GroupsSvg from "../assets/svg/GroupsSvg";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
+
+export const strategyFormData = {
+    headerIcon: <TbColorSwatch />,
+    headerTitle: "DETALLE DE ESTRATEGIA",
+    formSections: [
+        {
+            title: "Cliente",
+            rows: [
+                {
+                    groups: ["cliente_nombre", "cliente_codigo"],
+                    rowDisplay: "display8020"
+                }
+            ]
+        },
+        {
+            title: "Material",
+            rows: [
+                {
+                    groups: ["material_nombre", "material_codigo"],
+                    rowDisplay: "display8020"
+                }
+            ]
+        },
+        {
+            title: "Plancha",
+            rows: [
+                {
+                    groups: ["plancha_fabricante", "plancha_espesor", "plancha_referencia"]
+                }
+            ]
+        },
+        {
+            title: "Perfil de Color",
+            rows: [
+                {
+                    groups: ["perfil_nombre", "perfil_formato"],
+                    rowDisplay: "display8020"
+                },
+                {
+                    groups: ["perfil_carpeta", "perfil_tipo"]
+                }
+            ]
+        },
+        {
+            title: "Curva de Plotter",
+            rows: [
+                {
+                    groups: ["curva_plotter_nombre", "curva_plotter_formato"],
+                    rowDisplay: "display8020"
+                }
+            ]
+        },
+        {
+            title: "Curva de Clichés",
+            rows: [
+                {
+                    groups: ["estrategia_nombre", "tramado"],
+                    rowDisplay: "display8020"
+                },
+                {
+                    groups: ["curva_cliches_nombre", "curva_cliches_formato"],
+                    rowDisplay: "display8020"
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "cliente_nombre",
+            labelId: "cliente_nombreLabel",
+            labelTitle: "Nombre",
+            inputType: "text",
+            inputId: "cliente_nombre",
+            inputName: "cliente_nombre",
+            disableField: true
+        },
+        {
+            htmlFor: "cliente_codigo",
+            labelId: "cliente_codigoLabel",
+            labelTitle: "Código",
+            inputType: "text",
+            inputId: "cliente_codigo",
+            inputName: "cliente_codigo",
+            disableField: true
+        },
+        {
+            htmlFor: "material_nombre",
+            labelId: "material_nombreLabel",
+            labelTitle: "Nombre",
+            inputType: "text",
+            inputId: "material_nombre",
+            inputName: "material_nombre",
+            disableField: true
+        },
+        {
+            htmlFor: "material_codigo",
+            labelId: "material_codigoLabel",
+            labelTitle: "Código",
+            inputType: "text",
+            inputId: "material_codigo",
+            inputName: "material_codigo",
+            disableField: true
+        },
+        {
+            htmlFor: "plancha_fabricante",
+            labelId: "plancha_fabricanteLabel",
+            labelTitle: "Fabricante Plancha",
+            inputType: "text",
+            inputId: "plancha_fabricante",
+            inputName: "plancha_fabricante",
+            disableField: true
+        },
+        {
+            htmlFor: "plancha_espesor",
+            labelId: "plancha_espesorLabel",
+            labelTitle: "Espesor Plancha",
+            inputType: "text",
+            inputId: "plancha_espesor",
+            inputName: "plancha_espesor",
+            disableField: true
+        },
+        {
+            htmlFor: "plancha_referencia",
+            labelId: "plancha_referenciaLabel",
+            labelTitle: "Referencia Plancha",
+            inputType: "text",
+            inputId: "plancha_referencia",
+            inputName: "plancha_referencia",
+            disableField: true
+        },
+        {
+            htmlFor: "perfil_nombre",
+            labelId: "perfil_nombreLabel",
+            labelTitle: "Nombre Perfil",
+            inputType: "text",
+            inputId: "perfil_nombre",
+            inputName: "perfil_nombre",
+            disableField: true
+        },
+        {
+            htmlFor: "perfil_formato",
+            labelId: "perfil_formatoLabel",
+            labelTitle: "Formato Perfil",
+            inputType: "text",
+            inputId: "perfil_formato",
+            inputName: "perfil_formato",
+            disableField: true
+        },
+        {
+            htmlFor: "perfil_carpeta",
+            labelId: "perfil_carpetaLabel",
+            labelTitle: "Carpeta",
+            inputType: "text",
+            inputId: "perfil_carpeta",
+            inputName: "perfil_carpeta",
+            disableField: true
+        },
+        {
+            htmlFor: "perfil_tipo",
+            labelId: "perfil_tipoLabel",
+            labelTitle: "Tipo Perfil",
+            inputType: "text",
+            inputId: "perfil_tipo",
+            inputName: "perfil_tipo",
+            disableField: true
+        },
+        {
+            htmlFor: "curva_plotter_nombre",
+            labelId: "curva_plotter_nombreLabel",
+            labelTitle: "Nombre Curva",
+            inputType: "text",
+            inputId: "curva_plotter_nombre",
+            inputName: "curva_plotter_nombre",
+            disableField: true
+        },
+        {
+            htmlFor: "curva_plotter_formato",
+            labelId: "curva_plotter_formatoLabel",
+            labelTitle: "Formato Curva",
+            inputType: "text",
+            inputId: "curva_plotter_formato",
+            inputName: "curva_plotter_formato",
+            disableField: true
+        },
+        {
+            htmlFor: "estrategia_nombre",
+            labelId: "estrategia_nombreLabel",
+            labelTitle: "Nombre Estrategia PWC",
+            inputType: "text",
+            inputId: "estrategia_nombre",
+            inputName: "estrategia_nombre",
+            disableField: true
+        },
+        {
+            htmlFor: "tramado",
+            labelId: "tramadoLabel",
+            labelTitle: "Tramado",
+            inputType: "text",
+            inputId: "tramado",
+            inputName: "tramado",
+            disableField: true
+        },
+        {
+            htmlFor: "curva_cliches_nombre",
+            labelId: "curva_cliches_nombreLabel",
+            labelTitle: "Nombre Curva",
+            inputType: "text",
+            inputId: "curva_cliches_nombre",
+            inputName: "curva_cliches_nombre",
+            disableField: true
+        },
+        {
+            htmlFor: "curva_cliches_formato",
+            labelId: "curva_cliches_formatoLabel",
+            labelTitle: "Formato Curva",
+            inputType: "text",
+            inputId: "curva_cliches_formato",
+            inputName: "curva_cliches_formato",
+            disableField: true
+        }
+    ]
+}
 
 export const metodosImpresionFormData = {
     headerIcon: <MontajeSvg />,
@@ -26,37 +249,37 @@ export const xmlFormData = {
             rows: [
                 {
                     groups: [
-                        "tipoUnitario"
+                        "entradaUnitario"
                     ]
                 },
                 {
                     groups: [
-                        "trapping"
+                        "hacerTrapping"
                     ]
                 },
                 {
                     groups: [
-                        "separaciones"
+                        "hacerSeparaciones"
                     ]
                 },
                 {
                     groups: [
-                        "montaje"
+                        "hacerMontaje"
                     ]
                 },
                 {
                     groups: [
-                        "compararUnitario"
+                        "compararVersion"
                     ]
                 },
                 {
                     groups: [
-                        "eliminarTintas"
+                        "canalDel"
                     ]
                 },
                 {
                     groups: [
-                        "bocetoRasterizado"
+                        "rasterizar"
                     ]
                 },
                 {
@@ -69,32 +292,32 @@ export const xmlFormData = {
     ],
     formFields: [
         {
-            htmlFor: "tipoUnitario",
-            labelId: "tipoUnitarioLabel",
+            htmlFor: "entradaUnitario",
+            labelId: "entradaUnitarioLabel",
             labelTitle: "Unitario",
             inputType: "radioGroup",
             radioButtons: [
                 {
-                    htmlFor: "illustrator",
-                    labelId: "illustratorLabel",
+                    htmlFor: "Illustrator",
+                    labelId: "IllustratorLabel",
                     labelTitle: "Illustrator",
-                    inputId: "illustrator",
-                    inputName: "tipoUnitario"
+                    inputId: "Illustrator",
+                    inputName: "entradaUnitario"
                 },
                 {
-                    htmlFor: "artPro",
-                    labelId: "artProLabel",
+                    htmlFor: "ArtPro",
+                    labelId: "ArtProLabel",
                     labelTitle: "ArtPro+",
-                    inputId: "artPro",
-                    inputName: "tipoUnitario"
+                    inputId: "ArtPro",
+                    inputName: "entradaUnitario"
                 },
             ],
-            inputId: "tipoUnitario",
-            inputName: "tipoUnitario"
+            inputId: "entradaUnitario",
+            inputName: "entradaUnitario"
         },
         {
-            htmlFor: "trapping",
-            labelId: "trappingLabel",
+            htmlFor: "hacerTrapping",
+            labelId: "hacerTrappingLabel",
             labelTitle: "Trapping/Preimpresión",
             inputType: "radioGroup",
             radioButtons: [
@@ -103,29 +326,29 @@ export const xmlFormData = {
                     labelId: "siAutoLabel",
                     labelTitle: "Automático",
                     inputId: "siAuto",
-                    inputName: "trapping"
+                    inputName: "hacerTrapping"
                 },
                 {
-                    htmlFor: "siManual",
-                    labelId: "siManualLabel",
+                    htmlFor: "manual",
+                    labelId: "manualLabel",
                     labelTitle: "Manual",
-                    inputId: "siManual",
-                    inputName: "trapping"
+                    inputId: "manual",
+                    inputName: "hacerTrapping"
                 },
                 {
                     htmlFor: "noTrapping",
                     labelId: "noTrappingLabel",
                     labelTitle: "No",
                     inputId: "noTrapping",
-                    inputName: "trapping"
+                    inputName: "hacerTrapping"
                 },
             ],
-            inputId: "trapping",
-            inputName: "trapping"
+            inputId: "hacerTrapping",
+            inputName: "hacerTrapping"
         },
         {
-            htmlFor: "separaciones",
-            labelId: "separacionesLabel",
+            htmlFor: "hacerSeparaciones",
+            labelId: "hacerSeparacionesLabel",
             labelTitle: "Hacer Separaciones",
             inputType: "radioGroup",
             radioButtons: [
@@ -134,53 +357,53 @@ export const xmlFormData = {
                     labelId: "siSeparacionesLabel",
                     labelTitle: "Sí",
                     inputId: "siSeparaciones",
-                    inputName: "separaciones"
+                    inputName: "hacerSeparaciones"
                 },
                 {
                     htmlFor: "noSeparaciones",
                     labelId: "noSeparacionesLabel",
                     labelTitle: "No",
                     inputId: "noSeparaciones",
-                    inputName: "separaciones"
+                    inputName: "hacerSeparaciones"
                 },
             ],
-            inputId: "separaciones",
-            inputName: "separaciones"
+            inputId: "hacerSeparaciones",
+            inputName: "hacerSeparaciones"
         },
         {
-            htmlFor: "montaje",
-            labelId: "montajeLabel",
+            htmlFor: "hacerMontaje",
+            labelId: "hacerMontajeLabel",
             labelTitle: "Hacer Montaje",
             inputType: "radioGroup",
             radioButtons: [
                 {
-                    htmlFor: "nuevo",
-                    labelId: "nuevoLabel",
+                    htmlFor: "nuevoMontaje",
+                    labelId: "nuevoMontajeLabel",
                     labelTitle: "Nuevo",
-                    inputId: "nuevo",
-                    inputName: "montaje"
+                    inputId: "nuevoMontaje",
+                    inputName: "hacerMontaje"
                 },
                 {
                     htmlFor: "especial",
                     labelId: "especialLabel",
                     labelTitle: "Especial",
                     inputId: "especial",
-                    inputName: "montaje"
+                    inputName: "hacerMontaje"
                 },
                 {
                     htmlFor: "noMontaje",
                     labelId: "noMontajeLabel",
                     labelTitle: "No",
                     inputId: "noMontaje",
-                    inputName: "montaje"
+                    inputName: "hacerMontaje"
                 },
             ],
-            inputId: "montaje",
-            inputName: "montaje"
+            inputId: "hacerMontaje",
+            inputName: "hacerMontaje"
         },
         {
-            htmlFor: "compararUnitario",
-            labelId: "compararUnitarioLabel",
+            htmlFor: "compararVersion",
+            labelId: "compararVersionLabel",
             labelTitle: "Comparar Unitario",
             inputType: "radioGroup",
             radioButtons: [
@@ -189,22 +412,22 @@ export const xmlFormData = {
                     labelId: "siCompararLabel",
                     labelTitle: "Sí",
                     inputId: "siComparar",
-                    inputName: "compararUnitario"
+                    inputName: "compararVersion"
                 },
                 {
                     htmlFor: "noComparar",
                     labelId: "noCompararLabel",
                     labelTitle: "No",
                     inputId: "noComparar",
-                    inputName: "compararUnitario"
+                    inputName: "compararVersion"
                 },
             ],
-            inputId: "compararUnitario",
-            inputName: "compararUnitario"
+            inputId: "compararVersion",
+            inputName: "compararVersion"
         },
         {
-            htmlFor: "eliminarTintas",
-            labelId: "eliminarTintasLabel",
+            htmlFor: "canalDel",
+            labelId: "canalDelLabel",
             labelTitle: "Eliminar tintas sin uso",
             inputType: "radioGroup",
             radioButtons: [
@@ -213,22 +436,22 @@ export const xmlFormData = {
                     labelId: "siEliminarLabel",
                     labelTitle: "Sí",
                     inputId: "siEliminar",
-                    inputName: "eliminarTintas"
+                    inputName: "canalDel"
                 },
                 {
                     htmlFor: "noEliminar",
                     labelId: "noEliminarLabel",
                     labelTitle: "No",
                     inputId: "noEliminar",
-                    inputName: "eliminarTintas"
+                    inputName: "canalDel"
                 },
             ],
-            inputId: "eliminarTintas",
-            inputName: "eliminarTintas"
+            inputId: "canalDel",
+            inputName: "canalDel"
         },
         {
-            htmlFor: "bocetoRasterizado",
-            labelId: "bocetoRasterizadoLabel",
+            htmlFor: "rasterizar",
+            labelId: "rasterizarLabel",
             labelTitle: "Boceto Rasterizado",
             inputType: "radioGroup",
             radioButtons: [
@@ -237,40 +460,24 @@ export const xmlFormData = {
                     labelId: "siBocetoLabel",
                     labelTitle: "Sí",
                     inputId: "siBoceto",
-                    inputName: "bocetoRasterizado"
+                    inputName: "rasterizar"
                 },
                 {
                     htmlFor: "noBoceto",
                     labelId: "noBocetoLabel",
                     labelTitle: "No",
                     inputId: "noBoceto",
-                    inputName: "bocetoRasterizado"
+                    inputName: "rasterizar"
                 },
             ],
-            inputId: "bocetoRasterizado",
-            inputName: "bocetoRasterizado"
+            inputId: "rasterizar",
+            inputName: "rasterizar"
         },
         {
             htmlFor: "paradaFreecut",
             labelId: "paradaFreecutLabel",
             labelTitle: "Parada Freecut",
-            inputType: "radioGroup",
-            radioButtons: [
-                {
-                    htmlFor: "siParada",
-                    labelId: "siParadaLabel",
-                    labelTitle: "Sí",
-                    inputId: "siParada",
-                    inputName: "paradaFreecut"
-                },
-                {
-                    htmlFor: "noParada",
-                    labelId: "noParadaLabel",
-                    labelTitle: "No",
-                    inputId: "noParada",
-                    inputName: "paradaFreecut"
-                },
-            ],
+            inputType: "checkbox",
             inputId: "paradaFreecut",
             inputName: "paradaFreecut"
         },
@@ -285,62 +492,62 @@ export const docFormData = {
             rows: [
                 {
                     groups: [
-                        "tipoUnitario"
+                        "entradaUnitario"
                     ]
                 },
                 {
                     groups: [
-                        "fichaBoceto"
+                        "Ficha Boceto"
                     ]
                 },
                 {
                     groups: [
-                        "fichaImpresion"
+                        "Ficha Impresion"
                     ]
                 },
                 {
                     groups: [
-                        "plotter"
+                        "Plotter"
                     ]
                 },
                 {
                     groups: [
-                        "montaje"
+                        "Montaje"
                     ]
                 },
                 {
                     groups: [
-                        "montajeEspecial"
+                        "Montaje Especial"
                     ]
                 },
                 {
                     groups: [
-                        "separaciones"
+                        "Hacer Separaciones"
                     ]
                 },
                 {
                     groups: [
-                        "etiquetasMontaje"
+                        "Etiquetas de Montaje"
                     ]
                 },
                 {
                     groups: [
-                        "certificado"
+                        "Certificado"
                     ]
                 },
                 {
                     groups: [
-                        "certificadoContinuos"
+                        "Certificado Continuos"
                     ]
                 },
                 {
                     groups: [
-                        "etiquetasPlotter"
+                        "Etiquetas Plotter"
                     ]
                 },
                 {
                     groups: [
-                        "certificadoCodigos"
+                        "Certificado Codigos"
                     ]
                 },
                 {
@@ -358,116 +565,116 @@ export const docFormData = {
     ],
     formFields: [
         {
-            htmlFor: "tipoUnitario",
-            labelId: "tipoUnitarioLabel",
+            htmlFor: "entradaUnitario",
+            labelId: "entradaUnitarioLabel",
             labelTitle: "Unitario",
             inputType: "radioGroup",
             radioButtons: [
                 {
-                    htmlFor: "illustrator",
+                    htmlFor: "Illustrator",
                     labelId: "illustratorLabel",
                     labelTitle: "Illustrator",
-                    inputId: "illustrator",
-                    inputName: "tipoUnitario"
+                    inputId: "Illustrator",
+                    inputName: "entradaUnitario"
                 },
                 {
-                    htmlFor: "artPro",
+                    htmlFor: "ArtPro",
                     labelId: "artProLabel",
                     labelTitle: "ArtPro+",
-                    inputId: "artPro",
-                    inputName: "tipoUnitario"
+                    inputId: "ArtPro",
+                    inputName: "entradaUnitario"
                 },
             ],
-            inputId: "tipoUnitario",
-            inputName: "tipoUnitario"
+            inputId: "entradaUnitario",
+            inputName: "entradaUnitario"
         },
         {
-            htmlFor: "fichaBoceto",
+            htmlFor: "Ficha Boceto",
             labelId: "fichaBocetoLabel",
             labelTitle: "Ficha Boceto",
             inputType: "checkbox",
-            inputId: "fichaBoceto",
-            inputName: "fichaBoceto"
+            inputId: "Ficha Boceto",
+            inputName: "Ficha Boceto"
         },
         {
-            htmlFor: "fichaImpresion",
+            htmlFor: "Ficha Impresion",
             labelId: "fichaImpresionLabel",
             labelTitle: "Ficha Impresión",
             inputType: "checkbox",
-            inputId: "fichaImpresion",
-            inputName: "fichaImpresion"
+            inputId: "Ficha Impresion",
+            inputName: "Ficha Impresion"
         },
         {
-            htmlFor: "plotter",
+            htmlFor: "Plotter",
             labelId: "plotterLabel",
             labelTitle: "Plotter",
             inputType: "checkbox",
-            inputId: "plotter",
-            inputName: "plotter"
+            inputId: "Plotter",
+            inputName: "Plotter"
         },
         {
-            htmlFor: "montaje",
+            htmlFor: "Montaje",
             labelId: "montajeLabel",
             labelTitle: "Montaje",
             inputType: "checkbox",
-            inputId: "montaje",
-            inputName: "montaje"
+            inputId: "Montaje",
+            inputName: "Montaje"
         },
         {
-            htmlFor: "montajeEspecial",
+            htmlFor: "Montaje Especial",
             labelId: "montajeEspecialLabel",
             labelTitle: "Montaje Especial",
             inputType: "checkbox",
-            inputId: "montajeEspecial",
-            inputName: "montajeEspecial"
+            inputId: "Montaje Especial",
+            inputName: "Montaje Especial"
         },
         {
-            htmlFor: "separaciones",
+            htmlFor: "Hacer Separaciones",
             labelId: "separacionesLabel",
             labelTitle: "Hacer Separaciones",
             inputType: "checkbox",
-            inputId: "separaciones",
-            inputName: "separaciones"
+            inputId: "Hacer Separaciones",
+            inputName: "Hacer Separaciones"
         },
         {
-            htmlFor: "etiquetasMontaje",
+            htmlFor: "Etiquetas de Montaje",
             labelId: "etiquetasMontajeLabel",
             labelTitle: "Etiquetas de Montaje",
             inputType: "checkbox",
-            inputId: "etiquetasMontaje",
-            inputName: "etiquetasMontaje"
+            inputId: "Etiquetas de Montaje",
+            inputName: "Etiquetas de Montaje"
         },
         {
-            htmlFor: "certificado",
+            htmlFor: "Certificado",
             labelId: "certificadoLabel",
             labelTitle: "Certificado",
             inputType: "checkbox",
-            inputId: "certificado",
-            inputName: "certificado"
+            inputId: "Certificado",
+            inputName: "Certificado"
         },
         {
-            htmlFor: "certificadoContinuos",
+            htmlFor: "Certificado Continuos",
             labelId: "certificadoContinuosLabel",
             labelTitle: "Certificado Continuos",
             inputType: "checkbox",
-            inputId: "certificadoContinuos",
-            inputName: "certificadoContinuos"
+            inputId: "Certificado Continuos",
+            inputName: "Certificado Continuos"
         },
         {
-            htmlFor: "etiquetasPlotter",
+            htmlFor: "Etiquetas Plotter",
             labelId: "etiquetasPlotterLabel",
             labelTitle: "Etiquetas Plotter",
             inputType: "checkbox",
-            inputId: "etiquetasPlotter",
-            inputName: "etiquetasPlotter"
+            inputId: "Etiquetas Plotter",
+            inputName: "Etiquetas Plotter"
         },
         {
-            htmlFor: "certificadoCodigos",
+            htmlFor: "Certificado Codigos",
             labelId: "certificadoCodigosLabel",
             labelTitle: "Certificado Códigos",
             inputType: "checkbox",
-            inputId: "certificadoCodigos",
-            inputName: "certificadoCodigos"
+            inputId: "Certificado Codigos",
+            inputName: "Certificado Codigos"
         },
         {
             htmlFor: "unitarioPng",

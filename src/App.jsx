@@ -9,7 +9,6 @@ import ContactsPage from "./pages/ContactsPage"
 import UserDropdownComponent from "./components/UserDropdownComponent";
 import { useSession } from "./context/SessionContext";
 import { isValidRoute } from "./routes";
-import TestPage from "./pages/testpage";
 import ImageKioskComponent from "./components/ImageKioskComponent";
 import { ToastContainer } from "react-toastify";
 import UsersPage from "./pages/UsersPage";
@@ -182,7 +181,6 @@ function App() {
           <Route path="/stock" element={<StockPage />} />
           <Route path="/usuarios" element={<UsersPage />} />
           <Route path="/usuarios/:id" element={<UserDetails toggleKiosk={toggleKiosk} />} />
-          <Route path="/test" element={<TestPage />} />
         </Routes>
       </div>
     </>

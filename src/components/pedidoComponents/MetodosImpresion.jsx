@@ -2,9 +2,9 @@ import GeneralForm from '../formComponents/GeneralForm'
 import { metodosImpresionFormData } from '../../helpers/formsData'
 import { useEffect, useState } from 'react'
 
-function MetodosImpresion({ setPlanchasModal, id_pedido, file }) {
+function MetodosImpresion({ setPlanchasModal, id_pedido, file, tintas }) {
   const [formData, setFormData] = useState(metodosImpresionFormData);
-  const [tintasList, setTintasList] = useState([]);
+  const [tintasList, setTintasList] = useState(tintas);
   const [itemsData, setItemsData] = useState({
     id_pedido,
     file
@@ -70,17 +70,46 @@ function MetodosImpresion({ setPlanchasModal, id_pedido, file }) {
   }, [tintasList]);
 
   useEffect(() => {
-    
+    // Obtener la lista de tintas con técnicas también
+
   }, []);
 
   return (
-    <GeneralForm
-      setModal={setPlanchasModal}
-      formData={formData}
-      itemsData={itemsData}
-      endpoint={"montajes/rip/config_plancha"}
-      submitText={"Modificar"}
-    />
+    <>
+      <GeneralForm
+        setModal={setPlanchasModal}
+        formData={formData}
+        itemsData={itemsData}
+        endpoint={"montajes/rip/config_plancha"}
+        submitText={"Modificar"}
+        extras={
+          <>
+            <div className="formGroup">
+              <label htmlFor="cambiarTodas">Cambiar todas</label>
+              <input
+                type="text"
+                id="cambiarTodas"
+                name="cambiarTodas"
+              />
+              <br />
+              <button type="button" onClick={() => {
+                const cambiarTodas = document.getElementById("cambiarTodas").value;
+                setItemsData(prev => ({
+                  ...prev,
+                  ...Object.fromEntries(
+                    Object.keys(prev).map(key => {
+                      if (key !== "id_pedido" && key !== "file") {
+                        return [key, cambiarTodas];
+                      }
+                    }).filter(Boolean)
+                  )
+                }));
+              }}>Confirmar</button>
+            </div>
+          </>
+        }
+      />
+    </>
   )
 }
 

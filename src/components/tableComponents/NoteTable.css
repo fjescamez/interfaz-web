@@ -49,12 +49,9 @@
 
             p {
                 font-size: 2.5rem;
-                word-wrap: break-word;
-                /* rompe palabras largas */
-                overflow-wrap: break-word;
-                /* soporte moderno */
-                word-break: break-word;
-                /* rompe palabras si es necesario */
+                word-wrap: break-word; /* Permite que las palabras largas se ajusten */
+                white-space: pre-wrap; /* Mantiene los saltos de línea y ajusta el texto al contenedor */
+                overflow-wrap: break-word; /* Rompe las palabras largas para evitar desbordamiento */
             }
         }
     }

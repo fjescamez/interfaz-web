@@ -13,6 +13,8 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
     const [tableInfo, setTableInfo] = useState(ripTableInfo);
     const [planchasModal, setPlanchasModal] = useState(false);
 
+    const [tintas, setTintas] = useState([]);
+
     const getMontaje = async () => {
         const response = await fetchOneItem("montajes", idMontaje);
         if (!response) {
@@ -46,7 +48,7 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
     }, [montaje]);
 
     const ripActions = async (variables) => {
-        const { action, title } = variables;
+        const { action, title, data } = variables;
         const ripTypes = ["ripAuto", "ripInterior", "ripExterior", "ripPixel"];
 
         if (ripTypes.includes(action)) {
@@ -106,6 +108,7 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
 
             return { status: response.status };
         } else if (action === "configPlancha") {
+            setTintas(data);
             setPlanchasModal(true);
             return { status: "success" };
         }
@@ -130,6 +133,7 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
                         setPlanchasModal={setPlanchasModal}
                         id_pedido={fullOrder.id_pedido}
                         file={montaje}
+                        tintas={tintas}
                     />
 
                 )

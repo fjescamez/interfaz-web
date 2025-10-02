@@ -2,7 +2,7 @@ import { toast } from 'react-toastify';
 import { notify } from "./notify";
 
 /* FETCH GENÉRICOS */
-export const fetchData = async (endPoint, searchValue, page = "", setData, setTotal, clientFilter = "") => {
+export const fetchData = async (endPoint, searchValue, page = "1", setData, setTotal, clientFilter = "") => {
     
     let url = `http://192.4.26.112:3000/${endPoint}/get/${page}`;
 

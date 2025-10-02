@@ -3,14 +3,17 @@ import GeneralForm from '../formComponents/GeneralForm'
 
 function XmlKiosk({ setXmlModal, fullOrder }) {
     const xmlData = {
-        tipoUnitario: "illustrator",
-        trapping: "noTrapping",
-        separaciones: "noSeparaciones",
-        montaje: "noMontaje",
-        compararUnitario: "noComparar",
-        eliminarTintas: "noEliminar",
-        bocetoRasterizado: "siBoceto",
-        paradaFreecut: "noParada"
+        entradaUnitario: "Illustrator",
+        hacerTrapping: "noTrapping",
+        hacerSeparaciones: "noSeparaciones",
+        hacerMontaje: "noMontaje",
+        compararVersion: "noComparar",
+        canalDel: "noEliminar",
+        rasterizar: "siBoceto",
+        paradaFreecut: false,
+        archivoXml: fullOrder.archivoXml,
+        id_pedido: fullOrder.id_pedido,
+        _id: fullOrder._id
     }
 
     return (
@@ -18,7 +21,7 @@ function XmlKiosk({ setXmlModal, fullOrder }) {
             setModal={setXmlModal}
             formData={xmlFormData}
             itemsData={xmlData}
-            endpoint={""}
+            endpoint={"orderKiosks/lanzarXml"}
             submitText={"Iniciar Tarea"}
         />
     )

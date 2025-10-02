@@ -124,12 +124,14 @@ function Table({
     }, [page]);
 
     const handleClick = (data) => {
+        const openRowTables = ["montajes", "plotter", "estrategias"];
+
         if (showChecks) {
             handleChecked(data._id);
             return;
         }
 
-        if (tableName === "montajes" || tableName === "plotter") {
+        if (openRowTables.includes(tableName)) {
             return actions({ action: "openRow", data });
         }
 
