@@ -6,7 +6,7 @@ import Plotter from "../assets/svg/Plotter"
 import MontajeSvg from "../assets/svg/MontajeSvg"
 import { GoVersions } from "react-icons/go"
 
-export const orderIcons = [
+export const orderSidebarIcons = [
     {
         id: 1,
         icon: <HiOutlineRefresh className="refresh" />,
@@ -61,12 +61,12 @@ export const orderIcons = [
         action: "lenFiles",
         tooltip: "FICHEROS LEN"
     },
-    {
+    /* {
         id: 10,
         icon: <PiStorefrontLight />,
         action: "kiosk",
         tooltip: "KIOSKO"
-    },
+    }, */
     {
         id: 11,
         icon: <PiImagesLight />,
@@ -83,7 +83,7 @@ export const orderIcons = [
         id: 13,
         icon: <MontajeSvg />,
         action: "montaje",
-        tooltip: "MONTAJE"
+        tooltip: "MONTAJES"
     },
     {
         id: 14,

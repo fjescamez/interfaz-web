@@ -2,6 +2,8 @@ import { useState } from "react";
 import DetailsHeader from "../components/DetailsHeader";
 import { useSession } from "../context/SessionContext";
 import GridComponent from "../components/GridComponent";
+import { FaGear } from 'react-icons/fa6';
+import "./HomePage.css";
 
 import { clientsDetails, stockDetails } from "../helpers/detailsGrid";
 
@@ -12,8 +14,6 @@ function HomePage({ toggleKiosk }) {
 
   const clientGrid = clientsDetails.grid
   const stockGrid = stockDetails.grid
-
-  const grid = clientGrid;
 
   return (
     <>
@@ -31,6 +31,7 @@ function HomePage({ toggleKiosk }) {
               hideDeleteIcon={true}
               hideEditIcon={true}
             />
+            <div className="configButton"><FaGear /></div>
             <div className="detailsScroll">
               <GridComponent
                 title={clientsDetails.title}

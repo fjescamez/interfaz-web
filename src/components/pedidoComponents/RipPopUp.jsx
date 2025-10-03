@@ -29,7 +29,6 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
 
     useEffect(() => {
         if (montaje !== undefined) {
-            // Poner la actividad que tiene arrastradores y cortes_desarrollo
             if (fullOrder.xml.actividad.id === "MADERA") {
                 setTableInfo(prev => ({
                     ...prev,
@@ -63,6 +62,8 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
             };
 
             const response = await postData("montajes/rip", ripData);
+
+            setRipModal(false);
 
             if (response.status === "success") {
                 notify(toast.success, response.status, response.title, response.message);

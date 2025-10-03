@@ -1,0 +1,25 @@
+.configButton {
+    width: fit-content;
+    padding: 0.5rem;
+    background: var(--orange-gradient);
+    border: 2px solid var(--pantone431c);
+    border-radius: 1rem;
+    cursor: pointer;
+    margin-right: 1.5rem;
+    transition: all 0.2s;
+    align-self: flex-end;
+
+    &:hover {
+        scale: 1.02;
+    }
+
+    &:active {
+        scale: 1;
+    }
+    
+    svg {
+        color: var(--text-primary);
+        width: 3rem;
+        height: 3rem;
+    }
+}

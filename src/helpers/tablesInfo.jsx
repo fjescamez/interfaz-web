@@ -142,6 +142,10 @@ export const montajeTableInfo = {
             action: "imprimirFerro"
         },
         {
+            title: "Comparar",
+            action: "comparar"
+        },
+        {
             title: "Solicitar Vista",
             action: "solicitarVista",
             hidden: false

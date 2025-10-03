@@ -322,6 +322,12 @@
                 white-space: pre-line;
                 overflow-y: auto;
 
+                .revisiones {
+                    p {
+                        user-select: text !important;
+                    }
+                }
+
                 p {
                     font-size: 1.7rem;
                 }

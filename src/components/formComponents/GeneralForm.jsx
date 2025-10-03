@@ -22,8 +22,9 @@ function GeneralForm({
     onInputChange,
     submitText,
     extras,
-    noSubmit
-}) {
+    noSubmit,
+    afterSubmit
+}) {    
     const { headerIcon, headerTitle, editTitle, formFields, clientsMap, codesMap } = formData;
     const [errorMessage, setErrorMessage] = useState(false);
     const [executing, setExecuting] = useState(false);
@@ -89,6 +90,8 @@ function GeneralForm({
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        {afterSubmit && afterSubmit()}
 
         if (tableSelection && tableSelection.length < 1) {
             notify(toast.error, 'error', 'Error', 'Debe seleccionar algún elemento de la tabla.');

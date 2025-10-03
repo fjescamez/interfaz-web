@@ -34,7 +34,7 @@ function SideBarComponent({ isActive, setIsActive }) {
     }
 
     return (
-        <div className="sideBarHover">
+        <>
             <div className="sideBar">
                 <div className={`icons ${isActive.home ? "active" : ""}`} onClick={() => handleClick("home", "INICIO")} data-tooltip-id="my-tooltip" data-tooltip-content={"INICIO"} >
                     <HomeSvg />
@@ -65,7 +65,7 @@ function SideBarComponent({ isActive, setIsActive }) {
                 </div>}
             </div>
             <ReactTooltip id="my-tooltip" delayShow={500} />
-        </div>
+        </>
     )
 }
 

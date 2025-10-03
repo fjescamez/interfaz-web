@@ -1,25 +1,12 @@
-.sideBarHover {
-    height: 100%;
-    width: 74px;
-    position: absolute;
-    left: -2px;
-}
-
 .sideBar {
     position: absolute;
-    left: -55px;
+    left: -2px;
     background-color: var(--details);
     display: grid;
     width: auto;
     border: 2px solid var(--header);
     border-top: none;
     border-radius: 0 0 4rem 4rem;
-    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-    transform: translateX(0);
-}
-
-.sideBarHover:hover .sideBar {
-    transform: translateX(55px);
 }
 
 .icons {

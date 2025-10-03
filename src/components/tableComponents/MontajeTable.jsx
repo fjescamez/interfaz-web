@@ -5,11 +5,13 @@ import { postData } from '../../helpers/fetchData';
 import RipPopUp from '../pedidoComponents/RipPopUp';
 import { notify } from '../../helpers/notify';
 import { toast } from 'react-toastify';
+import CompareMontajes from '../pedidoComponents/CompareMontajes';
 
 function MontajeTable({ setMontajeModal, fullOrder }) {
     const [montajeIds, setMontajeIds] = useState([]);
     const [ripId, setRipId] = useState("");
     const [ripPopup, setRipPopup] = useState(false);
+    const [comparePopup, setComparePopup] = useState(false);
     const [tableInfo, setTableInfo] = useState(montajeTableInfo);
     const [montajeView, setMontajeView] = useState("");
 
@@ -57,6 +59,14 @@ function MontajeTable({ setMontajeModal, fullOrder }) {
             setRipPopup(true);
 
             return { status: "success" };
+        } else if (action === "comparar") {
+            if (montajeIds.length > 1) {
+                notify(toast.error, "error", "Demasiadas selecciones", "Por favor, seleccione un solo elemento para poder realizar esta acción.");
+                return { status: "success" };
+            }
+
+            setComparePopup(true);
+            return { status: "success" };
         } else if (action === "solicitarVista") {
             if (montajeIds.length > 1) {
                 notify(toast.error, "error", "Demasiadas selecciones", "Por favor, seleccione un solo elemento para poder realizar esta acción.");
@@ -81,7 +91,7 @@ function MontajeTable({ setMontajeModal, fullOrder }) {
     return (
         <>
             <div className="overlay"></div>
-            {!ripPopup ?
+            {(!ripPopup && !comparePopup) &&
                 <div className="popUpTable">
                     <Table
                         actions={montajeActions}
@@ -92,11 +102,18 @@ function MontajeTable({ setMontajeModal, fullOrder }) {
                         orderFilter={fullOrder.id_pedido}
                     />
                 </div>
-                :
+            }
+            {ripPopup &&
                 <RipPopUp
                     setRipModal={setRipPopup}
                     idMontaje={ripId}
                     fullOrder={fullOrder}
+                />
+            }
+            {comparePopup &&
+                <CompareMontajes
+                    setModal={setComparePopup}
+                    montajeIds={montajeIds}
                 />
             }
         </>

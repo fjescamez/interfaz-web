@@ -5,8 +5,6 @@ export const getUserPreferences = async (session, tableInfo, setTableInfo) => {
 
     if (preferences && preferences.tables && preferences.tables[endPoint]) {
 
-        console.log(preferences.tables[endPoint])
-
         const customPreferences = preferences.tables[endPoint].columns;
         const updated = {
             ...tableInfo,

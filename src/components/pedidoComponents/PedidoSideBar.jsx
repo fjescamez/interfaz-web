@@ -1,5 +1,5 @@
 import "./PedidoSideBar.css";
-import { orderIcons } from "../../helpers/orderSidebarIcons";
+import { orderSidebarIcons } from "../../helpers/orderSidebarIcons";
 import { useEffect, useState } from "react";
 import NoteTable from "../tableComponents/NoteTable";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -150,7 +150,7 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
             {montajeModal && <MontajeTable setMontajeModal={setMontajeModal} fullOrder={fullOrder} filePath={filePath} />}
             {plotterModal && <PlotterTable setPlotterModal={setPlotterModal} orderId={fullOrder.id_pedido} fullOrder={fullOrder} filePath={filePath} />}
             <div className="pedidoSideBar">
-                {orderIcons.map((icon) => (
+                {orderSidebarIcons.map((icon) => (
                     <div className="iconContainer" key={icon.id}>
                         <div className="icons" onClick={() => handleClick(icon.action)} data-tooltip-id="my-tooltip" data-tooltip-content={icon.tooltip}>
                             {icon.icon}

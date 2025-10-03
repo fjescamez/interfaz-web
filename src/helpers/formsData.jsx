@@ -98,8 +98,7 @@ export const strategyFormData = {
             labelTitle: "Nombre",
             inputType: "text",
             inputId: "material_nombre",
-            inputName: "material_nombre",
-            disableField: true
+            inputName: "material_nombre"
         },
         {
             htmlFor: "material_codigo",
@@ -107,8 +106,7 @@ export const strategyFormData = {
             labelTitle: "Código",
             inputType: "text",
             inputId: "material_codigo",
-            inputName: "material_codigo",
-            disableField: true
+            inputName: "material_codigo"
         },
         {
             htmlFor: "plancha_fabricante",
@@ -116,8 +114,7 @@ export const strategyFormData = {
             labelTitle: "Fabricante Plancha",
             inputType: "text",
             inputId: "plancha_fabricante",
-            inputName: "plancha_fabricante",
-            disableField: true
+            inputName: "plancha_fabricante"
         },
         {
             htmlFor: "plancha_espesor",
@@ -125,8 +122,7 @@ export const strategyFormData = {
             labelTitle: "Espesor Plancha",
             inputType: "text",
             inputId: "plancha_espesor",
-            inputName: "plancha_espesor",
-            disableField: true
+            inputName: "plancha_espesor"
         },
         {
             htmlFor: "plancha_referencia",
@@ -134,8 +130,7 @@ export const strategyFormData = {
             labelTitle: "Referencia Plancha",
             inputType: "text",
             inputId: "plancha_referencia",
-            inputName: "plancha_referencia",
-            disableField: true
+            inputName: "plancha_referencia"
         },
         {
             htmlFor: "perfil_nombre",
@@ -143,8 +138,7 @@ export const strategyFormData = {
             labelTitle: "Nombre Perfil",
             inputType: "text",
             inputId: "perfil_nombre",
-            inputName: "perfil_nombre",
-            disableField: true
+            inputName: "perfil_nombre"
         },
         {
             htmlFor: "perfil_formato",
@@ -152,8 +146,7 @@ export const strategyFormData = {
             labelTitle: "Formato Perfil",
             inputType: "text",
             inputId: "perfil_formato",
-            inputName: "perfil_formato",
-            disableField: true
+            inputName: "perfil_formato"
         },
         {
             htmlFor: "perfil_carpeta",
@@ -161,8 +154,7 @@ export const strategyFormData = {
             labelTitle: "Carpeta",
             inputType: "text",
             inputId: "perfil_carpeta",
-            inputName: "perfil_carpeta",
-            disableField: true
+            inputName: "perfil_carpeta"
         },
         {
             htmlFor: "perfil_tipo",
@@ -170,8 +162,7 @@ export const strategyFormData = {
             labelTitle: "Tipo Perfil",
             inputType: "text",
             inputId: "perfil_tipo",
-            inputName: "perfil_tipo",
-            disableField: true
+            inputName: "perfil_tipo"
         },
         {
             htmlFor: "curva_plotter_nombre",
@@ -179,8 +170,7 @@ export const strategyFormData = {
             labelTitle: "Nombre Curva",
             inputType: "text",
             inputId: "curva_plotter_nombre",
-            inputName: "curva_plotter_nombre",
-            disableField: true
+            inputName: "curva_plotter_nombre"
         },
         {
             htmlFor: "curva_plotter_formato",
@@ -188,8 +178,7 @@ export const strategyFormData = {
             labelTitle: "Formato Curva",
             inputType: "text",
             inputId: "curva_plotter_formato",
-            inputName: "curva_plotter_formato",
-            disableField: true
+            inputName: "curva_plotter_formato"
         },
         {
             htmlFor: "estrategia_nombre",
@@ -197,8 +186,7 @@ export const strategyFormData = {
             labelTitle: "Nombre Estrategia PWC",
             inputType: "text",
             inputId: "estrategia_nombre",
-            inputName: "estrategia_nombre",
-            disableField: true
+            inputName: "estrategia_nombre"
         },
         {
             htmlFor: "tramado",
@@ -206,8 +194,7 @@ export const strategyFormData = {
             labelTitle: "Tramado",
             inputType: "text",
             inputId: "tramado",
-            inputName: "tramado",
-            disableField: true
+            inputName: "tramado"
         },
         {
             htmlFor: "curva_cliches_nombre",
@@ -215,8 +202,7 @@ export const strategyFormData = {
             labelTitle: "Nombre Curva",
             inputType: "text",
             inputId: "curva_cliches_nombre",
-            inputName: "curva_cliches_nombre",
-            disableField: true
+            inputName: "curva_cliches_nombre"
         },
         {
             htmlFor: "curva_cliches_formato",
@@ -224,8 +210,7 @@ export const strategyFormData = {
             labelTitle: "Formato Curva",
             inputType: "text",
             inputId: "curva_cliches_formato",
-            inputName: "curva_cliches_formato",
-            disableField: true
+            inputName: "curva_cliches_formato"
         }
     ]
 }
@@ -729,7 +714,7 @@ export const emailFormData = {
             htmlFor: "contacto",
             labelId: "contactoLabel",
             labelTitle: "Contacto",
-            select: "multiple",
+            select: "simple",
             options: [],
             inputId: "contacto",
             inputName: "contacto",

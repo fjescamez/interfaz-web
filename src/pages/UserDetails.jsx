@@ -56,7 +56,11 @@ function UserDetails({ toggleKiosk }) {
                 setShowInfo={setShowInfo}
             />
             {editPopup && (
-                <UserForm setModal={setEditPopup} mode={"edit"} user={user} />
+                <UserForm
+                    setModal={setEditPopup}
+                    mode={"edit"}
+                    user={user}
+                />
             )}
             {(deletePopup && isAdmin) && (
                 <DeleteForm

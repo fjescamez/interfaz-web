@@ -111,13 +111,15 @@
     }
 
     .detailsScroll {
+        display: flex;
+        flex-direction: column;
         flex: 1;
         overflow-y: auto;
         margin-top: 5rem;
-        padding-top: 1.5rem;
+        padding: 0 2rem;
 
         .gridTitle {
-            margin: 3rem;
+
         }
 
         .gridContainer {

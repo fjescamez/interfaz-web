@@ -22,6 +22,11 @@ function DocKiosk({ setDocModal, fullOrder }) {
         _id: fullOrder._id
     }
 
+    const afterSubmit = () => {
+        setDocModal(false);
+        window.open("http://192.4.26.120:9090/portal.cgi?hub&topbar=true", "_blank");
+    }
+
     return (
         <GeneralForm
             setModal={setDocModal}
@@ -29,6 +34,7 @@ function DocKiosk({ setDocModal, fullOrder }) {
             itemsData={docData}
             endpoint={"orderKiosks/lanzarDoc"}
             submitText={"Iniciar Tarea"}
+            afterSubmit={afterSubmit}
         />
     )
 }

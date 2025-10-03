@@ -25,6 +25,7 @@ import StrategyPage from "./pages/StrategyPage";
 import ContactDetails from "./pages/ContactDetails";
 import GroupsPage from './pages/GroupsPage'
 import GroupDetails from "./pages/GroupDetails";
+import StrategyDetails from "./pages/StrategyDetails";
 
 function App() {
   const icons = ["home", "pedidos", "len", "clientes", "stock", "usuarios"];
@@ -172,6 +173,7 @@ function App() {
           <Route path="/clientes/:id/contactos" element={<ContactsPage filter={true} />} />
           <Route path="/clientes/:id/contactos/:id" element={<ContactDetails toggleKiosk={toggleKiosk} />} />
           <Route path="/clientes/:id/estrategias" element={<StrategyPage filter={true} />} />
+          <Route path="/clientes/:id/estrategias/:id" element={<StrategyDetails toggleKiosk={toggleKiosk} />} />
           <Route path="/contactos" element={<ContactsPage />} />
           <Route path="/contactos/:id" element={<ContactDetails toggleKiosk={toggleKiosk} />} />
           <Route path="/grupos" element={<GroupsPage />} />

@@ -54,6 +54,11 @@ function EmailPopUp({ setEmailModal, fullOrder }) {
             options.push(nuevoGrupo);
         })
 
+        setItemsData(prev => ({
+            ...prev,
+            contacto: options[0]
+        }))
+
         setFormData(prev => ({
             ...prev,
             formFields: prev.formFields.map(field => {
@@ -95,31 +100,6 @@ function EmailPopUp({ setEmailModal, fullOrder }) {
         setAdjuntos(true);
     }
 
-    /* DATOS EN EMAIL TAREA_PLATAFORMA_2022
-
-        asunto: "99972-4 PASION FATAL"
-        responder: "Adjuntamos documentación solicitada referente a nuestro pedido 99972-4 PASION FATAL."
-        configEmail: {
-        id_pedido: "99972-4",
-        asunto: "99972-4 PASION FATAL",
-        adjuntos: [
-            {
-                id_archivo: "",
-                archivo: ""
-            }
-        ],
-        responder: "Adjuntamos documentación solicitada referente a nuestro pedido 99972-4 PASION FATAL.",
-        contacto: {
-                _id: 642cc82db1670000900272cd,
-                contacto: "Antonio Costa S.L.",
-                cliente_codigo: "0009",
-                departamento: "",
-                email: "costaehijossl@hotmail.com",
-                telefono: "966743342"
-            }
-        }
-    */
-
     useEffect(() => {
         setIsExecuting(true);
         getTemplate();
@@ -135,6 +115,7 @@ function EmailPopUp({ setEmailModal, fullOrder }) {
                     formData={formData}
                     itemsData={itemsData}
                     endpoint={"email/sendEmail"}
+                    submitText={"Enviar"}
                 />
                 :
                 isExecuting && <ExecutingComponent message={"Cargando plantilla"} />

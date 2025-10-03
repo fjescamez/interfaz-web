@@ -16,6 +16,11 @@ function XmlKiosk({ setXmlModal, fullOrder }) {
         _id: fullOrder._id
     }
 
+    const afterSubmit = () => {
+        setXmlModal(false);
+        window.open("http://192.4.26.120:9090/portal.cgi?hub&topbar=true", "_blank");
+    }
+
     return (
         <GeneralForm
             setModal={setXmlModal}
@@ -23,6 +28,7 @@ function XmlKiosk({ setXmlModal, fullOrder }) {
             itemsData={xmlData}
             endpoint={"orderKiosks/lanzarXml"}
             submitText={"Iniciar Tarea"}
+            afterSubmit={afterSubmit}
         />
     )
 }

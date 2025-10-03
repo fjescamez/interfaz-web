@@ -124,7 +124,7 @@ function Table({
     }, [page]);
 
     const handleClick = (data) => {
-        const openRowTables = ["montajes", "plotter", "estrategias"];
+        const openRowTables = ["montajes", "plotter"];
 
         if (showChecks) {
             handleChecked(data._id);
@@ -139,8 +139,8 @@ function Table({
             return actions({ action: "infoGmg", data });
         }
 
-        const { _id, name, username, id_pedido, contacto, grupo } = data;
-        const tabTitle = username || name || id_pedido || contacto || grupo;
+        const { _id, name, username, id_pedido, contacto, grupo, codigo_estrategia } = data;
+        const tabTitle = username || name || id_pedido || contacto || grupo || codigo_estrategia;
 
         let path = `${location.pathname}/${_id}`;
 
