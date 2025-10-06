@@ -12,6 +12,7 @@ function MontajeTable({ setMontajeModal, fullOrder }) {
     const [ripId, setRipId] = useState("");
     const [ripPopup, setRipPopup] = useState(false);
     const [comparePopup, setComparePopup] = useState(false);
+    const [montajeToCompare, setMontajeToCompare] = useState(undefined);
     const [tableInfo, setTableInfo] = useState(montajeTableInfo);
     const [montajeView, setMontajeView] = useState("");
 
@@ -59,12 +60,13 @@ function MontajeTable({ setMontajeModal, fullOrder }) {
             setRipPopup(true);
 
             return { status: "success" };
-        } else if (action === "comparar") {
+        } else if (action === "comparar") {            
             if (montajeIds.length > 1) {
                 notify(toast.error, "error", "Demasiadas selecciones", "Por favor, seleccione un solo elemento para poder realizar esta acción.");
                 return { status: "success" };
             }
 
+            setMontajeToCompare(data[0]);
             setComparePopup(true);
             return { status: "success" };
         } else if (action === "solicitarVista") {
@@ -113,7 +115,7 @@ function MontajeTable({ setMontajeModal, fullOrder }) {
             {comparePopup &&
                 <CompareMontajes
                     setModal={setComparePopup}
-                    montajeIds={montajeIds}
+                    montaje={montajeToCompare}
                 />
             }
         </>

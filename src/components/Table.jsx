@@ -124,7 +124,7 @@ function Table({
     }, [page]);
 
     const handleClick = (data) => {
-        const openRowTables = ["montajes", "plotter"];
+        const openRowTables = ["montajes", "plotter", "allMontajes"];
 
         if (showChecks) {
             handleChecked(data._id);

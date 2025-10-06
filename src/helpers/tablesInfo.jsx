@@ -90,6 +90,11 @@ export const ripTableInfo = {
             action: "ripPixel"
         },
         {
+            title: "Freecut Manual",
+            action: "freecutManual",
+            noCheck: true
+        },
+        {
             title: "Config. Planchas",
             action: "configPlancha",
             noCheck: true
@@ -106,6 +111,20 @@ export const ripTableInfo = {
         }
     ]
 }
+
+export const allMontajesTableInfo = {
+    tableName: "allMontajes",
+    endPoint: "montajes/allMontajes",
+    headerIcon: <MontajeSvg />,
+    headerTitle: "MONTAJES",
+    tableColumns: [
+        {
+            header: "Archivo",
+            active: true,
+            key: "id_archivo"
+        }
+    ]
+};
 
 export const montajeTableInfo = {
     tableName: "montajes",

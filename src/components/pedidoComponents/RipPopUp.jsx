@@ -108,6 +108,23 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
             }
 
             return { status: response.status };
+        } else if (action === "freecutManual") {
+            const data = {
+                extraInputs: {
+                    file: montaje,
+                    id_pedido: fullOrder.id_pedido
+                }
+            };
+
+            const response = await postData("montajes/rip/freecutManual", data);
+
+            if (response.status === "success") {
+                notify(toast.success, response.status, response.title, response.message);
+            } else {
+                notify(toast.error, response.status, response.title, response.message);
+            }
+
+            return { status: "success" };
         } else if (action === "configPlancha") {
             setTintas(data);
             setPlanchasModal(true);
