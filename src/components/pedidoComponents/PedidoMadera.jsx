@@ -66,7 +66,7 @@ function PedidoMadera({ orderXml }) {
                             </tr>
                             <tr>
                                 <td><p className="highlight">PREMONTADO:</p></td>
-                                <td><input type="checkbox" className="check" checked={madera.madera_camisa_premonta === "-1"} readOnly/></td>
+                                <td><input type="checkbox" className="check" checked={madera.madera_camisa_premonta === "-1" || madera.madera_camisa_premonta === "X"} readOnly/></td>
                             </tr>
                             <tr>
                                 <td><p className="highlight">UNIDADES:</p></td>

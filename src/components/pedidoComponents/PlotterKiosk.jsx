@@ -163,6 +163,7 @@ function PlotterKiosk({ setPlotterKiosk, tareaGmg, setTareaGmg }) {
                     itemsData={gmgData}
                     endpoint={"plotter/lanzarGmg"}
                     onInputChange={handleFormChange}
+                    submitText={"Imprimir"}
                 />
             }
         </>

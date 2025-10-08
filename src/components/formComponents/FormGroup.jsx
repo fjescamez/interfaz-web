@@ -81,7 +81,7 @@ const FormGroup = React.memo(function FormGroup({
                             onChange={(e) =>
                                 handleForm({ target: { name: inputName, value: e.target.checked } })
                             }
-                            disabled={disable || disableField}
+                            readOnly={disable || disableField}
                         />
                     }
                     {(labelId && inputType && inputType === "checkbox") &&

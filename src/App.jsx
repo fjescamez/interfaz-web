@@ -26,6 +26,7 @@ import ContactDetails from "./pages/ContactDetails";
 import GroupsPage from './pages/GroupsPage'
 import GroupDetails from "./pages/GroupDetails";
 import StrategyDetails from "./pages/StrategyDetails";
+import ObservacionesTecnicas from "./pages/ObservacionesTecnicas";
 
 function App() {
   const icons = ["home", "pedidos", "len", "clientes", "stock", "usuarios"];
@@ -162,10 +163,14 @@ function App() {
         <Routes>
           <Route path="*" element={<ErrorPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/home" element={<HomePage toggleKiosk={toggleKiosk}/>} />
+          {/* Parche mientras home esté en desarrollo */}
+          {/*<Route path="/home" element={<HomePage toggleKiosk={toggleKiosk}/>} />*/}
+          (<Route path="/home" element={<OrdersPage />} />
+          <Route path="/home/:id" element={<OrderDetails />} />)
           <Route path="/pedidos" element={<OrdersPage />} />
           <Route path="/pedidos/:id" element={<OrderDetails />} />
           <Route path="/pedidos/:id/kiosk" element={<OrderKiosk />} />
+          <Route path="/fichaTecnica/:id" element={<ObservacionesTecnicas />} />
           <Route path="/len" element={<LenPage />} />
           <Route path="/clientes" element={<ClientsPage />} />
           <Route path="/clientes/:id" element={<ClientDetails toggleKiosk={toggleKiosk} />} />
@@ -174,6 +179,7 @@ function App() {
           <Route path="/clientes/:id/contactos/:id" element={<ContactDetails toggleKiosk={toggleKiosk} />} />
           <Route path="/clientes/:id/estrategias" element={<StrategyPage filter={true} />} />
           <Route path="/clientes/:id/estrategias/:id" element={<StrategyDetails toggleKiosk={toggleKiosk} />} />
+          <Route path="/estrategias/:id" element={<StrategyDetails />} />
           <Route path="/contactos" element={<ContactsPage />} />
           <Route path="/contactos/:id" element={<ContactDetails toggleKiosk={toggleKiosk} />} />
           <Route path="/grupos" element={<GroupsPage />} />

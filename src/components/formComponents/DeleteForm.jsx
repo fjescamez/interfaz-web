@@ -22,9 +22,11 @@ function DeleteForm({
     setActionEnded
 }) {
     const { headerIcon, headerTitle, endPoint, deleteActions } = tableInfo;
+    console.log(tableInfo);
+
     const { closeTab } = useTabs();
     const location = useLocation();
-    const { setSession } = useSession();    
+    const { setSession } = useSession();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -50,7 +52,7 @@ function DeleteForm({
                 //files: filesUrls ? filesUrls : [],
                 deleteActions
             };
-            
+
             result = await deleteMultipleObjects(endPoint, data, setData);
             if (setTotal) setTotal(prev => prev - filesToDelete.length);
             if (setActionEnded) setActionEnded(true);
@@ -58,7 +60,7 @@ function DeleteForm({
             const data = {
                 id
             };
-            
+
             result = await deleteMultipleObjects(endPoint, data, setData);
             closeTab(location.pathname);
         }
@@ -68,11 +70,13 @@ function DeleteForm({
             if (Array.isArray(isActive)) {
                 setIsActive([]);
             } else {
-                const resetActive = {};
-                result.updatedData?.forEach(note => {
-                    resetActive[note._id] = false;
-                });
-                setIsActive(resetActive);
+                if (setIsActive) {
+                    const resetActive = {};
+                    result.updatedData?.forEach(note => {
+                        resetActive[note._id] = false;
+                    });
+                    setIsActive(resetActive);
+                }
             }
 
             if (data && setData) {

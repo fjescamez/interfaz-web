@@ -75,7 +75,7 @@ function EmailPopUp({ setEmailModal, fullOrder }) {
     }
 
     const getAdjuntos = async () => {
-        const adjuntos = await fetchData("files", id_pedido, 1);
+        const adjuntos = await fetchData("email/allFiles", id_pedido);
 
         const options = [];
         if (adjuntos.length > 0) {

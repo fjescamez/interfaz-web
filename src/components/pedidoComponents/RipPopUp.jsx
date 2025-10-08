@@ -63,13 +63,13 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
 
             const response = await postData("montajes/rip", ripData);
 
-            setRipModal(false);
-
             if (response.status === "success") {
                 notify(toast.success, response.status, response.title, response.message);
             } else {
                 notify(toast.error, response.status, response.title, response.message);
             }
+
+            setRipModal(false);
 
             return { status: response.status };
         } else if (action === "arrastradores") {
@@ -124,7 +124,7 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
                 notify(toast.error, response.status, response.title, response.message);
             }
 
-            return { status: "success" };
+            return { status: response.status };
         } else if (action === "configPlancha") {
             setTintas(data);
             setPlanchasModal(true);

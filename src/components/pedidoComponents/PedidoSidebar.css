@@ -3,7 +3,7 @@
     right: -2px;
     background-color: var(--details);
     display: grid;
-    width: auto;
+    width: 8rem;
     border: 2px solid var(--header);
     border-top: none;
     border-radius: 0 0 4rem 4rem;
@@ -21,13 +21,39 @@
     }
 }
 
+.buttonBar {
+    position: fixed;
+    background-color: var(--details);
+    border: 2px solid var(--header);
+    border-right: none;
+    border-radius: 3rem 0 0 3rem;
+    display: flex;
+    min-width: 5rem;
+
+    .icons {
+        padding: 1rem 1.5rem;
+        height: 6.2rem;
+        border-radius: 0 !important;
+
+        &:hover {
+            background-color: var(--hover);
+            cursor: pointer;
+            transition: background-color 0.5s;
+        }
+    }
+
+    .first {
+        border-radius: 3rem 0 0 3rem !important;
+    }
+}
+
 @media only screen and (max-height: 1070px) {
     .pedidoSideBar {
         position: absolute;
         right: -2px;
         background-color: var(--details);
         display: grid;
-        width: auto;
+        width: 7.5rem;
         border: 2px solid var(--header);
         border-top: none;
         border-radius: 0 0 4rem 4rem;

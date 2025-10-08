@@ -15,7 +15,7 @@ function PlotterTable({ setPlotterModal, orderId, fullOrder, filePath }) {
     const [plotterKiosk, setPlotterKiosk] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const plotterActions = (variables) => {
+    const plotterActions = async (variables) => {
         const { action, data } = variables;
         if (action === "infoGmg") {
             setGmgPopup(true);
@@ -28,7 +28,15 @@ function PlotterTable({ setPlotterModal, orderId, fullOrder, filePath }) {
             };
 
             setPlotterIds([]);
-            return postData("plotter/imprimirFerro", body);
+            const imprimir = await postData("plotter/imprimirFerro", body);
+
+            if (imprimir.status === "success") {
+                notify(toast.success, imprimir.status, imprimir.title, imprimir.message);
+                return { status: "success" }
+            } else if (imprimir.status === "error") {                
+                notify(toast.error, imprimir.status, imprimir.title, imprimir.message);
+                return { status: "error" };
+            }
         } else if (action === "openRow") {
             setPlotterKiosk(true);
             setLoading(true);

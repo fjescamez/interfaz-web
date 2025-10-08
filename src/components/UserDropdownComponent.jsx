@@ -36,38 +36,38 @@ function UserDropdownComponent({ toggleUserDropdown, toggleKiosk }) {
             <div className="infoPanel">
                 <div className="sectionTitle">
                     <p>Mi bandeja</p>
-                    <p className="titleNumber">5</p>
+                    <p className="titleNumber"></p>
                 </div>
                 <div className="section">
                     <span>Asignados</span>
-                    <span>1</span>
+                    <span></span>
                 </div>
                 <div className="section">
                     <span>Parados</span>
-                    <span>2</span>
+                    <span></span>
                 </div>
                 <div className="section">
                     <span>En espera</span>
-                    <span>2</span>
+                    <span></span>
                 </div>
             </div>
             <div className="border"></div>
             <div className="infoPanel">
                 <div className="sectionTitle">
                     <p>Partes</p>
-                    <p className="titleNumber">9</p>
+                    <p className="titleNumber"></p>
                 </div>
                 <div className="section">
                     <span>Reclamaciones</span>
-                    <span>6</span>
+                    <span></span>
                 </div>
                 <div className="section">
                     <span>Incidencias</span>
-                    <span>2</span>
+                    <span></span>
                 </div>
                 <div className="section">
                     <span>Procedimiento</span>
-                    <span>1</span>
+                    <span></span>
                 </div>
             </div>
             <button className="logout" onClick={handleClick}>Cerrar sesión</button>

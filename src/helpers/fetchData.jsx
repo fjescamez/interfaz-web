@@ -3,7 +3,7 @@ import { notify } from "./notify";
 
 /* FETCH GENÉRICOS */
 export const fetchData = async (endPoint, searchValue, page = "1", setData, setTotal, clientFilter = "") => {
-    
+
     let url = `http://192.4.26.112:3000/${endPoint}/get/${page}`;
 
     const session = JSON.parse(localStorage.getItem('session'));
@@ -63,18 +63,19 @@ export const fetchData = async (endPoint, searchValue, page = "1", setData, setT
 export const fetchOneItem = async (endPoint, id) => {
     let url = `http://192.4.26.112:3000/${endPoint}/${id}`;
 
+    const session = JSON.parse(localStorage.getItem('session'));
+
     try {
         const response = await fetch(url, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session.token}`
             }
         })
         const data = await response.json();
 
-        if (data.status === "success") {
-            return data;
-        }
+        return data;
     } catch (error) {
         notify(toast.error, 'error', 'Error', error);
     }
@@ -99,7 +100,7 @@ export const postData = async (endPoint, data) => {
         return result;
     } catch (error) {
         notify(toast.error, 'error', 'Error', 'Ha ocurrido un error al enviar los datos');
-        return {status: "error"};
+        return { status: "error" };
     }
 };
 

@@ -101,12 +101,14 @@ function StrategyDetails({ toggleKiosk }) {
         <DetailsHeader
           title={`Estrategia ${strategy?.codigo_estrategia}`}
           subtitle={strategy?.cliente_codigo}
-          avatar={null}
           endPoint={"strategies"}
           id={""}
           setEditPopup={setEditPopup}
           setDeletePopup={setDeletePopup}
           hideInfoIcon={true}
+          hideAvatar={true}
+          hideDeleteIcon={true}
+          hideEditIcon={true}
           grid={true}
         />
         {editPopup && (

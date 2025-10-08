@@ -12,8 +12,8 @@ function HomePage({ toggleKiosk }) {
   const { session } = useSession();
   const user = session;
 
-  const clientGrid = clientsDetails.grid
-  const stockGrid = stockDetails.grid
+  const clientGrid = clientsDetails.grid;
+  const stockGrid = stockDetails.grid;
 
   return (
     <>
@@ -31,7 +31,7 @@ function HomePage({ toggleKiosk }) {
               hideDeleteIcon={true}
               hideEditIcon={true}
             />
-            <div className="configButton"><FaGear /></div>
+            {/* <div className="configButton"><FaGear /></div>
             <div className="detailsScroll">
               <GridComponent
                 title={clientsDetails.title}
@@ -44,7 +44,7 @@ function HomePage({ toggleKiosk }) {
                   grid={stockDetails.grid}
                   object={user}
                 />}
-            </div>
+            </div> */}
           </>
         )}
       </div>

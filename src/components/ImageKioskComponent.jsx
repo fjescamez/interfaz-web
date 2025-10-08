@@ -7,6 +7,7 @@ import { IoMdCloseCircleOutline } from "react-icons/io";
 import DeleteForm from "./formComponents/DeleteForm";
 import { FaUserCircle } from "react-icons/fa";
 import { SlBriefcase } from "react-icons/sl";
+import { postData } from "../helpers/fetchData";
 
 function ImageKioskComponent({ toggleKiosk, endpoint, id, client }) {
     const inputRef = useRef(null);
@@ -32,14 +33,19 @@ function ImageKioskComponent({ toggleKiosk, endpoint, id, client }) {
             const formData = new FormData();
             formData.append("avatar", image);
 
-            const response = await fetch(`http://192.4.26.112:3000/${endpoint}/avatar/${id}`, {
-                method: "POST",
+            let url = `http://192.4.26.112:3000/${endpoint}/avatar/${id}`;
+            const session = JSON.parse(localStorage.getItem('session'));
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${session.token}`
+                },
                 body: formData
             });
+            const result = await response.json();
 
-            const data = await response.json();
-
-            if (data.status === "success") {
+            if (result.status === "success") {
                 const notification = {
                     type: "success",
                     title: "Avatar actualizado",
@@ -50,9 +56,9 @@ function ImageKioskComponent({ toggleKiosk, endpoint, id, client }) {
 
                 setImage(null);
 
-                data.user && setSession(() => ({
+                result.user && setSession(() => ({
                     ...session,
-                    avatar: data.user.avatar
+                    avatar: result.user.avatar
                 }));
             }
         } catch (error) {
@@ -120,9 +126,14 @@ function ImageKioskComponent({ toggleKiosk, endpoint, id, client }) {
             {toggleDelete &&
                 <DeleteForm
                     setModal={setToggleDelete}
-                    icon={icon}
+                    /* icon={icon}
                     title={"avatar"}
-                    endpoint={endpoint}
+                    endpoint={endpoint} */
+                    tableInfo={{
+                        headerIcon: icon,
+                        headerTitle: "AVATAR",
+                        endPoint: endpoint
+                    }}
                     id={id}
                     deleteAvatar={true}
                     toggleKiosk={toggleKiosk}

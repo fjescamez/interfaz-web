@@ -1,19 +1,19 @@
 import "./PedidoSideBar.css";
 import { orderSidebarIcons } from "../../helpers/orderSidebarIcons";
-import { useEffect, useState } from "react";
-import NoteTable from "../tableComponents/NoteTable";
+import { useRef, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { useTabs } from "../../context/TabsContext";
+import { fetchData, postData } from "../../helpers/fetchData";
+import { notify } from "../../helpers/notify";
+import { toast } from "react-toastify";
+import NoteTable from "../tableComponents/NoteTable";
 import VersionTable from "../tableComponents/VersionTable";
 import OrderLenTable from "../tableComponents/OrderLenTable";
-import { fetchData, postData } from "../../helpers/fetchData";
 import ExecutingComponent from "../ExecutingComponent";
 import FileTable from "../tableComponents/FileTable";
 import PlotterTable from "../tableComponents/PlotterTable";
 import MontajeTable from "../tableComponents/MontajeTable";
-import { notify } from "../../helpers/notify";
-import { toast } from "react-toastify";
 import ComparePopUp from "./ComparePopUp";
 import EmailPopUp from "./EmailPopUp";
 import DocKiosk from "./DocKiosk";
@@ -34,6 +34,9 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
     const [plotterModal, setPlotterModal] = useState(false);
     const [executing, setExecuting] = useState(false);
     const [initialNotes, setInitialNotes] = useState([]);
+    const [buttonBar, setButtonBar] = useState({ visible: false, buttons: [], position: { top: 0, left: 0 } });
+    const buttonBarRef = useRef(null);
+    const sideBarRef = useRef(null);
     const { tabs, setTabs } = useTabs();
     const folderUrl = fullOrder.rutaTrabajo?.replace("cloudflow://", "").replace("PEDIDOS_", "Pedidos ");
 
@@ -49,7 +52,7 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
         }
 
         const response = await postData("orders/updateOrder", data);
-        
+
         if (response && response.status === "success") {
             notify(toast.success, response.status, response.title, "")
             setFullOrder(response.response.updatedOrder);
@@ -73,7 +76,36 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
         }
     }, [initialNotes]);
 
-    const handleClick = (action) => {
+    useEffect(() => {
+        if (!buttonBar.visible) return;
+
+        const handleClickOutside = (event) => {
+            if (buttonBarRef.current && !buttonBarRef.current.contains(event.target)) {
+                setButtonBar((prev) => ({ ...prev, visible: false }));
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [buttonBar.visible]);
+
+    const handleClick = (action, buttons, event) => {
+        if (buttons) {
+            const rect = event.currentTarget.getBoundingClientRect();
+            const sideBarRect = sideBarRef.current.getBoundingClientRect();
+            setButtonBar({
+                visible: true,
+                buttons,
+                position: {
+                    top: rect.top,
+                    left: sideBarRect.left // Justo pegado a la barra lateral
+                }
+            });
+            return;
+        }
+
         switch (action) {
             case "update":
                 updateOrder();
@@ -149,17 +181,43 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
             {filesModal && <FileTable setFilesModal={setFilesModal} orderId={fullOrder.id_pedido} filePath={filePath} />}
             {montajeModal && <MontajeTable setMontajeModal={setMontajeModal} fullOrder={fullOrder} filePath={filePath} />}
             {plotterModal && <PlotterTable setPlotterModal={setPlotterModal} orderId={fullOrder.id_pedido} fullOrder={fullOrder} filePath={filePath} />}
-            <div className="pedidoSideBar">
-                {orderSidebarIcons.map((icon) => (
-                    <div className="iconContainer" key={icon.id}>
-                        <div className="icons" onClick={() => handleClick(icon.action)} data-tooltip-id="my-tooltip" data-tooltip-content={icon.tooltip}>
+            <div className="pedidoSideBar" ref={sideBarRef}>
+                {orderSidebarIcons.map((icon, index) => (
+                    <div className="iconContainer" key={index}>
+                        <div className="icons" onClick={(e) => handleClick(icon.action, icon.buttons, e)} data-tooltip-id="my-tooltip" data-tooltip-content={icon.tooltip}>
                             {icon.icon}
                         </div>
-                        {(icon.last !== true) && <div className="border"></div>}
+                        {(!icon.last) && <div className="border"></div>}
                     </div>
                 ))}
             </div>
-            <ReactTooltip id="my-tooltip" delayShow={500} />
+            {buttonBar.visible && (
+                <div
+                    ref={buttonBarRef}
+                    className="buttonBar"
+                    style={{
+                        top: buttonBar.position.top,
+                        left: buttonBar.position.left,
+                        transform: "translateX(-98.5%) translateY(-4%)", // se extiende hacia la izquierda
+                        zIndex: 2
+                    }}
+                >
+                    {buttonBar.buttons.map((icon, index) => (
+                        <div className="iconContainer" key={index}>
+                            <div
+                                className={"icons" + (icon.first ? " first" : "")}
+                                onClick={(e) => handleClick(icon.action, icon.buttons, e)}
+                                data-tooltip-id="my-tooltip"
+                                data-tooltip-content={icon.tooltip}
+                            >
+                                {icon.icon}
+                            </div>
+                            {/* {(!icon.last) && <div className="border"></div>} */}
+                        </div>
+                    ))}
+                </div>
+            )}
+            <ReactTooltip id="my-tooltip" delayShow={750} />
         </>
     )
 }

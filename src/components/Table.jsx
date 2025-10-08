@@ -140,7 +140,7 @@ function Table({
         }
 
         const { _id, name, username, id_pedido, contacto, grupo, codigo_estrategia } = data;
-        const tabTitle = username || name || id_pedido || contacto || grupo || codigo_estrategia;
+        const tabTitle = username || name || id_pedido || contacto || grupo || `ESTRATEGIA ${codigo_estrategia}`;
 
         let path = `${location.pathname}/${_id}`;
 

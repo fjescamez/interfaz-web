@@ -4,6 +4,7 @@ import { notify } from "../../helpers/notify";
 import { toast } from "react-toastify";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import InfoTintasTramas from "../pedidoComponents/InfoTintasTramas";
+import { postData } from "../../helpers/fetchData";
 
 function LenTable({
     setLenModal,
@@ -19,33 +20,27 @@ function LenTable({
 
     const enviarProduccion = async (setTableData) => {
         if (lenIds.length > 0) {
-            const url = `http://192.4.26.112:3000/lenFiles/enviarProduccion`;
+            const data = {
+                action: "enviarProduccion",
+                ids: lenIds
+            }
 
             try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        ids: lenIds,
-                        action: "enviarProduccion"
-                    })
-                })
-                const data = await response.json();
-                if (data.status === "success") {
-                    notify(toast.success, data.status, data.title, data.message);
+                const response = await postData("lenFiles/enviarProduccion", data);
+
+                if (response.status === "success") {
+                    notify(toast.success, response.status, response.title, response.message);
                     setTableData(prevData =>
                         prevData.map(row => {
-                            const updated = data.enviado.listLen.find(len => len._id === row._id);
+                            const updated = response.enviado.listLen.find(len => len._id === row._id);
                             return updated ? { ...row, ...updated } : row;
                         })
                     );
                     setLenIds([]);
-                    return data;
+                    return {status: "success", response};
                 } else {
                     notify(toast.error, data.status, data.title, data.message);
-                    return data;
+                    return {status: "error", response};
                 }
             } catch (error) {
                 notify(toast.error, 'error', 'Error', error);
@@ -54,28 +49,22 @@ function LenTable({
     };
 
     const getInfoCurvas = async () => {
-        const url = `http://192.4.26.112:3000/lenFiles/infoCurvas`;
+        const data = {
+            action: "infoCurvas",
+            orderId
+        };
 
         try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    action: "infoCurvas",
-                    orderId
-                })
-            })
-            const data = await response.json();
-            if (data.status === "success") {
-                notify(toast.success, data.status, data.title, data.message);
+            const response = await postData("lenFiles/infoCurvas", data);
+            
+            if (response.status === "success") {
+                notify(toast.success, response.status, response.title, response.message);
                 setInfoCurvasPopup(true);
-                setInfoCurvas(data.info.contents.listRegistroColor);
-                return data;
+                setInfoCurvas(response.info.contents.listRegistroColor);
+                return response;
             } else {
-                notify(toast.error, data.status, data.title, data.message);
-                return data;
+                notify(toast.error, response.status, response.title, response.message);
+                return response;
             }
         } catch (error) {
             notify(toast.error, 'error', 'Error', error);
@@ -83,22 +72,17 @@ function LenTable({
     }
 
     const solicitarVista = async () => {
-        const url = `http://192.4.26.112:3000/lenFiles/solicitarVista`;
+        const data = {
+            action: "solicitarVista",
+            orderId
+        }
 
         try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    action: "solicitarVista",
-                    orderId
-                })
-            })
-            const data = await response.json();
-            if (data.status === "success") {
-                notify(toast.success, data.status, data.title, data.message);
+            const response = await postData("lenFiles/solicitarVista", data);
+            console.log(response);
+
+            if (response.status === "success") {
+                notify(toast.success, response.status, response.title, response.message);
                 setLenIds([]);
                 const updatedActions = tableInfo.actions.map(action => {
                     if (action.action === "solicitarVista" || action.action === "visualizarLen") {
@@ -107,12 +91,12 @@ function LenTable({
                     return action;
                 });
                 setTableInfo({ ...tableInfo, actions: updatedActions });
-                setLenViewUrl(data.vista.contents?.viewLink);
+                setLenViewUrl(response.vista.contents?.viewLink);
 
-                return data;
+                return response;
             } else {
-                notify(toast.error, data.status, data.title, data.message);
-                return data;
+                notify(toast.error, response.status, response.title, response.message);
+                return response;
             }
         } catch (error) {
             notify(toast.error, 'error', 'Error', error);

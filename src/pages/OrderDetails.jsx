@@ -13,25 +13,27 @@ import PedidoEtiquetas from "../components/pedidoComponents/PedidoEtiquetas";
 import PedidoSideBar from "../components/pedidoComponents/PedidoSideBar";
 import { notify } from "../helpers/notify";
 import { toast } from "react-toastify";
-import { fetchData } from "../helpers/fetchData";
+import { fetchData, fetchOneItem } from "../helpers/fetchData";
 import PdfAsImage from "../components/pedidoComponents/PdfAsImage";
 
 function OrderDetails() {
   const [fullOrder, setFullOrder] = useState({});
   const [orderXml, setOrderXml] = useState({});
   const [orderColors, setOrderColors] = useState([]);
+  const [estrategiaId, setEstrategiaId] = useState("");
+  const [codigoEstrategia, setCodigoEstrategia] = useState("");
   const location = useLocation();
   const { id } = useParams();
   const navigate = useNavigate();
   const { closeTab, tabs, setTabs } = useTabs();
+  const session = JSON.parse(localStorage.getItem('session'));
 
   const getOrderDetails = async (id) => {
     try {
-      const response = await fetch(`http://192.4.26.112:3000/orders/getOrder/${id}`);
-      const orderData = await response.json();
+      const orderData = await fetchOneItem("orders/getOrder", id);
       if (!orderData) {
         closeTab(location.pathname);
-        navigate("/orders");
+        navigate("/pedidos");
         return
       };
       setOrderXml(orderData.xml);
@@ -43,7 +45,13 @@ function OrderDetails() {
 
   const getOrderColors = async () => {
     try {
-      const response = await fetch(`http://192.4.26.112:3000/colors/get?unitario=${fullOrder?.unitario}`);
+      const response = await fetch(`http://192.4.26.112:3000/colors/get?unitario=${fullOrder?.unitario}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.token}`
+        }
+      });
       const orderColors = await response.json();
       setOrderColors(orderColors?.results);
     } catch (error) {
@@ -66,11 +74,72 @@ function OrderDetails() {
     navigate(path);
   }
 
+  const getStrategyDetails = async () => {
+    let estrategia;
+    let codigo;
+
+    if (typeof fullOrder?.xml?.actividad?.material === "object") {
+      return;
+    }
+
+    const materialSplit = fullOrder.xml.actividad.material.split("_");
+
+    materialSplit.forEach(part => {
+      if (part.length === 4 && part.startsWith("E")) {
+        codigo = part;
+        setCodigoEstrategia(codigo);
+      }
+    });
+
+    if (!codigo) {
+      return;
+    }
+
+    const estrategias = await fetchData("strategies", codigo);
+
+    if (estrategias.length === 1) {
+      estrategia = estrategias[0];
+      setEstrategiaId(estrategia._id);
+    }
+  }
+
+  const openStrategy = () => {
+    if (estrategiaId) {
+      const path = `/estrategias/${estrategiaId}`;
+      const tabTitle = `ESTRATEGIA ${codigoEstrategia}`;
+
+      if (!tabs.some(tab => tab.path === path)) {
+        setTabs(prev => {
+          if (prev.some(tab => tab.path === path)) return prev;
+          return [...prev, { path, title: tabTitle }];
+        });
+      }
+      navigate(path);
+    }
+  }
+
+  const openFichaTecnica = () => {
+    const path = `/fichaTecnica/${id}`;
+    const tabTitle = `OBS. TÉCNICAS ${fullOrder.id_pedido}`;
+
+    if (!tabs.some(tab => tab.path === path)) {
+      setTabs(prev => {
+        if (prev.some(tab => tab.path === path)) return prev;
+        return [...prev, { path, title: tabTitle }];
+      });
+    }
+
+    navigate(path, { state: { fullOrder: fullOrder } });
+  }
+
   useEffect(() => {
     getOrderDetails(id);
   }, [id]);
 
   useEffect(() => {
+    if (fullOrder._id) {
+      getStrategyDetails();
+    }
     getOrderColors();
   }, [fullOrder]);
 
@@ -88,7 +157,7 @@ function OrderDetails() {
       />
       <div className="detailsContainer">
         <div className="orderFile">
-          <div className="row1">
+          {/* <div className="row1">
             <div className="acciones flex">
               <div className="title">
                 <p>ACCIONES DE PEDIDO</p>
@@ -146,7 +215,7 @@ function OrderDetails() {
                 <p>SAMPLE SAMPLE SAMPLE SAMPLE SAMPLE</p>
               </div>
             </div>
-          </div>
+          </div> */}
           <div className="row2">
             <div className="pedido flex">
               <div className="group1">
@@ -332,7 +401,7 @@ function OrderDetails() {
                     <p>MATERIAL</p>
                   </div>
                   <div className="body">
-                    <p>{orderXml.actividad?.material} <span className="highlight">(VER ESTRATEGIA COMPLETA)</span></p>
+                    <p>{orderXml.actividad?.material} <span className="highlight" onClick={openStrategy}>(VER ESTRATEGIA COMPLETA)</span></p>
                   </div>
                 </div>
                 <div className="maquina flex">
@@ -341,7 +410,7 @@ function OrderDetails() {
                   </div>
                   <div className="body">
                     {/* PARCHE MIENTRAS QUE LA MÁQUINA (FICHA TÉCNICA) PUEDA LLEGAR COMO OBJETO VACIO */}
-                    <p>{typeof orderXml.tecnicos?.ficha_tecnica !== "object" && orderXml.tecnicos?.ficha_tecnica} <span className="highlight">(VER FICHA)</span></p>
+                    <p>{typeof orderXml.tecnicos?.ficha_tecnica !== "object" && orderXml.tecnicos?.ficha_tecnica} <span className="highlight" onClick={openFichaTecnica}>(VER FICHA)</span></p>
                   </div>
                 </div>
               </div>
@@ -384,11 +453,7 @@ function OrderDetails() {
                   <p>DATOS TÉCNICOS</p>
                 </div>
                 <div className="body">
-                  <p><span className="obs">Observaciones dpto. cliche:</span><br /><br />{orderXml.tecnicos?.obs_dpto_cliche}</p>
-                  <p>-------------------</p>
-                  <p><span className="obs">Observaciones dpto. dibujo:</span><br /><br />{orderXml.tecnicos?.obs_dpto_dibujo}</p>
-                  <p>-------------------</p>
-                  <p><span className="obs">Observaciones dpto. montaje:</span><br /><br />{/* orderXml.tecnicos?.obs_dpto_montaje */}</p>
+                  <p>{orderXml.xml?.actividad.obs_actividad}</p>
                 </div>
               </div>
             </div>

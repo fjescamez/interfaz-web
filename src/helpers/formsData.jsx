@@ -8,9 +8,197 @@ import GroupsSvg from "../assets/svg/GroupsSvg";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
 
+export const observacionesTecnicasFormData = {
+    formSections:[
+        {
+            title: "Dpto. Dibujo",
+            rows: [
+                {
+                    groups: ["obs_dpto_dibujo"]
+                }
+            ]
+        },
+        {
+            title: "Dpto. Cliché",
+            rows: [
+                {
+                    groups: ["cliche_nuevo", "cliche_caping", "cliche_mtjcompen"]
+                },
+                {
+                    groups: ["reparacion_cliche", "cliche_compensado", "cliche_descompen"]
+                },
+                {
+                    groups: ["cliche_rotado", "cliche_mixto", "cliche_mtjdirecto"]
+                },
+                {
+                    groups: ["obs_dpto_cliche"]
+                }
+            ]
+        },
+        {
+            title: "Dpto. Montaje",
+            rows: [
+                {
+                    groups: ["tirada_camisas", "varilla", "poliester"]
+                },
+                {
+                    groups: ["distancia_varilla", "contravarilla", "formato_montaje"]
+                },
+                {
+                    groups: ["obs_dpto_montaje"]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "obs_dpto_dibujo",
+            labelId: "obs_dpto_dibujoLabel",
+            labelTitle: "Observaciones Dibujo",
+            textarea: true,
+            inputId: "obs_dpto_dibujo",
+            inputName: "obs_dpto_dibujo"
+        },
+        {
+            htmlFor: "cliche_nuevo",
+            labelId: "cliche_nuevoLabel",
+            labelTitle: "Cliché Nuevo",
+            inputType: "checkbox",
+            inputId: "cliche_nuevo",
+            inputName: "cliche_nuevo"
+        },
+        {
+            htmlFor: "reparacion_cliche",
+            labelId: "reparacion_clicheLabel",
+            labelTitle: "Reparación Cliché",
+            inputType: "checkbox",
+            inputId: "reparacion_cliche",
+            inputName: "reparacion_cliche"
+        },
+        {
+            htmlFor: "cliche_rotado",
+            labelId: "cliche_rotadoLabel",
+            labelTitle: "Cliché Rotado",
+            inputType: "checkbox",
+            inputId: "cliche_rotado",
+            inputName: "cliche_rotado"
+        },
+        {
+            htmlFor: "cliche_caping",
+            labelId: "cliche_capingLabel",
+            labelTitle: "Caping",
+            inputType: "checkbox",
+            inputId: "cliche_caping",
+            inputName: "cliche_caping"
+        },
+        {
+            htmlFor: "cliche_compensado",
+            labelId: "cliche_compensadoLabel",
+            labelTitle: "Compensado",
+            inputType: "checkbox",
+            inputId: "cliche_compensado",
+            inputName: "cliche_compensado"
+        },
+        {
+            htmlFor: "cliche_mixto",
+            labelId: "cliche_mixtoLabel",
+            labelTitle: "Mixto",
+            inputType: "checkbox",
+            inputId: "cliche_mixto",
+            inputName: "cliche_mixto"
+        },
+        {
+            htmlFor: "cliche_mtjcompen",
+            labelId: "cliche_mtjcompenLabel",
+            labelTitle: "Montaje Compensado",
+            inputType: "checkbox",
+            inputId: "cliche_mtjcompen",
+            inputName: "cliche_mtjcompen"
+        },
+        {
+            htmlFor: "cliche_descompen",
+            labelId: "cliche_descompenLabel",
+            labelTitle: "Montaje Descompensado",
+            inputType: "checkbox",
+            inputId: "cliche_descompen",
+            inputName: "cliche_descompen"
+        },
+        {
+            htmlFor: "cliche_mtjdirecto",
+            labelId: "cliche_mtjdirectoLabel",
+            labelTitle: "Montaje Directo",
+            inputType: "checkbox",
+            inputId: "cliche_mtjdirecto",
+            inputName: "cliche_mtjdirecto"
+        },
+        {
+            htmlFor: "obs_dpto_cliche",
+            labelId: "obs_dpto_clicheLabel",
+            labelTitle: "Observaciones Cliché",
+            textarea: true,
+            inputId: "obs_dpto_cliche",
+            inputName: "obs_dpto_cliche"
+        },
+        {
+            htmlFor: "tirada_camisas",
+            labelId: "tirada_camisasLabel",
+            labelTitle: "Tirada Camisas",
+            inputType: "text",
+            inputId: "tirada_camisas",
+            inputName: "tirada_camisas"
+        },
+        {
+            htmlFor: "distancia_varilla",
+            labelId: "distancia_varillaLabel",
+            labelTitle: "Distancia Varilla",
+            inputType: "text",
+            inputId: "distancia_varilla",
+            inputName: "distancia_varilla"
+        },
+        {
+            htmlFor: "varilla",
+            labelId: "varillaLabel",
+            labelTitle: "Varilla",
+            inputType: "text",
+            inputId: "varilla",
+            inputName: "varilla"
+        },
+        {
+            htmlFor: "contravarilla",
+            labelId: "contravarillaLabel",
+            labelTitle: "Contravarilla",
+            inputType: "text",
+            inputId: "contravarilla",
+            inputName: "contravarilla"
+        },
+        {
+            htmlFor: "poliester",
+            labelId: "poliesterLabel",
+            labelTitle: "Poliéster",
+            inputType: "text",
+            inputId: "poliester",
+            inputName: "poliester"
+        },
+        {
+            htmlFor: "formato_montaje",
+            labelId: "formato_montajeLabel",
+            labelTitle: "Formato Montaje",
+            inputType: "text",
+            inputId: "formato_montaje",
+            inputName: "formato_montaje"
+        },
+        {
+            htmlFor: "obs_dpto_montaje",
+            labelId: "obs_dpto_montajeLabel",
+            labelTitle: "Observaciones Montaje",
+            textarea: true,
+            inputId: "obs_dpto_montaje",
+            inputName: "obs_dpto_montaje"
+        },
+    ]
+}
+
 export const strategyFormData = {
-    headerIcon: <TbColorSwatch />,
-    headerTitle: "DETALLE DE ESTRATEGIA",
     formSections: [
         {
             title: "Cliente",

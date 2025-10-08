@@ -1,8 +1,10 @@
 export const validRoutes = [
   "/home",
+  "/home/:id",
   "/pedidos",
   "/pedidos/:id",
   "/pedidos/:id/kiosk",
+  "/fichaTecnica/:id",
   "/len",
   "/clientes",
   "/clientes/:id",
@@ -13,6 +15,8 @@ export const validRoutes = [
   "/clientes/:id/grupos/:id",
   "/clientes/:id/estrategias",
   "/clientes/:id/estrategias/:id",
+  "/estrategias",
+  "/estrategias/:id",
   "/stock",
   "/usuarios",
   "/usuarios/:id",
@@ -20,6 +24,7 @@ export const validRoutes = [
   "/grupos/:id",
   "/contactos",
   "/contactos/:id"
+  
 ];
 
 export function isValidRoute(path) {

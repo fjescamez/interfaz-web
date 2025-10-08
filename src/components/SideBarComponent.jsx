@@ -51,7 +51,7 @@ function SideBarComponent({ isActive, setIsActive }) {
                 <div className={`icons ${isActive.clientes ? "active" : ""}`} onClick={() => handleClick("clientes", "CLIENTES")} data-tooltip-id="my-tooltip" data-tooltip-content={"CLIENTES"} >
                     <SlBriefcase />
                 </div>
-                {(session.role === "Administrador") && (
+                {(session?.role === "Administrador") && (
                     <>
                         <div className="border"></div>
                         <div className={`icons ${isActive.stock ? "active" : ""}`} onClick={() => handleClick("stock", "STOCK")} data-tooltip-id="my-tooltip" data-tooltip-content={"STOCK"} >
@@ -60,7 +60,7 @@ function SideBarComponent({ isActive, setIsActive }) {
                         <div className="border"></div>
                     </>)
                 }
-                {(session.role === "Administrador") && <div className={`icons ${isActive.usuarios ? "active" : ""}`} onClick={() => handleClick("usuarios", "USUARIOS")} data-tooltip-id="my-tooltip" data-tooltip-content={"USUARIOS"} >
+                {(session?.role === "Administrador") && <div className={`icons ${isActive.usuarios ? "active" : ""}`} onClick={() => handleClick("usuarios", "USUARIOS")} data-tooltip-id="my-tooltip" data-tooltip-content={"USUARIOS"} >
                     <FaUserCircle />
                 </div>}
             </div>

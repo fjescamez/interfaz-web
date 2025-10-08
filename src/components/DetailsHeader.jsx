@@ -19,6 +19,7 @@ function DetailsHeader({
     setShowInfo,
     hideInfoIcon,
     hideEditIcon,
+    hideAvatar,
     hideDeleteIcon,
     grid
 }) {
@@ -43,9 +44,11 @@ function DetailsHeader({
                 </div>
                 <div className="actions">
                     {!hideEditIcon && <GrEdit className="edit" onClick={isAdmin && (() => setEditPopup(true))} />}
-                    <div className="avatarImage clientAvatar">
-                        <img src={`http://192.4.26.112:3000/uploads/avatars/${avatar}`} alt="" onClick={isAdmin && (() => {if (toggleKiosk) toggleKiosk(endPoint, id, kioskData)})} />
-                    </div>
+                    {!hideAvatar &&
+                        <div className="avatarImage clientAvatar">
+                            <img src={`http://192.4.26.112:3000/uploads/avatars/${avatar}`} alt="" onClick={isAdmin && (() => { if (toggleKiosk) toggleKiosk(endPoint, id, kioskData) })} />
+                        </div>
+                    }
                     {!hideDeleteIcon && <BsTrash3Fill className="delete" onClick={isAdmin && (() => setDeletePopup(true))} />}
                 </div>
             </div>
