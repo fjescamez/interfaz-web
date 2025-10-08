@@ -79,7 +79,6 @@ function PlotterTable({ setPlotterModal, orderId, fullOrder, filePath }) {
                             setPopUpTable={setPlotterModal}
                             dinamicTableInfo={plotterTableInfo}
                             orderFilter={orderId}
-                            filePath={filePath}
                         />
                     </div>
                     :

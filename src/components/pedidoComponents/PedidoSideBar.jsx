@@ -18,6 +18,7 @@ import ComparePopUp from "./ComparePopUp";
 import EmailPopUp from "./EmailPopUp";
 import DocKiosk from "./DocKiosk";
 import XmlKiosk from "./XmlKiosk";
+import TintasPopUp from "./TintasPopUp";
 
 function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
     const navigate = useNavigate();
@@ -30,6 +31,7 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
     const [compareModal, setCompareModal] = useState(false);
     const [lenModal, setLenModal] = useState(false);
     const [filesModal, setFilesModal] = useState(false);
+    const [tintasModal, setTintasModal] = useState(false);
     const [montajeModal, setMontajeModal] = useState(false);
     const [plotterModal, setPlotterModal] = useState(false);
     const [executing, setExecuting] = useState(false);
@@ -152,6 +154,9 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
             case "files":
                 setFilesModal(true);
                 break;
+            case "tintas":
+                setTintasModal(true);
+                break;
             case "montaje":
                 setMontajeModal(true);
                 break;
@@ -178,6 +183,7 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
             {emailModal && <EmailPopUp setEmailModal={setEmailModal} fullOrder={fullOrder} />}
             {compareModal && <ComparePopUp setCompareModal={setCompareModal} rutaTrabajo={fullOrder.rutaTrabajo} />}
             {lenModal && <OrderLenTable setLenModal={setLenModal} orderId={fullOrder.id_pedido} />}
+            {tintasModal && <TintasPopUp setTintasModal={setTintasModal} fullOrder={fullOrder} />}
             {filesModal && <FileTable setFilesModal={setFilesModal} orderId={fullOrder.id_pedido} filePath={filePath} />}
             {montajeModal && <MontajeTable setMontajeModal={setMontajeModal} fullOrder={fullOrder} filePath={filePath} />}
             {plotterModal && <PlotterTable setPlotterModal={setPlotterModal} orderId={fullOrder.id_pedido} fullOrder={fullOrder} filePath={filePath} />}

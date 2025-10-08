@@ -4,11 +4,58 @@ import { MdOutlineEmail } from "react-icons/md";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { PiImagesLight, PiNoteLight } from "react-icons/pi";
 import { TbColorSwatch } from "react-icons/tb";
+import { RiPaintFill } from "react-icons/ri";
 import LenFile from "../assets/svg/LenFile";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
 import { SlBriefcase } from "react-icons/sl";
 import GroupsSvg from "../assets/svg/GroupsSvg";
+
+export const tintasTableInfo = {
+    tableName: "tintas",
+    endPoint: "colors",
+    headerIcon: <RiPaintFill />,
+    headerTitle: "TINTAS",
+    tableColumns: [
+        {
+            header: "Color",
+            active: true,
+            key: "color"
+        },
+        {
+            header: "Lineatura",
+            active: true,
+            key: "lineatura"
+        },
+        {
+            header: "Ángulo",
+            active: true,
+            key: "angulo"
+        },
+        {
+            header: "Trama",
+            active: true,
+            key: "trama"
+        },
+        {
+            header: "Plancha",
+            active: true,
+            key: "planchaArchivo"
+        },
+    ],
+    actions: [
+        {
+            title: "Imprimir Separaciones A3",
+            action: "imprimirA3"
+        },
+        {
+            title: "Config. Planchas",
+            action: "configPlancha",
+            noCheck: true
+        }
+    ],
+    tableChecks: true
+}
 
 export const infoGmgTableInfo = {
     tableName: "infoGmg",

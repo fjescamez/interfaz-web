@@ -56,7 +56,7 @@ function Table({
     const [advancedQuery, setAdvancedQuery] = useState({});
     const { session } = useSession();
     const isAdmin = session?.role === "Administrador";
-    const customTables = ["versiones", "archivosLen", "fichas", "montaje", "plotter", "montajes", "rip", "infoGmg"];
+    const customTables = ["versiones", "archivosLen", "fichas", "montaje", "plotter", "montajes", "rip", "infoGmg", "tintas"];
     const [showChecks, setShowChecks] = useState(tableChecks ? tableChecks : false);
     const [tableCharging, setTableCharging] = useState(true);
     const [noDataToShow, setNodataToShow] = useState(false);

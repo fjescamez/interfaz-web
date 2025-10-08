@@ -48,16 +48,6 @@ export const orderSidebarIcons = [
         ],
         tooltip: "KIOSCOS"
     },
-    /* {
-        icon: <BsFiletypeDoc />,
-        action: "kioscoDoc",
-        tooltip: "Kiosco DOC"
-    },
-    {
-        icon: <BsFiletypeXml />,
-        action: "kioscoXml",
-        tooltip: "Kiosco XML"
-    }, */
     {
         icon: <PiEnvelopeLight />,
         action: "email",
@@ -73,20 +63,15 @@ export const orderSidebarIcons = [
         action: "lenFiles",
         tooltip: "FICHEROS LEN"
     },
-    /* {
-        icon: <PiStorefrontLight />,
-        action: "kiosk",
-        tooltip: "KIOSKO"
-    }, */
-    {
-        icon: <PiImagesLight />,
-        action: "files",
-        tooltip: "FICHAS"
-    },
     {
         icon: <RiPaintFill />,
         action: "tintas",
         tooltip: "TINTAS"
+    },
+    {
+        icon: <PiImagesLight />,
+        action: "files",
+        tooltip: "FICHAS"
     },
     {
         icon: <MontajeSvg />,
