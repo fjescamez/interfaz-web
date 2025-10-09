@@ -44,19 +44,8 @@ function OrderDetails() {
   }
 
   const getOrderColors = async () => {
-    try {
-      const response = await fetch(`http://192.4.26.112:3000/colors/get?unitario=${fullOrder?.unitario}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.token}`
-        }
-      });
-      const orderColors = await response.json();
-      setOrderColors(orderColors?.results);
-    } catch (error) {
-      notify(toast.error, "error", "Error en los colores", "Ha ocurrido un error al cargar los colores del pedido");
-    }
+    const response = await fetchData("colors", fullOrder?.unitario);
+    setOrderColors(response);
   }
 
   const openClient = async () => {

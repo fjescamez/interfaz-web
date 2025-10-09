@@ -83,11 +83,11 @@ export const orderSidebarIcons = [
         action: "files",
         tooltip: "FICHAS"
     },
-    {
+    /* {
         icon: <RiPaintFill />,
         action: "tintas",
         tooltip: "TINTAS"
-    },
+    }, */
     {
         icon: <MontajeSvg />,
         action: "montaje",
