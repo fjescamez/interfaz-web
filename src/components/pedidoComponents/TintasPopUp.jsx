@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Table from '../Table'
 import { tintasTableInfo } from '../../helpers/tablesInfo';
 import MetodosImpresion from './MetodosImpresion';
+import { postData } from '../../helpers/fetchData';
 
 function TintasPopUp({ setTintasModal, fullOrder }) {
     const [tintasIds, setTintasIds] = useState([]);
@@ -10,13 +11,26 @@ function TintasPopUp({ setTintasModal, fullOrder }) {
 
     const tintasActions = async (variables) => {
         const { action, data } = variables;
-        if (action === "configPlancha") {
+
+        if (action === "imprimirA3") {
+            const data = {
+                ids: tintasIds,
+                action: "separacionA3",
+                extraInputs: {
+                    unitario: fullOrder?.unitario
+                } 
+            };
+
+            await postData('colors/imprimirA3', data);
+            return { status: "success" };
+
+        } else if (action === "configPlancha") {
             setTintas(data);
             setPlanchasModal(true);
             return { status: "success" };
         }
 
-        return { status: "success" }
+        return { status: "success" };
     }
 
     return (

@@ -2,6 +2,7 @@ import { HiOutlineRefresh } from "react-icons/hi"
 import { PiNoteLight, PiFoldersLight, PiEnvelopeLight, PiStackLight, PiStorefrontLight, PiImagesLight } from "react-icons/pi"
 import { BsFiletypeDoc, BsFiletypeXml, BsFileEarmark } from "react-icons/bs";
 import { RiPaintFill } from "react-icons/ri";
+import { SlSpeech } from "react-icons/sl";
 import LenFile from "../assets/svg/LenFile";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
@@ -67,6 +68,11 @@ export const orderSidebarIcons = [
         icon: <RiPaintFill />,
         action: "tintas",
         tooltip: "TINTAS"
+    },
+    {
+        icon: <SlSpeech />,
+        action: "opcionales",
+        tooltip: "OPCIONALES"
     },
     {
         icon: <PiImagesLight />,
