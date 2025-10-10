@@ -48,7 +48,7 @@ export const orderSidebarIcons = [
                 last: true
             }
         ],
-        tooltip: "KIOSCOS"
+        tooltip: ""
     },
     {
         icon: <PiEnvelopeLight />,
