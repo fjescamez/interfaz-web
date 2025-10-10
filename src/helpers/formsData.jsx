@@ -8,8 +8,74 @@ import GroupsSvg from "../assets/svg/GroupsSvg";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
 
+export const emailInfoFormData = {
+    formSections: [
+        {
+            title: "Cabecera",
+            rows: [
+                {
+                    groups: ["usuario", "para", "fecha"],
+                },
+                {
+                    groups: ["asunto"]
+                }
+            ]
+        },
+        {
+            title: "Cuerpo",
+            rows: [
+                {
+                    groups: ["respuesta"]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "usuario",
+            labelId: "usuarioLabel",
+            labelTitle: "De",
+            inputType: "text",
+            inputId: "usuario",
+            inputName: "usuario"
+        },
+        {
+            htmlFor: "para",
+            labelId: "paraLabel",
+            labelTitle: "Para",
+            inputType: "text",
+            inputId: "para",
+            inputName: "para"
+        },
+        {
+            htmlFor: "fecha",
+            labelId: "fechaLabel",
+            labelTitle: "Fecha",
+            inputType: "text",
+            inputId: "fecha",
+            inputName: "fecha"
+        },
+        {
+            htmlFor: "asunto",
+            labelId: "asuntoLabel",
+            labelTitle: "Asunto",
+            inputType: "text",
+            inputId: "asunto",
+            inputName: "asunto"
+        },
+        {
+            htmlFor: "respuesta",
+            labelId: "respuestaLabel",
+            labelTitle: "Respuesta",
+            textarea: true,
+            inputId: "respuesta",
+            inputName: "respuesta"
+        },
+    ]
+}
+
 export const observacionesTecnicasFormData = {
-    formSections:[
+    formSections: [
         {
             title: "Dpto. Dibujo",
             rows: [

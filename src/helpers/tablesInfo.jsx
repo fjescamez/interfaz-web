@@ -5,11 +5,51 @@ import { IoDocumentTextOutline } from "react-icons/io5";
 import { PiImagesLight, PiNoteLight } from "react-icons/pi";
 import { TbColorSwatch } from "react-icons/tb";
 import { RiPaintFill } from "react-icons/ri";
+import { BsInfoLg } from "react-icons/bs";
 import LenFile from "../assets/svg/LenFile";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
 import { SlBriefcase } from "react-icons/sl";
 import GroupsSvg from "../assets/svg/GroupsSvg";
+
+export const emailInfoTableInfo = {
+    tableName: "emailInfo",
+    endPoint: "",
+    headerIcon: <BsInfoLg />,
+    headerTitle: "INFO EMAIL",
+    tableColumns: [
+        {
+            header: "Fecha",
+            active: true,
+            key: "fecha"
+        },
+        {
+            header: "Hora",
+            active: true,
+            key: "hora"
+        },
+        {
+            header: "Acción",
+            active: true,
+            key: "accion"
+        },
+        {
+            header: "Para",
+            active: true,
+            key: "contacto.contacto"
+        },
+        {
+            header: "Usuario",
+            active: true,
+            key: "usuario"
+        },
+        {
+            header: "Asunto",
+            active: true,
+            key: "asunto"
+        },
+    ]
+}
 
 export const tintasTableInfo = {
     tableName: "tintas",

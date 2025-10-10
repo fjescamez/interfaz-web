@@ -33,9 +33,10 @@ function Table({
     setCheckedRows,
     orderFilter,
     setPopUpTable,
-    currentVersion
+    currentVersion,
+    initialData
 }) {
-    const [tableData, setTableData] = useState([]);
+    const [tableData, setTableData] = useState(initialData || []);
     const [modal, setModal] = useState(false);
     const [deletePopup, setDeletePopup] = useState(false);
     const [total, setTotal] = useState(0);
@@ -56,9 +57,9 @@ function Table({
     const [advancedQuery, setAdvancedQuery] = useState({});
     const { session } = useSession();
     const isAdmin = session?.role === "Administrador";
-    const customTables = ["versiones", "archivosLen", "fichas", "montaje", "plotter", "montajes", "rip", "infoGmg", "tintas"];
+    const customTables = ["versiones", "archivosLen", "fichas", "montaje", "plotter", "montajes", "rip", "infoGmg", "tintas", "emailInfo"];
     const [showChecks, setShowChecks] = useState(tableChecks ? tableChecks : false);
-    const [tableCharging, setTableCharging] = useState(true);
+    const [tableCharging, setTableCharging] = useState(!initialData ? true : false);
     const [noDataToShow, setNodataToShow] = useState(false);
     const [copyMenu, setCopyMenu] = useState({
         visible: false,
@@ -82,8 +83,10 @@ function Table({
     }, [dinamicTableInfo]);
 
     useEffect(() => {
-        getUserPreferences(session, tableInfo, setTableInfo);
-    }, []);
+        if (!initialData) {
+            getUserPreferences(session, tableInfo, setTableInfo);
+        }
+    }, [initialData]);
 
     useEffect(() => {
         const searchParams = new URLSearchParams(advancedQuery).toString();
@@ -91,7 +94,9 @@ function Table({
         if (searchParams !== "") {
             getData(1, searchParams, clienteCodigo);
         } else {
-            getData(1, search, clienteCodigo);
+            if (!initialData) {
+                getData(1, search, clienteCodigo);
+            }
         }
     }, [advancedQuery]);
 
@@ -123,8 +128,8 @@ function Table({
         }
     }, [page]);
 
-    const handleClick = (data) => {
-        const openRowTables = ["montajes", "plotter", "allMontajes"];
+    const handleClick = (data, index) => {
+        const openRowTables = ["montajes", "plotter", "allMontajes", "emailInfo"];
 
         if (showChecks) {
             handleChecked(data._id);
@@ -132,7 +137,7 @@ function Table({
         }
 
         if (openRowTables.includes(tableName)) {
-            return actions({ action: "openRow", data });
+            return actions({ action: "openRow", data, index });
         }
 
         if (tableName === "infoGmg") {
@@ -197,7 +202,7 @@ function Table({
     }, [search]);
 
     useEffect(() => {
-        if (debouncedSearch.length >= 3 || debouncedSearch.length === 0) {
+        if ((debouncedSearch.length >= 3 || debouncedSearch.length === 0) && !initialData) {
             setPage(1);
             getData(1, debouncedSearch, clienteCodigo);
         }
@@ -298,7 +303,7 @@ function Table({
                                     :
                                     <MdLockOutline className="tableLock" onClick={() => { setShowChecks(true); setCheckedRows([]) }} />
                             )}
-                            <HiOutlineRefresh className="tableRefresh" onClick={() => refreshTable()} />
+                            {!initialData && <HiOutlineRefresh className="tableRefresh" onClick={() => refreshTable()} />}
                             {(isAdmin && tableForm) && (
                                 <button onClick={() => setModal(true)}>
                                     <svg id="Layer_1" data-name="Layer 1"
@@ -417,8 +422,8 @@ function Table({
                                     ))}
                                 </tr>
                             )}
-                            {tableData.map((data) => (
-                                <tr key={data._id} onClick={() => handleClick(data)} className={data.xml ? (data.xml.numero.version === currentVersion ? "activeRow" : undefined) : undefined} >
+                            {tableData.map((data, index) => (
+                                <tr key={data._id || index} onClick={() => handleClick(data, index)} className={data.xml ? (data.xml.numero.version === currentVersion ? "activeRow" : undefined) : undefined} >
                                     {showChecks && (
                                         <td className="checkElement">
                                             <input

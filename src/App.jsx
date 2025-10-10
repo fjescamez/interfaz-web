@@ -27,6 +27,7 @@ import GroupsPage from './pages/GroupsPage'
 import GroupDetails from "./pages/GroupDetails";
 import StrategyDetails from "./pages/StrategyDetails";
 import ObservacionesTecnicas from "./pages/ObservacionesTecnicas";
+import EmailDetails from "./pages/EmailDetails";
 
 function App() {
   const icons = ["home", "pedidos", "len", "clientes", "stock", "usuarios"];
@@ -167,9 +168,11 @@ function App() {
           {/*<Route path="/home" element={<HomePage toggleKiosk={toggleKiosk}/>} />*/}
           (<Route path="/home" element={<OrdersPage />} />
           <Route path="/home/:id" element={<OrderDetails />} />)
+          
           <Route path="/pedidos" element={<OrdersPage />} />
           <Route path="/pedidos/:id" element={<OrderDetails />} />
           <Route path="/pedidos/:id/kiosk" element={<OrderKiosk />} />
+          <Route path="/infoEmail/:id_pedido/:id" element={<EmailDetails />} />
           <Route path="/fichaTecnica/:id" element={<ObservacionesTecnicas />} />
           <Route path="/len" element={<LenPage />} />
           <Route path="/clientes" element={<ClientsPage />} />

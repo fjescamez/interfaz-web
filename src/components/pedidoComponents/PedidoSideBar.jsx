@@ -20,6 +20,7 @@ import DocKiosk from "./DocKiosk";
 import XmlKiosk from "./XmlKiosk";
 import TintasPopUp from "./TintasPopUp";
 import OpcionalesPopUp from "./OpcionalesPopUp";
+import OrderInfoPopUp from "./OrderInfoPopUp";
 
 function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
     const navigate = useNavigate();
@@ -32,10 +33,11 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
     const [compareModal, setCompareModal] = useState(false);
     const [lenModal, setLenModal] = useState(false);
     const [filesModal, setFilesModal] = useState(false);
-    const [tintasModal, setTintasModal] = useState(false);
-    const [opcionalesModal, setOpcionalesModal] = useState(false);
     const [montajeModal, setMontajeModal] = useState(false);
     const [plotterModal, setPlotterModal] = useState(false);
+    const [tintasModal, setTintasModal] = useState(false);
+    const [infoModal, setInfoModal] = useState(false);
+    const [opcionalesModal, setOpcionalesModal] = useState(false);
     const [executing, setExecuting] = useState(false);
     const [initialNotes, setInitialNotes] = useState([]);
     const [buttonBar, setButtonBar] = useState({ visible: false, buttons: [], position: { top: 0, left: 0 } });
@@ -159,16 +161,21 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
             case "tintas":
                 setTintasModal(true);
                 break;
-            case "opcionales":
-                if (fullOrder.opcionales && fullOrder.opcionales.length > 0) {
-                    setOpcionalesModal(true);
-                }
-                break;
             case "montaje":
                 setMontajeModal(true);
                 break;
             case "plotter":
                 setPlotterModal(true);
+                break;
+            case "info":
+                if (fullOrder.registroInfo && fullOrder.registroInfo.length > 0) {
+                    setInfoModal(true);
+                }
+                break;
+            case "opcionales":
+                if (fullOrder.opcionales && fullOrder.opcionales.length > 0) {
+                    setOpcionalesModal(true);
+                }
                 break;
             default:
                 break;
@@ -190,11 +197,12 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
             {emailModal && <EmailPopUp setEmailModal={setEmailModal} fullOrder={fullOrder} />}
             {compareModal && <ComparePopUp setCompareModal={setCompareModal} rutaTrabajo={fullOrder.rutaTrabajo} />}
             {lenModal && <OrderLenTable setLenModal={setLenModal} orderId={fullOrder.id_pedido} />}
-            {tintasModal && <TintasPopUp setTintasModal={setTintasModal} fullOrder={fullOrder} />}
-            {opcionalesModal && <OpcionalesPopUp setOpcionalesModal={setOpcionalesModal} fullOrder={fullOrder} />}
             {filesModal && <FileTable setFilesModal={setFilesModal} orderId={fullOrder.id_pedido} filePath={filePath} />}
             {montajeModal && <MontajeTable setMontajeModal={setMontajeModal} fullOrder={fullOrder} filePath={filePath} />}
             {plotterModal && <PlotterTable setPlotterModal={setPlotterModal} orderId={fullOrder.id_pedido} fullOrder={fullOrder} filePath={filePath} />}
+            {tintasModal && <TintasPopUp setTintasModal={setTintasModal} fullOrder={fullOrder} />}
+            {infoModal && <OrderInfoPopUp setInfoModal={setInfoModal} fullOrder={fullOrder} />}
+            {opcionalesModal && <OpcionalesPopUp setOpcionalesModal={setOpcionalesModal} fullOrder={fullOrder} />}
             <div className="pedidoSideBar" ref={sideBarRef}>
                 {orderSidebarIcons.map((icon, index) => (
                     <div className="iconContainer" key={index}>

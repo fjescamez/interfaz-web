@@ -23,8 +23,8 @@ export const validRoutes = [
   "/grupos",
   "/grupos/:id",
   "/contactos",
-  "/contactos/:id"
-  
+  "/contactos/:id",
+  "/infoEmail/:id_pedido/:id"
 ];
 
 export function isValidRoute(path) {

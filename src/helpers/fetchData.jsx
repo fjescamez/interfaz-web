@@ -29,11 +29,8 @@ export const fetchData = async (endPoint, searchValue, page = "1", setData, setT
         if (!response.ok) {
             const errorData = await response.json();
             if (response.status === 401) {
-                notify(toast.error, 'error', 'Token inválido', 'Su token de sesión es inválido. Se va a cerrar su sesión.');
                 localStorage.removeItem('session');
-                setTimeout(() => {
-                    window.location.href = '/login';
-                }, 2000);
+                window.location.href = '/login';
             } else {
                 notify(toast.error, 'error', 'Error', errorData.error || 'Error desconocido');
             }

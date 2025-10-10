@@ -4,6 +4,8 @@ import { BsFiletypeDoc, BsFiletypeXml, BsFileEarmark } from "react-icons/bs";
 import { RiPaintFill } from "react-icons/ri";
 import { SlSpeech } from "react-icons/sl";
 import { TbSquareLetterKFilled } from "react-icons/tb";
+import { ImFilesEmpty } from "react-icons/im";
+import { BsInfoLg } from "react-icons/bs";
 import LenFile from "../assets/svg/LenFile";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
@@ -61,9 +63,30 @@ export const orderSidebarIcons = [
         tooltip: "COMPARAR"
     },
     {
-        icon: <LenFile />,
-        action: "lenFiles",
-        tooltip: "FICHEROS LEN"
+        icon: <ImFilesEmpty />,
+        buttons: [
+            {
+                icon: <LenFile />,
+                action: "lenFiles",
+                tooltip: "FICHEROS LEN"
+            },
+            {
+                icon: <PiImagesLight />,
+                action: "files",
+                tooltip: "FICHAS"
+            },
+            {
+                icon: <MontajeSvg />,
+                action: "montaje",
+                tooltip: "MONTAJES"
+            },
+            {
+                icon: <Plotter />,
+                action: "plotter",
+                tooltip: "PLOTTER"
+            }
+        ],
+        tooltip: ""
     },
     {
         icon: <RiPaintFill />,
@@ -71,24 +94,14 @@ export const orderSidebarIcons = [
         tooltip: "TINTAS"
     },
     {
+        icon: <BsInfoLg />,
+        action: "info",
+        tooltip: "INFO"
+    },
+    {
         icon: <SlSpeech />,
         action: "opcionales",
-        tooltip: "OPCIONALES"
-    },
-    {
-        icon: <PiImagesLight />,
-        action: "files",
-        tooltip: "FICHAS"
-    },
-    {
-        icon: <MontajeSvg />,
-        action: "montaje",
-        tooltip: "MONTAJES"
-    },
-    {
-        icon: <Plotter />,
-        action: "plotter",
-        tooltip: "PLOTTER",
+        tooltip: "OPCIONALES",
         last: true
     }
 ];
