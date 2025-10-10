@@ -3,6 +3,7 @@ import { PiNoteLight, PiFoldersLight, PiEnvelopeLight, PiStackLight, PiStorefron
 import { BsFiletypeDoc, BsFiletypeXml, BsFileEarmark } from "react-icons/bs";
 import { RiPaintFill } from "react-icons/ri";
 import { SlSpeech } from "react-icons/sl";
+import { TbSquareLetterKFilled } from "react-icons/tb";
 import LenFile from "../assets/svg/LenFile";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
@@ -30,7 +31,7 @@ export const orderSidebarIcons = [
         tooltip: "VERSIONES"
     },
     {
-        icon: <BsFileEarmark />,
+        icon: <TbSquareLetterKFilled />,
         buttons: [
             {
                 id: 21,

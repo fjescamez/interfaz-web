@@ -160,7 +160,9 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
                 setTintasModal(true);
                 break;
             case "opcionales":
-                setOpcionalesModal(true);
+                if (fullOrder.opcionales && fullOrder.opcionales.length > 0) {
+                    setOpcionalesModal(true);
+                }
                 break;
             case "montaje":
                 setMontajeModal(true);
