@@ -92,10 +92,10 @@ function Table({
         const searchParams = new URLSearchParams(advancedQuery).toString();
 
         if (searchParams !== "") {
-            getData(1, searchParams, clienteCodigo);
+            getData(page, searchParams, clienteCodigo);
         } else {
             if (!initialData) {
-                getData(1, search, clienteCodigo);
+                getData(page, search, clienteCodigo);
             }
         }
     }, [advancedQuery]);
@@ -119,11 +119,18 @@ function Table({
     }, [clienteCodigo]);
 
     useEffect(() => {
+        let searchParams = search;
+        const advancedFilters = new URLSearchParams(advancedQuery).toString();
+
+        if (advancedFilters !== "") {
+            searchParams = advancedFilters;
+        }
+
         if (page > 1) {
             if (!clientFilter) {
-                getData(page, search);
+                getData(page, searchParams);
             } else {
-                getData(page, search, clienteCodigo);
+                getData(page, searchParams, clienteCodigo);
             }
         }
     }, [page]);
@@ -341,6 +348,7 @@ function Table({
                                         onClick={() => {
                                             setAdvancedFilters(prev => !prev);
                                             setAdvancedQuery({});
+                                            setPage(1);
                                             setSearch("");
                                         }}
                                     >
@@ -455,14 +463,14 @@ function Table({
                                             );
                                         }
                                         /* Columna para previos */
-                                        if (column.key === "archivo") {
+                                        if (column.key === "archivo" || column.key === "unitario") {
                                             return (
                                                 <td key={column.key} className="previo">
                                                     {value.includes(".pdf")
                                                         ?
                                                         <PdfAsImage url={value.replace("cloudflow://", "").replace("PEDIDOS_", "Pedidos ")} />
                                                         :
-                                                        <img src="null" />}
+                                                        <img src="src/assets/img/sinUnitario.png" />}
                                                 </td>
                                             );
                                         }

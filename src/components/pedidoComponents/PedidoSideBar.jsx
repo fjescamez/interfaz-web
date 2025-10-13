@@ -40,6 +40,7 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
     const [opcionalesModal, setOpcionalesModal] = useState(false);
     const [executing, setExecuting] = useState(false);
     const [initialNotes, setInitialNotes] = useState([]);
+    const [areNotes, setAreNotes] = useState(false);
     const [buttonBar, setButtonBar] = useState({ visible: false, buttons: [], position: { top: 0, left: 0 } });
     const buttonBarRef = useRef(null);
     const sideBarRef = useRef(null);
@@ -73,12 +74,14 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
         if (fullOrder.xml?.numero.id) {
             fetchData("notes", "", fullOrder.xml.numero.id, setInitialNotes);
         }
+        setAreNotes(false);
     }, [fullOrder]);
 
     useEffect(() => {
         if (initialNotes.length > 0) {
             setNoteModal(true);
             setInitialNotes([]);
+            setAreNotes(true);
         }
     }, [initialNotes]);
 
@@ -97,7 +100,7 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
         };
     }, [buttonBar.visible]);
 
-    const handleClick = (action, buttons, event) => {
+    const handleClick = async (action, buttons, event) => {
         if (buttons) {
             const rect = event.currentTarget.getBoundingClientRect();
             const sideBarRect = sideBarRef.current.getBoundingClientRect();
@@ -124,6 +127,11 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
                     window.location.href = `smb://192.4.26.120/Archivo%20Disengraf/TRABAJOS/${folderUrl}`;
                 }
                 openFolder();
+                /* const data = {
+                    rutaTrabajo: fullOrder.rutaTrabajo,
+                }
+
+                const openFolder = await postData("orders/openFolder", data); */
                 break;
             case "versions":
                 setVersionsModal(true);
@@ -206,7 +214,12 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
             <div className="pedidoSideBar" ref={sideBarRef}>
                 {orderSidebarIcons.map((icon, index) => (
                     <div className="iconContainer" key={index}>
-                        <div className="icons" onClick={(e) => handleClick(icon.action, icon.buttons, e)} data-tooltip-id="my-tooltip" data-tooltip-content={icon.tooltip}>
+                        <div
+                            className={"icons" + ((areNotes && icon.tooltip === "NOTAS") ? " active" : "")}
+                            onClick={(e) => handleClick(icon.action, icon.buttons, e)}
+                            data-tooltip-id="my-tooltip"
+                            data-tooltip-content={icon.tooltip}
+                        >
                             {icon.icon}
                         </div>
                         {(!icon.last) && <div className="border"></div>}

@@ -7,6 +7,8 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
 ).toString();
 
 function PdfAsImage({ url, className }) {
+    console.log("URL:", url);
+    
     /* PDF a imagen */
     const [imgSrc, setImgSrc] = useState(null);
 
@@ -37,7 +39,12 @@ function PdfAsImage({ url, className }) {
             }
         };
 
-        renderPdf();
+        if (url.includes("sinUnitario")) {
+            console.log("url sin unitario");
+            setImgSrc("../../assets/img/sinUnitario.png");
+        } else {
+            renderPdf();
+        }
     }, [url]);
 
     return (

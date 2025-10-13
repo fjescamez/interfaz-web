@@ -52,6 +52,7 @@
                 word-wrap: break-word; /* Permite que las palabras largas se ajusten */
                 white-space: pre-wrap; /* Mantiene los saltos de línea y ajusta el texto al contenedor */
                 overflow-wrap: break-word; /* Rompe las palabras largas para evitar desbordamiento */
+                user-select: text;
             }
         }
     }

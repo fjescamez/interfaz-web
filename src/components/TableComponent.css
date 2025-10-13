@@ -49,7 +49,7 @@
                 width: 7rem;
 
                 img {
-                    max-height: 15rem;
+                    max-height: 7rem;
                     width: auto;
                     object-fit: cover;
                 }

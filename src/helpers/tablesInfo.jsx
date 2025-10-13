@@ -609,6 +609,11 @@ export const orderTableInfo = {
     headerTitle: "PEDIDOS DE CLIENTES",
     tableColumns: [
         {
+            header: "Previo",
+            active: true,
+            key: "unitario"
+        },
+        {
             header: "Número",
             active: true,
             key: "id_pedido"
