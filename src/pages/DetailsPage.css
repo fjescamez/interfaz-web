@@ -121,13 +121,9 @@
             align-self: center;
         }
 
-        .gridTitle {
-
-        }
-
         .gridContainer {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(23rem, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
             gap: 5rem 0;
             width: fit-content;
             max-width: 100%;
@@ -139,7 +135,7 @@
                 align-items: center;
                 row-gap: 1.5rem;
                 transition: all 0.2s ease-in-out;
-                width: 80%;
+                width: 85%;
                 max-width: 40rem;
                 margin: 0 auto;
 

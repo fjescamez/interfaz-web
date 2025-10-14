@@ -51,6 +51,10 @@ function SideBarComponent({ isActive, setIsActive }) {
                 <div className={`icons ${isActive.clientes ? "active" : ""}`} onClick={() => handleClick("clientes", "CLIENTES")} data-tooltip-id="my-tooltip" data-tooltip-content={"CLIENTES"} >
                     <SlBriefcase />
                 </div>
+                <div className="border"></div>
+                <div className={`icons ${isActive.produccion ? "active" : ""}`} onClick={() => handleClick("produccion", "PRODUCCION")} data-tooltip-id="my-tooltip" data-tooltip-content={"PRODUCCION"} >
+                    <SlBriefcase />
+                </div>
                 {(session?.role === "Administrador") && (
                     <>
                         <div className="border"></div>

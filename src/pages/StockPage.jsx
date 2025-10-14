@@ -9,6 +9,9 @@ function StockPage() {
         <div className="detailsContainer">
             <DetailsHeader
                 title={"CONTROL DE STOCK"}
+                hideAvatar={true}
+                hideEditIcon={true}
+                hideDeleteIcon={true}
             />
             <div className="detailsScroll">
                 <GridComponent

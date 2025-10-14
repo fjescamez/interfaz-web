@@ -28,9 +28,10 @@ import GroupDetails from "./pages/GroupDetails";
 import StrategyDetails from "./pages/StrategyDetails";
 import ObservacionesTecnicas from "./pages/ObservacionesTecnicas";
 import EmailDetails from "./pages/EmailDetails";
+import ProduccionPage from "./pages/ProduccionPage";
 
 function App() {
-  const icons = ["home", "pedidos", "len", "clientes", "stock", "usuarios"];
+  const icons = ["home", "pedidos", "len", "clientes", "stock", "produccion", "usuarios"];
   const location = useLocation();
   const { session } = useSession();
   const navigate = useNavigate();
@@ -49,6 +50,7 @@ function App() {
     if (pathname.startsWith("/len")) return "len";
     if (pathname.startsWith("/clientes")) return "clientes";
     if (pathname.startsWith("/stock")) return "stock";
+    if (pathname.startsWith("/produccion")) return "produccion";
     if (pathname.startsWith("/usuarios")) return "usuarios";
     return "home";
   };
@@ -190,6 +192,7 @@ function App() {
           <Route path="/clientes/:id/grupos" element={<GroupsPage filter={true} />} />
           <Route path="/clientes/:id/grupos/:id" element={<GroupDetails />} />
           <Route path="/stock" element={<StockPage />} />
+          <Route path="/produccion" element={<ProduccionPage />} />
           <Route path="/usuarios" element={<UsersPage />} />
           <Route path="/usuarios/:id" element={<UserDetails toggleKiosk={toggleKiosk} />} />
         </Routes>

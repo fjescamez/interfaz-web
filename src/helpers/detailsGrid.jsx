@@ -7,6 +7,78 @@ import { TiContacts } from "react-icons/ti";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import GroupsSvg from "../assets/svg/GroupsSvg";
 
+export const produccionPlanchasDetails = {
+    title: "Planchas",
+    grid: [
+        {
+            icon: <IoDocumentTextOutline />,
+            title: "Planchas",
+            key: "planchas"
+        },
+        {
+            icon: <IoDocumentTextOutline />,
+            title: "Pre-producción",
+            key: "preproduccion"
+        },
+        {
+            icon: <IoDocumentTextOutline />,
+            title: "Producción",
+            key: "produccion"
+        },
+        {
+            icon: <IoDocumentTextOutline />,
+            title: "Finalizadas",
+            key: "finalizadas"
+        },
+    ]
+}
+
+export const produccionTrabajosDetails = {
+    title: "Trabajos externos",
+    grid: [
+        {
+            icon: <IoDocumentTextOutline />,
+            title: "Pendientes",
+            key: "pendientes"
+        },
+        {
+            icon: <IoDocumentTextOutline />,
+            title: "DIGRA",
+            key: "digra"
+        },
+        {
+            icon: <IoDocumentTextOutline />,
+            title: "GspApp",
+            key: "gspapp"
+        },
+        {
+            icon: <IoDocumentTextOutline />,
+            title: "TORTOSA",
+            key: "tortosa"
+        },
+        {
+            icon: <IoDocumentTextOutline />,
+            title: "Adhay",
+            key: "adhay"
+        },
+        {
+            icon: <IoDocumentTextOutline />,
+            title: "GSP",
+            key: "gsp"
+        },
+        {
+            icon: <IoDocumentTextOutline />,
+            title: "ETIPON",
+            key: "etipon"
+        },
+        {
+            icon: <IoDocumentTextOutline />,
+            title: "Finalizados",
+            key: "finalizados"
+        },
+    ]
+}
+
 export const usersDetails = {
     grid: [
 
@@ -19,19 +91,16 @@ export const clientsDetails = {
         {
             icon: <IoDocumentTextOutline />,
             title: "Pedidos",
-            body: "Listado de pedidos realizados por este cliente.",
             key: "pedidos"
         },
         {
             icon: <TiContacts />,
             title: "Contactos",
-            body: "Lista de contactos pertenecientes a este cliente.",
             key: "contactos"
         },
         {
             icon: <GroupsSvg />,
             title: "Grupos",
-            body: "Lista de grupos de contactos pertenecientes a este cliente.",
             key: "grupos"
         },
         /* {
@@ -49,7 +118,6 @@ export const clientsDetails = {
         {
             icon: <TbColorSwatch />,
             title: "Estrategias Color",
-            body: "Estrategias de color pertenecientes a este cliente",
             key: "estrategias"
         },
         /* {

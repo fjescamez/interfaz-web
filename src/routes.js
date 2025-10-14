@@ -18,6 +18,7 @@ export const validRoutes = [
   "/estrategias",
   "/estrategias/:id",
   "/stock",
+  "/produccion",
   "/usuarios",
   "/usuarios/:id",
   "/grupos",
