@@ -144,7 +144,10 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
                 break;
             case "clientApp":
                 const appUrl = clientApps.find(app => app.client === fullOrder.xml.numero.cliente_nombre)?.url;
-                window.open(appUrl, "_blank");
+                
+                if (appUrl !== undefined) {
+                    window.open(appUrl, "_blank");
+                }
                 break;
             case "email":
                 setEmailModal(true);
