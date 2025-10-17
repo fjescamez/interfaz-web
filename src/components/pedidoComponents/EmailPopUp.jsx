@@ -45,7 +45,7 @@ function EmailPopUp({ setEmailModal, fullOrder }) {
         const options = [];
 
         contacts.map(contact => {
-            const nuevoContacto = { ...contact, textoOpcion: contact.contacto };
+            const nuevoContacto = { ...contact, textoOpcion: `${contact.contacto} (${contact.email})` };
             options.push(nuevoContacto);
         })
 

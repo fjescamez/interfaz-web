@@ -44,20 +44,20 @@ export const orderSidebarIcons = [
         icon: <TbSquareLetterKFilled />,
         buttons: [
             {
+                icon: <FaExternalLinkAlt />,
+                action: "clientApp",
+                tooltip: "Kiosco Cliente",
+                first: true
+            },
+            {
                 icon: <BsFiletypeDoc />,
                 action: "kioscoDoc",
-                tooltip: "Kiosco DOC",
-                first: true
+                tooltip: "Kiosco DOC"
             },
             {
                 icon: <BsFiletypeXml />,
                 action: "kioscoXml",
                 tooltip: "Kiosco XML"
-            },
-            {
-                icon: <FaExternalLinkAlt />,
-                action: "clientApp",
-                tooltip: "Kiosco Cliente"
             }
         ],
         tooltip: ""
