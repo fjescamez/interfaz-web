@@ -72,6 +72,7 @@ function GeneralForm({
         } else {
             setInputData(prev => {
                 const updated = { ...prev, [name]: newValue };
+                
                 if (onInputChange) {
                     onInputChange(updated);
                 }

@@ -37,10 +37,10 @@ function LenTable({
                         })
                     );
                     setLenIds([]);
-                    return {status: "success", response};
+                    return { status: "success", response };
                 } else {
                     notify(toast.error, data.status, data.title, data.message);
-                    return {status: "error", response};
+                    return { status: "error", response };
                 }
             } catch (error) {
                 notify(toast.error, 'error', 'Error', error);
@@ -56,7 +56,7 @@ function LenTable({
 
         try {
             const response = await postData("lenFiles/infoCurvas", data);
-            
+
             if (response.status === "success") {
                 notify(toast.success, response.status, response.title, response.message);
                 setInfoCurvasPopup(true);
@@ -75,6 +75,13 @@ function LenTable({
         const data = {
             action: "solicitarVista",
             orderId
+        }
+
+        if (lenIds.length === 1) {
+            data._id = lenIds[0];
+        } else if (lenIds.length > 1) {
+            notify(toast.error, 'error', 'Error', 'Solo se puede seleccionar un LEN para solicitar vista');
+            return { status: "error" };
         }
 
         try {
