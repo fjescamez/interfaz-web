@@ -78,7 +78,8 @@ export const orderSidebarIcons = [
             {
                 icon: <LenFile />,
                 action: "lenFiles",
-                tooltip: "FICHEROS LEN"
+                tooltip: "FICHEROS LEN",
+                first: true
             },
             {
                 icon: <PiImagesLight />,
