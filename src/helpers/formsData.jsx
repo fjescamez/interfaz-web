@@ -1211,7 +1211,6 @@ export const userFormData = {
             ]
         },
         {
-            title: "Rol Dpto.",
             rows: [
                 {
                     groups: [
@@ -1222,7 +1221,6 @@ export const userFormData = {
             ]
         }
     ],
-
     formFields: [
         {
             htmlFor: "username",
@@ -1257,10 +1255,11 @@ export const userFormData = {
             labelTitle: "Rol",
             select: "simple",
             options: [
+                "Operario",
                 "Administrador",
                 "Manager",
                 "Especialista",
-                "Operario"
+                "Soporte"
             ],
             inputId: "role",
             inputName: "role"

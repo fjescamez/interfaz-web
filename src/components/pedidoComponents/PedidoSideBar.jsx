@@ -1,5 +1,5 @@
 import "./PedidoSideBar.css";
-import { orderSidebarIcons } from "../../helpers/orderSidebarIcons";
+import { orderSidebarIcons, clientApps } from "../../helpers/orderSidebarIcons";
 import { useRef, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Tooltip as ReactTooltip } from "react-tooltip";
@@ -141,6 +141,10 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
                 break;
             case "kioscoXml":
                 setXmlModal(true);
+                break;
+            case "clientApp":
+                const appUrl = clientApps.find(app => app.client === fullOrder.xml.numero.cliente_nombre)?.url;
+                window.open(appUrl, "_blank");
                 break;
             case "email":
                 setEmailModal(true);

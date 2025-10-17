@@ -1,6 +1,7 @@
 import { HiOutlineRefresh } from "react-icons/hi"
 import { PiNoteLight, PiFoldersLight, PiEnvelopeLight, PiStackLight, PiStorefrontLight, PiImagesLight } from "react-icons/pi"
 import { BsFiletypeDoc, BsFiletypeXml, BsFileEarmark } from "react-icons/bs";
+import { FaExternalLinkAlt } from "react-icons/fa";
 import { RiPaintFill } from "react-icons/ri";
 import { SlSpeech } from "react-icons/sl";
 import { TbSquareLetterKFilled } from "react-icons/tb";
@@ -10,6 +11,13 @@ import LenFile from "../assets/svg/LenFile";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
 import { GoVersions } from "react-icons/go";
+
+export const clientApps = [
+    {
+        client: "FLEXOGRÁFICA DEL MEDITERRÁNEO, S.L.",
+        url: "http://192.4.26.120:9090/portal.cgi/RECURSOS_CLOUDFLOW/espacio_clientes/web_center/index.html?connector=whitepaper&collection=web_center_app&id=%7B%22inputname%22%3A%22actions%22%2C%22variables%22%3A%7B%7D%7D"
+    }
+];
 
 export const orderSidebarIcons = [
     {
@@ -36,18 +44,20 @@ export const orderSidebarIcons = [
         icon: <TbSquareLetterKFilled />,
         buttons: [
             {
-                id: 21,
                 icon: <BsFiletypeDoc />,
                 action: "kioscoDoc",
                 tooltip: "Kiosco DOC",
                 first: true
             },
             {
-                id: 20,
                 icon: <BsFiletypeXml />,
                 action: "kioscoXml",
-                tooltip: "Kiosco XML",
-                last: true
+                tooltip: "Kiosco XML"
+            },
+            {
+                icon: <FaExternalLinkAlt />,
+                action: "clientApp",
+                tooltip: "Kiosco Cliente"
             }
         ],
         tooltip: ""

@@ -7,6 +7,7 @@ import { IoDocumentTextOutline } from "react-icons/io5";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import LenFile from "../assets/svg/LenFile";
 import { SlBriefcase } from "react-icons/sl";
+import { PiOven } from "react-icons/pi";
 import { useSession } from "../context/SessionContext";
 
 function SideBarComponent({ isActive, setIsActive }) {
@@ -51,11 +52,15 @@ function SideBarComponent({ isActive, setIsActive }) {
                 <div className={`icons ${isActive.clientes ? "active" : ""}`} onClick={() => handleClick("clientes", "CLIENTES")} data-tooltip-id="my-tooltip" data-tooltip-content={"CLIENTES"} >
                     <SlBriefcase />
                 </div>
-                <div className="border"></div>
-                <div className={`icons ${isActive.produccion ? "active" : ""}`} onClick={() => handleClick("produccion", "PRODUCCION")} data-tooltip-id="my-tooltip" data-tooltip-content={"PRODUCCION"} >
-                    <SlBriefcase />
-                </div>
-                {(session?.role === "Administrador") && (
+                {(session?.role === "Soporte") && (
+                    <>
+                        <div className="border"></div>
+                        <div className={`icons ${isActive.produccion ? "active" : ""}`} onClick={() => handleClick("produccion", "PRODUCCION")} data-tooltip-id="my-tooltip" data-tooltip-content={"PRODUCCION"} >
+                            <PiOven />
+                        </div>
+                    </>
+                )}
+                {(session?.role === "Administrador" || session?.role === "Soporte") && (
                     <>
                         <div className="border"></div>
                         <div className={`icons ${isActive.stock ? "active" : ""}`} onClick={() => handleClick("stock", "STOCK")} data-tooltip-id="my-tooltip" data-tooltip-content={"STOCK"} >
@@ -64,7 +69,7 @@ function SideBarComponent({ isActive, setIsActive }) {
                         <div className="border"></div>
                     </>)
                 }
-                {(session?.role === "Administrador") && <div className={`icons ${isActive.usuarios ? "active" : ""}`} onClick={() => handleClick("usuarios", "USUARIOS")} data-tooltip-id="my-tooltip" data-tooltip-content={"USUARIOS"} >
+                {(session?.role === "Administrador" || session?.role === "Soporte") && <div className={`icons ${isActive.usuarios ? "active" : ""}`} onClick={() => handleClick("usuarios", "USUARIOS")} data-tooltip-id="my-tooltip" data-tooltip-content={"USUARIOS"} >
                     <FaUserCircle />
                 </div>}
             </div>

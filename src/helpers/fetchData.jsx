@@ -53,7 +53,9 @@ export const fetchData = async (endPoint, searchValue, page = "1", setData, setT
 
         return data.results;
     } catch (error) {
-        notify(toast.error, 'error', 'Error', 'Ha ocurrido un error al cargar los datos');
+        if (session) {
+            notify(toast.error, 'error', 'Error', 'Ha ocurrido un error al cargar los datos');
+        }
     }
 };
 

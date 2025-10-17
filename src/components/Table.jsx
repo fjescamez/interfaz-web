@@ -7,7 +7,7 @@ import PdfAsImage from "../components/pedidoComponents/PdfAsImage";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toggleModal } from "../helpers/toggleModal";
 import { HiViewColumns } from "react-icons/hi2";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { useTabs } from "../context/TabsContext";
 import { HiOutlineRefresh } from "react-icons/hi";
@@ -71,7 +71,7 @@ function Table({
     const getData = async (page, searchValue = "", clientFilter = "") => {
         const result = await fetchData(endPoint, searchValue, page, setTableData, setTotal, clientFilter);
         setTableCharging(false);
-        if (result.length < 1) {
+        if (result && result.length < 1) {
             setNodataToShow(true);
         } else {
             setNodataToShow(false);
@@ -79,11 +79,18 @@ function Table({
     }
 
     useEffect(() => {
+        if (!session) {
+            navigate("/login");
+            return;
+        }
+    }, []);
+
+    useEffect(() => {
         setTableInfo(dinamicTableInfo);
     }, [dinamicTableInfo]);
 
     useEffect(() => {
-        if (!initialData) {
+        if (!initialData && session) {
             getUserPreferences(session, tableInfo, setTableInfo);
         }
     }, [initialData]);

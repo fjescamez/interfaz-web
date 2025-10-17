@@ -19,7 +19,7 @@ function UserForm({ setModal, mode, setTableData, setTotal, user }) {
             username: "",
             name: "",
             lastname: "",
-            role: "",
+            role: "Operario",
             departments: [],
             email: "",
             password: ""
