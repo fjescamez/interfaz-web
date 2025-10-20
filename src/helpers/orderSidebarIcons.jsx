@@ -63,16 +63,6 @@ export const orderSidebarIcons = [
         tooltip: ""
     },
     {
-        icon: <PiEnvelopeLight />,
-        action: "email",
-        tooltip: "EMAIL"
-    },
-    {
-        icon: <PiStackLight />,
-        action: "compare",
-        tooltip: "COMPARAR"
-    },
-    {
         icon: <ImFilesEmpty />,
         buttons: [
             {
@@ -80,11 +70,6 @@ export const orderSidebarIcons = [
                 action: "lenFiles",
                 tooltip: "FICHEROS LEN",
                 first: true
-            },
-            {
-                icon: <PiImagesLight />,
-                action: "files",
-                tooltip: "FICHAS"
             },
             {
                 icon: <MontajeSvg />,
@@ -98,6 +83,21 @@ export const orderSidebarIcons = [
             }
         ],
         tooltip: ""
+    },
+    {
+        icon: <PiImagesLight />,
+        action: "files",
+        tooltip: "FICHAS"
+    },
+    {
+        icon: <PiEnvelopeLight />,
+        action: "email",
+        tooltip: "EMAIL"
+    },
+    {
+        icon: <PiStackLight />,
+        action: "compare",
+        tooltip: "COMPARAR"
     },
     {
         icon: <RiPaintFill />,

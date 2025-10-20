@@ -90,15 +90,29 @@ function LenTable({
 
             if (response.status === "success") {
                 notify(toast.success, response.status, response.title, response.message);
-                setLenIds([]);
-                const updatedActions = tableInfo.actions.map(action => {
-                    if (action.action === "solicitarVista" || action.action === "visualizarLen") {
-                        return { ...action, hidden: !action.hidden };
-                    }
-                    return action;
-                });
+                let updatedActions;
+
+                if (lenIds.length === 0) {
+                    updatedActions = tableInfo.actions.map(action => {
+                        if (action.action === "solicitarVista") {
+                            return { ...action, hidden: true };
+                        } else if (action.action === "visualizarLen") {
+                            return { ...action, hidden: false };
+                        }
+                        return action;
+                    });
+                } else {
+                    updatedActions = tableInfo.actions.map(action => {
+                        if (action.action === "visualizarLen") {
+                            return { ...action, hidden: false };
+                        }
+                        return action;
+                    });
+                }
+
                 setTableInfo({ ...tableInfo, actions: updatedActions });
                 setLenViewUrl(response.vista.contents?.viewLink);
+                setLenIds([]);
 
                 return response;
             } else {
