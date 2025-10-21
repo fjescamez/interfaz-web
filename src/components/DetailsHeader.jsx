@@ -24,7 +24,7 @@ function DetailsHeader({
     grid
 }) {
     const { session } = useSession();
-    const isAdmin = session.role === "Administrador";
+    const isAdmin = session.role === "Administrador" || session.role === "Soporte";
 
     const toggleInfo = () => {
         setShowInfo(prev => !prev);
@@ -43,13 +43,13 @@ function DetailsHeader({
                     {(!hideInfoIcon && grid) && <TiInfoLarge style={showInfo ? { backgroundColor: "var(--highlight)" } : {}} onClick={toggleInfo} />}
                 </div>
                 <div className="actions">
-                    {!hideEditIcon && <GrEdit className="edit" onClick={isAdmin && (() => setEditPopup(true))} />}
+                    {!hideEditIcon && <GrEdit className="edit" onClick={isAdmin ? (() => setEditPopup(true)) : undefined} />}
                     {!hideAvatar &&
                         <div className="avatarImage clientAvatar">
-                            <img src={`http://192.4.26.112:3000/uploads/avatars/${avatar}`} alt="" onClick={isAdmin && (() => { if (toggleKiosk) toggleKiosk(endPoint, id, kioskData) })} />
+                            <img src={`http://192.4.26.112:3000/uploads/avatars/${avatar}`} alt="" onClick={isAdmin ? (() => { if (toggleKiosk) toggleKiosk(endPoint, id, kioskData) }) : undefined} />
                         </div>
                     }
-                    {!hideDeleteIcon && <BsTrash3Fill className="delete" onClick={isAdmin && (() => setDeletePopup(true))} />}
+                    {!hideDeleteIcon && <BsTrash3Fill className="delete" onClick={isAdmin ? (() => setDeletePopup(true)) : undefined} />}
                 </div>
             </div>
             <div className="decoration"></div>

@@ -137,14 +137,17 @@ function ComparePopUp({ setCompareModal, rutaTrabajo }) {
           {loading ? (
             <p className='loading'>Cargando <ThreeDot color="black" size="small" speedPlus={2} /></p>
           ) :
-            (<ul className="comparatorList">
-              {indexacion.map((file, index) => (
-                <li key={index} onDoubleClick={() => handleClick(file)}>
-                  {file.type === "folder" ? <BiFolder /> : <IoDocumentTextOutline />}
-                  {file.name}
-                </li>
-              ))}
-            </ul>)}
+            (
+              <ul className="comparatorList">
+                {indexacion.map((file, index) => (
+                  <li key={index} onDoubleClick={() => handleClick(file)}>
+                    {file.type === "folder" ? <BiFolder /> : <IoDocumentTextOutline />}
+                    {file.name}
+                  </li>
+                ))}
+              </ul>
+            )
+          }
         </div>
       </div>
     </>

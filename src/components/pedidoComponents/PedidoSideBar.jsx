@@ -21,6 +21,7 @@ import XmlKiosk from "./XmlKiosk";
 import TintasPopUp from "./TintasPopUp";
 import OpcionalesPopUp from "./OpcionalesPopUp";
 import OrderInfoPopUp from "./OrderInfoPopUp";
+import TraceTextPopUp from "./TraceTextPopUp";
 
 function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
     const navigate = useNavigate();
@@ -33,6 +34,7 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
     const [compareModal, setCompareModal] = useState(false);
     const [lenModal, setLenModal] = useState(false);
     const [filesModal, setFilesModal] = useState(false);
+    const [traceModal, setTraceModal] = useState(false);
     const [montajeModal, setMontajeModal] = useState(false);
     const [plotterModal, setPlotterModal] = useState(false);
     const [tintasModal, setTintasModal] = useState(false);
@@ -144,7 +146,7 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
                 break;
             case "clientApp":
                 const appUrl = clientApps.find(app => app.client === fullOrder.xml.numero.cliente_nombre)?.url;
-                
+
                 if (appUrl !== undefined) {
                     window.open(appUrl, "_blank");
                 }
@@ -158,6 +160,18 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
             case "lenFiles":
                 setLenModal(true);
                 break;
+            case "montaje":
+                setMontajeModal(true);
+                break;
+            case "plotter":
+                setPlotterModal(true);
+                break;
+            case "files":
+                setFilesModal(true);
+                break;
+            case "traceText":
+                setTraceModal(true);
+                break;
             case "kiosk":
                 const path = `${location.pathname}/kiosk`;
                 const tabTitle = `${fullOrder.id_pedido} | KIOSKO`;
@@ -170,17 +184,8 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
                 }
                 navigate(path);
                 break;
-            case "files":
-                setFilesModal(true);
-                break;
             case "tintas":
                 setTintasModal(true);
-                break;
-            case "montaje":
-                setMontajeModal(true);
-                break;
-            case "plotter":
-                setPlotterModal(true);
                 break;
             case "info":
                 if (fullOrder.registroInfo && fullOrder.registroInfo.length > 0) {
@@ -213,6 +218,7 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
             {compareModal && <ComparePopUp setCompareModal={setCompareModal} rutaTrabajo={fullOrder.rutaTrabajo} />}
             {lenModal && <OrderLenTable setLenModal={setLenModal} orderId={fullOrder.id_pedido} />}
             {filesModal && <FileTable setFilesModal={setFilesModal} orderId={fullOrder.id_pedido} filePath={filePath} />}
+            {traceModal && <TraceTextPopUp setTraceModal={setTraceModal} rutaTrabajo={fullOrder.rutaTrabajo} unitario={fullOrder.unitario} />}
             {montajeModal && <MontajeTable setMontajeModal={setMontajeModal} fullOrder={fullOrder} filePath={filePath} />}
             {plotterModal && <PlotterTable setPlotterModal={setPlotterModal} orderId={fullOrder.id_pedido} fullOrder={fullOrder} filePath={filePath} />}
             {tintasModal && <TintasPopUp setTintasModal={setTintasModal} fullOrder={fullOrder} />}

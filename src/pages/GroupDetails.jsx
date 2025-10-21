@@ -10,9 +10,12 @@ import { useSession } from "../context/SessionContext";
 import { groupFormData } from "../helpers/formsData";
 import FormSection from "../components/formComponents/FormSection";
 import { fetchOneItem } from "../helpers/fetchData";
+import DeleteForm from "../components/formComponents/DeleteForm";
+import { groupTableInfo } from "../helpers/tablesInfo";
 
 function GroupDetails({ toggleKiosk }) {
     const [group, setGroup] = useState({});
+    const [formData, setFormData] = useState(groupFormData);
     const { id } = useParams();
     const navigate = useNavigate();
     const { closeTab } = useTabs();
@@ -21,7 +24,7 @@ function GroupDetails({ toggleKiosk }) {
     const { session } = useSession();
     const [showInfo, setShowInfo] = useState(true);
     //const { grid } = usersDetails;
-    const isAdmin = session.role === "Administrador";
+    const isAdmin = session.role === "Administrador" || session.role === "Soporte";
 
     useEffect(() => {
         const getGroupDetails = async () => {
@@ -29,14 +32,61 @@ function GroupDetails({ toggleKiosk }) {
 
             if (!groupData) {
                 closeTab(location.pathname)
-                navigate("/groups")
+                navigate("/grupos")
                 return
             };
             setGroup(groupData.results);
         }
         getGroupDetails();
-
     }, [id]);
+
+    useEffect(() => {
+        const getContactos = async () => {
+            let options = [];
+            for (const id of group.ids) {
+                const contacto = await fetchOneItem("contacts", id);
+                const contactoData = {
+                    _id: contacto.results._id,
+                    textoOpcion: contacto.results.contacto
+                }
+                options.push(contactoData);
+            }
+            setFormData(prev => ({
+                ...prev,
+                formFields: prev.formFields.map(field => {
+                    if (field.htmlFor === "ids") {
+                        return {
+                            ...field,
+                            options: options
+                        }
+                    }
+                    return field;
+                }),
+            }));
+        }
+
+        if (group.cliente_nombre && group.cliente_codigo) {
+            getContactos();
+            setFormData(prev => ({
+                ...prev,
+                formFields: prev.formFields.map(field => {
+                    if (field.htmlFor === "cliente_nombre") {
+                        return {
+                            ...field,
+                            options: [group?.cliente_nombre]
+                        }
+                    }
+                    if (field.htmlFor === "cliente_codigo") {
+                        return {
+                            ...field,
+                            options: [group?.cliente_codigo]
+                        }
+                    }
+                    return field;
+                }),
+            }));
+        }
+    }, [group]);
 
     return (
         <div className="detailsContainer">
@@ -55,21 +105,21 @@ function GroupDetails({ toggleKiosk }) {
             {editPopup && (
                 <GroupForm setModal={setEditPopup} mode={"edit"} group={group} setGroup={setGroup} />
             )}
-            {/* {(deletePopup && isAdmin) && (
+            {(deletePopup && isAdmin) && (
                 <DeleteForm
                     setModal={setDeletePopup}
                     tableInfo={groupTableInfo}
                     id={id}
                 />
-            )} */}
+            )}
             <div className="detailsScroll">
                 <div className="formSections">
-                    {groupFormData.formSections.map((section) => (
+                    {formData.formSections.map((section) => (
                         <div key={section.title} className="formSection">
                             <FormSection
                                 sectionData={section}
-                                formFields={groupFormData.formFields}
-                                inputData={group}
+                                formFields={formData.formFields}
+                                inputData={group || {}}
                                 disable={true}
                             />
                         </div>

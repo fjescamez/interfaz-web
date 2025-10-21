@@ -713,7 +713,6 @@ export const groupTableInfo = {
     headerIcon: <GroupsSvg />,
     headerTitle: "GRUPOS",
     tableForm: "GroupForm",
-    tableChecks: true,
     tableColumns: [
         {
             header: "Nombre grupo",

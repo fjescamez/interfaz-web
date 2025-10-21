@@ -7,6 +7,8 @@ import { SlSpeech } from "react-icons/sl";
 import { TbSquareLetterKFilled } from "react-icons/tb";
 import { ImFilesEmpty } from "react-icons/im";
 import { BsInfoLg } from "react-icons/bs";
+import { FaTasks } from "react-icons/fa";
+import { RiText } from "react-icons/ri";
 import LenFile from "../assets/svg/LenFile";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
@@ -88,6 +90,18 @@ export const orderSidebarIcons = [
         icon: <PiImagesLight />,
         action: "files",
         tooltip: "FICHAS"
+    },
+    {
+        icon: <FaTasks />,
+        buttons: [
+            {
+                icon: <RiText />,
+                action: "traceText",
+                tooltip: "TRAZAR TEXTO",
+                first: true
+            }
+        ],
+        tooltip: ""
     },
     {
         icon: <PiEnvelopeLight />,
