@@ -55,7 +55,7 @@ function PedidoCarton({ orderXml }) {
               {carton_premontaje?.map((carton) => (
                 <tr key={carton.carton_premontaje_id}>
                   <td>{carton.carton_premontaje_ancho}</td>
-                  <td>{carton.carton_premontaje_largo}</td>
+                  <td>{typeof carton.carton_premontaje_largo !== "object" && carton.carton_premontaje_largo}</td>
                   <td>{carton.carton_premontaje_gramaje}</td>
                   <td>{carton.carton_premontaje_cantidad}</td>
                 </tr>

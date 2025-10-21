@@ -464,7 +464,7 @@ function OrderDetails() {
                       <tr key={color._id}>
                         <td><p>{color.color}</p></td>
                         <td><p>{color.lineatura}</p></td>
-                        <td><p>{color.angulo}</p></td>
+                        <td><p>{typeof color.angulo !== "object" && color.angulo}</p></td>
                         <td><p>{color.trama}</p></td>
                         <td><p>{color.planchaArchivo}</p></td>
                       </tr>
