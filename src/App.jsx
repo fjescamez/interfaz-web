@@ -170,7 +170,6 @@ function App() {
           {/*<Route path="/home" element={<HomePage toggleKiosk={toggleKiosk}/>} />*/}
           (<Route path="/home" element={<OrdersPage />} />
           <Route path="/home/:id" element={<OrderDetails />} />)
-          
           <Route path="/pedidos" element={<OrdersPage />} />
           <Route path="/pedidos/:id" element={<OrderDetails />} />
           <Route path="/pedidos/:id/kiosk" element={<OrderKiosk />} />
@@ -195,6 +194,7 @@ function App() {
           <Route path="/produccion" element={<ProduccionPage />} />
           <Route path="/usuarios" element={<UsersPage />} />
           <Route path="/usuarios/:id" element={<UserDetails toggleKiosk={toggleKiosk} />} />
+          <Route path="/test" element={<HomePage />} />
         </Routes>
       </div>
     </>

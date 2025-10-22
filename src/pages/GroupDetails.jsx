@@ -12,9 +12,11 @@ import FormSection from "../components/formComponents/FormSection";
 import { fetchOneItem } from "../helpers/fetchData";
 import DeleteForm from "../components/formComponents/DeleteForm";
 import { groupTableInfo } from "../helpers/tablesInfo";
+import { ThreeDot } from 'react-loading-indicators';
 
 function GroupDetails({ toggleKiosk }) {
     const [group, setGroup] = useState({});
+    const [contacts, setContacts] = useState([]);
     const [formData, setFormData] = useState(groupFormData);
     const { id } = useParams();
     const navigate = useNavigate();
@@ -50,6 +52,7 @@ function GroupDetails({ toggleKiosk }) {
                     textoOpcion: contacto.results.contacto
                 }
                 options.push(contactoData);
+                setContacts(prev => ([...prev, contacto.results]));
             }
             setFormData(prev => ({
                 ...prev,
@@ -124,6 +127,51 @@ function GroupDetails({ toggleKiosk }) {
                             />
                         </div>
                     ))}
+                    {contacts.length < 1
+                        ?
+                        <p className='loading'>Cargando <ThreeDot color="black" size="small" speedPlus={2} /></p>
+                        : contacts.map((contact, index) => (
+                            <div key={index} className="formSection">
+                                <FormSection
+                                    sectionData={{
+                                        title: `Contacto ${index + 1}`,
+                                        rows: [
+                                            {
+                                                groups: ["contacto", "telefono", "email"]
+                                            }
+                                        ]
+                                    }}
+                                    formFields={[
+                                        {
+                                            htmlFor: "contacto",
+                                            labelId: "contacto",
+                                            labelTitle: "Nombre del contacto",
+                                            inputType: "text",
+                                            inputId: "contacto",
+                                            inputName: "contacto"
+                                        },
+                                        {
+                                            htmlFor: "telefono",
+                                            labelId: "telefono",
+                                            labelTitle: "Teléfono",
+                                            inputType: "text",
+                                            inputId: "telefono",
+                                            inputName: "telefono"
+                                        },
+                                        {
+                                            htmlFor: "email",
+                                            labelId: "email",
+                                            labelTitle: "Email",
+                                            inputType: "email",
+                                            inputId: "email",
+                                            inputName: "email"
+                                        }
+                                    ]}
+                                    inputData={contact || {}}
+                                    disable={true}
+                                />
+                            </div>
+                        ))}
                 </div>
             </div>
         </div>

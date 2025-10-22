@@ -9,6 +9,7 @@ import GroupsSvg from "../assets/svg/GroupsSvg";
 
 export const produccionPlanchasDetails = {
     title: "Planchas",
+    click: "planchas",
     grid: [
         {
             icon: <IoDocumentTextOutline />,
@@ -35,6 +36,7 @@ export const produccionPlanchasDetails = {
 
 export const produccionTrabajosDetails = {
     title: "Trabajos externos",
+    click: "planchas",
     grid: [
         {
             icon: <IoDocumentTextOutline />,
@@ -87,6 +89,7 @@ export const usersDetails = {
 
 export const clientsDetails = {
     title: "Cliente",
+    click: "clients",
     grid: [
         {
             icon: <IoDocumentTextOutline />,
@@ -137,6 +140,7 @@ export const clientsDetails = {
 
 export const stockDetails = {
     title: "Control de Stock",
+    click: "stock",
     grid: [
         {
             icon: <FiPrinter />,

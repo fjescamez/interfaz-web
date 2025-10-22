@@ -1,4 +1,5 @@
 export const validRoutes = [
+  "/test",
   "/home",
   "/home/:id",
   "/pedidos",

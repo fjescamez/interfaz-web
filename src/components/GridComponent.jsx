@@ -2,14 +2,26 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useClienteFilter } from "../context/ClientFilterContext";
 import { useTabs } from "../context/TabsContext";
 
-function GridComponent({ grid, object, title }) {
+function GridComponent({ title, grid, click, object }) {
     const { closeTab, tabs, setTabs } = useTabs();
     const { setClienteCodigos, setClienteDatos } = useClienteFilter();
     const location = useLocation();
     const navigate = useNavigate();
 
-    const gridItemClick = (key) => {
-        alert(key)
+    const gridItemClick = (click, key) => {
+        switch (click) {
+            case "clients":
+                clientClick(key);
+                break;
+            case "stock":
+                stockClick(key);
+                break;
+            case "planchas":
+                planchasClick(key);
+                break;
+            default:
+                break;
+        }
     };
 
     const clientClick = (key) => {
@@ -33,12 +45,20 @@ function GridComponent({ grid, object, title }) {
         navigate(path);
     };
 
+    const stockClick = (key) => {
+
+    };
+
+    const planchasClick = (key) => {
+
+    };
+
     return (
         <>
-            <h1 className="gridTitle">{title}</h1>
+            <h1 className="gridTitle">{title || ""}</h1>
             <div className="gridContainer">
                 {grid.map((item) => (
-                    <div className="gridItem" key={item.key} onClick={() => clientClick(item.key)}>
+                    <div className="gridItem" key={item.key} onClick={() => gridItemClick(click, item.key)}>
                         <div className="icon">
                             {item.icon}
                         </div>
