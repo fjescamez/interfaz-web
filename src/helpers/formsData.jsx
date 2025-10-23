@@ -3,6 +3,7 @@ import { TiContacts } from "react-icons/ti";
 import { PiEnvelopeLight, PiNoteLight } from "react-icons/pi";
 import { BsFiletypeDoc, BsFiletypeXml } from "react-icons/bs";
 import { SlBriefcase } from "react-icons/sl";
+import { PiGear } from "react-icons/pi";
 import { TbColorSwatch } from "react-icons/tb";
 import GroupsSvg from "../assets/svg/GroupsSvg";
 import Plotter from "../assets/svg/Plotter";
@@ -1114,6 +1115,34 @@ export const noteFormData = {
             inputId: "nota",
             inputName: "nota",
             required: true
+        }
+    ]
+}
+
+export const clientConfigFormData = {
+    headerIcon: <PiGear />,
+    headerTitle: "CONFIGURACIÓN CLIENTE",
+    formSections: [
+        {
+            title: "E-mail",
+            rows: [
+                {
+                    groups: [
+                        "contacto"
+                    ]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "contacto",
+            labelId: "contactoLabel",
+            labelTitle: "Contacto por defecto",
+            select: "simple",
+            options: [],
+            inputId: "contacto",
+            inputName: "contacto"
         }
     ]
 }

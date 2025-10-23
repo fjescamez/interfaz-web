@@ -16,6 +16,7 @@ export const validRoutes = [
   "/clientes/:id/grupos/:id",
   "/clientes/:id/estrategias",
   "/clientes/:id/estrategias/:id",
+  "/clientes/:id/configuracion",
   "/estrategias",
   "/estrategias/:id",
   "/stock",

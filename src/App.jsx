@@ -29,6 +29,7 @@ import StrategyDetails from "./pages/StrategyDetails";
 import ObservacionesTecnicas from "./pages/ObservacionesTecnicas";
 import EmailDetails from "./pages/EmailDetails";
 import ProduccionPage from "./pages/ProduccionPage";
+import ClientConfig from "./pages/ClientConfig";
 
 function App() {
   const icons = ["home", "pedidos", "len", "clientes", "stock", "produccion", "usuarios"];
@@ -183,6 +184,7 @@ function App() {
           <Route path="/clientes/:id/contactos/:id" element={<ContactDetails toggleKiosk={toggleKiosk} />} />
           <Route path="/clientes/:id/estrategias" element={<StrategyPage filter={true} />} />
           <Route path="/clientes/:id/estrategias/:id" element={<StrategyDetails toggleKiosk={toggleKiosk} />} />
+          <Route path="/clientes/:id/configuracion" element={<ClientConfig toggleKiosk={toggleKiosk} />} />
           <Route path="/estrategias/:id" element={<StrategyDetails />} />
           <Route path="/contactos" element={<ContactsPage />} />
           <Route path="/contactos/:id" element={<ContactDetails toggleKiosk={toggleKiosk} />} />

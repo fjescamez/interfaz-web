@@ -23,14 +23,10 @@ function ChosenSelect({ options, name, onChange, multiple, value, disabled, clas
 
                     if (multiple) {
                         const ids = Array.from(e.target.selectedOptions).map(opt => opt.value);
-                        selectedValue = typeof options[0] === "object"
-                            ? options.filter(o => ids.includes(o._id)) // devuelve array de objetos
-                            : ids;
+                        selectedValue = ids;
                     } else {
                         const id = e.target.value;
-                        selectedValue = typeof options[0] === "object"
-                            ? options.find(o => o._id === id)
-                            : id;
+                        selectedValue = id;
                     }
 
                     onChange?.({ target: { name, value: selectedValue } });
@@ -44,27 +40,6 @@ function ChosenSelect({ options, name, onChange, multiple, value, disabled, clas
             }
         };
     }, [onChange, name, multiple, placeholderMultiple, placeholderSimple]);
-
-    /* useEffect(() => {
-        if (selectRef.current) {
-            $(selectRef.current).chosen("destroy").chosen({
-                placeholder_text_multiple: placeholderMultiple,
-                inherit_select_classes: true
-            });
-        }
-    }, [className, placeholderMultiple]); */
-
-    /* useEffect(() => {
-        if (selectRef.current) {
-            $(selectRef.current)
-                .chosen("destroy")
-                .chosen({
-                    placeholder_text_multiple: placeholderMultiple,
-                    inherit_select_classes: true
-                })
-                .trigger("chosen:updated"); // 🔹 fuerza actualizar visualmente
-        }
-    }, [value, options]); // 🔹 se ejecuta al cambiar valor u opciones */
 
     useEffect(() => {
         if (selectRef.current && typeof $(selectRef.current).chosen === "function") {
@@ -90,9 +65,9 @@ function ChosenSelect({ options, name, onChange, multiple, value, disabled, clas
             className={className}
         >
             {options.map(opt => {
+                let key = opt;
                 let value = opt;
                 let text = opt;
-                let key = opt;
 
                 if (typeof opt === 'object') {
                     value = opt._id;

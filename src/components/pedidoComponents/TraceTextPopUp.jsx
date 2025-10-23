@@ -24,7 +24,8 @@ function TraceTextPopUp({ setTraceModal, rutaTrabajo, unitario }) {
             const response = await postData("tasks/navegacionTexto", data);
 
             if (response && response.listFiles) {
-                setNavigation(response.listFiles);
+                const filteredFiles = response.listFiles.filter(item => (item.type === "file" && (item.name.endsWith(".pdf") || item.name.endsWith(".ai"))) || item.type === "folder");
+                setNavigation(filteredFiles);
                 setLoading(false);
             }
         }
@@ -42,7 +43,8 @@ function TraceTextPopUp({ setTraceModal, rutaTrabajo, unitario }) {
             const response = await postData("tasks/navegacionTexto", data);
 
             if (response && response.listFiles) {
-                setNavigation(response.listFiles);
+                const filteredFiles = response.listFiles.filter(item => (item.type === "file" && (item.name.endsWith(".pdf") || item.name.endsWith(".ai"))) || item.type === "folder");
+                setNavigation(filteredFiles);
                 setLoading(false);
             }
         }

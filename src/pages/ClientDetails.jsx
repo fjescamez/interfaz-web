@@ -8,15 +8,17 @@ import { fetchOneItem } from "../helpers/fetchData";
 import GridComponent from "../components/GridComponent";
 import { clientFormData } from "../helpers/formsData";
 import FormSection from "../components/formComponents/FormSection";
+import { useClienteFilter } from "../context/ClientFilterContext";
 
 function ClientDetails({ toggleKiosk }) {
     const [client, setClient] = useState({});
     const { id } = useParams();
     const navigate = useNavigate();
-    const { closeTab } = useTabs();
+    const { closeTab, tabs, setTabs } = useTabs();
     const { grid } = clientsDetails;
     const [editPopup, setEditPopup] = useState(false);
     const [showInfo, setShowInfo] = useState(false);
+    const { setClienteCodigos, setClienteDatos } = useClienteFilter();
 
     useEffect(() => {
         const getClientDetails = async () => {
@@ -31,6 +33,27 @@ function ClientDetails({ toggleKiosk }) {
         }
         getClientDetails();
     }, [id]);
+
+    const clientClick = (key) => {
+        const pathname = location.pathname === '/home' ? '' : location.pathname;
+        const path = `${pathname}/${key}`;
+        //const path = `${location.pathname}/${key}`;
+
+        const tabTitle = `${client?.name} | ${key.toUpperCase()}`;
+
+        if (!tabs.some(tab => tab.path === path)) {
+            if (client.company) {
+                setClienteCodigos(prev => ({ ...prev, [path]: client.code }));
+                setClienteDatos(prev => ({ ...prev, [path]: client }));
+            }
+
+            setTabs(prev => {
+                if (prev.some(tab => tab.path === path)) return prev;
+                return [...prev, { path, title: tabTitle }];
+            });
+        }
+        navigate(path);
+    };
 
     return (
         <>
@@ -69,8 +92,7 @@ function ClientDetails({ toggleKiosk }) {
                         :
                         <GridComponent
                             grid={grid}
-                            click={"clients"}
-                            object={client}
+                            gridClick={clientClick}
                         />
                     }
                 </div>
