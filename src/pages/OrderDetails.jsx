@@ -246,7 +246,7 @@ function OrderDetails() {
                     </tr>
                     <tr>
                       <td><p><span className="highlight">REF. CLIENTE:</span></p></td>
-                      <td>{orderXml.numero?.ref_cliente}</td>
+                      <td>{typeof orderXml.numero?.ref_cliente !== "object" ? orderXml.numero?.ref_cliente : ""}</td>
                     </tr>
                     <tr>
                       <td><p><span className="highlight">CONTACTO:</span></p></td>
@@ -326,7 +326,7 @@ function OrderDetails() {
                     </tr>
                     <tr>
                       <td><p><span className="highlight">DIST. TRAPPING:</span></p></td>
-                      <td>{orderXml.tecnicos?.trapping}</td>
+                      <td>{typeof orderXml.tecnicos?.trapping !== "object" ? orderXml.tecnicos?.trapping : ""}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -390,7 +390,7 @@ function OrderDetails() {
                     <p>MATERIAL</p>
                   </div>
                   <div className="body">
-                    <p>{orderXml.actividad?.material} <span className="highlight" onClick={openStrategy}>(VER ESTRATEGIA COMPLETA)</span></p>
+                    <p>{typeof orderXml.actividad?.material !== "object" ? orderXml.actividad?.material : ""} <span className="highlight" onClick={openStrategy}>(VER ESTRATEGIA COMPLETA)</span></p>
                   </div>
                 </div>
                 <div className="maquina flex">

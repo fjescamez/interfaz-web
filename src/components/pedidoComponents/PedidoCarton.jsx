@@ -13,15 +13,15 @@ function PedidoCarton({ orderXml }) {
             <tbody>
               <tr>
                 <td className="highlight">TIPO CAJA:</td>
-                <td>{carton.carton_tcaja}</td>
+                <td>{typeof carton.carton_tcaja !== "object" ? carton.carton_tcaja : ""}</td>
                 <td className="highlight">Nº MOTIVOS:</td>
-                <td><span className="invis">i</span>{carton.carton_motivos}</td>
+                <td><span className="invis">i</span>{typeof carton.carton_motivos !== "object" ? carton.carton_motivos : ""}</td>
               </tr>
               <tr>
                 <td className="highlight">Nº TROQUEL:</td>
-                <td>{carton.carton_troquel}</td>
+                <td>{typeof carton.carton_troquel !== "object" ? carton.carton_troquel : ""}</td>
                 <td className="highlight">Nº CAIDAS:</td>
-                <td><span className="invis">i</span>{carton.carton_caidas}</td>
+                <td><span className="invis">i</span>{typeof carton.carton_caidas !== "object" ? carton.carton_caidas : ""}</td>
               </tr>
               <tr>
                 <td className="highlight">MEDIDA CAJA:</td>

@@ -69,6 +69,7 @@ function ClientDetails({ toggleKiosk }) {
                         :
                         <GridComponent
                             grid={grid}
+                            click={"clients"}
                             object={client}
                         />
                     }

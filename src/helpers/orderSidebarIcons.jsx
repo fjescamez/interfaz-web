@@ -82,14 +82,14 @@ export const orderSidebarIcons = [
                 icon: <Plotter />,
                 action: "plotter",
                 tooltip: "PLOTTER"
-            }
+            },
+            {
+                icon: <PiImagesLight />,
+                action: "files",
+                tooltip: "FICHAS"
+            },
         ],
         tooltip: ""
-    },
-    {
-        icon: <PiImagesLight />,
-        action: "files",
-        tooltip: "FICHAS"
     },
     {
         icon: <FaTasks />,
