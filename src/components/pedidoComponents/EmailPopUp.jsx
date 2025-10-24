@@ -44,7 +44,9 @@ function EmailPopUp({ setEmailModal, fullOrder }) {
             return notify(toast.error, 'error', 'Error', 'Este cliente no tiene contactos');
         }
 
-        const options = [{ contacto: ""}];
+        const totalContacts = contacts.length + groups.length;
+
+        const options = totalContacts > 1 ? [{ contacto: "" }] : [];
 
         contacts.map(contact => {
             const nuevoContacto = { ...contact, textoOpcion: `${contact.contacto} (${contact.email})` };
@@ -58,7 +60,7 @@ function EmailPopUp({ setEmailModal, fullOrder }) {
 
         setItemsData(prev => ({
             ...prev,
-            contacto: clientConfig?.configuraciones?.email?.contactoDefault || null
+            contacto: clientConfig?.configuraciones?.email?.contactoDefault || totalContacts === 1 ? options[0]._id : ""
         }))
 
         setFormData(prev => ({
