@@ -4,9 +4,7 @@ import $ from "jquery";
 function ChosenSelect({ options, name, onChange, multiple, value, disabled, className }) {
     const selectRef = useRef(null);
     const placeholderMultiple = disabled ? " " : "Elige uno o varios";
-    const placeholderSimple = disabled ? " " : "Selecciona una opción";
-    console.log("name:", name);
-    
+    const placeholderSimple = disabled ? " " : "Selecciona una opción";    
 
     useEffect(() => {
         window.$ = $;
