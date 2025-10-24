@@ -1,6 +1,7 @@
 import "./NotifyComponent.css";
 import CheckSvg from "../assets/svg/CheckSvg";
 import ErrorSvg from "../assets/svg/ErrorSvg";
+import WarningSvg from "../assets/svg/WarningSvg";
 
 function NotifyComponent({ type, title, body }) {
     return (
@@ -8,7 +9,7 @@ function NotifyComponent({ type, title, body }) {
             <div className="title">
                 {type == "success" && <CheckSvg />}
                 {type == "error" && <ErrorSvg />}
-                {type == "warning" && <ErrorSvg />}
+                {type == "warning" && <WarningSvg />}
                 <p>{title}</p>
             </div>
             <div className="body">

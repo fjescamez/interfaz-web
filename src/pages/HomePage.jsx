@@ -1,4 +1,3 @@
-import { useState } from "react";
 import DetailsHeader from "../components/DetailsHeader";
 import { useSession } from "../context/SessionContext";
 import GridComponent from "../components/GridComponent";
@@ -8,7 +7,6 @@ import "./HomePage.css";
 import { clientsDetails, stockDetails, produccionPlanchasDetails } from "../helpers/detailsGrid";
 
 function HomePage({ toggleKiosk }) {
-  const [showInfo, setShowInfo] = useState(false);
   const generalGrid = [clientsDetails, stockDetails, produccionPlanchasDetails];
   const { session } = useSession();
   const user = session;

@@ -5,6 +5,8 @@ function ChosenSelect({ options, name, onChange, multiple, value, disabled, clas
     const selectRef = useRef(null);
     const placeholderMultiple = disabled ? " " : "Elige uno o varios";
     const placeholderSimple = disabled ? " " : "Selecciona una opción";
+    console.log("name:", name);
+    
 
     useEffect(() => {
         window.$ = $;
@@ -23,10 +25,18 @@ function ChosenSelect({ options, name, onChange, multiple, value, disabled, clas
 
                     if (multiple) {
                         const ids = Array.from(e.target.selectedOptions).map(opt => opt.value);
-                        selectedValue = ids;
+                        selectedValue = (typeof options[0] === "object" && name !== "ids")
+                            ? options.filter(o => ids.includes(o._id)) // devuelve array de objetos
+                            : ids;
+
+                        // selectedValue = ids;
                     } else {
                         const id = e.target.value;
-                        selectedValue = id;
+                        selectedValue = (typeof options[0] === "object" && name !== "ids")
+                            ? options.find(o => o._id === id)
+                            : id;
+                        // selectedValue = id;
+                        console.log("selectedvalue:", selectedValue);
                     }
 
                     onChange?.({ target: { name, value: selectedValue } });

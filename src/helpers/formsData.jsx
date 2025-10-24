@@ -1128,7 +1128,7 @@ export const clientConfigFormData = {
             rows: [
                 {
                     groups: [
-                        "contacto"
+                        "contactoDefault"
                     ]
                 }
             ]
@@ -1136,13 +1136,13 @@ export const clientConfigFormData = {
     ],
     formFields: [
         {
-            htmlFor: "contacto",
-            labelId: "contactoLabel",
+            htmlFor: "contactoDefault",
+            labelId: "contactoDefaultLabel",
             labelTitle: "Contacto por defecto",
             select: "simple",
             options: [],
-            inputId: "contacto",
-            inputName: "contacto"
+            inputId: "contactoDefault",
+            inputName: "contactoDefault"
         }
     ]
 }

@@ -155,6 +155,7 @@
 
     .checkTd {
         text-align: center;
+        width: 1rem;
 
         .check {
             width: 2.5rem;

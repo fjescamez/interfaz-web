@@ -35,6 +35,8 @@ function EmailPopUp({ setEmailModal, fullOrder }) {
     const getPara = async () => {
         const contacts = await fetchData("contacts", "", 1, null, null, cliente_codigo);
         const groups = await fetchData("groups", "", 1, null, null, cliente_codigo);
+        const cliente = await fetchData("clients", cliente_codigo);
+        const clientConfig = await fetchData("clientConfig", cliente[0]._id);
 
         if ((contacts.length + groups.length) < 1) {
             setIsExecuting(false);
@@ -42,7 +44,7 @@ function EmailPopUp({ setEmailModal, fullOrder }) {
             return notify(toast.error, 'error', 'Error', 'Este cliente no tiene contactos');
         }
 
-        const options = [];
+        const options = [{ contacto: ""}];
 
         contacts.map(contact => {
             const nuevoContacto = { ...contact, textoOpcion: `${contact.contacto} (${contact.email})` };
@@ -56,7 +58,7 @@ function EmailPopUp({ setEmailModal, fullOrder }) {
 
         setItemsData(prev => ({
             ...prev,
-            contacto: options[0]
+            contacto: clientConfig?.configuraciones?.email?.contactoDefault || null
         }))
 
         setFormData(prev => ({
