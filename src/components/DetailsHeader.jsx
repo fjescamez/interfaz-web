@@ -43,7 +43,7 @@ function DetailsHeader({
                     {(!hideInfoIcon && grid) && <TiInfoLarge style={showInfo ? { backgroundColor: "var(--highlight)" } : {}} onClick={toggleInfo} />}
                 </div>
                 <div className="actions">
-                    {!hideEditIcon && <GrEdit className="edit" onClick={isAdmin ? (() => setEditPopup(true)) : undefined} />}
+                    {!hideEditIcon && <GrEdit className="edit" onClick={() => setEditPopup(true)} />}
                     {!hideAvatar &&
                         <div className="avatarImage clientAvatar">
                             <img src={`http://192.4.26.112:3000/uploads/avatars/${avatar}`} alt="" onClick={isAdmin ? (() => { if (toggleKiosk) toggleKiosk(endPoint, id, kioskData) }) : undefined} />
