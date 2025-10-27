@@ -274,6 +274,14 @@
         width: 3.5rem;
         height: 3.5rem;
 
+        &:hover {
+            scale: 1.05;
+        }
+
+        &:active {
+            scale: 1;
+        }
+
         path {
             fill: none;
             stroke: white;

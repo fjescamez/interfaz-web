@@ -10,6 +10,7 @@ import MetodosImpresion from "./MetodosImpresion";
 function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
     const [colorIds, setColorIds] = useState([]);
     const [montaje, setMontaje] = useState(undefined);
+    const [id_archivo, setId_archivo] = useState("");
     const [tableInfo, setTableInfo] = useState(ripTableInfo);
     const [planchasModal, setPlanchasModal] = useState(false);
 
@@ -21,6 +22,7 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
             setRipModal(false);
         }
         setMontaje(response.results.archivo);
+        setId_archivo(response.results.id_archivo);
     }
 
     useEffect(() => {
@@ -120,6 +122,7 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
 
             if (response.status === "success") {
                 notify(toast.success, response.status, response.title, response.message);
+                window.open('http://192.4.26.120:9090/portal.cgi?hub&topbar=true', '_blank');
             } else {
                 notify(toast.error, response.status, response.title, response.message);
             }
@@ -142,6 +145,7 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
                             checkedRows={colorIds}
                             setCheckedRows={setColorIds}
                             dinamicTableInfo={tableInfo}
+                            specificHeaderTitle={`RIP MONTAJE | ${id_archivo}`}
                             orderFilter={montaje}
                             setPopUpTable={setRipModal}
                         />

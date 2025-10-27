@@ -1,4 +1,4 @@
-import { FaBoxOpen, FaUserCircle } from "react-icons/fa";
+import { FaBoxOpen, FaUserCircle, FaStamp } from "react-icons/fa";
 import { TiContacts } from "react-icons/ti";
 import { MdOutlineEmail } from "react-icons/md";
 import { IoDocumentTextOutline } from "react-icons/io5";
@@ -11,6 +11,40 @@ import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
 import { SlBriefcase } from "react-icons/sl";
 import GroupsSvg from "../assets/svg/GroupsSvg";
+
+export const planchasTableInfo = {
+    tableName: "planchas",
+    endPoint: "planchas",
+    headerIcon: <FaStamp />,
+    headerTitle: "PLANCHAS",
+    tableColumns: [
+        {
+            header: "Nombre",
+            active: true,
+            key: "nombre_plancha"
+        },
+        {
+            header: "Referencia",
+            active: true,
+            key: "ref_plancha"
+        },
+        {
+            header: "CDI",
+            active: true,
+            key: "cdi"
+        },
+        {
+            header: "Estado",
+            active: true,
+            key: "nombre_estado"
+        },
+        {
+            header: "Fecha",
+            active: true,
+            key: "fecha_produccion"
+        },
+    ]
+};
 
 export const emailInfoTableInfo = {
     tableName: "emailInfo",
@@ -36,7 +70,7 @@ export const emailInfoTableInfo = {
         {
             header: "Para",
             active: true,
-            key: "contacto.contacto"
+            key: "contacto.textoOpcion"
         },
         {
             header: "Usuario",

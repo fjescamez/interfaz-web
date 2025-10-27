@@ -4,7 +4,8 @@ import { notify } from "./notify";
 /* FETCH GENÉRICOS */
 export const fetchData = async (endPoint, searchValue, page = "1", setData, setTotal, clientFilter = "") => {
 
-    let url = `http://192.4.26.112:3000/${endPoint}/get/${page}`;
+    /* let url = `http://192.4.26.112:3000/${endPoint}/get/${page}`; */
+    let url = `http://192.4.26.112:3300/${endPoint}/get/${page}`;
 
     const session = JSON.parse(localStorage.getItem('session'));
 
@@ -25,7 +26,7 @@ export const fetchData = async (endPoint, searchValue, page = "1", setData, setT
             }
         });
 
-        // Aviso de reinicio de sesión cuando el token pierde validez
+        // Reinicio de sesión cuando el token pierde validez
         if (!response.ok) {
             const errorData = await response.json();
             if (response.status === 401) {
@@ -60,7 +61,10 @@ export const fetchData = async (endPoint, searchValue, page = "1", setData, setT
 };
 
 export const fetchOneItem = async (endPoint, id) => {
-    let url = `http://192.4.26.112:3000/${endPoint}/${id}`;
+    
+    /* let url = `http://192.4.26.112:3000/${endPoint}/${id}`; */
+    let url = `http://192.4.26.112:3300/${endPoint}/${id}`;
+
 
     const session = JSON.parse(localStorage.getItem('session'));
 

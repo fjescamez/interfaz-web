@@ -27,6 +27,7 @@ import { BsTrash3Fill } from "react-icons/bs";
 function Table({
     normalizedData,
     dinamicTableInfo,
+    specificHeaderTitle,
     clientFilter,
     actions,
     checkedRows,
@@ -158,16 +159,18 @@ function Table({
             return actions({ action: "infoGmg", data });
         }
 
-        const { _id, name, username, id_pedido, contacto, grupo, codigo_estrategia } = data;
-        const tabTitle = username || name || id_pedido || contacto || grupo || `ESTRATEGIA ${codigo_estrategia}`;
+        const { _id, id, nombre_plancha, name, username, id_pedido, contacto, grupo, codigo_estrategia } = data;
+        const tabTitle = username || name || id_pedido || contacto || grupo || (nombre_plancha && `PLANCHA ${nombre_plancha}`) || `ESTRATEGIA ${codigo_estrategia}`;
 
-        let path = `${location.pathname}/${_id}`;
+        let path = `${location.pathname}/${_id || id}`;
 
         if (clientFilter) {
             path = `/${tableName}/${_id}`;
         }
 
         if (tableName === "versiones") path = `/pedidos/${_id}`;
+
+        if (tableName === "planchas" || tableName === "planchasPreproduccion" || tableName === "planchasProduccion" || tableName === "planchasFinalizadas") path = `/planchas/${id}`
 
         // Solo agrega la pestaña si no existe
         if (!tabs.some(tab => tab.path === path)) { // Redundante
@@ -307,7 +310,7 @@ function Table({
                     <div className="tableHeader">
                         <div className="headerTitle">
                             {headerIcon}
-                            <h1>{headerTitle}</h1>
+                            <h1>{specificHeaderTitle ? specificHeaderTitle : headerTitle}</h1>
                         </div>
                         <div className="headerActions">
                             {(tableInfo.actions && !tableChecks) && (

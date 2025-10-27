@@ -18,17 +18,17 @@ export const produccionPlanchasDetails = {
         {
             icon: <IoDocumentTextOutline />,
             title: "Pre-producción",
-            key: "preproduccion"
+            key: "planchasPreproduccion"
         },
         {
             icon: <IoDocumentTextOutline />,
             title: "Producción",
-            key: "produccion"
+            key: "planchasProduccion"
         },
         {
             icon: <IoDocumentTextOutline />,
             title: "Finalizadas",
-            key: "finalizadas"
+            key: "planchasFinalizadas"
         },
     ]
 }
@@ -86,7 +86,7 @@ export const usersDetails = {
 }
 
 export const clientsDetails = {
-    title: "Cliente",
+    title: "Clientes",
     grid: [
         {
             icon: <IoDocumentTextOutline />,

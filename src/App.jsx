@@ -30,6 +30,11 @@ import ObservacionesTecnicas from "./pages/ObservacionesTecnicas";
 import EmailDetails from "./pages/EmailDetails";
 import ProduccionPage from "./pages/ProduccionPage";
 import ClientConfig from "./pages/ClientConfig";
+import PlanchasPage from "./pages/PlanchasPage";
+import PlanchasPre from "./pages/PlanchasPre";
+import PlanchasProd from "./pages/PlanchasProd";
+import PlanchasFin from "./pages/PlanchasFin";
+import PlanchasDetails from "./pages/PlanchasDetails";
 
 function App() {
   const icons = ["home", "pedidos", "len", "clientes", "stock", "produccion", "usuarios"];
@@ -186,14 +191,20 @@ function App() {
           <Route path="/clientes/:id/estrategias/:id" element={<StrategyDetails toggleKiosk={toggleKiosk} />} />
           <Route path="/clientes/:id/configuracion" element={<ClientConfig toggleKiosk={toggleKiosk} />} />
           <Route path="/estrategias/:id" element={<StrategyDetails />} />
+          <Route path="/estrategias" element={<StrategyPage />} />
           <Route path="/contactos" element={<ContactsPage />} />
           <Route path="/contactos/:id" element={<ContactDetails toggleKiosk={toggleKiosk} />} />
           <Route path="/grupos" element={<GroupsPage />} />
           <Route path="/grupos/:id" element={<GroupDetails />} />
           <Route path="/clientes/:id/grupos" element={<GroupsPage filter={true} />} />
           <Route path="/clientes/:id/grupos/:id" element={<GroupDetails />} />
-          <Route path="/stock" element={<StockPage />} />
           <Route path="/produccion" element={<ProduccionPage />} />
+          <Route path="/planchas/:id" element={<PlanchasDetails />} />
+          <Route path="/planchas" element={<PlanchasPage />} />
+          <Route path="/planchasPreproduccion" element={<PlanchasPre />} />
+          <Route path="/planchasProduccion" element={<PlanchasProd />} />
+          <Route path="/planchasFinalizadas" element={<PlanchasFin />} />
+          <Route path="/stock" element={<StockPage />} />
           <Route path="/usuarios" element={<UsersPage />} />
           <Route path="/usuarios/:id" element={<UserDetails toggleKiosk={toggleKiosk} />} />
           <Route path="/test" element={<HomePage />} />

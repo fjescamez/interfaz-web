@@ -24,7 +24,7 @@ function EmailDetails() {
     useEffect(() => {
         setInputData({
             ...emailInfo,
-            para: emailInfo?.contacto?.contacto || "",
+            para: emailInfo?.contacto?.textoOpcion || "",
         });
     }, [emailInfo]);
 

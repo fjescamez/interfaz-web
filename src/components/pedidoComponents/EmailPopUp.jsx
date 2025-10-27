@@ -60,7 +60,7 @@ function EmailPopUp({ setEmailModal, fullOrder }) {
 
         setItemsData(prev => ({
             ...prev,
-            contacto: clientConfig?.configuraciones?.email?.contactoDefault ? clientConfig?.configuraciones?.email?.contactoDefault : (totalContacts === 1 ? options[0]._id : "")
+            contacto: clientConfig?.configuraciones?.email?.contactoDefault ? clientConfig?.configuraciones?.email?.contactoDefault : (totalContacts === 1 ? options[0] : "")
         }))
 
         setFormData(prev => ({

@@ -222,7 +222,7 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
             {montajeModal && <MontajeTable setMontajeModal={setMontajeModal} fullOrder={fullOrder} filePath={filePath} />}
             {plotterModal && <PlotterTable setPlotterModal={setPlotterModal} orderId={fullOrder.id_pedido} fullOrder={fullOrder} filePath={filePath} />}
             {tintasModal && <TintasPopUp setTintasModal={setTintasModal} fullOrder={fullOrder} />}
-            {infoModal && <OrderInfoPopUp setInfoModal={setInfoModal} fullOrder={fullOrder} />}
+            {infoModal && <OrderInfoPopUp setInfoModal={setInfoModal} _id={fullOrder._id} />}
             {opcionalesModal && <OpcionalesPopUp setOpcionalesModal={setOpcionalesModal} fullOrder={fullOrder} />}
             <div className="pedidoSideBar" ref={sideBarRef}>
                 {orderSidebarIcons.map((icon, index) => (

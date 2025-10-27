@@ -9,6 +9,71 @@ import GroupsSvg from "../assets/svg/GroupsSvg";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
 
+export const planchasFormData = {
+    formSections: [
+        {
+            title: "Datos Generales",
+            rows: [
+                {
+                    groups: ["nombre_plancha", "ref_plancha", "cdi"]
+                },
+                {
+                    groups: ["nombre_estado", "fecha_produccion"]
+                }
+            ]
+        },
+        {
+            rows: [
+                {
+                    groups: [""]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "nombre_plancha",
+            labelId: "nombre_planchaLabel",
+            labelTitle: "Nombre",
+            inputType: "text",
+            inputId: "nombre_plancha",
+            inputName: "nombre_plancha"
+        },
+        {
+            htmlFor: "ref_plancha",
+            labelId: "ref_planchaLabel",
+            labelTitle: "Referencia",
+            inputType: "text",
+            inputId: "ref_plancha",
+            inputName: "ref_plancha"
+        },
+        {
+            htmlFor: "cdi",
+            labelId: "cdiLabel",
+            labelTitle: "CDI",
+            inputType: "text",
+            inputId: "cdi",
+            inputName: "cdi"
+        },
+        {
+            htmlFor: "nombre_estado",
+            labelId: "nombre_estadoLabel",
+            labelTitle: "Estado",
+            inputType: "text",
+            inputId: "nombre_estado",
+            inputName: "nombre_estado"
+        },
+        {
+            htmlFor: "fecha_produccion",
+            labelId: "fecha_produccionLabel",
+            labelTitle: "Fecha",
+            inputType: "text",
+            inputId: "fecha_produccion",
+            inputName: "fecha_produccion"
+        },
+    ]
+};
+
 export const emailInfoFormData = {
     formSections: [
         {
