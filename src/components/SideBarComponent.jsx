@@ -14,6 +14,7 @@ function SideBarComponent({ isActive, setIsActive }) {
     const navigate = useNavigate();
     const { setTabs } = useTabs();
     const { session } = useSession();
+    const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
 
     const handleClick = (icon, name) => {
         setIsActive(prev => {
@@ -52,7 +53,7 @@ function SideBarComponent({ isActive, setIsActive }) {
                 <div className={`icons ${isActive.clientes ? "active" : ""}`} onClick={() => handleClick("clientes", "CLIENTES")} data-tooltip-id="my-tooltip" data-tooltip-content={"CLIENTES"} >
                     <SlBriefcase />
                 </div>
-                {(session?.role === "Soporte") && (
+                {isAdmin && (
                     <>
                         <div className="border"></div>
                         <div className={`icons ${isActive.produccion ? "active" : ""}`} onClick={() => handleClick("produccion", "PRODUCCION")} data-tooltip-id="my-tooltip" data-tooltip-content={"PRODUCCION"} >
@@ -60,18 +61,18 @@ function SideBarComponent({ isActive, setIsActive }) {
                         </div>
                     </>
                 )}
-                {(session?.role === "Administrador" || session?.role === "Soporte") && (
+                {isAdmin && (
                     <>
                         <div className="border"></div>
                         <div className={`icons ${isActive.stock ? "active" : ""}`} onClick={() => handleClick("stock", "STOCK")} data-tooltip-id="my-tooltip" data-tooltip-content={"STOCK"} >
                             <FaBoxOpen />
                         </div>
                         <div className="border"></div>
-                    </>)
-                }
-                {(session?.role === "Administrador" || session?.role === "Soporte") && <div className={`icons ${isActive.usuarios ? "active" : ""}`} onClick={() => handleClick("usuarios", "USUARIOS")} data-tooltip-id="my-tooltip" data-tooltip-content={"USUARIOS"} >
-                    <FaUserCircle />
-                </div>}
+                        <div className={`icons ${isActive.usuarios ? "active" : ""}`} onClick={() => handleClick("usuarios", "USUARIOS")} data-tooltip-id="my-tooltip" data-tooltip-content={"USUARIOS"} >
+                            <FaUserCircle />
+                        </div>
+                    </>
+                )}
             </div>
             <ReactTooltip id="my-tooltip" delayShow={500} />
         </>

@@ -58,10 +58,10 @@ function Table({
     const [advancedQuery, setAdvancedQuery] = useState({});
     const { session } = useSession();
     const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
-    const customTables = ["versiones", "archivosLen", "fichas", "montaje", "plotter", "montajes", "rip", "infoGmg", "tintas", "emailInfo"];
+    const customTables = ["versiones", "archivosLen", "fichas", "montaje", "plotter", "montajes", "rip", "infoGmg", "tintas", "emailInfo", "trabajosPlancha"];
     const [showChecks, setShowChecks] = useState(tableChecks ? tableChecks : false);
     const [tableCharging, setTableCharging] = useState(!initialData ? true : false);
-    const [noDataToShow, setNodataToShow] = useState(false);
+    const [noDataToShow, setNoDataToShow] = useState(false);
     const [copyMenu, setCopyMenu] = useState({
         visible: false,
         x: 0,
@@ -73,9 +73,9 @@ function Table({
         const result = await fetchData(endPoint, searchValue, page, setTableData, setTotal, clientFilter);
         setTableCharging(false);
         if (result && result.length < 1) {
-            setNodataToShow(true);
+            setNoDataToShow(true);
         } else {
-            setNodataToShow(false);
+            setNoDataToShow(false);
         }
     }
 
@@ -87,8 +87,17 @@ function Table({
     }, []);
 
     useEffect(() => {
-        setTableInfo(dinamicTableInfo);
+        if (dinamicTableInfo.endPoint !== endPoint) {
+            setTableInfo(dinamicTableInfo);
+        }
     }, [dinamicTableInfo]);
+
+    useEffect(() => {
+        if (tableInfo?.endPoint) {
+            setTableCharging(true);
+            getData(1);
+        }
+    }, [tableInfo]);
 
     useEffect(() => {
         if (!initialData && session) {
@@ -147,7 +156,7 @@ function Table({
         const openRowTables = ["montajes", "plotter", "allMontajes", "emailInfo"];
 
         if (showChecks) {
-            handleChecked(data._id);
+            handleChecked(data._id ? data._id : data.id);
             return;
         }
 
@@ -170,7 +179,7 @@ function Table({
 
         if (tableName === "versiones") path = `/pedidos/${_id}`;
 
-        if (tableName === "planchas" || tableName === "planchasPreproduccion" || tableName === "planchasProduccion" || tableName === "planchasFinalizadas") path = `/planchas/${id}`
+        if (tableName === "planchas" || tableName === "planchasPreproduccion" || tableName === "planchasProduccion" || tableName === "planchasFinalizadas") path = `/produccion/planchas/${id}`
 
         // Solo agrega la pestaña si no existe
         if (!tabs.some(tab => tab.path === path)) { // Redundante
@@ -263,11 +272,11 @@ function Table({
 
     const checkAll = () => {
         setCheckedRows(prev => {
-            const allChecked = tableData.every(row => prev.includes(row._id));
+            const allChecked = tableData.every(row => prev.includes(row._id || row.id));
             if (allChecked) {
                 return [];
             } else {
-                return tableData.map(row => row._id);
+                return tableData.map(row => row._id || row.id);
             }
         });
     };
@@ -375,7 +384,7 @@ function Table({
                             )}
                         </div>
                     </div>
-                    {(tableInfo.actions && tableData.length > 0 && !(tableInfo.actions.length === 1 && tableInfo.actions[0].action === "eliminar")) && (
+                    {(tableInfo.actions && tableData.length > 0 && !(tableInfo.actions.length === 1 && tableInfo.actions[0].action === "eliminar") && !tableCharging) && (
                         <div className="tableInfoActions">
                             {actionEnded
                                 ?
@@ -447,7 +456,7 @@ function Table({
                                             <input
                                                 type="checkbox"
                                                 className="check"
-                                                checked={checkedRows.includes(data._id)}
+                                                checked={checkedRows.includes(data._id || data.id)}
                                                 readOnly
                                             />
                                         </td>

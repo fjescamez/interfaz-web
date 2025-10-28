@@ -4,18 +4,28 @@ import { useEffect, useState } from "react";
 import { fetchOneItem } from "../helpers/fetchData";
 import { planchasFormData } from "../helpers/formsData";
 import FormSection from "../components/formComponents/FormSection";
+import Table from "../components/Table";
+import { trabajosPlanchasTableInfo } from "../helpers/tablesInfo";
 
 function PlanchasDetails() {
   const { id } = useParams();
   const [plancha, setPlancha] = useState(null);
+  const [trabajosPlancha, setTrabajosPlancha] = useState([]);
+  const [checkTrabajos, setCheckTrabajos] = useState([]);
 
   const getPlancha = async () => {
     const result = await fetchOneItem("planchas", id);
     setPlancha(result);
   }
 
+  const getTrabajos = async () => {
+    const result = await fetchOneItem("planchas/trabajos", id);
+    setTrabajosPlancha(result);
+  }
+
   useEffect(() => {
     getPlancha();
+    getTrabajos();
   }, [id]);
 
   return (
@@ -37,6 +47,14 @@ function PlanchasDetails() {
             </div>
           ))}
         </div>
+        {trabajosPlancha.length > 0 &&
+          <Table
+            dinamicTableInfo={trabajosPlanchasTableInfo}
+            initialData={trabajosPlancha}
+            checkedRows={checkTrabajos}
+            setCheckedRows={setCheckTrabajos}
+          />
+        }
       </div>
     </div>
   )

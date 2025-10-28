@@ -12,6 +12,47 @@ import MontajeSvg from "../assets/svg/MontajeSvg";
 import { SlBriefcase } from "react-icons/sl";
 import GroupsSvg from "../assets/svg/GroupsSvg";
 
+export const trabajosPlanchasTableInfo = {
+    tableName: "trabajosPlancha",
+    endPoint: "",
+    headerIcon: <FaStamp />,
+    headerTitle: "TRABAJOS DE LA PLANCHA",
+    tableColumns: [
+        {
+            header: "Nombre",
+            active: true,
+            key: "name"
+        },
+        {
+            header: "Resolución",
+            active: true,
+            key: "resolution"
+        },
+        {
+            header: "Ancho usado",
+            active: true,
+            key: "usedWidth"
+        },
+        {
+            header: "Alto usado",
+            active: true,
+            key: "usedHeight"
+        },
+        {
+            header: "Area usada",
+            active: true,
+            key: "usedArea"
+        }
+    ],
+    actions: [
+        {
+            title: "Solicitar Albarán",
+            action: "solicitarAlbaran"
+        }
+    ],
+    tableChecks: true
+}
+
 export const planchasTableInfo = {
     tableName: "planchas",
     endPoint: "planchas",
@@ -43,6 +84,39 @@ export const planchasTableInfo = {
             active: true,
             key: "fecha"
         },
+        {
+            header: "Preproducción",
+            active: true,
+            key: "usuario_dfs"
+        },
+        {
+            header: "Producción",
+            active: true,
+            key: "usuario_produccion"
+        },
+        {
+            header: "Finalizada",
+            active: true,
+            key: "usuario_finalizada"
+        },
+    ],
+    actions: [
+        {
+            title: "Eliminar",
+            action: "eliminar"
+        },
+        {
+            title: "Firmar",
+            action: "firmar"
+        },
+        {
+            title: "Imprimir",
+            action: "imprimir"
+        },
+        {
+            title: "Solicitar Albarán",
+            action: "solicitarAlbaran"
+        }
     ]
 };
 

@@ -23,9 +23,10 @@ export const planchasFormData = {
             ]
         },
         {
+            title: "Firmas",
             rows: [
                 {
-                    groups: [""]
+                    groups: ["usuario_dfs", "usuario_produccion", "usuario_finalizada"]
                 }
             ]
         }
@@ -70,6 +71,30 @@ export const planchasFormData = {
             inputType: "text",
             inputId: "fecha_produccion",
             inputName: "fecha_produccion"
+        },
+        {
+            htmlFor: "usuario_dfs",
+            labelId: "usuario_dfsLabel",
+            labelTitle: "Preproducción",
+            inputType: "text",
+            inputId: "usuario_dfs",
+            inputName: "usuario_dfs"
+        },
+        {
+            htmlFor: "usuario_produccion",
+            labelId: "usuario_produccionLabel",
+            labelTitle: "Producción",
+            inputType: "text",
+            inputId: "usuario_produccion",
+            inputName: "usuario_produccion"
+        },
+        {
+            htmlFor: "usuario_finalizada",
+            labelId: "usuario_finalizadaLabel",
+            labelTitle: "Finalizada",
+            inputType: "text",
+            inputId: "usuario_finalizada",
+            inputName: "usuario_finalizada"
         },
     ]
 };

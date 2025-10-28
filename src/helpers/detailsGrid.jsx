@@ -43,36 +43,6 @@ export const produccionTrabajosDetails = {
         },
         {
             icon: <IoDocumentTextOutline />,
-            title: "DIGRA",
-            key: "digra"
-        },
-        {
-            icon: <IoDocumentTextOutline />,
-            title: "GspApp",
-            key: "gspapp"
-        },
-        {
-            icon: <IoDocumentTextOutline />,
-            title: "TORTOSA",
-            key: "tortosa"
-        },
-        {
-            icon: <IoDocumentTextOutline />,
-            title: "Adhay",
-            key: "adhay"
-        },
-        {
-            icon: <IoDocumentTextOutline />,
-            title: "GSP",
-            key: "gsp"
-        },
-        {
-            icon: <IoDocumentTextOutline />,
-            title: "ETIPON",
-            key: "etipon"
-        },
-        {
-            icon: <IoDocumentTextOutline />,
             title: "Finalizados",
             key: "finalizados"
         },
@@ -106,13 +76,11 @@ export const clientsDetails = {
         /* {
             icon: <MdOutlineEmail />,
             title: "Plantillas E-mail",
-            body: "Información técnica y relevante de las diferentes máquinas, del cliente, proveedores y protocolos internos de cada uno.",
             key: "emails"
         }, */
         /* {
             icon: <CgFileDocument />,
             title: "Fichas técnicas",
-            body: "Información técnica y relevante de las diferentes máquinas, del cliente, proveedores y protocolos internos de cada uno.",
             key: "fichasTecnicas"
         }, */
         {
@@ -123,7 +91,6 @@ export const clientsDetails = {
         /* {
             icon: <FiPrinter />,
             title: "Máquinas",
-            body: "Información técnica y relevante de las diferentes máquinas, del cliente, proveedores y protocolos internos de cada uno.",
             key: "maquinas"
         }, */
         {

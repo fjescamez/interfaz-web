@@ -31,9 +31,6 @@ import EmailDetails from "./pages/EmailDetails";
 import ProduccionPage from "./pages/ProduccionPage";
 import ClientConfig from "./pages/ClientConfig";
 import PlanchasPage from "./pages/PlanchasPage";
-import PlanchasPre from "./pages/PlanchasPre";
-import PlanchasProd from "./pages/PlanchasProd";
-import PlanchasFin from "./pages/PlanchasFin";
 import PlanchasDetails from "./pages/PlanchasDetails";
 
 function App() {
@@ -199,11 +196,11 @@ function App() {
           <Route path="/clientes/:id/grupos" element={<GroupsPage filter={true} />} />
           <Route path="/clientes/:id/grupos/:id" element={<GroupDetails />} />
           <Route path="/produccion" element={<ProduccionPage />} />
-          <Route path="/planchas/:id" element={<PlanchasDetails />} />
-          <Route path="/planchas" element={<PlanchasPage />} />
-          <Route path="/planchasPreproduccion" element={<PlanchasPre />} />
-          <Route path="/planchasProduccion" element={<PlanchasProd />} />
-          <Route path="/planchasFinalizadas" element={<PlanchasFin />} />
+          <Route path="/produccion/planchas/:id" element={<PlanchasDetails />} />
+          <Route path="/produccion/planchas" element={<PlanchasPage />} />
+          <Route path="/produccion/planchasPreproduccion" element={<PlanchasPage />} />
+          <Route path="/produccion/planchasProduccion" element={<PlanchasPage />} />
+          <Route path="/produccion/planchasFinalizadas" element={<PlanchasPage />} />
           <Route path="/stock" element={<StockPage />} />
           <Route path="/usuarios" element={<UsersPage />} />
           <Route path="/usuarios/:id" element={<UserDetails toggleKiosk={toggleKiosk} />} />

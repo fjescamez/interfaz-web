@@ -178,8 +178,8 @@
                     }
 
                     .body {
-                        font-family: 'Museo Sans 500 Italic', serif;
-                        font-size: 1.3rem;
+                        font-family: 'Museo Slab 700', serif;
+                        font-size: 2.3rem;
                     }
                 }
 
@@ -203,7 +203,7 @@
 
         .formSections {
             margin: 0 auto;
-            width: 75%;
+            width: 80%;
         }
     }
 
