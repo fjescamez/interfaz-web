@@ -96,12 +96,12 @@ function LoginPage() {
         <main>
           <div className="login" ref={loginForm}>
             <a className="login__contenedor-logo" href="https://www.disengraf.com/">
-              <img className="login__logo" src="/src/assets/img/LOGO-SOLO.png" alt="logo_disengraf" />
+              <img className="login__logo" src="/public/assets/LOGO-SOLO.png" alt="logo_disengraf" />
             </a>
 
             <form onSubmit={handleSubmit}>
               <div className="login__input">
-                <img className="login__icono" src="/src/assets/img/icon_user.png" alt="icono_usuario" />
+                <img className="login__icono" src="/public/assets/icon_user.png" alt="icono_usuario" />
                 <input
                   className="login__caja"
                   type="text"
@@ -112,7 +112,7 @@ function LoginPage() {
                 />
               </div>
               <div className="login__input">
-                <img className="login__icono" src="/src/assets/img/icon_candado.png" alt="icono_usuario" />
+                <img className="login__icono" src="/public/assets/icon_candado.png" alt="icono_usuario" />
                 <input
                   className="login__caja"
                   type="password"
@@ -139,13 +139,13 @@ function LoginPage() {
         </main>
 
         <footer className="footer">
-          <img className="logo" src="/src/assets/img/logo-just.png" alt="logo-just" />
-          <img className="logo" src="/src/assets/img/logo-epson.png" alt="logo-epson" />
-          <img className="logo" src="/src/assets/img/logo-esko.png" alt="logo-esko" />
-          <img className="logo" src="/src/assets/img/logo-apple.png" alt="logo-apple" />
-          <img className="logo" src="/src/assets/img/logo-dupont-cyrel.png" alt="logo-dupont-cyrel" />
-          <img className="logo" src="/src/assets/img/logo-dupont.png" alt="logo-dupont" />
-          <img className="logo" src="/src/assets/img/logo-kodak.png" alt="logo-kodak" />
+          <img className="logo" src="/public/assets/logo-just.png" alt="logo-just" />
+          <img className="logo" src="/public/assets/logo-epson.png" alt="logo-epson" />
+          <img className="logo" src="/public/assets/logo-esko.png" alt="logo-esko" />
+          <img className="logo" src="/public/assets/logo-apple.png" alt="logo-apple" />
+          <img className="logo" src="/public/assets/logo-dupont-cyrel.png" alt="logo-dupont-cyrel" />
+          <img className="logo" src="/public/assets/logo-dupont.png" alt="logo-dupont" />
+          <img className="logo" src="/public/assets/logo-kodak.png" alt="logo-kodak" />
         </footer>
       </div>
     </div>

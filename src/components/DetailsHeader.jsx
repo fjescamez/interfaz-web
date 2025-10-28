@@ -35,7 +35,7 @@ function DetailsHeader({
             <Test />
             <div className="header">
                 <div className="title">
-                    <img src="/src/assets/img/LOGO-SOLO.png" alt="logo disengraf" />
+                    <img src="/public/assets/LOGO-SOLO.png" alt="logo disengraf" />
                     <div className="details">
                         <h1>{title} {subtitle && <span>({subtitle})</span>}</h1>
                         {endPoint === "users" && <p><span>Departamento/s:</span> {(departments && departments[0]) ? departments.join(" - ") : "No asignado"}</p>}

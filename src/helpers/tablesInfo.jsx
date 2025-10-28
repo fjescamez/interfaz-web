@@ -41,7 +41,7 @@ export const planchasTableInfo = {
         {
             header: "Fecha",
             active: true,
-            key: "fecha_produccion"
+            key: "fecha"
         },
     ]
 };
