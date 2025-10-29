@@ -86,29 +86,16 @@ function LenTable({
 
         try {
             const response = await postData("lenFiles/solicitarVista", data);
-            console.log(response);
 
             if (response.status === "success") {
                 notify(toast.success, response.status, response.title, response.message);
-                let updatedActions;
-
-                if (lenIds.length === 0) {
-                    updatedActions = tableInfo.actions.map(action => {
-                        if (action.action === "solicitarVista") {
-                            return { ...action, hidden: true };
-                        } else if (action.action === "visualizarLen") {
-                            return { ...action, hidden: false };
-                        }
-                        return action;
-                    });
-                } else {
-                    updatedActions = tableInfo.actions.map(action => {
-                        if (action.action === "visualizarLen") {
-                            return { ...action, hidden: false };
-                        }
-                        return action;
-                    });
-                }
+                let updatedActions = tableInfo.actions.map(action => {
+                    if (action.action === "visualizarLen") {
+                        console.log(action);
+                        return { ...action, hidden: false };
+                    }
+                    return action;
+                });
 
                 setTableInfo({ ...tableInfo, actions: updatedActions });
                 setLenViewUrl(response.vista.contents?.viewLink);

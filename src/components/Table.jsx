@@ -24,6 +24,7 @@ import { toast } from "react-toastify";
 import { MdLockOpen, MdLockOutline } from "react-icons/md";
 import { BsTrash3Fill } from "react-icons/bs";
 
+
 function Table({
     normalizedData,
     dinamicTableInfo,
@@ -37,6 +38,7 @@ function Table({
     currentVersion,
     initialData
 }) {
+
     const [tableData, setTableData] = useState(initialData || []);
     const [modal, setModal] = useState(false);
     const [deletePopup, setDeletePopup] = useState(false);
@@ -52,13 +54,14 @@ function Table({
     const clienteDato = clienteDatos[location.pathname] || null;
     const [tableInfo, setTableInfo] = useState(dinamicTableInfo);
     const { headerIcon, headerTitle, tableColumns, tableName, endPoint, tableForm, tableChecks } = tableInfo;
+    const tableActions = tableInfo.actions || [];
     const { tabs, setTabs } = useTabs();
     const [editTable, setEditTable] = useState(false);
     const [advancedFilters, setAdvancedFilters] = useState(false);
     const [advancedQuery, setAdvancedQuery] = useState({});
     const { session } = useSession();
     const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
-    const customTables = ["versiones", "archivosLen", "fichas", "montaje", "plotter", "montajes", "rip", "infoGmg", "tintas", "emailInfo", "trabajosPlancha"];
+    const customTables = ["versiones", "archivosLen", "fichas", "montaje", "plotter", "montajes", "rip", "infoGmg", "tintas", "emailInfo"];
     const [showChecks, setShowChecks] = useState(tableChecks ? tableChecks : false);
     const [tableCharging, setTableCharging] = useState(!initialData ? true : false);
     const [noDataToShow, setNoDataToShow] = useState(false);
@@ -86,16 +89,19 @@ function Table({
         }
     }, []);
 
+
+
     useEffect(() => {
-        if (dinamicTableInfo.endPoint !== endPoint) {
+        if (dinamicTableInfo.endPoint !== endPoint || dinamicTableInfo.actions !== tableActions) {
             setTableInfo(dinamicTableInfo);
         }
     }, [dinamicTableInfo]);
 
     useEffect(() => {
-        if (tableInfo?.endPoint) {
+        const tablasPlanchas = ["planchas", "planchasPreproduccion", "planchasProduccion", "planchasFinalizadas"];
+        if (tableInfo?.endPoint && tablasPlanchas.includes(tableName)) {
             setTableCharging(true);
-            getData(1);
+            getData(1, search);
         }
     }, [tableInfo]);
 
@@ -179,7 +185,7 @@ function Table({
 
         if (tableName === "versiones") path = `/pedidos/${_id}`;
 
-        if (tableName === "planchas" || tableName === "planchasPreproduccion" || tableName === "planchasProduccion" || tableName === "planchasFinalizadas") path = `/produccion/planchas/${id}`
+        if (tableName === "planchas" || tableName === "planchasPreproduccion" || tableName === "planchasProduccion" || tableName === "planchasFinalizadas" || tableName === "trabajosPlancha") path = `/produccion/planchas/${id}`
 
         // Solo agrega la pestaña si no existe
         if (!tabs.some(tab => tab.path === path)) { // Redundante
