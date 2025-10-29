@@ -28,7 +28,8 @@
     "reactjs-popup": "^2.0.6",
     "serve": "^14.2.5",
     "simplebar": "^6.3.1",
-    "simplebar-react": "^3.3.1"
+    "simplebar-react": "^3.3.1",
+    "socket.io": "^4.8.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
