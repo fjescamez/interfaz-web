@@ -30,6 +30,11 @@ export const produccionPlanchasDetails = {
             title: "Finalizadas",
             key: "planchasFinalizadas"
         },
+        {
+            icon: <IoDocumentTextOutline />,
+            title: "Trabajos",
+            key: "trabajosPlanchas"
+        },
     ]
 }
 
@@ -39,12 +44,17 @@ export const produccionTrabajosDetails = {
         {
             icon: <IoDocumentTextOutline />,
             title: "Pendientes",
-            key: "pendientes"
+            key: "externosPendientes"
         },
         {
             icon: <IoDocumentTextOutline />,
             title: "Finalizados",
-            key: "finalizados"
+            key: "externosFinalizados"
+        },
+        {
+            icon: <IoDocumentTextOutline />,
+            title: "Anulados",
+            key: "externosAnulados"
         },
     ]
 }

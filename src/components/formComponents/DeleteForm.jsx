@@ -21,8 +21,7 @@ function DeleteForm({
     setIsActive,
     setActionEnded
 }) {
-    const { headerIcon, headerTitle, endPoint, deleteActions } = tableInfo;
-    console.log(tableInfo);
+    const { headerIcon, headerTitle, deleteTitle, endPoint, deleteActions } = tableInfo;
 
     const { closeTab } = useTabs();
     const location = useLocation();
@@ -80,7 +79,7 @@ function DeleteForm({
             }
 
             if (data && setData) {
-                setData(data.filter(obj => !filesToDelete.includes(obj._id)));
+                setData(data.filter(obj => !filesToDelete.includes(obj._id || obj.id)));
             }
         } else {
             notify(toast.error, result.status, result.title, result.message);
@@ -94,7 +93,7 @@ function DeleteForm({
                 <div className="formHeaderBackground">
                     <div className="formHeader">
                         {headerIcon}
-                        <h1>ELIMINAR {headerTitle}</h1>
+                        <h1>ELIMINAR {deleteTitle || headerTitle}</h1>
                         <button onClick={() => {
                             setModal(false);
                         }}>
@@ -104,7 +103,7 @@ function DeleteForm({
                 </div>
                 <div className="formBody">
                     <form onSubmit={handleSubmit}>
-                        <p>¿Estás seguro de que deseas eliminar {(totalFilesToDelete && totalFilesToDelete > 1) ? "estos/as" : "este/a"} {headerTitle}? Esta acción no se puede deshacer</p>
+                        <p>¿Estás seguro de que deseas eliminar {(totalFilesToDelete && totalFilesToDelete > 1) ? "estos/as" : "este/a"} {deleteTitle || headerTitle}? Esta acción no se puede deshacer</p>
                         {totalFilesToDelete && <p>Número de elementos que se van a eliminar: {totalFilesToDelete}</p>}
                         <div className="buttons">
                             <button type="submit" className="delete">Eliminar</button>

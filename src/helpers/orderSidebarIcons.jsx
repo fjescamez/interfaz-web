@@ -1,6 +1,6 @@
 import { HiOutlineRefresh } from "react-icons/hi"
 import { PiNoteLight, PiFoldersLight, PiEnvelopeLight, PiStackLight, PiStorefrontLight, PiImagesLight } from "react-icons/pi"
-import { BsFiletypeDoc, BsFiletypeXml, BsFileEarmark } from "react-icons/bs";
+import { BsFiletypeDoc, BsFiletypeXml, BsFileEarmark, BsTrash3Fill } from "react-icons/bs";
 import { FaExternalLinkAlt } from "react-icons/fa";
 import { RiPaintFill } from "react-icons/ri";
 import { SlSpeech } from "react-icons/sl";
@@ -95,10 +95,15 @@ export const orderSidebarIcons = [
         icon: <FaTasks />,
         buttons: [
             {
+                icon: <BsTrash3Fill />,
+                action: "eliminar",
+                tooltip: "ELIMINAR VERSIÓN",
+                first: true
+            },
+            {
                 icon: <RiText />,
                 action: "traceText",
-                tooltip: "TRAZAR TEXTO",
-                first: true
+                tooltip: "TRAZAR TEXTO"
             }
         ],
         tooltip: ""

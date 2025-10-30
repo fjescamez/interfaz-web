@@ -12,12 +12,12 @@ export function TabsProvider(props) {
     const [tabs, setTabs] = useState(() => {
         const path = location.pathname;
         let title = path === "/home" ? "INICIO" : path.substring(1).toUpperCase();
-        return (path !== "/" && isValidRoute(path)) ? [{ path, title }] : [];
+        return path !== "/" ? [{ path, title }] : [];
     });
 
     // Ya no se añade automáticamente la pestaña en useEffect.
     // Ahora hay que añadir la pestaña manualmente desde el componente que navega,
-    // pasando el título (por ejemplo, el nombre del cliente)
+    // pasando el título
 
     const closeTab = (path) => {
         if (location.pathname === path) {

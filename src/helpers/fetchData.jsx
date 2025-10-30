@@ -4,7 +4,8 @@ import { notify } from "./notify";
 /* FETCH GENÉRICOS */
 export const fetchData = async (endPoint, searchValue, page = "1", setData, setTotal, clientFilter = "") => {
 
-    let url = `http://192.4.26.112:3000/${endPoint}/get/${page}`;
+    /* let url = `http://192.4.26.112:3000/${endPoint}/get/${page}`; */
+    let url = `http://192.4.26.112:3300/${endPoint}/get/${page}`;
 
     const session = JSON.parse(localStorage.getItem('session'));
 
@@ -61,7 +62,8 @@ export const fetchData = async (endPoint, searchValue, page = "1", setData, setT
 
 export const fetchOneItem = async (endPoint, id) => {
 
-    let url = `http://192.4.26.112:3000/${endPoint}/${id}`;
+    /* let url = `http://192.4.26.112:3000/${endPoint}/${id}`; */
+    let url = `http://192.4.26.112:3300/${endPoint}/${id}`;
 
     const session = JSON.parse(localStorage.getItem('session'));
 
@@ -83,7 +85,9 @@ export const fetchOneItem = async (endPoint, id) => {
 
 export const postData = async (endPoint, data) => {
 
-    let url = `http://192.4.26.112:3000/${endPoint}`;
+    /* let url = `http://192.4.26.112:3000/${endPoint}`; */
+    let url = `http://192.4.26.112:3300/${endPoint}`;
+
     const session = JSON.parse(localStorage.getItem('session'));
 
     try {
@@ -169,7 +173,8 @@ export const fetchUserPreferences = async (username, table) => {
 
 /* BORRAR VARIOS ELEMENTOS */
 export const deleteMultipleObjects = async (endPoint, data, setData) => {
-    let url = `http://192.4.26.112:3000/${endPoint}/remove`;
+    /* let url = `http://192.4.26.112:3000/${endPoint}/remove`; */
+    let url = `http://192.4.26.112:3300/${endPoint}/remove`;
     const session = JSON.parse(localStorage.getItem('session'));
 
     try {

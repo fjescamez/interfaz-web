@@ -71,10 +71,16 @@ function LenTable({
         }
     }
 
-    const solicitarVista = async () => {
+    const solicitarVista = async (tableData) => {
+        let id_pedido = orderId || "";
+
+        if (!orderId) {
+            id_pedido = tableData.find(len => len._id === lenIds[0])?.id_pedido;
+        }
+
         const data = {
             action: "solicitarVista",
-            orderId
+            orderId: id_pedido
         }
 
         if (lenIds.length === 1) {
@@ -91,7 +97,6 @@ function LenTable({
                 notify(toast.success, response.status, response.title, response.message);
                 let updatedActions = tableInfo.actions.map(action => {
                     if (action.action === "visualizarLen") {
-                        console.log(action);
                         return { ...action, hidden: false };
                     }
                     return action;
@@ -112,14 +117,14 @@ function LenTable({
     }
 
     const lenActions = (variables) => {
-        const { action, setTableData } = variables;
+        const { action, data, setTableData } = variables;
         switch (action) {
             case "enviarProduccion":
                 return enviarProduccion(setTableData);
             case "infoCurvas":
                 return getInfoCurvas();
             case "solicitarVista":
-                return solicitarVista();
+                return solicitarVista(data);
             case "visualizarLen":
                 window.open(lenViewUrl, "_blank");
                 return { status: "success" };

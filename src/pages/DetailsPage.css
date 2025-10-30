@@ -207,6 +207,17 @@
         }
     }
 
+    .previoPlancha {
+        cursor: pointer;
+        background-color: var(--details);
+        padding: 1rem;
+        display: block;
+        margin: 2rem auto;
+        max-width: 80%;
+        border: 2px solid var(--header);
+        border-radius: 0.35rem;
+    }
+
     .tableContainer {
         margin-top: 5rem;
     }

@@ -32,6 +32,8 @@ import ProduccionPage from "./pages/ProduccionPage";
 import ClientConfig from "./pages/ClientConfig";
 import PlanchasPage from "./pages/PlanchasPage";
 import PlanchasDetails from "./pages/PlanchasDetails";
+import TrabajosPlanchasPage from "./pages/TrabajosPlanchasPage";
+import ExternosFinalizadosPage from "./pages/ExternosFinalizadosPage";
 
 function App() {
   const icons = ["home", "pedidos", "len", "clientes", "stock", "produccion", "usuarios"];
@@ -41,7 +43,7 @@ function App() {
   const mainRef = useRef();
   const [kioskData, setKioskData] = useState({ endpoint: "", id: "" });
 
-  useEffect(() => {    
+  useEffect(() => {
     if (!session) {
       navigate("/login");
     }
@@ -89,7 +91,7 @@ function App() {
       setKioskData({ endpoint, id });
     }
     setIsKioskActive(prev => !prev);
-  };  
+  };
 
   const [isArrowActive, setIsArrowActive] = useState(false);
 
@@ -150,21 +152,19 @@ function App() {
 
   return (
     <>
-      {isValidRoute(location.pathname) && (
-        <HeaderComponent
-          toggleUserDropdown={toggleUserDropdown}
-          isOnline={isOnline}
-          setIsOnline={setIsOnline}
-        />
-      )}
+      <HeaderComponent
+        toggleUserDropdown={toggleUserDropdown}
+        isOnline={isOnline}
+        setIsOnline={setIsOnline}
+      />
       <div className="main" ref={mainRef}>
         <ToastContainer
           newestOnTop
           autoClose={3000}
         />
-        {(isDropdownActive && isValidRoute(location.pathname)) && <UserDropdownComponent toggleUserDropdown={toggleUserDropdown} toggleKiosk={toggleKiosk} />}
+        {(isDropdownActive) && <UserDropdownComponent toggleUserDropdown={toggleUserDropdown} toggleKiosk={toggleKiosk} />}
         {isKioskActive && <ImageKioskComponent toggleKiosk={toggleKiosk} endpoint={kioskData.endpoint} id={kioskData.id} client={kioskData.client} />}
-        {isValidRoute(location.pathname) && <SideBarComponent isActive={isActive} setIsActive={setIsActive} />}
+        {<SideBarComponent isActive={isActive} setIsActive={setIsActive} />}
         <div className={`scrollTopArrow ${isArrowActive ? "arrowVisible" : ""}`} onClick={scrollTop}><FaArrowCircleUp /></div>
         <Routes>
           <Route path="*" element={<ErrorPage />} />
@@ -201,6 +201,9 @@ function App() {
           <Route path="/produccion/planchasPreproduccion" element={<PlanchasPage />} />
           <Route path="/produccion/planchasProduccion" element={<PlanchasPage />} />
           <Route path="/produccion/planchasFinalizadas" element={<PlanchasPage />} />
+          <Route path="/produccion/trabajosPlanchas" element={<TrabajosPlanchasPage />} />
+          <Route path="/produccion/externosFinalizados" element={<ExternosFinalizadosPage />} />
+          <Route path="/produccion/externosAnulados" element={<ExternosFinalizadosPage />} />
           <Route path="/stock" element={<StockPage />} />
           <Route path="/usuarios" element={<UsersPage />} />
           <Route path="/usuarios/:id" element={<UserDetails toggleKiosk={toggleKiosk} />} />

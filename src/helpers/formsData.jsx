@@ -18,12 +18,12 @@ export const planchasFormData = {
                     groups: ["nombre_plancha", "ref_plancha", "cdi"]
                 },
                 {
-                    groups: ["nombre_estado", "fecha_produccion"]
+                    groups: ["nombre_estado", "fecha", "nombre_estado_albaran"]
                 }
             ]
         },
         {
-            title: "Firmas",
+            title: "Control",
             rows: [
                 {
                     groups: ["usuario_dfs", "usuario_produccion", "usuario_finalizada"]
@@ -65,12 +65,20 @@ export const planchasFormData = {
             inputName: "nombre_estado"
         },
         {
-            htmlFor: "fecha_produccion",
-            labelId: "fecha_produccionLabel",
+            htmlFor: "fecha",
+            labelId: "fechaLabel",
             labelTitle: "Fecha",
             inputType: "text",
-            inputId: "fecha_produccion",
-            inputName: "fecha_produccion"
+            inputId: "fecha",
+            inputName: "fecha"
+        },
+        {
+            htmlFor: "nombre_estado_albaran",
+            labelId: "nombre_estado_albaranLabel",
+            labelTitle: "Albarán",
+            inputType: "text",
+            inputId: "nombre_estado_albaran",
+            inputName: "nombre_estado_albaran"
         },
         {
             htmlFor: "usuario_dfs",

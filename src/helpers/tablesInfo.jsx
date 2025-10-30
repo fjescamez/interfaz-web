@@ -12,14 +12,58 @@ import MontajeSvg from "../assets/svg/MontajeSvg";
 import { SlBriefcase } from "react-icons/sl";
 import GroupsSvg from "../assets/svg/GroupsSvg";
 
-export const trabajosPlanchasTableInfo = {
-    tableName: "trabajosPlancha",
-    endPoint: "",
+export const externosFinalizadosTableInfo = {
+    tableName: "externosFinalizados",
+    endPoint: "planchas/externosFinalizados",
     headerIcon: <FaStamp />,
-    headerTitle: "TRABAJOS DE LA PLANCHA",
+    headerTitle: "EXTERNOS FINALIZADOS",
     tableColumns: [
         {
             header: "Nombre",
+            active: true,
+            key: "documentName"
+        },
+        {
+            header: "Cliente",
+            active: true,
+            key: "username"
+        },
+        {
+            header: "Plancha",
+            active: true,
+            key: "refPlancha"
+        },
+        {
+            header: "Colores",
+            active: true,
+            key: "clichesColor"
+        },
+        {
+            header: "Fecha",
+            active: true,
+            key: "fecha"
+        },
+        {
+            header: "Usuario",
+            active: true,
+            key: "nombre_usuario"
+        },
+        {
+            header: "Estado",
+            active: true,
+            key: "nombre_estado"
+        },
+    ]
+}
+
+export const trabajosPlanchaTableInfo = {
+    tableName: "trabajosPlancha",
+    endPoint: "planchas/trabajos",
+    headerIcon: <FaStamp />,
+    headerTitle: "TRABAJOS",
+    tableColumns: [
+        {
+            header: "Nombre trabajo",
             active: true,
             key: "name"
         },
@@ -29,28 +73,70 @@ export const trabajosPlanchasTableInfo = {
             key: "resolution"
         },
         {
-            header: "Ancho usado",
+            header: "Ancho",
             active: true,
             key: "usedWidth"
         },
         {
-            header: "Alto usado",
+            header: "Alto",
             active: true,
             key: "usedHeight"
         },
         {
-            header: "Area usada",
+            header: "Area",
             active: true,
             key: "usedArea"
         }
     ],
-    actions: [
+}
+
+export const trabajosPlanchasTableInfo = {
+    tableName: "trabajosPlanchas",
+    endPoint: "planchas/trabajos",
+    headerIcon: <FaStamp />,
+    headerTitle: "TRABAJOS PLANCHAS",
+    tableColumns: [
         {
-            title: "Solicitar Albarán",
-            action: "solicitarAlbaran"
+            header: "Nombre plancha",
+            active: true,
+            key: "nombre_plancha"
+        },
+        {
+            header: "Estado plancha",
+            active: true,
+            key: "nombre_estado_plancha"
+        },
+        {
+            header: "Fecha",
+            active: true,
+            key: "fecha_plancha"
+        },
+        {
+            header: "Nombre trabajo",
+            active: true,
+            key: "name"
+        },
+        {
+            header: "Resolución",
+            active: true,
+            key: "resolution"
+        },
+        {
+            header: "Ancho",
+            active: true,
+            key: "usedWidth"
+        },
+        {
+            header: "Alto",
+            active: true,
+            key: "usedHeight"
+        },
+        {
+            header: "Area",
+            active: true,
+            key: "usedArea"
         }
     ],
-    tableChecks: true
 }
 
 export const planchasTableInfo = {
@@ -85,6 +171,11 @@ export const planchasTableInfo = {
             key: "fecha"
         },
         {
+            header: "Albarán",
+            active: true,
+            key: "nombre_estado_albaran"
+        },
+        {
             header: "Preproducción",
             active: true,
             key: "usuario_dfs"
@@ -109,10 +200,10 @@ export const planchasTableInfo = {
             title: "Firmar",
             action: "firmar"
         },
-        {
+        /* {
             title: "Imprimir",
             action: "imprimir"
-        },
+        }, */
         {
             title: "Solicitar Albarán",
             action: "solicitarAlbaran"
@@ -597,6 +688,16 @@ export const lenTableInfo = {
             action: "enviarProduccion"
         },
         {
+            title: "Solicitar vista",
+            action: "solicitarVista"
+        },
+        {
+            title: "Visualizar LEN",
+            action: "visualizarLen",
+            hidden: true,
+            noCheck: true
+        },
+        {
             title: "Eliminar",
             action: "eliminar"
         }
@@ -714,6 +815,7 @@ export const orderTableInfo = {
     tableName: "pedidos",
     endPoint: "orders",
     headerIcon: <IoDocumentTextOutline />,
+    deleteTitle: "VERSIÓN",
     headerTitle: "PEDIDOS DE CLIENTES",
     tableColumns: [
         {

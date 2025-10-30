@@ -23,7 +23,7 @@ import { notify } from "../helpers/notify";
 import { toast } from "react-toastify";
 import { MdLockOpen, MdLockOutline } from "react-icons/md";
 import { BsTrash3Fill } from "react-icons/bs";
-
+import useSocket from "../helpers/useSocket";
 
 function Table({
     normalizedData,
@@ -38,7 +38,7 @@ function Table({
     currentVersion,
     initialData
 }) {
-
+    const socket = useSocket();
     const [tableData, setTableData] = useState(initialData || []);
     const [modal, setModal] = useState(false);
     const [deletePopup, setDeletePopup] = useState(false);
@@ -61,7 +61,8 @@ function Table({
     const [advancedQuery, setAdvancedQuery] = useState({});
     const { session } = useSession();
     const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
-    const customTables = ["versiones", "archivosLen", "fichas", "montaje", "plotter", "montajes", "rip", "infoGmg", "tintas", "emailInfo"];
+    const isOficina = session?.departments?.includes("Oficina");
+    const customTables = ["versiones", "archivosLen", "fichas", "montaje", "plotter", "montajes", "rip", "infoGmg", "tintas", "emailInfo", "trabajosPlancha"];
     const [showChecks, setShowChecks] = useState(tableChecks ? tableChecks : false);
     const [tableCharging, setTableCharging] = useState(!initialData ? true : false);
     const [noDataToShow, setNoDataToShow] = useState(false);
@@ -89,7 +90,21 @@ function Table({
         }
     }, []);
 
+    useEffect(() => {
+        if (!socket) return;
 
+        // Escuchar nuevos registros
+        socket.on('nuevo_registro', (nuevo_registro) => {
+            console.log(nuevo_registro);
+            if (nuevo_registro.tableName.includes(tableName)) {
+                setTableData(prev => [nuevo_registro, ...prev]);
+            }
+        });
+
+        return () => {
+            socket.off('nuevo_registro'); // limpiar listener
+        };
+    }, [socket]);
 
     useEffect(() => {
         if (dinamicTableInfo.endPoint !== endPoint || dinamicTableInfo.actions !== tableActions) {
@@ -98,11 +113,11 @@ function Table({
     }, [dinamicTableInfo]);
 
     useEffect(() => {
-        const tablasPlanchas = ["planchas", "planchasPreproduccion", "planchasProduccion", "planchasFinalizadas"];
-        if (tableInfo?.endPoint && tablasPlanchas.includes(tableName)) {
+        const tablasPlanchas = ["planchas", "planchasPreproduccion", "planchasProduccion", "planchasFinalizadas", "externosFinalizados", "externosAnulados"];
+        //if (tableInfo?.endPoint && tablasPlanchas.includes(tableName)) {
             setTableCharging(true);
             getData(1, search);
-        }
+        //}
     }, [tableInfo]);
 
     useEffect(() => {
@@ -174,8 +189,8 @@ function Table({
             return actions({ action: "infoGmg", data });
         }
 
-        const { _id, id, nombre_plancha, name, username, id_pedido, contacto, grupo, codigo_estrategia } = data;
-        const tabTitle = username || name || id_pedido || contacto || grupo || (nombre_plancha && `PLANCHA ${nombre_plancha}`) || `ESTRATEGIA ${codigo_estrategia}`;
+        const { _id, id, id_plancha, nombre_plancha, name, username, id_pedido, contacto, grupo, codigo_estrategia, documentName } = data;
+        const tabTitle = (nombre_plancha && `PLANCHA ${nombre_plancha}`) || documentName || username || name || id_pedido || contacto || grupo || `ESTRATEGIA ${codigo_estrategia}`;
 
         let path = `${location.pathname}/${_id || id}`;
 
@@ -185,7 +200,13 @@ function Table({
 
         if (tableName === "versiones") path = `/pedidos/${_id}`;
 
-        if (tableName === "planchas" || tableName === "planchasPreproduccion" || tableName === "planchasProduccion" || tableName === "planchasFinalizadas" || tableName === "trabajosPlancha") path = `/produccion/planchas/${id}`
+        if (
+            tableName === "planchas" ||
+            tableName === "planchasPreproduccion" ||
+            tableName === "planchasProduccion" ||
+            tableName === "planchasFinalizadas" ||
+            tableName === "trabajosPlancha"
+        ) path = `/produccion/planchas/${id_plancha || id}`;
 
         // Solo agrega la pestaña si no existe
         if (!tabs.some(tab => tab.path === path)) { // Redundante
@@ -336,7 +357,7 @@ function Table({
                                     <MdLockOutline className="tableLock" onClick={() => { setShowChecks(true); setCheckedRows([]) }} />
                             )}
                             {!initialData && <HiOutlineRefresh className="tableRefresh" onClick={() => refreshTable()} />}
-                            {(isAdmin && tableForm) && (
+                            {(isAdmin && tableForm || isOficina && tableName === "contactos") && (
                                 <button onClick={() => setModal(true)}>
                                     <svg id="Layer_1" data-name="Layer 1"
                                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27.5 27.5">

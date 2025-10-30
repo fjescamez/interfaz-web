@@ -9,17 +9,21 @@ import { useEffect, useState } from "react";
 function ProduccionPage() {
     const [produccionPlanchas, setProduccionPlanchas] = useState(produccionPlanchasDetails);
     const [produccionExternos, setProduccionExternos] = useState(produccionTrabajosDetails);
-    const [totalPlanchas, setTotalPlanchas] = useState(0);
-    const [totalPreproduccion, setTotalPreproduccion] = useState(0);
-    const [totalProduccion, setTotalProduccion] = useState(0);
-    const [totalFinalizadas, setTotalFinalizadas] = useState(0);
+    const [totales, setTotales] = useState({
+        planchas: 0,
+        preproduccion: 0,
+        produccion: 0,
+        finalizadas: 0,
+        externos_finalizados: 0,
+        externos_anulados: 0
+    });
     const navigate = useNavigate();
     const { tabs, setTabs } = useTabs();
 
-    const planchasClick = async (key, title) => {
+    const planchasGridClick = async (key, title) => {
         const path = `/produccion/${key}`;
 
-        const tabTitle = key !== "planchas" ? `PLANCHAS ${title.toUpperCase()}` : title.toUpperCase();
+        const tabTitle = key === "trabajosPlanchas" ? "TRABAJOS PLANCHAS" : (key !== "planchas" ? `PLANCHAS ${title.toUpperCase()}` : title.toUpperCase());
 
         if (!tabs.some(tab => tab.path === path)) {
             setTabs(prev => {
@@ -30,38 +34,60 @@ function ProduccionPage() {
         navigate(path);
     };
 
-    const getPlanchas = async () => {
-        await fetchData('planchas', null, 1, null, setTotalPlanchas);
-        await fetchData('planchasPreproduccion', null, 1, null, setTotalPreproduccion);
-        await fetchData('planchasProduccion', null, 1, null, setTotalProduccion);
-        await fetchData('planchasFinalizadas', null, 1, null, setTotalFinalizadas);
+    const externosGridClick = async (key, title) => {
+        const path = `/produccion/${key}`;
+
+        const tabTitle = `EXTERNOS ${title.toUpperCase()}`;
+
+        if (!tabs.some(tab => tab.path === path)) {
+            setTabs(prev => {
+                if (prev.some(tab => tab.path === path)) return prev;
+                return [...prev, { path, title: tabTitle }];
+            });
+        }
+        navigate(path);
+    }
+
+    const getPlanchasCount = async () => {
+        await fetchData('planchas/counts', null, 1, null, setTotales);
     };
 
     useEffect(() => {
-        getPlanchas();
+        getPlanchasCount();
     }, []);
 
     useEffect(() => {
-        if (totalFinalizadas > 0) {
+        if (totales && totales.finalizadas > 0) {
             setProduccionPlanchas(prev => ({
                 ...prev,
                 grid: prev.grid.map(item => {
                     switch (item.key) {
                         case 'planchas':
-                            return { ...item, body: totalPlanchas };
+                            return { ...item, body: totales.planchas };
                         case 'planchasPreproduccion':
-                            return { ...item, body: totalPreproduccion };
+                            return { ...item, body: totales.preproduccion };
                         case 'planchasProduccion':
-                            return { ...item, body: totalProduccion };
+                            return { ...item, body: totales.produccion };
                         case 'planchasFinalizadas':
-                            return { ...item, body: totalFinalizadas };
+                            return { ...item, body: totales.finalizadas };
                         default:
                             return item;
                     }
                 })
             }));
+            setProduccionExternos(prev => ({
+                ...prev,
+                grid: prev.grid.map(item => {
+                    if (item.key === 'externosFinalizados') {
+                        return { ...item, body: totales.externos_finalizados };
+                    } else if (item.key === 'externosAnulados') {
+                        return { ...item, body: totales.externos_anulados };
+                    }
+                    return item;
+                })
+            }));
         }
-    }, [totalFinalizadas, totalPlanchas, totalPreproduccion, totalProduccion]);
+    }, [totales]);
 
     return (
         <div className="detailsContainer">
@@ -75,11 +101,12 @@ function ProduccionPage() {
                 <GridComponent
                     title={produccionPlanchas.title}
                     grid={produccionPlanchas.grid}
-                    gridClick={planchasClick}
+                    gridClick={planchasGridClick}
                 />
                 <GridComponent
                     title={produccionExternos.title}
                     grid={produccionExternos.grid}
+                    gridClick={externosGridClick}
                 />
             </div>
         </div>

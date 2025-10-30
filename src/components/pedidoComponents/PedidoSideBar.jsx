@@ -22,6 +22,8 @@ import TintasPopUp from "./TintasPopUp";
 import OpcionalesPopUp from "./OpcionalesPopUp";
 import OrderInfoPopUp from "./OrderInfoPopUp";
 import TraceTextPopUp from "./TraceTextPopUp";
+import DeleteForm from "../formComponents/DeleteForm";
+import { orderTableInfo } from "../../helpers/tablesInfo";
 
 function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
     const navigate = useNavigate();
@@ -35,6 +37,7 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
     const [lenModal, setLenModal] = useState(false);
     const [filesModal, setFilesModal] = useState(false);
     const [traceModal, setTraceModal] = useState(false);
+    const [deletePopup, setDeletePopup] = useState(false);
     const [montajeModal, setMontajeModal] = useState(false);
     const [plotterModal, setPlotterModal] = useState(false);
     const [tintasModal, setTintasModal] = useState(false);
@@ -169,6 +172,9 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
             case "files":
                 setFilesModal(true);
                 break;
+            case "eliminar":
+                setDeletePopup(true);
+                break;
             case "traceText":
                 setTraceModal(true);
                 break;
@@ -218,6 +224,7 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
             {compareModal && <ComparePopUp setCompareModal={setCompareModal} rutaTrabajo={fullOrder.rutaTrabajo} />}
             {lenModal && <OrderLenTable setLenModal={setLenModal} orderId={fullOrder.id_pedido} />}
             {filesModal && <FileTable setFilesModal={setFilesModal} orderId={fullOrder.id_pedido} filePath={filePath} />}
+            {deletePopup && <DeleteForm setModal={setDeletePopup} id={fullOrder._id} tableInfo={orderTableInfo} />}
             {traceModal && <TraceTextPopUp setTraceModal={setTraceModal} rutaTrabajo={fullOrder.rutaTrabajo} unitario={fullOrder.unitario} />}
             {montajeModal && <MontajeTable setMontajeModal={setMontajeModal} fullOrder={fullOrder} filePath={filePath} />}
             {plotterModal && <PlotterTable setPlotterModal={setPlotterModal} orderId={fullOrder.id_pedido} fullOrder={fullOrder} filePath={filePath} />}
