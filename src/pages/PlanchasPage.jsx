@@ -36,6 +36,13 @@ function PlanchasPage() {
         const { action, title, data, setTableData } = variables;
 
         switch (action) {
+            case "sincronizar":
+                const sincronizado = await postData('planchas/sincronizar');
+                setPlanchas([]);
+                if (sincronizado.status === 'success') {
+                    notify(toast.success, 'success', sincronizado.title, sincronizado.message);
+                }
+                return { status: 'success' };
             case "firmar":
                 const updated = await postData('planchas/firmar', { ids: planchas, username: session.username });
                 setPlanchas([]);
@@ -62,6 +69,26 @@ function PlanchasPage() {
                     setTableData(albaran.updatedData.results);
                 } else {
                     notify(toast.error, 'error', albaran.title, albaran.message);
+                }
+                return { status: 'success' };
+            case "resetearAlbaran":
+                const planchaReset = data.find(item => item.id === planchas[0]);
+
+                if (planchas.length > 1) {
+                    notify(toast.error, 'error', '', 'Solo se puede resetear el albarán de una plancha a la vez');
+                    return { status: 'success' };
+                } else if (planchaReset.id_estado_albaran === 20) {
+                    notify(toast.error, 'error', '', 'El albarán de esta plancha no está solicitado');
+                    return { status: 'success' };
+                }
+
+                const resetAlbaran = await postData('planchas/resetearAlbaran', { id: planchas[0] });
+                setPlanchas([]);
+                if (resetAlbaran.status === 'success') {
+                    notify(toast.success, 'success', resetAlbaran.title, resetAlbaran.message);
+                    setTableData(resetAlbaran.updatedData.results);
+                } else {
+                    notify(toast.error, 'error', resetAlbaran.title, resetAlbaran.message);
                 }
                 return { status: 'success' };
             default:

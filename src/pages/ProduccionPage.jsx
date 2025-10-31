@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import DetailsHeader from '../components/DetailsHeader'
 import GridComponent from '../components/GridComponent'
+import { IoDocumentTextOutline } from "react-icons/io5";
 import { produccionPlanchasDetails, produccionTrabajosDetails } from '../helpers/detailsGrid';
 import { useTabs } from "../context/TabsContext";
 import { fetchData } from "../helpers/fetchData";
@@ -14,6 +15,7 @@ function ProduccionPage() {
         preproduccion: 0,
         produccion: 0,
         finalizadas: 0,
+        externos_pendientes: 0,
         externos_finalizados: 0,
         externos_anulados: 0
     });
@@ -52,8 +54,42 @@ function ProduccionPage() {
         await fetchData('planchas/counts', null, 1, null, setTotales);
     };
 
+    const getExternalJobs = async () => {
+        const externos = await fetchData('externalJobs/noLimit');
+        const clientes = externos.reduce((acc, job) => {
+            const existingCliente = acc.find(cliente => cliente.username === job.username);
+            if (existingCliente) {
+                existingCliente.total += 1; // Si ya existe, incrementa el total
+            } else {
+                acc.push({
+                    username: job.username,
+                    total: 1 // Si no existe, añade un nuevo objeto
+                });
+            }
+            return acc;
+        }, []);
+
+        setProduccionExternos(prev => {
+            const [firstElement, ...rest] = prev.grid;
+            return {
+                ...prev,
+                grid: [
+                    firstElement,
+                    ...clientes.map(cliente => ({
+                        icon: <IoDocumentTextOutline />,
+                        title: cliente.username,
+                        key: cliente.username,
+                        body: cliente.total
+                    })),
+                    ...rest
+                ]
+            };
+        });
+    };
+
     useEffect(() => {
         getPlanchasCount();
+        getExternalJobs();
     }, []);
 
     useEffect(() => {
@@ -82,6 +118,8 @@ function ProduccionPage() {
                         return { ...item, body: totales.externos_finalizados };
                     } else if (item.key === 'externosAnulados') {
                         return { ...item, body: totales.externos_anulados };
+                    } else if (item.key === 'externosPendientes') {
+                        return { ...item, body: totales.externos_pendientes };
                     }
                     return item;
                 })

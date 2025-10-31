@@ -15,6 +15,7 @@ function SideBarComponent({ isActive, setIsActive }) {
     const { setTabs } = useTabs();
     const { session } = useSession();
     const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
+    const isProduccion = session?.departments?.includes("Sólido") || session?.departments?.includes("Líquido");
 
     const handleClick = (icon, name) => {
         setIsActive(prev => {
@@ -53,7 +54,7 @@ function SideBarComponent({ isActive, setIsActive }) {
                 <div className={`icons ${isActive.clientes ? "active" : ""}`} onClick={() => handleClick("clientes", "CLIENTES")} data-tooltip-id="my-tooltip" data-tooltip-content={"CLIENTES"} >
                     <SlBriefcase />
                 </div>
-                {isAdmin && (
+                {(isAdmin || isProduccion) && (
                     <>
                         <div className="border"></div>
                         <div className={`icons ${isActive.produccion ? "active" : ""}`} onClick={() => handleClick("produccion", "PRODUCCION")} data-tooltip-id="my-tooltip" data-tooltip-content={"PRODUCCION"} >

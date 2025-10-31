@@ -37,7 +37,7 @@ function Table({
     setPopUpTable,
     currentVersion,
     initialData
-}) {
+}) {    
     const socket = useSocket();
     const [tableData, setTableData] = useState(initialData || []);
     const [modal, setModal] = useState(false);
@@ -45,7 +45,7 @@ function Table({
     const [total, setTotal] = useState(0);
     const [page, setPage] = useState(1);
     const [actionEnded, setActionEnded] = useState(true);
-    const [search, setSearch] = useState(orderFilter ? orderFilter : "");
+    const [search, setSearch] = useState(orderFilter ? orderFilter : "");    
     const [debouncedSearch, setDebouncedSearch] = useState(search);
     const navigate = useNavigate();
     const location = useLocation();
@@ -95,7 +95,6 @@ function Table({
 
         // Escuchar nuevos registros
         socket.on('nuevo_registro', (nuevo_registro) => {
-            console.log(nuevo_registro);
             if (nuevo_registro.tableName.includes(tableName)) {
                 setTableData(prev => [nuevo_registro, ...prev]);
             }
@@ -107,17 +106,17 @@ function Table({
     }, [socket]);
 
     useEffect(() => {
-        if (dinamicTableInfo.endPoint !== endPoint || dinamicTableInfo.actions !== tableActions) {
+        if (dinamicTableInfo.endPoint !== endPoint || dinamicTableInfo.headerTitle !== headerTitle || dinamicTableInfo.actions !== tableActions) {
             setTableInfo(dinamicTableInfo);
         }
     }, [dinamicTableInfo]);
 
     useEffect(() => {
-        const tablasPlanchas = ["planchas", "planchasPreproduccion", "planchasProduccion", "planchasFinalizadas", "externosFinalizados", "externosAnulados"];
-        //if (tableInfo?.endPoint && tablasPlanchas.includes(tableName)) {
+        const tablasPlanchas = ["planchas", "planchasPreproduccion", "planchasProduccion", "planchasFinalizadas", "externosFinalizados", "externosAnulados", "trabajosExternos"];
+        if (tableInfo?.endPoint && tablasPlanchas.includes(tableName)) {
             setTableCharging(true);
             getData(1, search);
-        //}
+        }
     }, [tableInfo]);
 
     useEffect(() => {
@@ -243,6 +242,10 @@ function Table({
     const showMore = () => {
         setPage(prevPage => prevPage + 1);
     }
+
+    useEffect(() => {
+        setSearch(orderFilter ? orderFilter : "");
+    }, [orderFilter])
 
     // Debounce para la búsqueda
     useEffect(() => {

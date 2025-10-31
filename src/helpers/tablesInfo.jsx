@@ -12,6 +12,40 @@ import MontajeSvg from "../assets/svg/MontajeSvg";
 import { SlBriefcase } from "react-icons/sl";
 import GroupsSvg from "../assets/svg/GroupsSvg";
 
+export const trabajosExternosTableInfo = {
+    tableName: "trabajosExternos",
+    endPoint: "externalJobs",
+    headerIcon: <FaStamp />,
+    headerTitle: "TRABAJOS EXTERNOS",
+    tableColumns: [
+        {
+            header: "Nombre",
+            active: true,
+            key: "documentName"
+        },
+        {
+            header: "Cliente",
+            active: true,
+            key: "username"
+        },
+        {
+            header: "Plancha",
+            active: true,
+            key: "refPlancha"
+        },
+        {
+            header: "Colores",
+            active: true,
+            key: "clichesColor"
+        },
+        {
+            header: "Fecha",
+            active: true,
+            key: "fecha"
+        },
+    ]
+}
+
 export const externosFinalizadosTableInfo = {
     tableName: "externosFinalizados",
     endPoint: "planchas/externosFinalizados",
@@ -197,6 +231,11 @@ export const planchasTableInfo = {
             action: "eliminar"
         },
         {
+            title: "Sincronizar",
+            action: "sincronizar",
+            noCheck: true
+        },
+        {
             title: "Firmar",
             action: "firmar"
         },
@@ -207,6 +246,10 @@ export const planchasTableInfo = {
         {
             title: "Solicitar Albarán",
             action: "solicitarAlbaran"
+        },
+        {
+            title: "Resetear Albarán",
+            action: "resetearAlbaran"
         }
     ]
 };

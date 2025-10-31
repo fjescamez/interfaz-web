@@ -83,7 +83,7 @@ export const fetchOneItem = async (endPoint, id) => {
     }
 };
 
-export const postData = async (endPoint, data) => {
+export const postData = async (endPoint, data = {}) => {
 
     /* let url = `http://192.4.26.112:3000/${endPoint}`; */
     let url = `http://192.4.26.112:3300/${endPoint}`;
