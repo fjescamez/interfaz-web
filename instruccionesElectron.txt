@@ -1,0 +1,109 @@
+1️⃣ Preparación del proyecto
+Electron:
+
+Instalar dependencias:
+
+npm install --save-dev electron electron-builder concurrently wait-on
+
+
+Mantén tu SPA Vite como está. Electron servirá como contenedor y bridge al sistema.
+
+Tauri:
+
+Instalar Tauri CLI y crear proyecto:
+
+npm create tauri-app
+# O dentro del proyecto SPA existente:
+npm install @tauri-apps/cli @tauri-apps/api
+npx tauri init
+
+
+Tauri usa Rust en el backend, pero puedes seguir usando React + Vite en el frontend.
+
+2️⃣ Estructura general
+/my-spa
+ ├─ /src           → React + Vite
+ ├─ /public
+ ├─ package.json
+ ├─ main.js        → Electron main process (solo Electron)
+ └─ src-tauri      → Backend Rust y configuración (solo Tauri)
+
+3️⃣ Función para abrir carpetas de red
+Electron (Windows/macOS)
+// main.js (Electron)
+const { app, BrowserWindow, ipcMain, shell } = require('electron');
+const path = require('path');
+
+function createWindow() {
+  const win = new BrowserWindow({
+    width: 1200,
+    height: 800,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js')
+    }
+  });
+  win.loadURL('http://localhost:5173'); // o build local
+}
+
+app.whenReady().then(createWindow);
+
+ipcMain.handle('open-folder', async (event, folderUrl) => {
+  // Windows
+  const winPath = `\\\\192.4.26.120\\Archivo Disengraf\\TRABAJOS\\${folderUrl}`;
+  // macOS
+  const macPath = `smb://192.4.26.120/Archivo Disengraf/TRABAJOS/${folderUrl}`;
+
+  const platform = process.platform;
+  if (platform === 'win32') {
+    shell.openPath(winPath);
+  } else if (platform === 'darwin') {
+    shell.openExternal(macPath);
+  }
+});
+
+Preload.js (Electron)
+const { contextBridge, ipcRenderer } = require('electron');
+
+contextBridge.exposeInMainWorld('electronAPI', {
+  openFolder: (folderUrl) => ipcRenderer.invoke('open-folder', folderUrl)
+});
+
+React frontend
+// handleClick
+case "openFolder":
+  window.electronAPI.openFolder(folderUrl);
+  break;
+
+Tauri (Windows/macOS)
+// frontend React
+import { invoke } from '@tauri-apps/api/tauri';
+
+const handleOpenFolder = async (folderUrl) => {
+  await invoke('open_folder', { folderUrl });
+};
+
+// src-tauri/src/main.rs
+use tauri::Manager;
+use std::process::Command;
+
+#[tauri::command]
+fn open_folder(folder_url: String) {
+    #[cfg(target_os = "windows")]
+    let path = format!(r"\\192.4.26.120\Archivo Disengraf\TRABAJOS\{}", folder_url);
+
+    #[cfg(target_os = "macos")]
+    let path = format!("smb://192.4.26.120/Archivo Disengraf/TRABAJOS/{}", folder_url);
+
+    #[cfg(target_os = "windows")]
+    { Command::new("explorer").arg(path).spawn().unwrap(); }
+
+    #[cfg(target_os = "macos")]
+    { Command::new("open").arg(path).spawn().unwrap(); }
+}
+
+fn main() {
+    tauri::Builder::default()
+        .invoke_handler(tauri::generate_handler![open_folder])
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}
