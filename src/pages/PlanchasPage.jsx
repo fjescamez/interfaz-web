@@ -41,6 +41,7 @@ function PlanchasPage() {
                 setPlanchas([]);
                 if (sincronizado.status === 'success') {
                     notify(toast.success, 'success', sincronizado.title, sincronizado.message);
+                    setTableData(prev => [...sincronizado.newItems, ...prev]);
                 }
                 return { status: 'success' };
             case "firmar":
