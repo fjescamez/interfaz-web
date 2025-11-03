@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 
-const SOCKET_URL = 'http://192.4.26.112:3300'; // Cambia por tu servidor
-
 export default function useSocket() {
+    const puertoApi = 3000;
+    const SOCKET_URL = `http://192.4.26.112:${puertoApi}`; // Cambia por tu servidor
+
     const [socket, setSocket] = useState(null);
 
     useEffect(() => {

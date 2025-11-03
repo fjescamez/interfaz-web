@@ -38,6 +38,7 @@ function Table({
     currentVersion,
     initialData
 }) {    
+    const puertoApi = 3000;
     const socket = useSocket();
     const [tableData, setTableData] = useState(initialData || []);
     const [modal, setModal] = useState(false);
@@ -499,7 +500,7 @@ function Table({
                                         if (column.key === "avatar") {
                                             return (
                                                 <td key={column.key} className="imgTd">
-                                                    <img src={`http://192.4.26.112:3000/uploads/avatars/${value}`} alt="" />
+                                                    <img src={`http://192.4.26.112:${puertoApi}/uploads/avatars/${value}`} alt="" />
                                                 </td>
                                             );
                                         }

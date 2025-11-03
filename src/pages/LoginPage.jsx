@@ -12,6 +12,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const loginForm = useRef(null); // Referencia al contenedor
   const { setTabs } = useTabs();
+  const puertoApi = 3000;
 
   useEffect(() => {
     if (session) {
@@ -55,7 +56,7 @@ function LoginPage() {
     }
 
     try {
-      const response = await fetch('http://192.4.26.112:3300/users/login', {
+      const response = await fetch(`http://192.4.26.112:${puertoApi}/users/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

@@ -7,6 +7,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
 ).toString();
 
 function PdfAsImage({ url, className }) {    
+    const puertoApi = 3000;
     /* PDF a imagen */
     const [imgSrc, setImgSrc] = useState(null);
 
@@ -17,7 +18,7 @@ function PdfAsImage({ url, className }) {
 
         const renderPdf = async () => {
             try {
-                const pdf = await pdfjsLib.getDocument(`http://192.4.26.112:3000/pdf/${url}`).promise;
+                const pdf = await pdfjsLib.getDocument(`http://192.4.26.112:${puertoApi}/pdf/${url}`).promise;
                 const page = await pdf.getPage(1); // primera página
 
                 const scale = 0.5; // resolución
@@ -50,7 +51,7 @@ function PdfAsImage({ url, className }) {
             {(url === "" || url === "no asignado") ? (
                 <h1>No hay previo</h1>
             ) : (
-                imgSrc ? <img src={imgSrc} className={className} onClick={() => window.open(`http://192.4.26.112:3000/pdf/${url}`, "_blank")}></img> : <OrbitProgress variant="dotted" color="var(--highlight)" size="large" />
+                imgSrc ? <img src={imgSrc} className={className} onClick={() => window.open(`http://192.4.26.112:${puertoApi}/pdf/${url}`, "_blank")}></img> : <OrbitProgress variant="dotted" color="var(--highlight)" size="large" />
             )
             }
         </>

@@ -9,6 +9,7 @@ import { planchasTableInfo, trabajosPlanchaTableInfo } from "../helpers/tablesIn
 import DeleteForm from "../components/formComponents/DeleteForm";
 
 function PlanchasDetails() {
+  const puertoApi = 3000;
   const { id } = useParams();
   const [plancha, setPlancha] = useState(null);
   const [deletePopup, setDeletePopup] = useState(false);
@@ -60,8 +61,8 @@ function PlanchasDetails() {
         {plancha?.nombre_plancha &&
           <img
             className="previoPlancha"
-            src={`http://192.4.26.112:3300/planchas/images/${plancha?.nombre_plancha}`}
-            onClick={() => window.open(`http://192.4.26.112:3300/planchas/images/${plancha?.nombre_plancha}`)}
+            src={`http://192.4.26.112:${puertoApi}/planchas/images/${plancha?.nombre_plancha}`}
+            onClick={() => window.open(`http://192.4.26.112:${puertoApi}/planchas/images/${plancha?.nombre_plancha}`)}
             alt="Plancha"
           />
         }
