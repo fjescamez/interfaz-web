@@ -43,7 +43,22 @@ export const trabajosExternosTableInfo = {
             active: true,
             key: "fecha"
         },
-    ]
+    ],
+    actions: [
+        {
+            title: "Firmar",
+            action: "firmar"
+        },
+        {
+            title: "Imprimir",
+            action: "imprimir"
+        },
+        {
+            title: "Anular",
+            action: "anular"
+        }
+    ],
+    defaultChecks: true
 }
 
 export const externosFinalizadosTableInfo = {
@@ -251,7 +266,8 @@ export const planchasTableInfo = {
             title: "Resetear Albarán",
             action: "resetearAlbaran"
         }
-    ]
+    ],
+    defaultChecks: true
 };
 
 export const emailInfoTableInfo = {
@@ -934,7 +950,18 @@ export const orderTableInfo = {
             active: true,
             key: "xml.numero.state"
         }
-    ]
+    ],
+    actions: [
+        {
+            title: "Asignar",
+            action: "asignar"
+        },
+        {
+            title: "Desasignar",
+            action: "desasignar"
+        }
+    ],
+    rolesActions: ["Manager"]
 };
 
 export const clientTableInfo = {

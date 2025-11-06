@@ -132,11 +132,6 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
                     window.location.href = `smb://192.4.26.120/Archivo%20Disengraf/TRABAJOS/${folderUrl}`;
                 }
                 openFolder();
-                /* const data = {
-                    rutaTrabajo: fullOrder.rutaTrabajo,
-                }
-
-                const openFolder = await postData("orders/openFolder", data); */
                 break;
             case "versions":
                 setVersionsModal(true);

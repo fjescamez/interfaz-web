@@ -33,8 +33,6 @@ function ChosenSelect({ options, name, onChange, multiple, value, disabled, clas
                         selectedValue = (typeof options[0] === "object" && name !== "ids")
                             ? options.find(o => o._id === id)
                             : id;
-                        // selectedValue = id;
-                        console.log("selectedvalue:", selectedValue);
                     }
 
                     onChange?.({ target: { name, value: selectedValue } });

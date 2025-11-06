@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { fetchData } from '../helpers/fetchData';
 import { useNavigate, useParams } from "react-router-dom";
 import { trabajosExternosTableInfo } from '../helpers/tablesInfo';
 import Table from '../components/Table';
@@ -8,6 +7,7 @@ function ExternosByClient() {
     const { cliente } = useParams();
     const [clienteFiltro, setClienteFiltro] = useState(cliente);  
     const [tableInfo, setTableInfo] = useState(trabajosExternosTableInfo);
+    const [externosChecked, setExternosChecked] = useState([]);
 
     useEffect(() => {
         setClienteFiltro(cliente);
@@ -19,10 +19,12 @@ function ExternosByClient() {
     }, [cliente]);
 
     return (
-        tableInfo && (
+        (tableInfo && clienteFiltro && tableInfo.endPoint === "externalJobs/byClientName") && (
             <Table
                 dinamicTableInfo={tableInfo}
-                orderFilter={clienteFiltro}
+                clientFilter={clienteFiltro}
+                checkedRows={externosChecked}
+                setCheckedRows={setExternosChecked}
             />
         )
     )

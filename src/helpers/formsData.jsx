@@ -4,10 +4,110 @@ import { PiEnvelopeLight, PiNoteLight } from "react-icons/pi";
 import { BsFiletypeDoc, BsFiletypeXml } from "react-icons/bs";
 import { SlBriefcase } from "react-icons/sl";
 import { PiGear } from "react-icons/pi";
+import { IoDocumentTextOutline } from "react-icons/io5";
 import { TbColorSwatch } from "react-icons/tb";
 import GroupsSvg from "../assets/svg/GroupsSvg";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
+
+export const asignarPedidoFormData = {
+    headerIcon: <IoDocumentTextOutline />,
+    headerTitle: "ASIGNAR PEDIDO",
+    formSections: [
+        {
+            rows: [
+                {
+                    groups: ["dibujante"]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "dibujante",
+            labelId: "dibujanteLabel",
+            labelTitle: "Dibujante",
+            select: "simple",
+            options: [],
+            inputId: "dibujante",
+            inputName: "dibujante",
+            required: true
+        },
+    ]
+}
+
+export const externosFormData = {
+    formSections: [
+        {
+            rows: [
+                {
+                    groups: ["username", "documentName"]
+                },
+                {
+                    groups: ["refPlancha", "insoladora", "resolucion", "clichesColor", "numero_colores"]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "username",
+            labelId: "usernameLabel",
+            labelTitle: "Cliente",
+            inputType: "text",
+            inputId: "username",
+            inputName: "username"
+        },
+        {
+            htmlFor: "documentName",
+            labelId: "documentNameLabel",
+            labelTitle: "Nombre",
+            inputType: "text",
+            inputId: "documentName",
+            inputName: "documentName"
+        },
+        {
+            htmlFor: "refPlancha",
+            labelId: "refPlanchaLabel",
+            labelTitle: "Plancha",
+            inputType: "text",
+            inputId: "refPlancha",
+            inputName: "refPlancha"
+        },
+        {
+            htmlFor: "insoladora",
+            labelId: "insoladoraLabel",
+            labelTitle: "Insoladora",
+            inputType: "text",
+            inputId: "insoladora",
+            inputName: "insoladora"
+        },
+        {
+            htmlFor: "resolucion",
+            labelId: "resolucionLabel",
+            labelTitle: "Resolución",
+            inputType: "text",
+            inputId: "resolucion",
+            inputName: "resolucion"
+        },
+        {
+            htmlFor: "clichesColor",
+            labelId: "clichesColorLabel",
+            labelTitle: "Clichés",
+            inputType: "text",
+            inputId: "clichesColor",
+            inputName: "clichesColor"
+        },
+        {
+            htmlFor: "numero_colores",
+            labelId: "numero_coloresLabel",
+            labelTitle: "Colores",
+            inputType: "text",
+            inputId: "numero_colores",
+            inputName: "numero_colores"
+        },
+    ]
+}
 
 export const planchasFormData = {
     formSections: [

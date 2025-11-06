@@ -48,7 +48,7 @@ function ProduccionPage() {
             });
         }
         navigate(path);
-    }
+    };
 
     const getPlanchasCount = async () => {
         await fetchData('planchas/counts', null, 1, null, setTotales);

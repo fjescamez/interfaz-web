@@ -37,7 +37,7 @@ function Table({
     setPopUpTable,
     currentVersion,
     initialData
-}) {    
+}) {
     const puertoApi = 3000;
     const socket = useSocket();
     const [tableData, setTableData] = useState(initialData || []);
@@ -46,7 +46,7 @@ function Table({
     const [total, setTotal] = useState(0);
     const [page, setPage] = useState(1);
     const [actionEnded, setActionEnded] = useState(true);
-    const [search, setSearch] = useState(orderFilter ? orderFilter : "");    
+    const [search, setSearch] = useState(orderFilter ? orderFilter : "");
     const [debouncedSearch, setDebouncedSearch] = useState(search);
     const navigate = useNavigate();
     const location = useLocation();
@@ -54,7 +54,7 @@ function Table({
     const clienteCodigo = clienteCodigos[location.pathname] || null;
     const clienteDato = clienteDatos[location.pathname] || null;
     const [tableInfo, setTableInfo] = useState(dinamicTableInfo);
-    const { headerIcon, headerTitle, tableColumns, tableName, endPoint, tableForm, tableChecks } = tableInfo;
+    const { headerIcon, headerTitle, tableColumns, tableName, endPoint, tableForm, tableChecks, defaultChecks, rolesActions } = tableInfo;
     const tableActions = tableInfo.actions || [];
     const { tabs, setTabs } = useTabs();
     const [editTable, setEditTable] = useState(false);
@@ -64,7 +64,7 @@ function Table({
     const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
     const isOficina = session?.departments?.includes("Oficina");
     const customTables = ["versiones", "archivosLen", "fichas", "montaje", "plotter", "montajes", "rip", "infoGmg", "tintas", "emailInfo", "trabajosPlancha"];
-    const [showChecks, setShowChecks] = useState(tableChecks ? tableChecks : false);
+    const [showChecks, setShowChecks] = useState((tableChecks || defaultChecks) ? true : false);
     const [tableCharging, setTableCharging] = useState(!initialData ? true : false);
     const [noDataToShow, setNoDataToShow] = useState(false);
     const [copyMenu, setCopyMenu] = useState({
@@ -92,6 +92,12 @@ function Table({
     }, []);
 
     useEffect(() => {
+        if (clientFilter) {
+            getData(1, "", clientFilter);
+        }
+    }, [clientFilter]);
+
+    useEffect(() => {
         if (!socket) return;
 
         // Escuchar nuevos registros
@@ -113,7 +119,7 @@ function Table({
     }, [dinamicTableInfo]);
 
     useEffect(() => {
-        const tablasPlanchas = ["planchas", "planchasPreproduccion", "planchasProduccion", "planchasFinalizadas", "externosFinalizados", "externosAnulados", "trabajosExternos"];
+        const tablasPlanchas = ["planchas", "planchasPreproduccion", "planchasProduccion", "planchasFinalizadas", "externosFinalizados", "externosAnulados"];
         if (tableInfo?.endPoint && tablasPlanchas.includes(tableName)) {
             setTableCharging(true);
             getData(1, search);
@@ -130,10 +136,10 @@ function Table({
         const searchParams = new URLSearchParams(advancedQuery).toString();
 
         if (searchParams !== "") {
-            getData(page, searchParams, clienteCodigo);
+            getData(page, searchParams, clienteCodigo || clientFilter);
         } else {
             if (!initialData) {
-                getData(page, search, clienteCodigo);
+                getData(page, search, clienteCodigo || clientFilter);
             }
         }
     }, [advancedQuery]);
@@ -151,7 +157,7 @@ function Table({
     }, [tableData, tableColumns]);
 
     useEffect(() => {
-        if (clientFilter) {
+        if (clientFilter && tableName !== "trabajosExternos") {
             getData(page, "", clienteCodigo);
         }
     }, [clienteCodigo]);
@@ -168,7 +174,7 @@ function Table({
             if (!clientFilter) {
                 getData(page, searchParams);
             } else {
-                getData(page, searchParams, clienteCodigo);
+                getData(page, searchParams, clienteCodigo || clientFilter);
             }
         }
     }, [page]);
@@ -205,8 +211,15 @@ function Table({
             tableName === "planchasPreproduccion" ||
             tableName === "planchasProduccion" ||
             tableName === "planchasFinalizadas" ||
-            tableName === "trabajosPlancha"
+            tableName === "trabajosPlanchas"
         ) path = `/produccion/planchas/${id_plancha || id}`;
+
+        if (
+            tableName === "externosPendientes" ||
+            tableName === "externosFinalizados" ||
+            tableName === "externosAnulados" ||
+            tableName === "trabajosExternos"
+        )  path = `/produccion/trabajosExternos/${_id || id}`;
 
         // Solo agrega la pestaña si no existe
         if (!tabs.some(tab => tab.path === path)) { // Redundante
@@ -261,7 +274,7 @@ function Table({
     useEffect(() => {
         if ((debouncedSearch.length >= 3 || debouncedSearch.length === 0) && !initialData) {
             setPage(1);
-            getData(1, debouncedSearch, clienteCodigo);
+            getData(1, debouncedSearch, clienteCodigo || clientFilter);
         }
     }, [debouncedSearch]);
 
@@ -270,6 +283,7 @@ function Table({
     }
 
     const refreshTable = () => {
+        setAdvancedFilters(false);
         setAdvancedQuery({});
         setPage(1);
     }
@@ -353,7 +367,7 @@ function Table({
                             <h1>{specificHeaderTitle ? specificHeaderTitle : headerTitle}</h1>
                         </div>
                         <div className="headerActions">
-                            {(tableInfo.actions && !tableChecks) && (
+                            {(tableInfo.actions && !tableChecks && (!rolesActions?.length || rolesActions?.includes(session.role))) && (
                                 showChecks
                                     ?
                                     <MdLockOpen className="tableLock" onClick={() => { setShowChecks(false); setCheckedRows([]) }} />
@@ -415,7 +429,10 @@ function Table({
                             )}
                         </div>
                     </div>
-                    {(tableInfo.actions && tableData.length > 0 && !(tableInfo.actions.length === 1 && tableInfo.actions[0].action === "eliminar") && !tableCharging) && (
+                    {(tableInfo.actions && tableData.length > 0
+                    && !(tableInfo.actions.length === 1 && tableInfo.actions[0].action === "eliminar")
+                    && !tableCharging
+                    && (!rolesActions?.length || rolesActions?.includes(session.role))) && (
                         <div className="tableInfoActions">
                             {actionEnded
                                 ?
@@ -434,7 +451,9 @@ function Table({
                                                         data: tableData,
                                                         setTableData
                                                     });
-                                                    if (actionResult && actionResult.status) setActionEnded(true);
+                                                    if (actionResult && actionResult.status) {
+                                                        setActionEnded(true);
+                                                    }
                                                 }
                                             }}
                                             className="actionHover"

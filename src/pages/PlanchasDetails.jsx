@@ -14,7 +14,6 @@ function PlanchasDetails() {
   const [plancha, setPlancha] = useState(null);
   const [deletePopup, setDeletePopup] = useState(false);
   const [trabajosPlancha, setTrabajosPlancha] = useState([]);
-  const [checkTrabajos, setCheckTrabajos] = useState([]);
 
   const getPlancha = async () => {
     const result = await fetchOneItem("planchas", id);

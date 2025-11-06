@@ -36,6 +36,7 @@ import TrabajosPlanchasPage from "./pages/TrabajosPlanchasPage";
 import ExternosFinalizadosPage from "./pages/ExternosFinalizadosPage";
 import ExternosPendientesPage from "./pages/ExternosPendientesPage";
 import ExternosByClient from "./pages/ExternosByClient";
+import ExternosDetails from "./pages/ExternosDetails";
 
 function App() {
   const icons = ["home", "pedidos", "len", "clientes", "stock", "produccion", "usuarios"];
@@ -206,6 +207,7 @@ function App() {
           <Route path="/produccion/planchasProduccion" element={<PlanchasPage />} />
           <Route path="/produccion/planchasFinalizadas" element={<PlanchasPage />} />
           <Route path="/produccion/trabajosPlanchas" element={<TrabajosPlanchasPage />} />
+          <Route path="/produccion/trabajosExternos/:id" element={<ExternosDetails />} />
           <Route path="/produccion/externosPendientes" element={<ExternosPendientesPage />} />
           <Route path="/produccion/externosFinalizados" element={<ExternosFinalizadosPage />} />
           <Route path="/produccion/externosAnulados" element={<ExternosFinalizadosPage />} />
