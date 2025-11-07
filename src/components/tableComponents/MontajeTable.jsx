@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import CompareMontajes from '../pedidoComponents/CompareMontajes';
 
 function MontajeTable({ setMontajeModal, fullOrder }) {
-    const puertoApi = 3000;
+    const puertoApi = 3300;
     const [montajeIds, setMontajeIds] = useState([]);
     const [ripId, setRipId] = useState("");
     const [ripPopup, setRipPopup] = useState(false);

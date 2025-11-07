@@ -176,6 +176,11 @@
         }
     }
 
+    .tdGrande {
+        width: fit-content !important;
+        max-width: unset !important;
+    }
+
     .checkElement {
         text-align: center;
 

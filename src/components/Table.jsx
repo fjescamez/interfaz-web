@@ -38,7 +38,7 @@ function Table({
     currentVersion,
     initialData
 }) {
-    const puertoApi = 3000;
+    const puertoApi = 3300;
     const socket = useSocket();
     const [tableData, setTableData] = useState(initialData || []);
     const [modal, setModal] = useState(false);
@@ -180,7 +180,12 @@ function Table({
     }, [page]);
 
     const handleClick = (data, index) => {
-        const openRowTables = ["montajes", "plotter", "allMontajes", "emailInfo"];
+        const openRowTables = ["montajes", "plotter", "allMontajes", "emailInfo", "infoGmg"];
+        const noActionTables = ["trabajosPlancha"];
+
+        if (noActionTables.includes(tableName)) {
+            return;
+        }
 
         if (showChecks) {
             handleChecked(data._id ? data._id : data.id);
@@ -189,10 +194,6 @@ function Table({
 
         if (openRowTables.includes(tableName)) {
             return actions({ action: "openRow", data, index });
-        }
-
-        if (tableName === "infoGmg") {
-            return actions({ action: "infoGmg", data });
         }
 
         const { _id, id, id_plancha, nombre_plancha, name, username, id_pedido, contacto, grupo, codigo_estrategia, documentName } = data;
@@ -219,7 +220,7 @@ function Table({
             tableName === "externosFinalizados" ||
             tableName === "externosAnulados" ||
             tableName === "trabajosExternos"
-        )  path = `/produccion/trabajosExternos/${_id || id}`;
+        ) path = `/produccion/trabajosExternos/${_id || id}`;
 
         // Solo agrega la pestaña si no existe
         if (!tabs.some(tab => tab.path === path)) { // Redundante
@@ -430,42 +431,42 @@ function Table({
                         </div>
                     </div>
                     {(tableInfo.actions && tableData.length > 0
-                    && !(tableInfo.actions.length === 1 && tableInfo.actions[0].action === "eliminar")
-                    && !tableCharging
-                    && (!rolesActions?.length || rolesActions?.includes(session.role))) && (
-                        <div className="tableInfoActions">
-                            {actionEnded
-                                ?
-                                tableInfo.actions.map((action) =>
-                                    (!action.hidden && action.action !== "eliminar") && (
-                                        <p
-                                            key={action.action}
-                                            onClick={async () => {
-                                                if (!action.noCheck && checkedRows < 1) {
-                                                    notify(toast.error, 'error', 'Error', 'Esta acción requiere selección')
-                                                } else {
-                                                    setActionEnded(false);
-                                                    const actionResult = await actions({
-                                                        action: action.action,
-                                                        title: action.title,
-                                                        data: tableData,
-                                                        setTableData
-                                                    });
-                                                    if (actionResult && actionResult.status) {
-                                                        setActionEnded(true);
+                        && !(tableInfo.actions.length === 1 && tableInfo.actions[0].action === "eliminar")
+                        && !tableCharging
+                        && (!rolesActions?.length || rolesActions?.includes(session.role))) && (
+                            <div className="tableInfoActions">
+                                {actionEnded
+                                    ?
+                                    tableInfo.actions.map((action) =>
+                                        (!action.hidden && action.action !== "eliminar") && (
+                                            <p
+                                                key={action.action}
+                                                onClick={async () => {
+                                                    if (!action.noCheck && checkedRows < 1) {
+                                                        notify(toast.error, 'error', 'Error', 'Esta acción requiere selección')
+                                                    } else {
+                                                        setActionEnded(false);
+                                                        const actionResult = await actions({
+                                                            action: action.action,
+                                                            title: action.title,
+                                                            data: tableData,
+                                                            setTableData
+                                                        });
+                                                        if (actionResult && actionResult.status) {
+                                                            setActionEnded(true);
+                                                        }
                                                     }
-                                                }
-                                            }}
-                                            className="actionHover"
-                                        >
-                                            {action.title}
-                                        </p>
-                                    ))
-                                :
-                                <p>Procesando acción <ThreeDot color="white" size="small" /></p>
-                            }
-                        </div>
-                    )}
+                                                }}
+                                                className="actionHover"
+                                            >
+                                                {action.title}
+                                            </p>
+                                        ))
+                                    :
+                                    <p>Procesando acción <ThreeDot color="white" size="small" /></p>
+                                }
+                            </div>
+                        )}
                     {tableCharging && <div className="tableInfoActions"><p>Cargando tabla <ThreeDot color="white" size="small" speedPlus={2} /></p></div>}
                     {noDataToShow && <div className="tableInfoActions"><p>No hay datos para mostrar</p></div>}
                 </div>
@@ -544,7 +545,13 @@ function Table({
                                             );
                                         }
                                         return (
-                                            <td key={column.key} data-tooltip-id="my-tooltip" data-tooltip-content={value} onContextMenu={(e) => handleRightClick(e, value)} >
+                                            <td
+                                                key={column.key}
+                                                data-tooltip-id="my-tooltip"
+                                                data-tooltip-content={value}
+                                                onContextMenu={(e) => handleRightClick(e, value)}
+                                                className={column.key === "nombre_plancha" ? "tdGrande" : ""}
+                                            >
                                                 {/* Comprobación para que no reviente con objetos vacíos */}
                                                 {typeof value === 'object' ? " " : value}
                                             </td>

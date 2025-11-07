@@ -3,9 +3,8 @@ import { asignarPedidoFormData } from '../../helpers/formsData'
 import { useEffect, useState } from 'react';
 import { fetchData } from '../../helpers/fetchData';
 
-function AsignarPedidoForm({ setModal, pedidos }) {
+function AsignarPedidoForm({ setModal, pedidos, setTableData }) {
     const [formData, setFormData] = useState(asignarPedidoFormData);
-    console.log(pedidos);
 
     const itemsData = {
         pedidos,
@@ -45,6 +44,7 @@ function AsignarPedidoForm({ setModal, pedidos }) {
             formData={formData}
             itemsData={itemsData}
             endpoint={"orders/asignarPedido"}
+            setTableData={setTableData}
         />
     )
 }

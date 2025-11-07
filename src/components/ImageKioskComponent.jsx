@@ -10,7 +10,7 @@ import { SlBriefcase } from "react-icons/sl";
 import { postData } from "../helpers/fetchData";
 
 function ImageKioskComponent({ toggleKiosk, endpoint, id, client }) {
-    const puertoApi = 3000;
+    const puertoApi = 3300;
     const inputRef = useRef(null);
     const [image, setImage] = useState(null);
     const { session, setSession } = useSession();

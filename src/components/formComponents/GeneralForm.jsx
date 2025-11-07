@@ -24,7 +24,7 @@ function GeneralForm({
     extras,
     noSubmit,
     afterSubmit
-}) {    
+}) {
     const { headerIcon, headerTitle, editTitle, formFields, clientsMap, codesMap } = formData;
     const [errorMessage, setErrorMessage] = useState(false);
     const [executing, setExecuting] = useState(false);
@@ -72,7 +72,7 @@ function GeneralForm({
         } else {
             setInputData(prev => {
                 const updated = { ...prev, [name]: newValue };
-                
+
                 if (onInputChange) {
                     onInputChange(updated);
                 }
@@ -92,7 +92,7 @@ function GeneralForm({
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        {afterSubmit && afterSubmit()}
+        { afterSubmit && afterSubmit() }
 
         if (tableSelection && tableSelection.length < 1) {
             notify(toast.error, 'error', 'Error', 'Debe seleccionar algún elemento de la tabla.');
@@ -178,6 +178,13 @@ function GeneralForm({
                     { ...prev, ...inputData, _id: result.updatedItem._id }
                 ))
             }
+        } else if (result.updatedItems) {
+            setTableData(prev => {
+                return prev.map(order => {
+                    const updatedItem = result.updatedItems.find(updated => updated._id === order._id);
+                    return updatedItem ? { ...updatedItem } : order;
+                });
+            });
         }
 
         if (result.total) {

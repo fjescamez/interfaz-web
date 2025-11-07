@@ -941,6 +941,16 @@ export const orderTableInfo = {
             key: "xml.actividad.id"
         },
         {
+            header: "En",
+            active: true,
+            key: "departamento_asignado"
+        },
+        {
+            header: "Asignado a",
+            active: true,
+            key: "usuario_asignado"
+        },
+        {
             header: "Albarán",
             active: true,
             key: "xml.numero.albaran"
@@ -961,7 +971,7 @@ export const orderTableInfo = {
             action: "desasignar"
         }
     ],
-    rolesActions: ["Manager"]
+    rolesActions: ["Manager", "Soporte"]
 };
 
 export const clientTableInfo = {
