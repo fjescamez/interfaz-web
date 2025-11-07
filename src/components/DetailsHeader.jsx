@@ -23,7 +23,7 @@ function DetailsHeader({
     hideDeleteIcon,
     grid
 }) {
-    const puertoApi = 3300;
+    const puertoApi = 3000;
     const { session } = useSession();
     const isAdmin = session.role === "Administrador" || session.role === "Soporte";
 

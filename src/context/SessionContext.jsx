@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 const SessionContext = createContext();
 
 export function SessionProvider({ children }) {
-    const puertoApi = 3300;    
+    const puertoApi = 3000;    
 
     const [session, setSession] = useState(() => {
         const storedSession = JSON.parse(localStorage.getItem("session"));

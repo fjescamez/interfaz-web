@@ -42,8 +42,8 @@ function ExternosDetails() {
                 {trabajo?.documentName &&
                     <img
                         className="previoPlancha"
-                        src={`http://192.4.26.112:3300/externalJobs/image/${trabajo?.documentName}`}
-                        onClick={() => window.open(`http://192.4.26.112:3300/externalJobs/image/${trabajo?.documentName}`)}
+                        src={`http://192.4.26.112:3000/externalJobs/image/${trabajo?.documentName}`}
+                        onClick={() => window.open(`http://192.4.26.112:3000/externalJobs/image/${trabajo?.documentName}`)}
                         alt="Trabajo Externo"
                     />
                 }

@@ -12,7 +12,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const loginForm = useRef(null); // Referencia al contenedor
   const { setTabs } = useTabs();
-  const puertoApi = 3300;
+  const puertoApi = 3000;
 
   useEffect(() => {
     if (session) {

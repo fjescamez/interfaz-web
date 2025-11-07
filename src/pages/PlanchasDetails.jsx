@@ -9,7 +9,7 @@ import { planchasTableInfo, trabajosPlanchaTableInfo } from "../helpers/tablesIn
 import DeleteForm from "../components/formComponents/DeleteForm";
 
 function PlanchasDetails() {
-  const puertoApi = 3300;
+  const puertoApi = 3000;
   const { id } = useParams();
   const [plancha, setPlancha] = useState(null);
   const [deletePopup, setDeletePopup] = useState(false);
