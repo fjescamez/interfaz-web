@@ -971,7 +971,8 @@ export const orderTableInfo = {
             action: "desasignar"
         }
     ],
-    rolesActions: ["Manager", "Soporte"]
+    rolesActions: ["Manager", "Soporte"],
+    usersActions: ["n.morante", "a.artacho"]
 };
 
 export const clientTableInfo = {

@@ -24,8 +24,11 @@ import OrderInfoPopUp from "./OrderInfoPopUp";
 import TraceTextPopUp from "./TraceTextPopUp";
 import DeleteForm from "../formComponents/DeleteForm";
 import { orderTableInfo } from "../../helpers/tablesInfo";
+import { useSession } from "../../context/SessionContext";
+import SignJobForm from "../formComponents/SignJobForm";
 
 function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
+    const { session } = useSession();
     const navigate = useNavigate();
     const location = useLocation();
     const [noteModal, setNoteModal] = useState(false);
@@ -37,6 +40,7 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
     const [lenModal, setLenModal] = useState(false);
     const [filesModal, setFilesModal] = useState(false);
     const [traceModal, setTraceModal] = useState(false);
+    const [signJobModal, setSignJobModal] = useState(false);
     const [deletePopup, setDeletePopup] = useState(false);
     const [montajeModal, setMontajeModal] = useState(false);
     const [plotterModal, setPlotterModal] = useState(false);
@@ -173,6 +177,9 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
             case "traceText":
                 setTraceModal(true);
                 break;
+            case "signJob":
+                setSignJobModal(true);
+                break;
             case "kiosk":
                 const path = `${location.pathname}/kiosk`;
                 const tabTitle = `${fullOrder.id_pedido} | KIOSKO`;
@@ -221,6 +228,7 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
             {filesModal && <FileTable setFilesModal={setFilesModal} orderId={fullOrder.id_pedido} filePath={filePath} />}
             {deletePopup && <DeleteForm setModal={setDeletePopup} id={fullOrder._id} tableInfo={orderTableInfo} />}
             {traceModal && <TraceTextPopUp setTraceModal={setTraceModal} rutaTrabajo={fullOrder.rutaTrabajo} unitario={fullOrder.unitario} />}
+            {signJobModal && <SignJobForm setSignJobModal={setSignJobModal} fullOrder={fullOrder} />}
             {montajeModal && <MontajeTable setMontajeModal={setMontajeModal} fullOrder={fullOrder} filePath={filePath} />}
             {plotterModal && <PlotterTable setPlotterModal={setPlotterModal} orderId={fullOrder.id_pedido} fullOrder={fullOrder} filePath={filePath} />}
             {tintasModal && <TintasPopUp setTintasModal={setTintasModal} fullOrder={fullOrder} />}
@@ -252,19 +260,24 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
                         zIndex: 2
                     }}
                 >
-                    {buttonBar.buttons.map((icon, index) => (
-                        <div className="iconContainer" key={index}>
-                            <div
-                                className={"icons" + (icon.first ? " first" : "")}
-                                onClick={(e) => handleClick(icon.action, icon.buttons, e)}
-                                data-tooltip-id="my-tooltip"
-                                data-tooltip-content={icon.tooltip}
-                            >
-                                {icon.icon}
+                    {buttonBar.buttons.map((icon, index) => {
+                        if (icon.assigned && fullOrder.usuario_asignado !== session.username) {
+                            return null; // No renderizar el botón si no cumple la condición
+                        }
+
+                        return (
+                            <div className="iconContainer" key={index}>
+                                <div
+                                    className={"icons" + (icon.first ? " first" : "")}
+                                    onClick={(e) => handleClick(icon.action, icon.buttons, e)}
+                                    data-tooltip-id="my-tooltip"
+                                    data-tooltip-content={icon.tooltip}
+                                >
+                                    {icon.icon}
+                                </div>
                             </div>
-                            {/* {(!icon.last) && <div className="border"></div>} */}
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             )}
             <ReactTooltip id="my-tooltip" delayShow={750} />

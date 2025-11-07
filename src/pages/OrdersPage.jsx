@@ -13,8 +13,9 @@ function OrdersPage({ filter }) {
     const [dataSetter, setDataSetter] = useState(null);
     const [asignarPopUp, setAsignarPopUp] = useState(false);
     const { session } = useSession();
-    const { role } = session;
+    const { role, username } = session;
     const isManager = role === "Manager" || role === "Soporte";
+    const isTeletrabajo = username === "n.morante" || username === "a.artacho";
 
     const orderActions = async (variables) => {
         const { action, data, setTableData } = variables;
@@ -50,7 +51,7 @@ function OrdersPage({ filter }) {
                 dinamicTableInfo={orderTableInfo}
                 normalizedData={true}
                 checkedRows={checkedOrders}
-                setCheckedRows={isManager ? setCheckedOrders : null}
+                setCheckedRows={isManager || isTeletrabajo ? setCheckedOrders : null}
                 actions={orderActions}
             />
             {asignarPopUp && <AsignarPedidoForm setModal={setAsignarPopUp} orderIds={checkedOrders} pedidos={pedidos} setTableData={dataSetter} />}

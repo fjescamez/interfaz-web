@@ -54,7 +54,7 @@ function Table({
     const clienteCodigo = clienteCodigos[location.pathname] || null;
     const clienteDato = clienteDatos[location.pathname] || null;
     const [tableInfo, setTableInfo] = useState(dinamicTableInfo);
-    const { headerIcon, headerTitle, tableColumns, tableName, endPoint, tableForm, tableChecks, defaultChecks, rolesActions } = tableInfo;
+    const { headerIcon, headerTitle, tableColumns, tableName, endPoint, tableForm, tableChecks, defaultChecks, rolesActions, usersActions } = tableInfo;
     const tableActions = tableInfo.actions || [];
     const { tabs, setTabs } = useTabs();
     const [editTable, setEditTable] = useState(false);
@@ -368,7 +368,7 @@ function Table({
                             <h1>{specificHeaderTitle ? specificHeaderTitle : headerTitle}</h1>
                         </div>
                         <div className="headerActions">
-                            {(tableInfo.actions && !tableChecks && (!rolesActions?.length || rolesActions?.includes(session.role))) && (
+                            {(tableInfo.actions && !tableChecks && ((!rolesActions?.length || rolesActions?.includes(session.role) || (!usersActions?.length || usersActions?.includes(session.username))))) && (
                                 showChecks
                                     ?
                                     <MdLockOpen className="tableLock" onClick={() => { setShowChecks(false); setCheckedRows([]) }} />
@@ -433,7 +433,7 @@ function Table({
                     {(tableInfo.actions && tableData.length > 0
                         && !(tableInfo.actions.length === 1 && tableInfo.actions[0].action === "eliminar")
                         && !tableCharging
-                        && (!rolesActions?.length || rolesActions?.includes(session.role))) && (
+                        && (!rolesActions?.length || rolesActions?.includes(session.role) || (!usersActions?.length || usersActions?.includes(session.username)))) && (
                             <div className="tableInfoActions">
                                 {actionEnded
                                     ?

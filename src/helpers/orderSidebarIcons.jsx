@@ -9,6 +9,7 @@ import { ImFilesEmpty } from "react-icons/im";
 import { BsInfoLg } from "react-icons/bs";
 import { FaTasks } from "react-icons/fa";
 import { RiText } from "react-icons/ri";
+import { AiOutlineSignature } from "react-icons/ai";
 import LenFile from "../assets/svg/LenFile";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
@@ -104,6 +105,12 @@ export const orderSidebarIcons = [
                 icon: <RiText />,
                 action: "traceText",
                 tooltip: "TRAZAR TEXTO"
+            },
+            {
+                icon: <AiOutlineSignature />,
+                action: "signJob",
+                tooltip: "FIRMAR TRABAJO",
+                assigned: true
             }
         ],
         tooltip: ""

@@ -6,9 +6,17 @@ import { SlBriefcase } from "react-icons/sl";
 import { PiGear } from "react-icons/pi";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { TbColorSwatch } from "react-icons/tb";
+import { AiOutlineSignature } from "react-icons/ai";
 import GroupsSvg from "../assets/svg/GroupsSvg";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
+
+export const desasignarPedidoFormData = {
+    headerIcon: <AiOutlineSignature />,
+    headerTitle: "DESASIGNAR PEDIDO",
+    formSections: [],
+    formFields: []
+}
 
 export const asignarPedidoFormData = {
     headerIcon: <IoDocumentTextOutline />,
