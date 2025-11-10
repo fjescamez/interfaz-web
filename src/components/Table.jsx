@@ -36,7 +36,8 @@ function Table({
     orderFilter,
     setPopUpTable,
     currentVersion,
-    initialData
+    initialData,
+    publicForm
 }) {
     const puertoApi = 3000;
     const socket = useSocket();
@@ -62,7 +63,6 @@ function Table({
     const [advancedQuery, setAdvancedQuery] = useState({});
     const { session } = useSession();
     const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
-    const isOficina = session?.departments?.includes("Oficina");
     const customTables = ["versiones", "archivosLen", "fichas", "montaje", "plotter", "montajes", "rip", "infoGmg", "tintas", "emailInfo", "trabajosPlancha"];
     const [showChecks, setShowChecks] = useState((tableChecks || defaultChecks) ? true : false);
     const [tableCharging, setTableCharging] = useState(!initialData ? true : false);
@@ -90,6 +90,12 @@ function Table({
             return;
         }
     }, []);
+
+    useEffect(() => {
+        setSearch("");
+        setAdvancedQuery({});
+        setPage(1);
+    }, [location]);
 
     useEffect(() => {
         if (clientFilter) {
@@ -358,6 +364,8 @@ function Table({
         return () => window.removeEventListener("click", handleClickOutside);
     }, [copyMenu.visible]);
 
+    const searchInputRef = useState(null);
+
     return (
         <>
             <div className="tableContainer">
@@ -376,7 +384,7 @@ function Table({
                                     <MdLockOutline className="tableLock" onClick={() => { setShowChecks(true); setCheckedRows([]) }} />
                             )}
                             {!initialData && <HiOutlineRefresh className="tableRefresh" onClick={() => refreshTable()} />}
-                            {(isAdmin && tableForm || isOficina && tableName === "contactos") && (
+                            {(tableForm && (isAdmin || publicForm)) && (
                                 <button onClick={() => setModal(true)}>
                                     <svg id="Layer_1" data-name="Layer 1"
                                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27.5 27.5">
@@ -395,13 +403,22 @@ function Table({
                             }
                             {(!customTables.includes(tableName) && !advancedFilters) && (
                                 <div className="searchInput">
-                                    <input type="text" id="search" placeholder="Buscar" onChange={searchData} value={search} autoFocus />
+                                    <input
+                                        type="text"
+                                        id="search"
+                                        placeholder="Buscar"
+                                        onChange={searchData}
+                                        value={search}
+                                        autoFocus
+                                        ref={(input) => (searchInputRef.current = input)} // Referencia para el input
+                                    />
                                     <IoCloseCircleOutline
                                         className="resetSearch"
                                         onClick={() => {
                                             setSearch("");
                                             setPage(1);
                                             getData(1, "", clienteCodigo);
+                                            searchInputRef.current?.focus(); // Hacer focus en el input
                                         }}
                                     />
                                 </div>
@@ -550,7 +567,7 @@ function Table({
                                                 data-tooltip-id="my-tooltip"
                                                 data-tooltip-content={value}
                                                 onContextMenu={(e) => handleRightClick(e, value)}
-                                                className={column.key === "nombre_plancha" ? "tdGrande" : ""}
+                                                className={column.key === "nombre_plancha" || column.key === "documentName" ? "tdGrande" : ""}
                                             >
                                                 {/* Comprobación para que no reviente con objetos vacíos */}
                                                 {typeof value === 'object' ? " " : value}

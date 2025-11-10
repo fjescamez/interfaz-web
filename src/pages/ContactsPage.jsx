@@ -39,6 +39,7 @@ function ContactsPage({ filter }) {
                 dinamicTableInfo={contactTableInfo}
                 checkedRows={contactIds}
                 setCheckedRows={setContactIds}
+                publicForm={true}
             />
             {groupPopUp &&
                 <GroupForm

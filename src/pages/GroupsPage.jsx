@@ -19,6 +19,7 @@ function GroupsPage({ filter }) {
             dinamicTableInfo={groupTableInfo}
             checkedRows={groupIds}
             setCheckedRows={setGroupIds}
+            publicForm={true}
         />
     )
 }
