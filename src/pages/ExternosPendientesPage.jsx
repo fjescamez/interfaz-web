@@ -3,28 +3,34 @@ import Table from '../components/Table'
 import { trabajosExternosTableInfo } from '../helpers/tablesInfo'
 import { postData } from '../helpers/fetchData';
 import { useSession } from '../context/SessionContext';
+import { notify } from '../helpers/notify';
+import { toast } from "react-toastify";
 
 function ExternosPendientesPage() {
     const [externosChecked, setExternosChecked] = useState([]);
     const { session } = useSession();
 
     const externosActions = async (variables) => {
-        const { action, data, setTableData } = variables;
+        const { action, data } = variables;
+        const trabajosCompletos = data.filter(item => externosChecked.includes(item._id));
 
-        switch (action) {
-            case "firmar":
-                const firmaData = {
-                    idsTrabajos: externosChecked,
-                    usuario: session._id
-                }
-
-                const firma = await postData("externalJobs/firmar", firmaData);
-                
-                return { status: 'success' };
-            case "anular":
-                return { status: 'success' };
+        const signData = {
+            action,
+            idsTrabajos: externosChecked,
+            trabajosCompletos,
+            usuario: session.username
         }
 
+        const response = await postData('externalJobs/firmar', signData);
+
+        if (response.status === "success") {
+            notify(toast.success, 'success', response.title);
+            setExternosChecked([]);
+        } else {
+            notify(toast.error, 'error', response.title);
+        }
+
+        return { status: "success" };
     }
 
     return (

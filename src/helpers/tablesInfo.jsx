@@ -50,10 +50,6 @@ export const trabajosExternosTableInfo = {
             action: "firmar"
         },
         {
-            title: "Imprimir",
-            action: "imprimir"
-        },
-        {
             title: "Anular",
             action: "anular"
         }

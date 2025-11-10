@@ -33,7 +33,7 @@ function PlanchasPage() {
     }, [location]);
 
     const planchasActions = async (variables) => {
-        const { action, title, data, setTableData } = variables;
+        const { action, data, setTableData } = variables;
 
         switch (action) {
             case "sincronizar":
@@ -67,7 +67,12 @@ function PlanchasPage() {
                 setPlanchas([]);
                 if (albaran.status === 'success') {
                     notify(toast.success, 'success', albaran.title, albaran.message);
-                    setTableData(albaran.updatedData.results);
+                    // Actualizar la plancha en la tabla
+                    setTableData(prev =>
+                        prev.map(item =>
+                            item.id === albaran.updatedData.id ? albaran.updatedData : item
+                        )
+                    );
                 } else {
                     notify(toast.error, 'error', albaran.title, albaran.message);
                 }
