@@ -13,11 +13,12 @@ import PedidoEtiquetas from "../components/pedidoComponents/PedidoEtiquetas";
 import PedidoSideBar from "../components/pedidoComponents/PedidoSideBar";
 import { notify } from "../helpers/notify";
 import { toast } from "react-toastify";
-import { fetchData, fetchOneItem } from "../helpers/fetchData";
+import { fetchData, fetchOneItem, postData } from "../helpers/fetchData";
 import PdfAsImage from "../components/pedidoComponents/PdfAsImage";
 
 function OrderDetails() {
   const [fullOrder, setFullOrder] = useState({});
+  const [unitarioView, setUnitarioView] = useState("");
   const [orderXml, setOrderXml] = useState({});
   const [orderColors, setOrderColors] = useState([]);
   const [estrategiaId, setEstrategiaId] = useState("");
@@ -121,6 +122,12 @@ function OrderDetails() {
     navigate(path, { state: { fullOrder: fullOrder } });
   }
 
+  const getUnitarioView = async () => {
+    const response = await postData("orders/getUnitarioView", { orderId: fullOrder.id_pedido, action: "solicitarVista" });
+    console.log(response);
+    setUnitarioView(response);
+  }
+
   useEffect(() => {
     getOrderDetails(id);
   }, [id]);
@@ -128,6 +135,7 @@ function OrderDetails() {
   useEffect(() => {
     if (fullOrder._id) {
       getStrategyDetails();
+      getUnitarioView();
     }
     getOrderColors();
   }, [fullOrder]);
@@ -238,7 +246,7 @@ function OrderDetails() {
                   <tbody>
                     <tr>
                       <td><p><span className="highlight">CLIENTE:</span></p></td>
-                      <td><p className="openClient" onClick={openClient}>{orderXml.numero?.cliente_nombre}</p></td>
+                      <td><p className="openClient" onClick={openClient}>{orderXml.numero?.cliente_nombre} 🔗</p></td>
                     </tr>
                     <tr>
                       <td><p><span className="highlight">MARCA:</span></p></td>
@@ -370,8 +378,8 @@ function OrderDetails() {
                 <p>PREVIO DEL TRABAJO</p>
               </div>
               <div className="body">
-                <div className="imgPrevio">
-                  <PdfAsImage url={filePath} />
+                <div className="imgPrevio" onClick={() => window.open(unitarioView, "_blank")}>
+                  <PdfAsImage url={filePath} noOpen={true} />
                 </div>
               </div>
             </div>
