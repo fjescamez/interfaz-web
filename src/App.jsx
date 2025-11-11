@@ -37,7 +37,7 @@ import ExternosFinalizadosPage from "./pages/ExternosFinalizadosPage";
 import ExternosPendientesPage from "./pages/ExternosPendientesPage";
 import ExternosByClient from "./pages/ExternosByClient";
 import ExternosDetails from "./pages/ExternosDetails";
-import InputPistola from "./components/InputPistola";
+//import InputPistola from "./components/InputPistola";
 
 function App() {
   const icons = ["home", "pedidos", "bandeja", "len", "clientes", "stock", "produccion", "usuarios"];
