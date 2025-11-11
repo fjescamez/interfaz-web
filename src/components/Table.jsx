@@ -40,7 +40,7 @@ function Table({
     initialData,
     publicForm
 }) {
-    const puertoApi = 3000;
+    const puertoApi = 3300;
     const socket = useSocket();
     const [tableData, setTableData] = useState(initialData || []);
     const [modal, setModal] = useState(false);
@@ -186,12 +186,10 @@ function Table({
             searchParams = advancedFilters;
         }
 
-        if (page > 1) {
-            if (!clientFilter) {
-                getData(page, searchParams);
-            } else {
-                getData(page, searchParams, clienteCodigo || clientFilter);
-            }
+        if (!clientFilter) {
+            getData(page, searchParams);
+        } else {
+            getData(page, searchParams, clienteCodigo || clientFilter);
         }
     }, [page]);
 
@@ -300,9 +298,18 @@ function Table({
     }
 
     const refreshTable = () => {
-        setAdvancedFilters(false);
-        setAdvancedQuery({});
-        setPage(1);
+        let searchParams = search;
+        const advancedFilters = new URLSearchParams(advancedQuery).toString();
+
+        if (advancedFilters !== "") {
+            searchParams = advancedFilters;
+        }
+
+        if (!clientFilter) {
+            getData(page, searchParams);
+        } else {
+            getData(page, searchParams, clienteCodigo || clientFilter);
+        }
     }
 
     const [checked, setChecked] = useState({});
