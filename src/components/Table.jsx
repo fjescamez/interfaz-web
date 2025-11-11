@@ -40,7 +40,7 @@ function Table({
     initialData,
     publicForm
 }) {
-    const puertoApi = 3300;
+    const puertoApi = 3000;
     const socket = useSocket();
     const [tableData, setTableData] = useState(initialData || []);
     const [modal, setModal] = useState(false);
