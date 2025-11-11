@@ -16,8 +16,13 @@ function LoginPage() {
 
   useEffect(() => {
     if (session) {
-      navigate("/home");
-      setTabs([{ path: "/home", title: "INICIO" }]);
+      if (session.departments.includes("Sólido") || session.departments.includes("Líquido") || session.departments.includes("Montaje")) {
+        navigate("/produccion");
+        setTabs([{ path: "/produccion", title: "PRODUCCION" }]);
+      } else {
+        navigate("/home");
+        setTabs([{ path: "/home", title: "INICIO" }]);
+      }
     }
   }, [session, navigate]);
 
@@ -27,20 +32,6 @@ function LoginPage() {
   });
 
   const [error, setError] = useState(false);
-
-  // quitar cuando este integrado
-  /*
-  const getUserPreferences = async () => {
-    const preferences = await fetchUserPreferences(user.username, "usuarios");
-    console.log("preferencias: ", preferences);
-
-    if (preferences && preferences.status === "success") {
-      localStorage.setItem("userPreferences", true);
-    } else {
-      localStorage.setItem("userPreferences", false);
-    }
-  }
-  */
 
   const handleSubmit = async (e) => {
     e.preventDefault();

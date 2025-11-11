@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import Table from "../components/Table";
 import { orderTableInfo } from "../helpers/tablesInfo";
 import { useSession } from "../context/SessionContext";
@@ -6,8 +7,11 @@ import AsignarPedidoForm from "../components/formComponents/AsignarPedidoForm";
 import { postData } from "../helpers/fetchData";
 import { notify } from "../helpers/notify";
 import { toast } from "react-toastify";
+import { BsFillInboxFill } from "react-icons/bs";
 
-function OrdersPage({ filter }) {
+function OrdersPage({ filter, filterBandeja }) {
+    const [tableInfo, setTableInfo] = useState(orderTableInfo);
+    const location = useLocation();
     const [checkedOrders, setCheckedOrders] = useState([]);
     const [pedidos, setPedidos] = useState([]);
     const [dataSetter, setDataSetter] = useState(null);
@@ -16,6 +20,19 @@ function OrdersPage({ filter }) {
     const { role, username } = session;
     const isManager = role === "Manager" || role === "Soporte";
     const isTeletrabajo = username === "n.morante" || username === "a.artacho";
+    const userFilter = filterBandeja ? username : "";
+
+    useEffect(() => {
+        if (location.pathname === "/bandeja") {
+            setTableInfo(prev => ({
+                ...prev,
+                headerIcon: <BsFillInboxFill />,
+                headerTitle: "BANDEJA PERSONAL"
+            }));
+        } else {
+            setTableInfo(orderTableInfo);
+        }
+    }, [location.pathname]);
 
     const orderActions = async (variables) => {
         const { action, data, setTableData } = variables;
@@ -48,7 +65,8 @@ function OrdersPage({ filter }) {
         <>
             <Table
                 clientFilter={filter}
-                dinamicTableInfo={orderTableInfo}
+                userFilter={userFilter}
+                dinamicTableInfo={tableInfo}
                 normalizedData={true}
                 checkedRows={checkedOrders}
                 setCheckedRows={isManager || isTeletrabajo ? setCheckedOrders : null}

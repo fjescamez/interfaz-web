@@ -944,7 +944,7 @@ export const orderTableInfo = {
         {
             header: "Asignado a",
             active: true,
-            key: "usuario_asignado"
+            key: "nombre_usuario_asignado"
         },
         {
             header: "Albarán",

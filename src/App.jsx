@@ -37,9 +37,10 @@ import ExternosFinalizadosPage from "./pages/ExternosFinalizadosPage";
 import ExternosPendientesPage from "./pages/ExternosPendientesPage";
 import ExternosByClient from "./pages/ExternosByClient";
 import ExternosDetails from "./pages/ExternosDetails";
+import InputPistola from "./components/InputPistola";
 
 function App() {
-  const icons = ["home", "pedidos", "len", "clientes", "stock", "produccion", "usuarios"];
+  const icons = ["home", "pedidos", "bandeja", "len", "clientes", "stock", "produccion", "usuarios"];
   const location = useLocation();
   const { session } = useSession();
   const navigate = useNavigate();
@@ -55,6 +56,7 @@ function App() {
   const getActiveFromPath = (pathname) => {
     if (pathname.startsWith("/home")) return "home";
     if (pathname.startsWith("/pedidos")) return "pedidos";
+    if (pathname.startsWith("/bandeja")) return "bandeja";
     if (pathname.startsWith("/len")) return "len";
     if (pathname.startsWith("/clientes")) return "clientes";
     if (pathname.startsWith("/stock")) return "stock";
@@ -167,6 +169,7 @@ function App() {
           newestOnTop
           autoClose={3000}
         />
+        {/*<InputPistola />*/}
         {(isDropdownActive) && <UserDropdownComponent toggleUserDropdown={toggleUserDropdown} toggleKiosk={toggleKiosk} />}
         {isKioskActive && <ImageKioskComponent toggleKiosk={toggleKiosk} endpoint={kioskData.endpoint} id={kioskData.id} client={kioskData.client} />}
         {window.location.pathname !== "/login" && <SideBarComponent isActive={isActive} setIsActive={setIsActive} />}
@@ -181,6 +184,8 @@ function App() {
           <Route path="/pedidos" element={<OrdersPage />} />
           <Route path="/pedidos/:id" element={<OrderDetails />} />
           <Route path="/pedidos/:id/kiosk" element={<OrderKiosk />} />
+          <Route path="/bandeja" element={<OrdersPage filterBandeja={true} />} />
+          <Route path="/bandeja/:id" element={<OrderDetails />} />
           <Route path="/infoEmail/:id_pedido/:id" element={<EmailDetails />} />
           <Route path="/fichaTecnica/:id" element={<ObservacionesTecnicas />} />
           <Route path="/len" element={<LenPage />} />

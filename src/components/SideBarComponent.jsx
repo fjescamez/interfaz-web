@@ -8,12 +8,15 @@ import { Tooltip as ReactTooltip } from "react-tooltip";
 import LenFile from "../assets/svg/LenFile";
 import { SlBriefcase } from "react-icons/sl";
 import { PiOven } from "react-icons/pi";
+import { BsFillInboxFill } from "react-icons/bs";
 import { useSession } from "../context/SessionContext";
 
 function SideBarComponent({ isActive, setIsActive }) {
     const navigate = useNavigate();
     const { setTabs } = useTabs();
     const { session } = useSession();
+    const teletabajo = ["n.morante", "a.artacho"];
+    const isTeletrabajo = teletabajo.includes(session?.username);
     const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
     const isProduccion = session?.departments?.includes("Sólido") || session?.departments?.includes("Líquido");
 
@@ -46,6 +49,14 @@ function SideBarComponent({ isActive, setIsActive }) {
                 <div className={`icons ${isActive.pedidos ? "activeStroke" : ""}`} onClick={() => handleClick("pedidos", "PEDIDOS")} data-tooltip-id="my-tooltip" data-tooltip-content={"PEDIDOS"} >
                     <IoDocumentTextOutline style={{ color: "var(--pantone431c" }} />
                 </div>
+                {(isAdmin || isTeletrabajo) && (
+                    <>
+                        <div className="border"></div>
+                        <div className={`icons ${isActive.bandeja ? "active" : ""}`} onClick={() => handleClick("bandeja", "BANDEJA")} data-tooltip-id="my-tooltip" data-tooltip-content={"BANDEJA"} >
+                            <BsFillInboxFill />
+                        </div>
+                    </>
+                )}
                 <div className="border"></div>
                 <div className={`icons ${isActive.len ? "active" : ""}`} onClick={() => handleClick("len", "LEN")} data-tooltip-id="my-tooltip" data-tooltip-content={"FICHEROS LEN"} >
                     <LenFile />

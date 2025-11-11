@@ -38,8 +38,6 @@ function StrategyDetails({ toggleKiosk }) {
   useEffect(() => {
     const getItemsData = async () => {
       if (strategy !== undefined) {
-        console.log(strategy);
-
         const {
           cliente_codigo,
           material,

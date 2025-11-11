@@ -30,6 +30,7 @@ function Table({
     dinamicTableInfo,
     specificHeaderTitle,
     clientFilter,
+    userFilter,
     actions,
     checkedRows,
     setCheckedRows,
@@ -75,7 +76,7 @@ function Table({
     });
 
     const getData = async (page, searchValue = "", clientFilter = "") => {
-        const result = await fetchData(endPoint, searchValue, page, setTableData, setTotal, clientFilter);
+        const result = await fetchData(endPoint, searchValue, page, setTableData, setTotal, clientFilter, userFilter);
         setTableCharging(false);
         if (result && result.length < 1) {
             setNoDataToShow(true);
@@ -119,10 +120,19 @@ function Table({
     }, [socket]);
 
     useEffect(() => {
-        if (dinamicTableInfo.endPoint !== endPoint || dinamicTableInfo.headerTitle !== headerTitle || dinamicTableInfo.actions !== tableActions) {
+        if (
+            dinamicTableInfo.endPoint !== endPoint ||
+            dinamicTableInfo.headerTitle !== headerTitle ||
+            dinamicTableInfo.actions !== tableActions
+        ) {
             setTableInfo(dinamicTableInfo);
+
+            // Reaplicar las preferencias de usuario al actualizar tableInfo
+            if (session) {
+                getUserPreferences(session, dinamicTableInfo, setTableInfo);
+            }
         }
-    }, [dinamicTableInfo]);
+    }, [dinamicTableInfo, session]);
 
     useEffect(() => {
         const tablasPlanchas = ["planchas", "planchasPreproduccion", "planchasProduccion", "planchasFinalizadas", "externosFinalizados", "externosAnulados"];
