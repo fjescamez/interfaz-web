@@ -42,6 +42,7 @@ function Table({
 }) {
     const puertoApi = 3000;
     const socket = useSocket();
+    const [orderBy, setOrderBy] = useState({});
     const [tableData, setTableData] = useState(initialData || []);
     const [modal, setModal] = useState(false);
     const [deletePopup, setDeletePopup] = useState(false);
@@ -186,10 +187,12 @@ function Table({
             searchParams = advancedFilters;
         }
 
-        if (!clientFilter) {
-            getData(page, searchParams);
-        } else {
-            getData(page, searchParams, clienteCodigo || clientFilter);
+        if (page > 1) {
+            if (!clientFilter) {
+                getData(page, searchParams);
+            } else {
+                getData(page, searchParams, clienteCodigo || clientFilter);
+            }
         }
     }, [page]);
 
@@ -271,6 +274,22 @@ function Table({
     const showMore = () => {
         setPage(prevPage => prevPage + 1);
     }
+
+    const orderByColumn = (column) => {
+        if (orderBy.column === column) {
+            if (orderBy.direction === "asc") {
+                setOrderBy({});
+            } else {
+                setOrderBy({ column, direction: "asc" });
+            }
+        } else {
+            setOrderBy({ column, direction: "desc" });
+        }
+    };
+
+    useEffect(() => {
+        console.log("Ordenando por:", orderBy);
+    }, [orderBy]);
 
     useEffect(() => {
         setSearch(orderFilter ? orderFilter : "");
@@ -512,7 +531,7 @@ function Table({
                                     <th className="checkElement"><input type="checkbox" className="check" onChange={checkAll} checked={checkedRows.length === tableData.length && checkedRows.length > 0} /></th>
                                 )}
                                 {tableColumns.map((column) => (
-                                    checked[column.key] && <th key={column.key}>{column.header != "Avatar" && column.header}</th>
+                                    checked[column.key] && <th key={column.key} className="thClickable" onClick={() => orderByColumn(column.key)}>{column.header != "Avatar" && column.header}</th>
                                 ))}
                             </tr>
                         </thead>
