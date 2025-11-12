@@ -36,7 +36,7 @@ export const trabajosExternosTableInfo = {
         {
             header: "Colores",
             active: true,
-            key: "clichesColor"
+            key: "numero_colores"
         },
         {
             header: "Fecha",
