@@ -1,10 +1,47 @@
 import { TfiLayoutColumn3Alt } from "react-icons/tfi"
 import Separador from "../../assets/svg/Separador"
 import Capiculado from "../../assets/svg/Capiculado"
+import { useState, useEffect } from "react";
 
 function PedidoMadera({ orderXml }) {
     const madera = orderXml.actividad?.madera;
     const madera_premontaje = orderXml.actividad?.madera.madera_premontaje;
+
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (madera) {
+            Object.keys(madera).forEach((key) => {
+                if (
+                    madera[key] &&
+                    typeof madera[key] === "object" &&
+                    Object.keys(madera[key]).length === 0
+                ) {
+                    madera[key] = "";
+                }
+            });
+        }
+
+        if (Array.isArray(madera_premontaje)) {
+            madera_premontaje.forEach((item) => {
+                Object.keys(item).forEach((key) => {
+                    if (
+                        item[key] &&
+                        typeof item[key] === "object" &&
+                        Object.keys(item[key]).length === 0
+                    ) {
+                        item[key] = "";
+                    }
+                });
+            });
+        }
+
+        setLoading(false); // Mark as complete
+    }, [madera, madera_premontaje]);
+
+    if (loading) {
+        return null; // Render nothing while loading
+    }
 
     return (
         <div className="madera">
@@ -66,7 +103,7 @@ function PedidoMadera({ orderXml }) {
                             </tr>
                             <tr>
                                 <td><p className="highlight">PREMONTADO:</p></td>
-                                <td><input type="checkbox" className="check" checked={madera.madera_camisa_premonta === "-1" || madera.madera_camisa_premonta === "X"} readOnly/></td>
+                                <td><input type="checkbox" className="check" checked={madera.madera_camisa_premonta === "-1" || madera.madera_camisa_premonta === "X"} readOnly /></td>
                             </tr>
                             <tr>
                                 <td><p className="highlight">UNIDADES:</p></td>

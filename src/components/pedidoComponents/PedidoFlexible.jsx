@@ -1,5 +1,28 @@
+import { useState } from "react";
+
 function PedidoFlexible({ orderXml }) {
   const flexible = orderXml.actividad?.flexible;
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (flexible) {
+      Object.keys(flexible).forEach((key) => {
+        if (
+          flexible[key] &&
+          typeof flexible[key] === "object" &&
+          Object.keys(flexible[key]).length === 0
+        ) {
+          flexible[key] = "";
+        }
+      });
+    }
+    setLoading(false); // Mark as complete
+  }, [flexible]);
+
+  if (loading) {
+    return null; // Render nothing while loading
+  }
+
   return (
     <div className="flexible">
       <div className="medidas flex">

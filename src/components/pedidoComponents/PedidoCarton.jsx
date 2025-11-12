@@ -1,6 +1,44 @@
+import { useEffect, useState } from "react";
+
 function PedidoCarton({ orderXml }) {
   const carton = orderXml.actividad?.carton;
   const carton_premontaje = orderXml.actividad?.carton.carton_premontaje;
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (carton) {
+      Object.keys(carton).forEach((key) => {
+        if (
+          carton[key] &&
+          typeof carton[key] === "object" &&
+          Object.keys(carton[key]).length === 0
+        ) {
+          carton[key] = "";
+        }
+      });
+    }
+
+    if (Array.isArray(carton_premontaje)) {
+      carton_premontaje.forEach((item) => {
+        Object.keys(item).forEach((key) => {
+          if (
+            item[key] &&
+            typeof item[key] === "object" &&
+            Object.keys(item[key]).length === 0
+          ) {
+            item[key] = "";
+          }
+        });
+      });
+    }
+
+    setLoading(false); // Mark as complete
+  }, [carton, carton_premontaje]);
+
+  if (loading) {
+    return null; // Render nothing while loading
+  }
 
   return (
     <div className="carton">
