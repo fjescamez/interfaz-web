@@ -6,11 +6,52 @@ import { PiImagesLight, PiNoteLight } from "react-icons/pi";
 import { TbColorSwatch } from "react-icons/tb";
 import { RiPaintFill } from "react-icons/ri";
 import { BsInfoLg } from "react-icons/bs";
+import { SlBriefcase } from "react-icons/sl";
+import { MdBarcodeReader } from "react-icons/md";
 import LenFile from "../assets/svg/LenFile";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
-import { SlBriefcase } from "react-icons/sl";
 import GroupsSvg from "../assets/svg/GroupsSvg";
+
+export const pistolaTableInfo = {
+    tableName: "pistola",
+    headerIcon: <MdBarcodeReader />,
+    headerTitle: "ACCIONES PISTOLA",
+    tableColumns: [
+        {
+            header: "Nombre",
+            active: true,
+            key: "name"
+        },
+        {
+            header: "Acción",
+            active: true,
+            key: "action"
+        },
+        {
+            header: "Usuario",
+            active: true,
+            key: "username"
+        },
+        {
+            header: "Fecha",
+            active: true,
+            key: "date"
+        },
+        {
+            header: "Hora",
+            active: true,
+            key: "time"
+        },
+    ],
+    actions: [
+        {
+            title: "Limpiar",
+            action: "limpiar",
+            noCheck: true
+        }
+    ]
+}
 
 export const trabajosExternosTableInfo = {
     tableName: "trabajosExternos",

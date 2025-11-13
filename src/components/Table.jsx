@@ -199,7 +199,7 @@ function Table({
 
     const handleClick = (data, index) => {
         const openRowTables = ["montajes", "plotter", "allMontajes", "emailInfo", "infoGmg"];
-        const noActionTables = ["trabajosPlancha"];
+        const noActionTables = ["trabajosPlancha", "pistola"];
 
         if (noActionTables.includes(tableName)) {
             return;

@@ -10,6 +10,7 @@ import { SlBriefcase } from "react-icons/sl";
 import { PiOven } from "react-icons/pi";
 import { BsFillInboxFill } from "react-icons/bs";
 import { useSession } from "../context/SessionContext";
+import { MdBarcodeReader } from "react-icons/md";
 
 function SideBarComponent({ isActive, setIsActive }) {
     const navigate = useNavigate();
@@ -70,6 +71,10 @@ function SideBarComponent({ isActive, setIsActive }) {
                         <div className="border"></div>
                         <div className={`icons ${isActive.produccion ? "active" : ""}`} onClick={() => handleClick("produccion", "PRODUCCION")} data-tooltip-id="my-tooltip" data-tooltip-content={"PRODUCCION"} >
                             <PiOven />
+                        </div>
+                        <div className="border"></div>
+                        <div className={`icons ${isActive.pistola ? "active" : ""}`} onClick={() => handleClick("pistola", "PISTOLA")} data-tooltip-id="my-tooltip" data-tooltip-content={"PISTOLA"} >
+                            <MdBarcodeReader />
                         </div>
                     </>
                 )}

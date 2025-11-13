@@ -38,6 +38,7 @@ function ExternosByClient() {
 
         if (response.status === "success") {
             notify(toast.success, 'success', response.title);
+            setTableData(prev => prev.filter(item => !response.updatedData.includes(item._id)));
             setExternosChecked([]);
         } else {
             notify(toast.error, 'error', response.title);

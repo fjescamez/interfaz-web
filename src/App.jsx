@@ -37,10 +37,11 @@ import ExternosFinalizadosPage from "./pages/ExternosFinalizadosPage";
 import ExternosPendientesPage from "./pages/ExternosPendientesPage";
 import ExternosByClient from "./pages/ExternosByClient";
 import ExternosDetails from "./pages/ExternosDetails";
-//import InputPistola from "./components/InputPistola";
+import InputPistola from "./components/InputPistola";
+import TablaPistolaPage from "./components/TablaPistolaPage";
 
 function App() {
-  const icons = ["home", "pedidos", "bandeja", "len", "clientes", "stock", "produccion", "usuarios"];
+  const icons = ["home", "pedidos", "bandeja", "len", "clientes", "produccion", "pistola", "stock", "usuarios"];
   const location = useLocation();
   const { session } = useSession();
   const navigate = useNavigate();
@@ -59,8 +60,9 @@ function App() {
     if (pathname.startsWith("/bandeja")) return "bandeja";
     if (pathname.startsWith("/len")) return "len";
     if (pathname.startsWith("/clientes")) return "clientes";
-    if (pathname.startsWith("/stock")) return "stock";
     if (pathname.startsWith("/produccion")) return "produccion";
+    if (pathname.startsWith("/pistola")) return "pistola";
+    if (pathname.startsWith("/stock")) return "stock";
     if (pathname.startsWith("/usuarios")) return "usuarios";
     return "home";
   };
@@ -169,7 +171,7 @@ function App() {
           newestOnTop
           autoClose={3000}
         />
-        {/*<InputPistola />*/}
+        {window.location.pathname !== "/login" && <InputPistola />}
         {(isDropdownActive) && <UserDropdownComponent toggleUserDropdown={toggleUserDropdown} toggleKiosk={toggleKiosk} />}
         {isKioskActive && <ImageKioskComponent toggleKiosk={toggleKiosk} endpoint={kioskData.endpoint} id={kioskData.id} client={kioskData.client} />}
         {window.location.pathname !== "/login" && <SideBarComponent isActive={isActive} setIsActive={setIsActive} />}
@@ -218,6 +220,7 @@ function App() {
           <Route path="/produccion/externosAnulados" element={<ExternosFinalizadosPage />} />
           <Route path="/produccion/:cliente" element={<ExternosByClient />} />
           <Route path="/stock" element={<StockPage />} />
+          <Route path="/pistola" element={<TablaPistolaPage />} />
           <Route path="/usuarios" element={<UsersPage />} />
           <Route path="/usuarios/:id" element={<UserDetails toggleKiosk={toggleKiosk} />} />
           <Route path="/test" element={<HomePage />} />

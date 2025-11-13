@@ -210,6 +210,29 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
         }
     }
 
+    // Desplegar el menú al hacer hover, en vez de tener que clicar
+    const handleMouseEnter = (buttons, event) => {
+        if (buttons) {
+            const rect = event.currentTarget.getBoundingClientRect();
+            const sideBarRect = sideBarRef.current.getBoundingClientRect();
+            setButtonBar({
+                visible: true,
+                buttons,
+                position: {
+                    top: rect.top,
+                    left: sideBarRect.left // Justo pegado a la barra lateral
+                }
+            });
+        }
+    };
+
+    const handleMouseLeave = (event) => {
+        if (buttonBarRef.current && buttonBarRef.current.contains(event.relatedTarget)) {
+            return; // Evitar cerrar el menú si el ratón está sobre los elementos internos
+        }
+        setButtonBar((prev) => ({ ...prev, visible: false }));
+    };
+
     return (
         <>
             {executing && <ExecutingComponent />}
@@ -239,6 +262,8 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
                     <div className="iconContainer" key={index}>
                         <div
                             className={"icons" + ((areNotes && icon.tooltip === "NOTAS") ? " active" : "")}
+                            onMouseEnter={(e) => handleMouseEnter(icon.buttons, e)}
+                            onMouseLeave={handleMouseLeave}
                             onClick={(e) => handleClick(icon.action, icon.buttons, e)}
                             data-tooltip-id="my-tooltip"
                             data-tooltip-content={icon.tooltip}
@@ -259,6 +284,8 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
                         transform: "translateX(-98.5%) translateY(-4%)", // se extiende hacia la izquierda
                         zIndex: 2
                     }}
+                    onMouseLeave={handleMouseLeave}
+                    onMouseEnter={() => setButtonBar((prev) => ({ ...prev, visible: true }))} // Mantener abierto al pasar el ratón
                 >
                     {buttonBar.buttons.map((icon, index) => {
                         if (icon.assigned && fullOrder.usuario_asignado !== session.username) {

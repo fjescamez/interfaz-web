@@ -49,18 +49,18 @@ export const orderSidebarIcons = [
             {
                 icon: <FaExternalLinkAlt />,
                 action: "clientApp",
-                tooltip: "Kiosco Cliente",
+                tooltip: "KIOSCO CLIENTE",
                 first: true
             },
             {
                 icon: <BsFiletypeDoc />,
                 action: "kioscoDoc",
-                tooltip: "Kiosco DOC"
+                tooltip: "KIOSCO DOC"
             },
             {
                 icon: <BsFiletypeXml />,
                 action: "kioscoXml",
-                tooltip: "Kiosco XML"
+                tooltip: "KIOSCO XML"
             }
         ],
         tooltip: ""
