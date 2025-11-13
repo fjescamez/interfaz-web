@@ -51,7 +51,13 @@ function InputPistola() {
         navigate(path);
 
         let codigo = "";
-        codigo = e.target.value.replace("·", "").trim();
+        
+        if (e.target.value.startsWith("·")) {
+            codigo = e.target.value.replace("·", "").trim();
+        } else if (e.target.value.startsWith("#")) {
+            codigo = e.target.value.replace("#", "").trim();
+        }
+
         e.target.value = "";
         
         if (codigo.startsWith("EX")) {
