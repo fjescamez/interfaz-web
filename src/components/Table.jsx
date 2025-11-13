@@ -440,7 +440,7 @@ function Table({
                             <h1>{specificHeaderTitle ? specificHeaderTitle : headerTitle}</h1>
                         </div>
                         <div className="headerActions">
-                            {(tableInfo.actions && !tableChecks && ((!rolesActions?.length || rolesActions?.includes(session.role) || (!usersActions?.length || usersActions?.includes(session.username))))) && (
+                            {(tableInfo.actions && !tableChecks && ((!rolesActions?.length || rolesActions?.includes(session?.role) || (!usersActions?.length || usersActions?.includes(session?.username))))) && (
                                 showChecks
                                     ?
                                     <MdLockOpen className="tableLock" onClick={() => { setShowChecks(false); setCheckedRows([]) }} />

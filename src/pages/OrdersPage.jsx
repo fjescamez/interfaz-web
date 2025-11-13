@@ -17,9 +17,13 @@ function OrdersPage({ filter, filterBandeja }) {
     const [dataSetter, setDataSetter] = useState(null);
     const [asignarPopUp, setAsignarPopUp] = useState(false);
     const { session } = useSession();
-    const { role, username } = session;
-    const isManager = role === "Manager" || role === "Soporte";
-    const isTeletrabajo = username === "n.morante" || username === "a.artacho";
+    let isManager = false;
+    let isTeletrabajo = false;
+    if (session) {
+        const { role, username } = session;
+        isManager = role === "Manager" || role === "Soporte";
+        isTeletrabajo = username === "n.morante" || username === "a.artacho";
+    }
     const userFilter = filterBandeja ? username : "";
 
     useEffect(() => {
