@@ -34,6 +34,7 @@ function Table({
     actions,
     checkedRows,
     setCheckedRows,
+    alwaysVisibleActions,
     orderFilter,
     setPopUpTable,
     currentVersion,
@@ -42,7 +43,7 @@ function Table({
 }) {
     const puertoApi = 3000;
     const socket = useSocket();
-    const [orderBy, setOrderBy] = useState({});
+    const [orderBy, setOrderBy] = useState("");
     const [tableData, setTableData] = useState(initialData || []);
     const [modal, setModal] = useState(false);
     const [deletePopup, setDeletePopup] = useState(false);
@@ -79,7 +80,7 @@ function Table({
     const getData = async (page, searchValue = "", clientFilter = "") => {
         const result = await fetchData(endPoint, searchValue, page, setTableData, setTotal, clientFilter, userFilter);
         setTableCharging(false);
-        if (result && result.length < 1) {
+        if (result && result.length < 1 && (!tableInfo.actions.some(item => alwaysVisibleActions?.includes(item.action)))) {
             setNoDataToShow(true);
         } else {
             setNoDataToShow(false);
@@ -271,14 +272,14 @@ function Table({
         });
     };
 
-    const showMore = () => {
+    const showMore = async () => {
         setPage(prevPage => prevPage + 1);
     }
 
-    const orderByColumn = (column) => {
+    const changeOrderBy = (column) => {
         if (orderBy.column === column) {
             if (orderBy.direction === "asc") {
-                setOrderBy({});
+                setOrderBy({ column: null, direction: null });
             } else {
                 setOrderBy({ column, direction: "asc" });
             }
@@ -287,8 +288,34 @@ function Table({
         }
     };
 
+    const orderByColumn = () => {
+        if (orderBy.column && orderBy.direction) {
+            const sortedData = tableData.sort((a, b) => {
+                const valueA = a[orderBy.column];
+                const valueB = b[orderBy.column];
+
+                if (valueA < valueB) return orderBy.direction === "asc" ? -1 : 1;
+                if (valueA > valueB) return orderBy.direction === "asc" ? 1 : -1;
+                return 0;
+            })
+
+            setTableData([...sortedData]);
+        } else {
+            let searchParams = search;
+            const advancedFilters = new URLSearchParams(advancedQuery).toString();
+
+            if (advancedFilters !== "") {
+                searchParams = advancedFilters;
+            }
+
+            getData(1, searchParams, clienteCodigo || clientFilter);
+        }
+    }
+
     useEffect(() => {
-        console.log("Ordenando por:", orderBy);
+        if (orderBy !== "") {
+            orderByColumn();
+        }
     }, [orderBy]);
 
     useEffect(() => {
@@ -317,6 +344,7 @@ function Table({
     }
 
     const refreshTable = () => {
+        setPage(1);
         let searchParams = search;
         const advancedFilters = new URLSearchParams(advancedQuery).toString();
 
@@ -325,9 +353,9 @@ function Table({
         }
 
         if (!clientFilter) {
-            getData(page, searchParams);
+            getData(1, searchParams);
         } else {
-            getData(page, searchParams, clienteCodigo || clientFilter);
+            getData(1, searchParams, clienteCodigo || clientFilter);
         }
     }
 
@@ -451,10 +479,12 @@ function Table({
                                     <IoCloseCircleOutline
                                         className="resetSearch"
                                         onClick={() => {
-                                            setSearch("");
-                                            setPage(1);
-                                            getData(1, "", clienteCodigo);
+                                            if (search.length > 0) {
+                                                setPage(1);
+                                                getData(1, "", clienteCodigo);
+                                            }
                                             searchInputRef.current?.focus(); // Hacer focus en el input
+                                            setSearch("");
                                         }}
                                     />
                                 </div>
@@ -483,45 +513,49 @@ function Table({
                             )}
                         </div>
                     </div>
-                    {(tableInfo.actions && tableData.length > 0
-                        && !(tableInfo.actions.length === 1 && tableInfo.actions[0].action === "eliminar")
-                        && !tableCharging
-                        && (!rolesActions?.length || rolesActions?.includes(session.role) || (!usersActions?.length || usersActions?.includes(session.username)))) && (
+                    {tableInfo.actions && (
+                        (tableData.length > 0 || tableInfo.actions.some(item => alwaysVisibleActions?.includes(item.action))) &&
+                        !(tableInfo.actions.length === 1 && tableInfo.actions[0].action === "eliminar") &&
+                        !tableCharging &&
+                        (!rolesActions?.length || rolesActions?.includes(session.role) || (!usersActions?.length || usersActions?.includes(session.username))) && (
                             <div className="tableInfoActions">
                                 {actionEnded
                                     ?
-                                    tableInfo.actions.map((action) =>
-                                        (!action.hidden && action.action !== "eliminar") && (
-                                            <p
-                                                key={action.action}
-                                                onClick={async () => {
-                                                    if (!action.noCheck && checkedRows < 1) {
-                                                        notify(toast.error, 'error', 'Error', 'Esta acción requiere selección')
-                                                    } else {
-                                                        setActionEnded(false);
-                                                        const actionResult = await actions({
-                                                            action: action.action,
-                                                            title: action.title,
-                                                            data: tableData,
-                                                            setTableData
-                                                        });
-                                                        if (actionResult && actionResult.status) {
-                                                            setActionEnded(true);
+                                    tableInfo.actions
+                                        .filter(action => tableData.length > 0 || alwaysVisibleActions?.includes(action.action))
+                                        .map((action) =>
+                                            (!action.hidden && action.action !== "eliminar") && (
+                                                <p
+                                                    key={action.action}
+                                                    onClick={async () => {
+                                                        if (!action.noCheck && checkedRows < 1) {
+                                                            notify(toast.error, 'error', 'Error', 'Esta acción requiere selección')
+                                                        } else {
+                                                            setActionEnded(false);
+                                                            const actionResult = await actions({
+                                                                action: action.action,
+                                                                title: action.title,
+                                                                data: tableData,
+                                                                setTableData
+                                                            });
+                                                            if (actionResult && actionResult.status) {
+                                                                setActionEnded(true);
+                                                            }
                                                         }
-                                                    }
-                                                }}
-                                                className="actionHover"
-                                            >
-                                                {action.title}
-                                            </p>
-                                        ))
+                                                    }}
+                                                    className="actionHover"
+                                                >
+                                                    {action.title}
+                                                </p>
+                                            ))
                                     :
                                     <p>Procesando acción <ThreeDot color="white" size="small" /></p>
                                 }
                             </div>
-                        )}
-                    {tableCharging && <div className="tableInfoActions"><p>Cargando tabla <ThreeDot color="white" size="small" speedPlus={2} /></p></div>}
+                        )
+                    )}
                     {noDataToShow && <div className="tableInfoActions"><p>No hay datos para mostrar</p></div>}
+                    {tableCharging && <div className="tableInfoActions"><p>Cargando tabla <ThreeDot color="white" size="small" speedPlus={2} /></p></div>}
                 </div>
                 <div className="tableScroll">
                     <table>
@@ -531,7 +565,7 @@ function Table({
                                     <th className="checkElement"><input type="checkbox" className="check" onChange={checkAll} checked={checkedRows.length === tableData.length && checkedRows.length > 0} /></th>
                                 )}
                                 {tableColumns.map((column) => (
-                                    checked[column.key] && <th key={column.key} className="thClickable" onClick={() => orderByColumn(column.key)}>{column.header != "Avatar" && column.header}</th>
+                                    checked[column.key] && <th key={column.key} className="thClickable" onClick={() => changeOrderBy(column.key)}>{column.header != "Avatar" && column.header}</th>
                                 ))}
                             </tr>
                         </thead>

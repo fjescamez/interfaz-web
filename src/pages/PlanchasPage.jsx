@@ -110,6 +110,7 @@ function PlanchasPage() {
                 dinamicTableInfo={tableInfo}
                 checkedRows={planchas}
                 setCheckedRows={setPlanchas}
+                alwaysVisibleActions={["sincronizar"]}
             />
         )
     );
