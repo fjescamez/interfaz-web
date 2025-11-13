@@ -14,6 +14,7 @@ import { HiOutlineRefresh } from "react-icons/hi";
 import { useSession } from "../context/SessionContext";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { IoMdCloseCircleOutline } from "react-icons/io";
+import { TbTriangleFilled, TbTriangleInvertedFilled } from "react-icons/tb";
 import { getUserPreferences } from "../helpers/userPreferences";
 import { useClienteFilter } from "../context/ClientFilterContext";
 import { normalizeData } from "../helpers/normalizeData";
@@ -278,26 +279,42 @@ function Table({
 
     const changeOrderBy = (column) => {
         if (orderBy.column === column) {
-            if (orderBy.direction === "asc") {
+            if (orderBy.direction === "desc") {
                 setOrderBy({ column: null, direction: null });
             } else {
-                setOrderBy({ column, direction: "asc" });
+                setOrderBy({ column, direction: "desc" });
             }
         } else {
-            setOrderBy({ column, direction: "desc" });
+            setOrderBy({ column, direction: "asc" });
         }
     };
 
     const orderByColumn = () => {
         if (orderBy.column && orderBy.direction) {
             const sortedData = tableData.sort((a, b) => {
-                const valueA = a[orderBy.column];
-                const valueB = b[orderBy.column];
+                let valueA = a[orderBy.column];
+                let valueB = b[orderBy.column];
+
+                // Si el nombre de la columna incluye "fecha", convertir a Date
+                if (orderBy.column.toLowerCase().includes("fecha")) {
+                    const parseDate = (dateStr) => {
+                        if (dateStr.includes("-")) {
+                            const [day, month, year] = dateStr.split("-").map(Number); // Para formato DD-MM-YYYY
+                            return new Date(year, month - 1, day);
+                        } else if (dateStr.includes("/")) {
+                            const [day, month, year] = dateStr.split("/").map(Number); // Para formato DD/MM/YYYY
+                            return new Date(year, month - 1, day);
+                        }
+                    };
+
+                    valueA = parseDate(valueA);
+                    valueB = parseDate(valueB);
+                }
 
                 if (valueA < valueB) return orderBy.direction === "asc" ? -1 : 1;
                 if (valueA > valueB) return orderBy.direction === "asc" ? 1 : -1;
                 return 0;
-            })
+            });
 
             setTableData([...sortedData]);
         } else {
@@ -565,7 +582,14 @@ function Table({
                                     <th className="checkElement"><input type="checkbox" className="check" onChange={checkAll} checked={checkedRows.length === tableData.length && checkedRows.length > 0} /></th>
                                 )}
                                 {tableColumns.map((column) => (
-                                    checked[column.key] && <th key={column.key} className="thClickable" onClick={() => changeOrderBy(column.key)}>{column.header != "Avatar" && column.header}</th>
+                                    checked[column.key] && <th key={column.key} className="thClickable" onClick={() => changeOrderBy(column.key)}>
+                                        <div className="thContent">
+                                            <p>{column.header != "Avatar" && column.header}</p>
+                                            {orderBy.column === column.key ? (
+                                                orderBy.direction === "asc" ? <TbTriangleFilled /> : <TbTriangleInvertedFilled />
+                                            ) : null}
+                                        </div>
+                                    </th>
                                 ))}
                             </tr>
                         </thead>

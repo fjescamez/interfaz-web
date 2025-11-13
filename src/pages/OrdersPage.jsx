@@ -19,8 +19,10 @@ function OrdersPage({ filter, filterBandeja }) {
     const { session } = useSession();
     let isManager = false;
     let isTeletrabajo = false;
+    let role;
+    let username;
     if (session) {
-        const { role, username } = session;
+        ({ role, username } = session);
         isManager = role === "Manager" || role === "Soporte";
         isTeletrabajo = username === "n.morante" || username === "a.artacho";
     }

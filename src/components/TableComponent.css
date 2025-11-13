@@ -189,6 +189,28 @@
             height: 1.9rem;
         }
     }
+
+    .thClickable {
+        cursor: pointer;
+    }
+    
+    .thContent {
+        text-align: center;
+        display: flex;
+        flex-direction: row;
+        column-gap: 1rem;
+        justify-content: center;
+        align-items: center;
+
+        p {
+            font-size: 2rem;
+        }
+
+        svg {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+    }
 }
 
 .tableHeader {
