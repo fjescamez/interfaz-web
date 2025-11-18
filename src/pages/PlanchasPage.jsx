@@ -6,7 +6,7 @@ import { useSession } from '../context/SessionContext';
 import { notify } from '../helpers/notify';
 import { toast } from "react-toastify";
 import AlbaranParcialForm from '../components/formComponents/AlbaranParcialForm';
-import IncidenciaForm from '../components/formComponents/IncidenciaForm';
+//import IncidenciaForm from '../components/formComponents/IncidenciaForm';
 
 function PlanchasPage() {
     const [planchas, setPlanchas] = useState([]);
