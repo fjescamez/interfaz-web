@@ -5,7 +5,7 @@ import { postData } from '../helpers/fetchData';
 import { useSession } from '../context/SessionContext';
 import { notify } from '../helpers/notify';
 import { toast } from "react-toastify";
-import AlbaranParcialForm from '../components/formComponents/AlbaranParcialForm';
+//import AlbaranParcialForm from '../components/formComponents/AlbaranParcialForm';
 //import IncidenciaForm from '../components/formComponents/IncidenciaForm';
 
 function PlanchasPage() {
@@ -51,6 +51,8 @@ function PlanchasPage() {
                     notify(toast.success, 'success', sincronizado.title, sincronizado.message);
                     setTableData(prev => [...sincronizado.newItems, ...prev]);
                 }
+                return { status: 'success' };
+
             case "firmar":
                 const updated = await postData('planchas/firmar', { ids: planchas, username: session.username });
                 setPlanchas([]);
@@ -58,6 +60,7 @@ function PlanchasPage() {
                     notify(toast.success, 'success', updated.title, updated.message);
                     setTableData(updated.updatedData.results);
                 }
+                return { status: 'success' };
             case "solicitarAlbaran":
 
                 if (planchas.length > 1) {
@@ -81,6 +84,7 @@ function PlanchasPage() {
                 } else {
                     notify(toast.error, 'error', albaran.title, albaran.message);
                 }
+                return { status: 'success' };
             case "albaranParcial":
                 if (planchas.length > 1) {
                     notify(toast.error, 'error', '', 'Solo se puede solicitar el albarán parcial de una plancha a la vez');
@@ -91,6 +95,7 @@ function PlanchasPage() {
                 }
 
                 setTrabajosPopUp(true);
+                return { status: 'success' };
             case "resetearAlbaran":
                 if (planchas.length > 1) {
                     notify(toast.error, 'error', '', 'Solo se puede resetear el albarán de una plancha a la vez');
@@ -108,6 +113,7 @@ function PlanchasPage() {
                 } else {
                     notify(toast.error, 'error', resetAlbaran.title, resetAlbaran.message);
                 }
+                return { status: 'success' };
             case "incidencia":
                 if (planchas.length > 1) {
                     notify(toast.error, 'error', '', 'Solo se puede generar una incidencia para una plancha a la vez');
@@ -131,6 +137,7 @@ function PlanchasPage() {
 
                 // setIncidenciaPopUp(true);
                 setPlanchas([]);
+                return { status: 'success' };
             default:
                 break;
         }
