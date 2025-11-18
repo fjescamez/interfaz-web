@@ -5,14 +5,20 @@ import { postData } from '../helpers/fetchData';
 import { useSession } from '../context/SessionContext';
 import { notify } from '../helpers/notify';
 import { toast } from "react-toastify";
+import AlbaranParcialForm from '../components/formComponents/AlbaranParcialForm';
+import IncidenciaForm from '../components/formComponents/IncidenciaForm';
 
 function PlanchasPage() {
     const [planchas, setPlanchas] = useState([]);
+    const [planchaSuelta, setPlanchaSuelta] = useState(null);
     const { session } = useSession();
     const [tableInfo, setTableInfo] = useState(null); // Inicialmente null
+    const [trabajosPopUp, setTrabajosPopUp] = useState(false);
+    const [incidenciaPopUp, setIncidenciaPopUp] = useState(false);
     const location = window.location.pathname;
 
     useEffect(() => {
+        setTableInfo(null);
         setPlanchas([]);
         const updatedTableInfo = { ...planchasTableInfo }; // Copia inicial
         if (location.includes("/planchasProduccion")) {
@@ -34,6 +40,8 @@ function PlanchasPage() {
 
     const planchasActions = async (variables) => {
         const { action, data, setTableData } = variables;
+        const plancha = data.find(item => item.id === planchas[0]);
+        setPlanchaSuelta(plancha);
 
         switch (action) {
             case "sincronizar":
@@ -43,7 +51,6 @@ function PlanchasPage() {
                     notify(toast.success, 'success', sincronizado.title, sincronizado.message);
                     setTableData(prev => [...sincronizado.newItems, ...prev]);
                 }
-                return { status: 'success' };
             case "firmar":
                 const updated = await postData('planchas/firmar', { ids: planchas, username: session.username });
                 setPlanchas([]);
@@ -51,14 +58,12 @@ function PlanchasPage() {
                     notify(toast.success, 'success', updated.title, updated.message);
                     setTableData(updated.updatedData.results);
                 }
-                return { status: 'success' };
             case "solicitarAlbaran":
-                const plancha = data.find(item => item.id === planchas[0]);
 
                 if (planchas.length > 1) {
                     notify(toast.error, 'error', '', 'Solo se puede solicitar el albarán de una plancha a la vez');
                     return { status: 'success' };
-                } else if (plancha.id_estado_albaran === 4) {
+                } else if (plancha.id_estado_albaran !== 20) {
                     notify(toast.error, 'error', '', 'El albarán de esta plancha ya está solicitado');
                     return { status: 'success' };
                 }
@@ -76,14 +81,21 @@ function PlanchasPage() {
                 } else {
                     notify(toast.error, 'error', albaran.title, albaran.message);
                 }
-                return { status: 'success' };
-            case "resetearAlbaran":
-                const planchaReset = data.find(item => item.id === planchas[0]);
+            case "albaranParcial":
+                if (planchas.length > 1) {
+                    notify(toast.error, 'error', '', 'Solo se puede solicitar el albarán parcial de una plancha a la vez');
+                    return { status: 'success' };
+                } else if (plancha.id_estado_albaran !== 20) {
+                    notify(toast.error, 'error', '', 'El albarán de esta plancha ya está solicitado');
+                    return { status: 'success' };
+                }
 
+                setTrabajosPopUp(true);
+            case "resetearAlbaran":
                 if (planchas.length > 1) {
                     notify(toast.error, 'error', '', 'Solo se puede resetear el albarán de una plancha a la vez');
                     return { status: 'success' };
-                } else if (planchaReset.id_estado_albaran === 20) {
+                } else if (plancha.id_estado_albaran === 20) {
                     notify(toast.error, 'error', '', 'El albarán de esta plancha no está solicitado');
                     return { status: 'success' };
                 }
@@ -96,22 +108,52 @@ function PlanchasPage() {
                 } else {
                     notify(toast.error, 'error', resetAlbaran.title, resetAlbaran.message);
                 }
-                return { status: 'success' };
+            case "incidencia":
+                if (planchas.length > 1) {
+                    notify(toast.error, 'error', '', 'Solo se puede generar una incidencia para una plancha a la vez');
+                    return { status: 'success' };
+                }
+
+                const response = await postData('planchas/generarIncidencia', { username: session.username, planchaId: planchas[0] });
+
+                if (response.status === 'success') {
+                    notify(toast.success, 'success', response.title);
+                    setTableData(prev =>
+                        prev.map(item =>
+                            item.id === response.plancha
+                                ? { ...item, usuario_incidencia: response.usuario }
+                                : item
+                        )
+                    );
+                } else {
+                    notify(toast.error, 'error', response.title);
+                }
+
+                // setIncidenciaPopUp(true);
+                setPlanchas([]);
             default:
                 break;
         }
+        return { status: 'success' };
     };
 
     // Renderiza la tabla solo si tableInfo está listo
     return (
         tableInfo && (
-            <Table
-                actions={planchasActions}
-                dinamicTableInfo={tableInfo}
-                checkedRows={planchas}
-                setCheckedRows={setPlanchas}
-                alwaysVisibleActions={["sincronizar"]}
-            />
+            <>
+                <Table
+                    actions={planchasActions}
+                    dinamicTableInfo={tableInfo}
+                    checkedRows={planchas}
+                    setCheckedRows={setPlanchas}
+                    alwaysVisibleActions={["sincronizar"]}
+                    tdGrandes={["nombre_plancha"]}
+                    tabTitleTemplate="PLANCHA {nombre_plancha}"
+                    specificPath="/produccion/planchas"
+                />
+                {trabajosPopUp && <AlbaranParcialForm setTrabajosPopUp={setTrabajosPopUp} planchaId={planchas[0]} plancha={planchaSuelta} />}
+                {/* {incidenciaPopUp && <IncidenciaForm setIncidenciaPopUp={setIncidenciaPopUp} planchaId={planchas[0]} plancha={planchaSuelta} />} */}
+            </>
         )
     );
 }
