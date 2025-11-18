@@ -8,24 +8,24 @@ import { useNavigate } from 'react-router-dom';
 
 function InputPistola() {
     const inputRef = useRef(null);
-    const [shiftLeftPressed, setShiftLeftPressed] = useState(false);
+    const [triggerKeyPressed, setTriggerKeyPressed] = useState(false);
     const { session } = useSession();
     const { setTabs, tabs } = useTabs();
     const navigate = useNavigate();
 
     useEffect(() => {
         const handleKeyDown = (event) => {
-            if (event.code === "ShiftLeft" && !shiftLeftPressed) {
-                setShiftLeftPressed(true);
-            } else if (event.code === "Digit3" && shiftLeftPressed) {
+            if ((event.code === "ShiftLeft" || event.code === "Tab") && !triggerKeyPressed) {
+                setTriggerKeyPressed(true);
+            } else if (event.code === "Digit3" && triggerKeyPressed) {
                 inputRef.current?.focus();
-                setShiftLeftPressed(false);
+                setTriggerKeyPressed(false);
             }
         };
 
         const handleKeyUp = (event) => {
-            if (event.code !== "ShiftLeft") {
-                setShiftLeftPressed(false);
+            if (event.code !== "ShiftLeft" && event.code !== "Tab") {
+                setTriggerKeyPressed(false);
             }
         };
 
@@ -36,7 +36,7 @@ function InputPistola() {
             window.removeEventListener("keydown", handleKeyDown);
             window.removeEventListener("keyup", handleKeyUp);
         };
-    }, [shiftLeftPressed]);
+    }, [triggerKeyPressed]);
 
     const handleEnter = async (e) => {
         const path = `/pistola`;
@@ -54,10 +54,12 @@ function InputPistola() {
         
         if (e.target.value.startsWith("·")) {
             codigo = e.target.value.replace("·", "").trim();
-        } else if (e.target.value.startsWith("#")) {
-            codigo = e.target.value.replace("#", "").trim();
+        } else if (e.target.value.startsWith("3")) {
+            codigo = e.target.value.replace("3", "").trim();
         }
 
+        console.log("Codigo leído:", codigo);
+        
         e.target.value = "";
         
         if (codigo.startsWith("EX")) {
