@@ -7,7 +7,7 @@ import PdfAsImage from "../components/pedidoComponents/PdfAsImage";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toggleModal } from "../helpers/toggleModal";
 import { HiViewColumns } from "react-icons/hi2";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { useTabs } from "../context/TabsContext";
 import { HiOutlineRefresh } from "react-icons/hi";
@@ -40,7 +40,13 @@ function Table({
     setPopUpTable,
     currentVersion,
     initialData,
-    publicForm
+    publicForm,
+    tdGrandes,
+    tabTitleTemplate,
+    specificPath,
+    openRows,
+    noActionRows,
+    customTable
 }) {
     const puertoApi = 3000;
     const socket = useSocket();
@@ -67,7 +73,6 @@ function Table({
     const [advancedQuery, setAdvancedQuery] = useState({});
     const { session } = useSession();
     const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
-    const customTables = ["versiones", "archivosLen", "fichas", "montaje", "plotter", "montajes", "rip", "infoGmg", "tintas", "emailInfo", "trabajosPlancha"];
     const [showChecks, setShowChecks] = useState((tableChecks || defaultChecks) ? true : false);
     const [tableCharging, setTableCharging] = useState(!initialData ? true : false);
     const [noDataToShow, setNoDataToShow] = useState(false);
@@ -148,6 +153,8 @@ function Table({
     useEffect(() => {
         if (!initialData && session) {
             getUserPreferences(session, tableInfo, setTableInfo);
+        } else if (initialData) {
+            setTableData(initialData);
         }
     }, [initialData]);
 
@@ -199,47 +206,19 @@ function Table({
     }, [page]);
 
     const handleClick = (data, index) => {
-        const openRowTables = ["montajes", "plotter", "allMontajes", "emailInfo", "infoGmg"];
-        const noActionTables = ["trabajosPlancha", "pistola"];
-
-        if (noActionTables.includes(tableName)) {
-            return;
-        }
-
         if (showChecks) {
             handleChecked(data._id ? data._id : data.id);
             return;
-        }
-
-        if (openRowTables.includes(tableName)) {
+        } else if (openRows) {
             return actions({ action: "openRow", data, index });
+        } else if (noActionRows) {
+            return;
         }
 
-        const { _id, id, id_plancha, nombre_plancha, name, username, id_pedido, contacto, grupo, codigo_estrategia, documentName } = data;
-        const tabTitle = (nombre_plancha && `PLANCHA ${nombre_plancha}`) || documentName || username || name || id_pedido || contacto || grupo || `ESTRATEGIA ${codigo_estrategia}`;
+        const { _id, id, id_plancha } = data;
+        const tabTitle = tabTitleTemplate.replace(/\{(\w+)\}/g, (_, key) => data[key] || "");
 
-        let path = `${location.pathname}/${_id || id}`;
-
-        if (clientFilter) {
-            path = `/${tableName}/${_id}`;
-        }
-
-        if (tableName === "versiones") path = `/pedidos/${_id}`;
-
-        if (
-            tableName === "planchas" ||
-            tableName === "planchasPreproduccion" ||
-            tableName === "planchasProduccion" ||
-            tableName === "planchasFinalizadas" ||
-            tableName === "trabajosPlanchas"
-        ) path = `/produccion/planchas/${id_plancha || id}`;
-
-        if (
-            tableName === "externosPendientes" ||
-            tableName === "externosFinalizados" ||
-            tableName === "externosAnulados" ||
-            tableName === "trabajosExternos"
-        ) path = `/produccion/trabajosExternos/${_id || id}`;
+        let path = `${specificPath || location.pathname}/${id_plancha || id || _id}`;
 
         // Solo agrega la pestaña si no existe
         if (!tabs.some(tab => tab.path === path)) { // Redundante
@@ -318,14 +297,18 @@ function Table({
 
             setTableData([...sortedData]);
         } else {
-            let searchParams = search;
-            const advancedFilters = new URLSearchParams(advancedQuery).toString();
+            if (!initialData) {
+                let searchParams = search;
+                const advancedFilters = new URLSearchParams(advancedQuery).toString();
 
-            if (advancedFilters !== "") {
-                searchParams = advancedFilters;
+                if (advancedFilters !== "") {
+                    searchParams = advancedFilters;
+                }
+
+                getData(1, searchParams, clienteCodigo || clientFilter);
+            } else {
+                setTableData(initialData);
             }
-
-            getData(1, searchParams, clienteCodigo || clientFilter);
         }
     }
 
@@ -482,7 +465,7 @@ function Table({
                                     onClick={() => checkedRows.length > 0 && setDeletePopup(true)}
                                 />
                             }
-                            {(!customTables.includes(tableName) && !advancedFilters) && (
+                            {(!customTable && !advancedFilters) && (
                                 <div className="searchInput">
                                     <input
                                         type="text"
@@ -506,7 +489,7 @@ function Table({
                                     />
                                 </div>
                             )}
-                            {!customTables.includes(tableName) && (
+                            {!customTable && (
                                 <>
                                     <button
                                         className={`filtersButton ${advancedFilters ? "active" : ""}`}
@@ -523,7 +506,7 @@ function Table({
                                 </>
                             )}
                             {editTable && <EditTable checked={checked} checkColumn={checkColumn} tableInfo={tableInfo} setEditTable={setEditTable} />}
-                            {(customTables.includes(tableName) && setPopUpTable) && (
+                            {(customTable && setPopUpTable) && (
                                 <button onClick={() => setPopUpTable(false)}>
                                     <IoMdCloseCircleOutline className="close" />
                                 </button>
@@ -573,6 +556,12 @@ function Table({
                     )}
                     {noDataToShow && <div className="tableInfoActions"><p>No hay datos para mostrar</p></div>}
                     {tableCharging && <div className="tableInfoActions"><p>Cargando tabla <ThreeDot color="white" size="small" speedPlus={2} /></p></div>}
+                    {(showChecks && !noDataToShow && !tableCharging) && (
+                        <div className="checkedRows">
+                            <p>Ítem/s seleccionado/s: {checkedRows.length}</p>
+                            <p onClick={() => setCheckedRows([])} className="reset">Resetear selección</p>
+                        </div>
+                    )}
                 </div>
                 <div className="tableScroll">
                     <table>
@@ -635,11 +624,11 @@ function Table({
                                                 </td>
                                             );
                                         }
-                                        /* Columna con checks para boceto y cliché en tabla pedidos */
+                                        /* Columna con checks */
                                         if (column.check) {
                                             return (
                                                 <td key={column.key} className="checkTd">
-                                                    <input type="checkbox" className="check" checked={value === "-1" || value === "X"} readOnly />
+                                                    <input type="checkbox" className="check" checked={value === column.checkedCondition} readOnly />
                                                 </td>
                                             );
                                         }
@@ -661,7 +650,7 @@ function Table({
                                                 data-tooltip-id="my-tooltip"
                                                 data-tooltip-content={value}
                                                 onContextMenu={(e) => handleRightClick(e, value)}
-                                                className={column.key === "nombre_plancha" || column.key === "documentName" ? "tdGrande" : ""}
+                                                className={tdGrandes && tdGrandes.includes(column.key) ? "tdGrande" : ""}
                                             >
                                                 {/* Comprobación para que no reviente con objetos vacíos */}
                                                 {typeof value === 'object' ? " " : value}

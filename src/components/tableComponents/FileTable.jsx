@@ -39,6 +39,7 @@ function FileTable({ setFilesModal, orderId, filePath }) {
                     dinamicTableInfo={fileTableInfo}
                     orderFilter={orderId}
                     filePath={filePath}
+                    customTable={true}
                 />
             </div>
         </>

@@ -18,7 +18,7 @@ function TintasPopUp({ setTintasModal, fullOrder }) {
                 action: "separacionA3",
                 extraInputs: {
                     unitario: fullOrder?.unitario
-                } 
+                }
             };
 
             await postData('colors/imprimirA3', data);
@@ -45,6 +45,7 @@ function TintasPopUp({ setTintasModal, fullOrder }) {
                         setPopUpTable={setTintasModal}
                         dinamicTableInfo={tintasTableInfo}
                         orderFilter={fullOrder?.unitario}
+                        customTable={true}
                     />
                 </div>
                 :

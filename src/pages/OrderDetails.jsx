@@ -123,9 +123,10 @@ function OrderDetails() {
   }
 
   const getUnitarioView = async () => {
-    const response = await postData("orders/getUnitarioView", { orderId: fullOrder.id_pedido, action: "solicitarVista" });
-    console.log(response);
-    setUnitarioView(response);
+    if (!fullOrder.unitario.includes("sinUnitario.png")) {
+      const response = await postData("orders/getUnitarioView", { orderId: fullOrder.id_pedido, action: "solicitarVista" });
+      setUnitarioView(response);
+    }
   }
 
   useEffect(() => {

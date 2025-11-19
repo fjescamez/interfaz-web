@@ -77,6 +77,8 @@ function OrdersPage({ filter, filterBandeja }) {
                 checkedRows={checkedOrders}
                 setCheckedRows={isManager || isTeletrabajo ? setCheckedOrders : null}
                 actions={orderActions}
+                tabTitleTemplate={"{id_pedido}"}
+                specificPath={`/${tableInfo.tableName}`}
             />
             {asignarPopUp && <AsignarPedidoForm setModal={setAsignarPopUp} orderIds={checkedOrders} pedidos={pedidos} setTableData={dataSetter} />}
         </>

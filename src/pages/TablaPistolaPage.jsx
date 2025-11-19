@@ -1,4 +1,4 @@
-import Table from './Table'
+import Table from '../components/Table'
 import { pistolaTableInfo } from '../helpers/tablesInfo'
 
 function TablaPistolaPage() {
@@ -21,6 +21,7 @@ function TablaPistolaPage() {
         dinamicTableInfo={pistolaTableInfo}
         initialData={initialData}
         actions={firmasActions}
+        noActionRows={true}
       />
     )
   )

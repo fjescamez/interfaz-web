@@ -57,6 +57,8 @@ function InfoGmgTable({ setGmgPopup, setPlotterModal, orderId }) {
                         setPopUpTable={setGmgPopup}
                         dinamicTableInfo={infoGmgTableInfo}
                         orderFilter={orderId}
+                        openRows={true}
+                        customTable={true}
                     />
                 </div>)
                 :

@@ -40,6 +40,8 @@ function ContactsPage({ filter }) {
                 checkedRows={contactIds}
                 setCheckedRows={setContactIds}
                 publicForm={true}
+                tabTitleTemplate={"{contacto}"}
+                specificPath={`/${contactTableInfo.tableName}`}
             />
             {groupPopUp &&
                 <GroupForm

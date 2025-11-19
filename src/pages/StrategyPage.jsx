@@ -6,8 +6,10 @@ function StrategyPage({ filter }) {
     return (
         <>
             <Table
-                filter={filter}
+                clientFilter={filter}
                 dinamicTableInfo={strategyTableInfo}
+                tabTitleTemplate={"ESTRATEGIA {codigo_estrategia}"}
+                specificPath={`/${strategyTableInfo.tableName}`}
             />
         </>
     )

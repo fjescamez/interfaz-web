@@ -10,7 +10,8 @@ function LenTable({
     setLenModal,
     orderId,
     lenTableInfo,
-    popup
+    popup,
+    customTable
 }) {
     const [lenIds, setLenIds] = useState([]);
     const [tableInfo, setTableInfo] = useState(lenTableInfo);
@@ -146,6 +147,7 @@ function LenTable({
                             setPopUpTable={setLenModal}
                             dinamicTableInfo={tableInfo}
                             orderFilter={orderId}
+                            customTable={customTable}
                         />
                     </div>
                 </>

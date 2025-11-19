@@ -7,6 +7,22 @@ import { TiContacts } from "react-icons/ti";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import GroupsSvg from "../assets/svg/GroupsSvg";
 
+export const produccionReferenciasDetails = {
+    title: "Referencias",
+    grid: [
+        {
+            icon: <IoDocumentTextOutline />,
+            title: "Ref. Planchas",
+            key: "refPlanchas"
+        },
+        {
+            icon: <IoDocumentTextOutline />,
+            title: "Ref. Continuos",
+            key: "refContinuos"
+        }
+    ]
+}
+
 export const produccionPlanchasDetails = {
     title: "Planchas",
     grid: [

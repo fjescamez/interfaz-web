@@ -11,6 +11,363 @@ import GroupsSvg from "../assets/svg/GroupsSvg";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
 
+export const refContinuosFormData = {
+    headerIcon: <IoDocumentTextOutline />,
+    headerTitle: "AÑADIR REF. CONTINUO",
+    editTitle: "EDITAR REF. CONTINUO",
+    formSections: [
+        {
+            rows: [
+                {
+                    groups: ["propietario", "tipo"]
+                },
+                {
+                    groups: ["desarrollo", "ancho", "nucleo"]
+                },
+                {
+                    groups: ["stock", "adaptador"]
+                },
+                {
+                    groups: ["observaciones"]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "propietario",
+            labelId: "propietarioLabel",
+            labelTitle: "Propietario",
+            select: "simple",
+            options: [
+                "",
+                "0000 - Disengraf",
+                "0019 - Bottaro",
+                "0191 - Troflex"
+            ],
+            inputId: "propietario",
+            inputName: "propietario",
+            required: true
+        },
+        {
+            htmlFor: "tipo",
+            labelId: "tipoLabel",
+            labelTitle: "Tipo",
+            select: "simple",
+            options: [
+                "",
+                "Classic",
+                "Thin",
+                "Classic Variable",
+                "Thin Variable"
+            ],
+            inputId: "tipo",
+            inputName: "tipo",
+            required: true
+        },
+        {
+            htmlFor: "desarrollo",
+            labelId: "desarrolloLabel",
+            labelTitle: "Desarrollo",
+            inputType: "number",
+            inputId: "desarrollo",
+            inputName: "desarrollo"
+        },
+        {
+            htmlFor: "ancho",
+            labelId: "anchoLabel",
+            labelTitle: "Ancho",
+            inputType: "number",
+            inputId: "ancho",
+            inputName: "ancho"
+        },
+        {
+            htmlFor: "nucleo",
+            labelId: "nucleoLabel",
+            labelTitle: "Núcleo",
+            inputType: "number",
+            inputId: "nucleo",
+            inputName: "nucleo"
+        },
+        {
+            htmlFor: "stock",
+            labelId: "stockLabel",
+            labelTitle: "Stock",
+            inputType: "number",
+            inputId: "stock",
+            inputName: "stock"
+        },
+        {
+            htmlFor: "adaptador",
+            labelId: "adaptadorLabel",
+            labelTitle: "Adaptador",
+            inputType: "checkbox",
+            inputId: "adaptador",
+            inputName: "adaptador"
+        },
+        {
+            htmlFor: "observaciones",
+            labelId: "observacionesLabel",
+            labelTitle: "Observaciones",
+            textarea: true,
+            inputId: "observaciones",
+            inputName: "observaciones"
+        },
+    ]
+}
+
+export const refPlanchaFormData = {
+    headerIcon: <IoDocumentTextOutline />,
+    headerTitle: "AÑADIR REF. PLANCHA",
+    formSections: [
+        {
+            title: "Plancha",
+            rows: [
+                {
+                    groups: ["fabricante", "espesor", "referencia"]
+                },
+                {
+                    groups: ["base", "relieveMin", "relieveMax", "dureza"]
+                }
+            ]
+        },
+        {
+            title: "Exposición C-3000",
+            rows: [
+                {
+                    groups: ["dorsal", "principal", "pixel"]
+                }
+            ]
+        },
+        {
+            title: "Exposición XPS",
+            rows: [
+                {
+                    groups: ["tamano1", "potencia", "exposicion"]
+                },
+                {
+                    groups: ["tamano2", "potencia", "exposicion"]
+                },
+                {
+                    groups: ["tamano3", "potencia", "exposicion"]
+                }
+            ]
+        },
+        {
+            title: "Procesado",
+            rows: [
+                {
+                    groups: ["tiempoProcesado", "tiempoSecado"]
+                }
+            ]
+        },
+        {
+            title: "Post Procesado",
+            rows: [
+                {
+                    groups: ["tiempoUva", "tiempoUvc"]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "fabricante",
+            labelId: "fabricanteLabel",
+            labelTitle: "Fabricante",
+            select: "simple",
+            options: [
+                "",
+                "DUPONT",
+                "KODAK",
+                "XSYS",
+                "LIQUIDO"
+            ],
+            inputId: "fabricante",
+            inputName: "fabricante"
+        },
+        {
+            htmlFor: "espesor",
+            labelId: "espesorLabel",
+            labelTitle: "Espesor",
+            select: "simple",
+            options: [
+                "",
+                "1,14",
+                "1,70",
+                "2,54",
+                "2,84",
+                "3,18",
+                "3,94",
+                "4,32",
+                "6,00"
+            ],
+            inputId: "espesor",
+            inputName: "espesor"
+        },
+        {
+            htmlFor: "referencia",
+            labelId: "referenciaLabel",
+            labelTitle: "Referencia",
+            inputType: "text",
+            inputId: "referencia",
+            inputName: "referencia"
+        },
+        {
+            htmlFor: "base",
+            labelId: "baseLabel",
+            labelTitle: "Base",
+            inputType: "text",
+            inputId: "base",
+            inputName: "base"
+        },
+        {
+            htmlFor: "relieveMin",
+            labelId: "relieveMinLabel",
+            labelTitle: "Relieve min",
+            inputType: "text",
+            inputId: "relieveMin",
+            inputName: "relieveMin"
+        },
+        {
+            htmlFor: "relieveMax",
+            labelId: "relieveMaxLabel",
+            labelTitle: "Relieve max",
+            inputType: "text",
+            inputId: "relieveMax",
+            inputName: "relieveMax"
+        },
+        {
+            htmlFor: "dureza",
+            labelId: "durezaLabel",
+            labelTitle: "Dureza",
+            inputType: "text",
+            inputId: "dureza",
+            inputName: "dureza"
+        },
+        {
+            htmlFor: "dorsal",
+            labelId: "dorsalLabel",
+            labelTitle: "Dorsal",
+            inputType: "text",
+            inputId: "dorsal",
+            inputName: "dorsal"
+        },
+        {
+            htmlFor: "principal",
+            labelId: "principalLabel",
+            labelTitle: "Principal",
+            inputType: "text",
+            inputId: "principal",
+            inputName: "principal"
+        },
+        {
+            htmlFor: "pixel",
+            labelId: "pixelLabel",
+            labelTitle: "Pixel",
+            inputType: "text",
+            inputId: "pixel",
+            inputName: "pixel"
+        },
+        {
+            htmlFor: "tamano1",
+            labelId: "tamano1Label",
+            labelTitle: "Tamaño",
+            inputType: "text",
+            inputId: "tamano1",
+            inputName: "tamano1"
+        },
+        {
+            htmlFor: "tamano2",
+            labelId: "tamano2Label",
+            labelTitle: "Tamaño",
+            inputType: "text",
+            inputId: "tamano2",
+            inputName: "tamano2"
+        },
+        {
+            htmlFor: "tamano3",
+            labelId: "tamano3Label",
+            labelTitle: "Tamaño",
+            inputType: "text",
+            inputId: "tamano3",
+            inputName: "tamano3"
+        },
+        {
+            htmlFor: "potencia",
+            labelId: "potenciaLabel",
+            labelTitle: "Potencia",
+            inputType: "text",
+            inputId: "potencia",
+            inputName: "potencia"
+        },
+        {
+            htmlFor: "exposicion",
+            labelId: "exposicionLabel",
+            labelTitle: "Exposición",
+            inputType: "text",
+            inputId: "exposicion",
+            inputName: "exposicion"
+        },
+        {
+            htmlFor: "tiempoProcesado",
+            labelId: "tiempoProcesadoLabel",
+            labelTitle: "Tiempo de Procesado",
+            inputType: "text",
+            inputId: "tiempoProcesado",
+            inputName: "tiempoProcesado"
+        },
+        {
+            htmlFor: "tiempoSecado",
+            labelId: "tiempoSecadoLabel",
+            labelTitle: "Tiempo de Secado",
+            inputType: "text",
+            inputId: "tiempoSecado",
+            inputName: "tiempoSecado"
+        },
+        {
+            htmlFor: "tiempoUva",
+            labelId: "tiempoUvaLabel",
+            labelTitle: "Tiempo UVA",
+            inputType: "text",
+            inputId: "tiempoUva",
+            inputName: "tiempoUva"
+        },
+        {
+            htmlFor: "tiempoUvc",
+            labelId: "tiempoUvcLabel",
+            labelTitle: "Tiempo UVC",
+            inputType: "text",
+            inputId: "tiempoUvc",
+            inputName: "tiempoUvc"
+        },
+    ]
+}
+
+export const incidenciaFormData = {
+    headerIcon: <PiNoteLight />,
+    headerTitle: "GENERAR INCIDENCIA",
+    formSections: [
+        {
+            rows: [
+                {
+                    groups: ["incidencia"]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "incidencia",
+            labelId: "incidenciaLabel",
+            labelTitle: "Incidencia",
+            textarea: true,
+            inputId: "incidencia",
+            inputName: "incidencia"
+        }
+    ]
+}
+
 export const desasignarPedidoFormData = {
     headerIcon: <AiOutlineSignature />,
     headerTitle: "DESASIGNAR PEDIDO",

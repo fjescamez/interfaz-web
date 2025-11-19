@@ -61,7 +61,7 @@ function MontajeTable({ setMontajeModal, fullOrder }) {
             setRipPopup(true);
 
             return { status: "success" };
-        } else if (action === "comparar") {            
+        } else if (action === "comparar") {
             if (montajeIds.length > 1) {
                 notify(toast.error, "error", "Demasiadas selecciones", "Por favor, seleccione un solo elemento para poder realizar esta acción.");
                 return { status: "success" };
@@ -103,6 +103,8 @@ function MontajeTable({ setMontajeModal, fullOrder }) {
                         setPopUpTable={setMontajeModal}
                         dinamicTableInfo={tableInfo}
                         orderFilter={fullOrder.id_pedido}
+                        openRows={true}
+                        customTable={true}
                     />
                 </div>
             }

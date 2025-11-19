@@ -5,6 +5,8 @@ function TrabajosPlanchasPage() {
     return (
         <Table
             dinamicTableInfo={trabajosPlanchasTableInfo}
+            tabTitleTemplate="PLANCHA {nombre_plancha}"
+            specificPath={"/produccion/planchas"}
         />
     )
 }

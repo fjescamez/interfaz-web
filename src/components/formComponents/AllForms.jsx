@@ -2,12 +2,16 @@ import ContactForm from "./ContactForm";
 import ClientForm from "./ClientForm";
 import UserForm from "./UserForm";
 import GroupForm from "./GroupForm";
+import RefPlanchaForm from "./RefPlanchaForm";
+import RefContinuoForm from "./RefContinuoForm";
 
 const formMap = {
     ContactForm,
     ClientForm,
     UserForm,
-    GroupForm
+    GroupForm,
+    RefPlanchaForm,
+    RefContinuoForm
 }
 
 function AllForms({ tableForm, ...props }) {

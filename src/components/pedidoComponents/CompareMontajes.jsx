@@ -77,6 +77,7 @@ function CompareMontajes({ setModal, montaje }) {
                     <Table
                         dinamicTableInfo={allMontajesTableInfo}
                         actions={actions}
+                        openRows={true}
                     />
                 </div>
             </div>

@@ -27,21 +27,27 @@ function ExternosByClient() {
         const { action, data } = variables;
         const trabajosCompletos = data.filter(item => externosChecked.includes(item._id));
 
-        const signData = {
-            action,
-            idsTrabajos: externosChecked,
-            trabajosCompletos,
-            usuario: session.username
-        }
+        if (action === "firmar" || action === "anular") {
+            const signData = {
+                action,
+                idsTrabajos: externosChecked,
+                trabajosCompletos,
+                usuario: session.username
+            }
 
-        const response = await postData('externalJobs/firmar', signData);
+            const response = await postData('externalJobs/firmar', signData);
 
-        if (response.status === "success") {
-            notify(toast.success, 'success', response.title);
-            setTableData(prev => prev.filter(item => !response.updatedData.includes(item._id)));
+            if (response.status === "success") {
+                notify(toast.success, 'success', response.title);
+                setTableData(prev => prev.filter(item => !response.updatedData.includes(item._id)));
+                setExternosChecked([]);
+            } else {
+                notify(toast.error, 'error', response.title);
+            }
+        } else if (action === "restaurar") {
+            const response = await postData('externalJobs/restaurar', { trabajos: trabajosCompletos });
             setExternosChecked([]);
-        } else {
-            notify(toast.error, 'error', response.title);
+            notify(toast.success, 'success', response.title);
         }
 
         return { status: "success" };
@@ -55,6 +61,9 @@ function ExternosByClient() {
                 checkedRows={externosChecked}
                 setCheckedRows={setExternosChecked}
                 actions={externosActions}
+                tdGrandes={["documentName"]}
+                tabTitleTemplate="{documentName}"
+                specificPath={"/produccion/trabajosExternos"}
             />
         )
     )

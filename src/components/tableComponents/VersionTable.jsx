@@ -3,7 +3,7 @@ import "./PopupTable.css";
 import Table from '../Table.jsx';
 
 function VersionTable({ setVersionsModal, fullOrder }) {
-    
+
     return (
         <>
             <div className="overlay"></div>
@@ -14,6 +14,9 @@ function VersionTable({ setVersionsModal, fullOrder }) {
                     normalizedData={true}
                     orderFilter={fullOrder.xml.numero.id}
                     currentVersion={fullOrder.xml.numero.version}
+                    tabTitleTemplate={"{id_pedido}"}
+                    specificPath={"/pedidos"}
+                    customTable={true}
                 />
             </div>
         </>

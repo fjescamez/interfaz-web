@@ -33,7 +33,7 @@ function PlotterTable({ setPlotterModal, orderId, fullOrder, filePath }) {
             if (imprimir.status === "success") {
                 notify(toast.success, imprimir.status, imprimir.title, imprimir.message);
                 return { status: "success" }
-            } else if (imprimir.status === "error") {                
+            } else if (imprimir.status === "error") {
                 notify(toast.error, imprimir.status, imprimir.title, imprimir.message);
                 return { status: "error" };
             }
@@ -79,6 +79,8 @@ function PlotterTable({ setPlotterModal, orderId, fullOrder, filePath }) {
                             setPopUpTable={setPlotterModal}
                             dinamicTableInfo={plotterTableInfo}
                             orderFilter={orderId}
+                            openRows={true}
+                            customTable={true}
                         />
                     </div>
                     :

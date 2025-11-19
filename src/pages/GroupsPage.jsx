@@ -20,6 +20,8 @@ function GroupsPage({ filter }) {
             checkedRows={groupIds}
             setCheckedRows={setGroupIds}
             publicForm={true}
+            tabTitleTemplate={"{grupo}"}
+            specificPath={`/${groupTableInfo.tableName}`}
         />
     )
 }

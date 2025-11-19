@@ -53,9 +53,9 @@ function InputPistola() {
         let codigo = "";
         
         if (e.target.value.startsWith("·")) {
-            codigo = e.target.value.replace("·", "").trim();
+            codigo = e.target.value.replace("·", "").trim().toUpperCase();
         } else if (e.target.value.startsWith("3")) {
-            codigo = e.target.value.replace("3", "").trim();
+            codigo = e.target.value.replace("3", "").trim().toUpperCase();
         }
 
         console.log("Codigo leído:", codigo);

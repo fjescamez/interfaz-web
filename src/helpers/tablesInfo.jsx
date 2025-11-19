@@ -13,6 +13,84 @@ import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
 import GroupsSvg from "../assets/svg/GroupsSvg";
 
+export const refContinuosTableInfo = {
+    tableName: "refContinuos",
+    endPoint: "refProduccion/refContinuos",
+    headerIcon: <IoDocumentTextOutline />,
+    headerTitle: "REFERENCIAS DE CONTINUOS",
+    tableForm: "RefContinuoForm",
+    tableColumns: [
+        {
+            header: "Propietario",
+            active: true,
+            key: "propietario"
+        },
+        {
+            header: "Tipo",
+            active: true,
+            key: "tipo"
+        },
+        {
+            header: "Desarrollo",
+            active: true,
+            key: "desarrollo"
+        },
+        {
+            header: "Ancho",
+            active: true,
+            key: "ancho"
+        },
+        {
+            header: "Núcleo",
+            active: true,
+            key: "nucleo"
+        },
+        {
+            header: "Stock",
+            active: true,
+            key: "stock"
+        },
+        {
+            header: "Adaptador",
+            active: true,
+            key: "adaptador",
+            check: true,
+            checkedCondition: 1
+        }
+    ],
+    actions: [
+        {
+            title: "Eliminar",
+            action: "eliminar"
+        }
+    ]
+};
+
+export const refPlanchasTableInfo = {
+    tableName: "refPlanchas",
+    endPoint: "refProduccion/refPlanchas",
+    headerIcon: <IoDocumentTextOutline />,
+    headerTitle: "REFERENCIAS DE PLANCHAS",
+    tableForm: "RefPlanchaForm",
+    tableColumns: [
+        {
+            header: "Fabricante",
+            active: true,
+            key: "fabricante"
+        },
+        {
+            header: "Espesor",
+            active: true,
+            key: "espesor"
+        },
+        {
+            header: "Referencia",
+            active: true,
+            key: "referencia"
+        }
+    ]
+};
+
 export const pistolaTableInfo = {
     tableName: "pistola",
     headerIcon: <MdBarcodeReader />,
@@ -93,6 +171,10 @@ export const trabajosExternosTableInfo = {
         {
             title: "Anular",
             action: "anular"
+        },
+        {
+            title: "Restaurar",
+            action: "restaurar"
         }
     ],
     defaultChecks: true
@@ -100,7 +182,7 @@ export const trabajosExternosTableInfo = {
 
 export const externosFinalizadosTableInfo = {
     tableName: "externosFinalizados",
-    endPoint: "planchas/externosFinalizados",
+    endPoint: "externalJobs",
     headerIcon: <FaStamp />,
     headerTitle: "EXTERNOS FINALIZADOS",
     tableColumns: [
@@ -122,7 +204,7 @@ export const externosFinalizadosTableInfo = {
         {
             header: "Colores",
             active: true,
-            key: "clichesColor"
+            key: "numero_colores"
         },
         {
             header: "Fecha",
@@ -132,13 +214,19 @@ export const externosFinalizadosTableInfo = {
         {
             header: "Usuario",
             active: true,
-            key: "nombre_usuario"
+            key: "usuario_firma.name"
         },
         {
             header: "Estado",
             active: true,
-            key: "nombre_estado"
+            key: "state"
         },
+    ],
+    actions: [
+        {
+            title: "Restaurar",
+            action: "restaurar"
+        }
     ]
 }
 
@@ -276,6 +364,11 @@ export const planchasTableInfo = {
             active: true,
             key: "usuario_finalizada"
         },
+        {
+            header: "Incidencia",
+            active: true,
+            key: "usuario_incidencia"
+        }
     ],
     actions: [
         {
@@ -300,11 +393,18 @@ export const planchasTableInfo = {
             action: "solicitarAlbaran"
         },
         {
+            title: "Albarán Parcial",
+            action: "albaranParcial"
+        },
+        {
             title: "Resetear Albarán",
             action: "resetearAlbaran"
-        }
-    ],
-    defaultChecks: true
+        },
+        {
+            title: "Incidencia",
+            action: "incidencia"
+        },
+    ]
 };
 
 export const emailInfoTableInfo = {
@@ -948,19 +1048,22 @@ export const orderTableInfo = {
             header: "Boceto",
             active: true,
             key: "xml.numero.boceto",
-            check: true
+            check: true,
+            checkedCondition: "-1"
         },
         {
             header: "Cliché",
             active: true,
             key: "xml.numero.cliche",
-            check: true
+            check: true,
+            checkedCondition: "-1"
         },
         {
             header: "Plotter",
             active: true,
             key: "xml.tecnicos.plotter",
-            check: true
+            check: true,
+            checkedCondition: "X"
         },
         {
             header: "Prioridad",
@@ -1166,30 +1269,6 @@ export const contactTableInfo = {
         {
             title: "Crear grupo",
             action: "crearGrupo"
-        }
-    ]
-};
-
-export const emailTableInfo = {
-    tableName: "emails",
-    endPoint: "emails",
-    headerIcon: <MdOutlineEmail />,
-    headerTitle: "PLANTILLAS DE EMAIL",
-    tableColumns: [
-        {
-            header: "Nombre",
-            active: true,
-            key: "name"
-        },
-        {
-            header: "Asunto",
-            active: true,
-            key: "subject"
-        },
-        {
-            header: "Cuerpo",
-            active: true,
-            key: "body"
         }
     ]
 };

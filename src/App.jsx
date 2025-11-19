@@ -38,7 +38,11 @@ import ExternosPendientesPage from "./pages/ExternosPendientesPage";
 import ExternosByClient from "./pages/ExternosByClient";
 import ExternosDetails from "./pages/ExternosDetails";
 import InputPistola from "./components/InputPistola";
-import TablaPistolaPage from "./components/TablaPistolaPage";
+import TablaPistolaPage from "./pages/TablaPistolaPage";
+import RefPlanchas from "./pages/RefPlanchas";
+import RefContinuos from "./pages/RefContinuos";
+import RefPlanchaDetails from "./pages/RefPlanchaDetails";
+import RefContinuoDetails from "./pages/RefContinuoDetails";
 
 function App() {
   const icons = ["home", "pedidos", "bandeja", "len", "clientes", "produccion", "pistola", "stock", "usuarios"];
@@ -195,18 +199,15 @@ function App() {
           <Route path="/clientes/:id" element={<ClientDetails toggleKiosk={toggleKiosk} />} />
           <Route path="/clientes/:id/pedidos" element={<OrdersPage filter={true} />} />
           <Route path="/clientes/:id/contactos" element={<ContactsPage filter={true} />} />
-          <Route path="/clientes/:id/contactos/:id" element={<ContactDetails toggleKiosk={toggleKiosk} />} />
+          <Route path="/clientes/:id/grupos" element={<GroupsPage filter={true} />} />
           <Route path="/clientes/:id/estrategias" element={<StrategyPage filter={true} />} />
-          <Route path="/clientes/:id/estrategias/:id" element={<StrategyDetails toggleKiosk={toggleKiosk} />} />
           <Route path="/clientes/:id/configuracion" element={<ClientConfig toggleKiosk={toggleKiosk} />} />
-          <Route path="/estrategias/:id" element={<StrategyDetails />} />
           <Route path="/estrategias" element={<StrategyPage />} />
+          <Route path="/estrategias/:id" element={<StrategyDetails />} />
           <Route path="/contactos" element={<ContactsPage />} />
           <Route path="/contactos/:id" element={<ContactDetails toggleKiosk={toggleKiosk} />} />
           <Route path="/grupos" element={<GroupsPage />} />
           <Route path="/grupos/:id" element={<GroupDetails />} />
-          <Route path="/clientes/:id/grupos" element={<GroupsPage filter={true} />} />
-          <Route path="/clientes/:id/grupos/:id" element={<GroupDetails />} />
           <Route path="/produccion" element={<ProduccionPage />} />
           <Route path="/produccion/planchas/:id" element={<PlanchasDetails />} />
           <Route path="/produccion/planchas" element={<PlanchasPage />} />
@@ -219,6 +220,10 @@ function App() {
           <Route path="/produccion/externosFinalizados" element={<ExternosFinalizadosPage />} />
           <Route path="/produccion/externosAnulados" element={<ExternosFinalizadosPage />} />
           <Route path="/produccion/:cliente" element={<ExternosByClient />} />
+          <Route path="/produccion/refPlanchas" element={<RefPlanchas />} />
+          <Route path="/produccion/refPlanchas/:id" element={<RefPlanchaDetails />} />
+          <Route path="/produccion/refContinuos" element={<RefContinuos />} />
+          <Route path="/produccion/refContinuos/:id" element={<RefContinuoDetails />} />
           <Route path="/stock" element={<StockPage />} />
           <Route path="/pistola" element={<TablaPistolaPage />} />
           <Route path="/usuarios" element={<UsersPage />} />

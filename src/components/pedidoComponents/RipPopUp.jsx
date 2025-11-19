@@ -148,6 +148,7 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
                             specificHeaderTitle={`RIP MONTAJE | ${id_archivo}`}
                             orderFilter={montaje}
                             setPopUpTable={setRipModal}
+                            customTable={true}
                         />
                     </div>
                     :

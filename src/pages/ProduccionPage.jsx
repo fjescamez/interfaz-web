@@ -2,12 +2,13 @@ import { useNavigate } from "react-router-dom";
 import DetailsHeader from '../components/DetailsHeader'
 import GridComponent from '../components/GridComponent'
 import { IoDocumentTextOutline } from "react-icons/io5";
-import { produccionPlanchasDetails, produccionTrabajosDetails } from '../helpers/detailsGrid';
+import { produccionPlanchasDetails, produccionReferenciasDetails, produccionTrabajosDetails } from '../helpers/detailsGrid';
 import { useTabs } from "../context/TabsContext";
 import { fetchData } from "../helpers/fetchData";
 import { useEffect, useState } from "react";
 
 function ProduccionPage() {
+    const [produccionReferencias, setProduccionReferencias] = useState(produccionReferenciasDetails);
     const [produccionPlanchas, setProduccionPlanchas] = useState(produccionPlanchasDetails);
     const [produccionExternos, setProduccionExternos] = useState(produccionTrabajosDetails);
     const [totales, setTotales] = useState({
@@ -21,6 +22,20 @@ function ProduccionPage() {
     });
     const navigate = useNavigate();
     const { tabs, setTabs } = useTabs();
+
+    const referenciasGridClick = async (key, title) => {
+        const path = `/produccion/${key}`;
+
+        const tabTitle = key === "refPlanchas" ? "REF. PLANCHAS" : "REF. CONTINUOS";
+
+        if (!tabs.some(tab => tab.path === path)) {
+            setTabs(prev => {
+                if (prev.some(tab => tab.path === path)) return prev;
+                return [...prev, { path, title: tabTitle }];
+            });
+        }
+        navigate(path);
+    };
 
     const planchasGridClick = async (key, title) => {
         const path = `/produccion/${key}`;
@@ -136,6 +151,11 @@ function ProduccionPage() {
                 hideDeleteIcon={true}
             />
             <div className="detailsScroll">
+                <GridComponent
+                    title={produccionReferencias.title}
+                    grid={produccionReferencias.grid}
+                    gridClick={referenciasGridClick}
+                />
                 <GridComponent
                     title={produccionPlanchas.title}
                     grid={produccionPlanchas.grid}

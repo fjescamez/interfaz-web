@@ -14,6 +14,7 @@ function PlanchasDetails() {
   const [plancha, setPlancha] = useState(null);
   const [deletePopup, setDeletePopup] = useState(false);
   const [trabajosPlancha, setTrabajosPlancha] = useState([]);
+  const location = window.location.pathname;
 
   const getPlancha = async () => {
     const result = await fetchOneItem("planchas", id);
@@ -28,7 +29,7 @@ function PlanchasDetails() {
   useEffect(() => {
     getPlancha();
     getTrabajos();
-  }, [id]);
+  }, [id, location]);
 
   return (
     <div className="detailsContainer">
@@ -69,6 +70,8 @@ function PlanchasDetails() {
           <Table
             dinamicTableInfo={trabajosPlanchaTableInfo}
             initialData={trabajosPlancha}
+            noActionRows={true}
+            customTable={true}
           />
         }
       </div>

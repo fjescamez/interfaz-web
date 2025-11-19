@@ -5,6 +5,7 @@ function UsersPage() {
     return (
         <Table
             dinamicTableInfo={userTableInfo}
+            tabTitleTemplate={"{username}"}
         />
     )
 }

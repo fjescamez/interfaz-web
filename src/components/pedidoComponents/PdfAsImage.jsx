@@ -6,7 +6,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
     import.meta.url
 ).toString();
 
-function PdfAsImage({ url, className, noOpen }) {    
+function PdfAsImage({ url, className, noOpen }) {
     const puertoApi = 3000;
     /* PDF a imagen */
     const [imgSrc, setImgSrc] = useState(null);
