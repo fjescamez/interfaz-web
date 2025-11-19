@@ -392,10 +392,10 @@ export const planchasTableInfo = {
             title: "Solicitar Albarán",
             action: "solicitarAlbaran"
         },
-        {
+        /* {
             title: "Albarán Parcial",
             action: "albaranParcial"
-        },
+        }, */
         {
             title: "Resetear Albarán",
             action: "resetearAlbaran"
