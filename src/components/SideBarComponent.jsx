@@ -20,6 +20,7 @@ function SideBarComponent({ isActive, setIsActive }) {
     const isTeletrabajo = teletabajo.includes(session?.username);
     const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
     const isProduccion = session?.departments?.includes("Sólido") || session?.departments?.includes("Líquido");
+    const isOficina = session?.departments?.includes("Oficina");
 
     const handleClick = (icon, name) => {
         setIsActive(prev => {
@@ -66,12 +67,17 @@ function SideBarComponent({ isActive, setIsActive }) {
                 <div className={`icons ${isActive.clientes ? "active" : ""}`} onClick={() => handleClick("clientes", "CLIENTES")} data-tooltip-id="my-tooltip" data-tooltip-content={"CLIENTES"} >
                     <SlBriefcase />
                 </div>
-                {(isAdmin || isProduccion) && (
+                {(isAdmin || isProduccion || isOficina) && (
                     <>
                         <div className="border"></div>
                         <div className={`icons ${isActive.produccion ? "active" : ""}`} onClick={() => handleClick("produccion", "PRODUCCION")} data-tooltip-id="my-tooltip" data-tooltip-content={"PRODUCCION"} >
                             <PiOven />
                         </div>
+
+                    </>
+                )}
+                {(isAdmin || isProduccion) && (
+                    <>
                         <div className="border"></div>
                         <div className={`icons ${isActive.pistola ? "active" : ""}`} onClick={() => handleClick("pistola", "PISTOLA")} data-tooltip-id="my-tooltip" data-tooltip-content={"PISTOLA"} >
                             <MdBarcodeReader />

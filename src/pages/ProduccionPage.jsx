@@ -6,8 +6,11 @@ import { produccionPlanchasDetails, produccionReferenciasDetails, produccionTrab
 import { useTabs } from "../context/TabsContext";
 import { fetchData } from "../helpers/fetchData";
 import { useEffect, useState } from "react";
+import { useSession } from "../context/SessionContext";
 
 function ProduccionPage() {
+    const { session } = useSession();
+    const isOficina = session?.departments?.includes("Oficina");
     const [produccionReferencias, setProduccionReferencias] = useState(produccionReferenciasDetails);
     const [produccionPlanchas, setProduccionPlanchas] = useState(produccionPlanchasDetails);
     const [produccionExternos, setProduccionExternos] = useState(produccionTrabajosDetails);
@@ -156,16 +159,20 @@ function ProduccionPage() {
                     grid={produccionReferencias.grid}
                     gridClick={referenciasGridClick}
                 />
-                <GridComponent
-                    title={produccionPlanchas.title}
-                    grid={produccionPlanchas.grid}
-                    gridClick={planchasGridClick}
-                />
-                <GridComponent
-                    title={produccionExternos.title}
-                    grid={produccionExternos.grid}
-                    gridClick={externosGridClick}
-                />
+                {!isOficina && (
+                    <>
+                        <GridComponent
+                            title={produccionPlanchas.title}
+                            grid={produccionPlanchas.grid}
+                            gridClick={planchasGridClick}
+                        />
+                        <GridComponent
+                            title={produccionExternos.title}
+                            grid={produccionExternos.grid}
+                            gridClick={externosGridClick}
+                        />
+                    </>
+                )}
             </div>
         </div>
     )
