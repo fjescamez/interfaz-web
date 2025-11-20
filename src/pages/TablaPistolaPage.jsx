@@ -1,9 +1,10 @@
+import { useState } from 'react';
 import Table from '../components/Table'
 import { pistolaTableInfo } from '../helpers/tablesInfo'
 
 function TablaPistolaPage() {
   const firmasExistentes = localStorage.getItem('firmasPistola');
-  const initialData = firmasExistentes ? JSON.parse(firmasExistentes) : [];
+  const [initialData, setInitialData] = useState(firmasExistentes ? JSON.parse(firmasExistentes) : []);
 
   const firmasActions = (variables) => {
     const { action, setTableData } = variables;
