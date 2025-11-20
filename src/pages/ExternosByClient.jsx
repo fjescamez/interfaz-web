@@ -44,13 +44,13 @@ function ExternosByClient() {
             } else {
                 notify(toast.error, 'error', response.title);
             }
+            return { status: "success" };
         } else if (action === "restaurar") {
             const response = await postData('externalJobs/restaurar', { trabajos: trabajosCompletos });
             setExternosChecked([]);
             notify(toast.success, 'success', response.title);
+            return { status: "success" };
         }
-
-        return { status: "success" };
     }
 
     return (

@@ -22,9 +22,8 @@ function ExternosFinalizadosPage() {
                 setExternosChecked([]);
                 notify(toast.success, 'success', response.title);
             }
+            return { status: "success" };
         }
-
-        return { status: "success" };
     }
 
     useEffect(() => {
