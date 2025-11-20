@@ -51,7 +51,7 @@ function InputPistola() {
         navigate(path);
 
         let codigo = "";
-        
+
         if (e.target.value.startsWith("·")) {
             codigo = e.target.value.replace("·", "").trim().toUpperCase();
         } else if (e.target.value.startsWith("3")) {
@@ -59,30 +59,33 @@ function InputPistola() {
         }
 
         console.log("Codigo leído:", codigo);
-        
+
         e.target.value = "";
-        
+
         if (codigo.startsWith("EX")) {
             const xmlFileName = codigo.replace("EX", "") + ".xml";
             const trabajoExterno = await fetchOneItem("externalJobs/getByFileName", xmlFileName);
-            
+
             const signData = {
                 action: "firmar",
                 idsTrabajos: trabajoExterno._id,
                 trabajosCompletos: trabajoExterno,
                 usuario: session.username
             };
-            
-            const firma = await postData("externalJobs/firmar", signData);            
-            
-            const existingFirmas = JSON.parse(localStorage.getItem("firmasPistola")) || [];
-            const updatedFirmas = [...existingFirmas, firma.nuevoRegistro];
-            
-            localStorage.setItem("firmasPistola", JSON.stringify(updatedFirmas));
-            
+
+            const firma = await postData("externalJobs/firmar", signData);
+
             if (firma.status === "success") {
                 notify(toast.success, 'success', firma.title);
+                const existingFirmas = JSON.parse(localStorage.getItem("firmasPistola")) || [];
+                const updatedFirmas = [...existingFirmas, firma.nuevoRegistro];
+
+                localStorage.setItem("firmasPistola", JSON.stringify(updatedFirmas));
+            } else if (firma.status === "warning") {
+                notify(toast.warn, 'warning', firma.title);
             }
+        } else {
+            notify(toast.warn, 'warning', 'Código no reconocido por la pistola');
         }
 
         codigo = "";
