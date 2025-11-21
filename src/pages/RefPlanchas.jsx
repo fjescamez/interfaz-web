@@ -7,6 +7,7 @@ function RefPlanchas() {
     <Table
         dinamicTableInfo={refPlanchasTableInfo}
         tabTitleTemplate={"{fabricante} {espesor} {referencia}"}
+        publicForm={true}
     />
   )
 }

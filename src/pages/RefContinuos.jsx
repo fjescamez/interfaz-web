@@ -11,6 +11,7 @@ function RefContinuos() {
       checkedRows={checkedContinuos}
       setCheckedRows={setCheckedContinuos}
       tabTitleTemplate={'Continuo {propietario} - {tipo} - {desarrollo}'}
+      publicForm={true}
     />
   )
 }
