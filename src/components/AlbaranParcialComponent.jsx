@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import Table from '../Table';
-import { trabajosPlanchaTableInfo } from '../../helpers/tablesInfo';
-import { fetchOneItem, postData } from '../../helpers/fetchData';
-import { notify } from '../../helpers/notify';
+import Table from './Table';
+import { trabajosPlanchaTableInfo } from '../helpers/tablesInfo';
+import { fetchOneItem, postData } from '../helpers/fetchData';
+import { notify } from '../helpers/notify';
 import { toast } from "react-toastify";
 
-function AlbaranParcialForm({ setTrabajosPopUp, planchaId, plancha }) {
+function AlbaranParcialComponent({ setTrabajosPopUp, planchaId, plancha }) {
     const [tableInfo, setTableInfo] = useState(trabajosPlanchaTableInfo);
     const [trabajos, setTrabajos] = useState([]);
     const [trabajosChecked, setTrabajosChecked] = useState([]);
@@ -59,6 +59,7 @@ function AlbaranParcialForm({ setTrabajosPopUp, planchaId, plancha }) {
                         setPopUpTable={setTrabajosPopUp}
                         dinamicTableInfo={tableInfo}
                         initialData={trabajos}
+                        customTable={true}
                     />
                 </div>
             </>
@@ -66,4 +67,4 @@ function AlbaranParcialForm({ setTrabajosPopUp, planchaId, plancha }) {
     );
 }
 
-export default AlbaranParcialForm;
+export default AlbaranParcialComponent;

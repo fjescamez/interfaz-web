@@ -5,7 +5,7 @@ import { postData } from '../helpers/fetchData';
 import { useSession } from '../context/SessionContext';
 import { notify } from '../helpers/notify';
 import { toast } from "react-toastify";
-//import AlbaranParcialForm from '../components/formComponents/AlbaranParcialForm';
+import AlbaranParcialComponent from '../components/AlbaranParcialComponent';
 //import IncidenciaForm from '../components/formComponents/IncidenciaForm';
 
 function PlanchasPage() {
@@ -76,11 +76,13 @@ function PlanchasPage() {
                 if (albaran.status === 'success') {
                     notify(toast.success, 'success', albaran.title, albaran.message);
                     // Actualizar la plancha en la tabla
-                    setTableData(prev =>
-                        prev.map(item =>
-                            item.id === albaran.updatedData.id ? albaran.updatedData : item
-                        )
-                    );
+                    if (albaran.updatedData) {
+                        setTableData(prev =>
+                            prev.map(item =>
+                                item.id === albaran.updatedData?.id ? albaran.updatedData : item
+                            )
+                        );
+                    }
                 } else {
                     notify(toast.error, 'error', albaran.title, albaran.message);
                 }
@@ -158,7 +160,7 @@ function PlanchasPage() {
                     tabTitleTemplate="PLANCHA {nombre_plancha}"
                     specificPath="/produccion/planchas"
                 />
-                {trabajosPopUp && <AlbaranParcialForm setTrabajosPopUp={setTrabajosPopUp} planchaId={planchas[0]} plancha={planchaSuelta} />}
+                {trabajosPopUp && <AlbaranParcialComponent setTrabajosPopUp={setTrabajosPopUp} planchaId={planchas[0]} plancha={planchaSuelta} />}
                 {/* {incidenciaPopUp && <IncidenciaForm setIncidenciaPopUp={setIncidenciaPopUp} planchaId={planchas[0]} plancha={planchaSuelta} />} */}
             </>
         )

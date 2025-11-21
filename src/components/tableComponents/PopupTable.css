@@ -1,10 +1,10 @@
 .popUpTable {
     z-index: 5;
     position: fixed;
-    width: 80vw;
+    width: 79.5vw;
     max-height: 85%;
     top: 50%;
-    left: 50%;
+    left: 49.7%;
     transform: translate(-50%, -50%);
 
     .tableContainer {
