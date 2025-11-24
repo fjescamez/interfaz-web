@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 function PedidoCarton({ orderXml }) {
   const carton = orderXml.actividad?.carton;
-  const carton_premontaje = Array.isArray(orderXml.actividad?.carton?.carton_premontaje) ? orderXml.actividad?.carton?.carton_premontaje : [orderXml.actividad?.carton?.carton_premontaje];
+  const carton_premontaje = orderXml.actividad?.carton_premontaje ? (Array.isArray(orderXml.actividad?.carton?.carton_premontaje) ? orderXml.actividad?.carton?.carton_premontaje : [orderXml.actividad?.carton?.carton_premontaje]) : [];
 
   const [loading, setLoading] = useState(true);
 
@@ -20,15 +20,17 @@ function PedidoCarton({ orderXml }) {
     }
 
     carton_premontaje.forEach((item) => {
-      Object.keys(item).forEach((key) => {
-        if (
-          item[key] &&
-          typeof item[key] === "object" &&
-          Object.keys(item[key]).length === 0
-        ) {
-          item[key] = "";
-        }
-      });
+      if (typeof item === "object") {
+        Object.keys(item).forEach((key) => {
+          if (
+            item[key] &&
+            typeof item[key] === "object" &&
+            Object.keys(item[key]).length === 0
+          ) {
+            item[key] = "";
+          }
+        });
+      }
     });
 
     setLoading(false); // Mark as complete
