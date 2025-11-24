@@ -15,6 +15,7 @@ function PlanchasPage() {
     const [tableInfo, setTableInfo] = useState(null); // Inicialmente null
     const [trabajosPopUp, setTrabajosPopUp] = useState(false);
     const [incidenciaPopUp, setIncidenciaPopUp] = useState(false);
+    const [planchasDataSetter, setPlanchasDataSetter] = useState(null);
     const location = window.location.pathname;
 
     useEffect(() => {
@@ -95,7 +96,8 @@ function PlanchasPage() {
                     notify(toast.error, 'error', '', 'El albarán de esta plancha ya está solicitado');
                     return { status: 'success' };
                 }
-
+                
+                setPlanchasDataSetter(() => setTableData);
                 setTrabajosPopUp(true);
                 return { status: 'success' };
             case "resetearAlbaran":
@@ -160,7 +162,7 @@ function PlanchasPage() {
                     tabTitleTemplate="PLANCHA {nombre_plancha}"
                     specificPath="/produccion/planchas"
                 />
-                {trabajosPopUp && <AlbaranParcialComponent setTrabajosPopUp={setTrabajosPopUp} planchaId={planchas[0]} plancha={planchaSuelta} />}
+                {trabajosPopUp && <AlbaranParcialComponent setTrabajosPopUp={setTrabajosPopUp} planchaId={planchas[0]} plancha={planchaSuelta} setTableData={planchasDataSetter} />}
                 {/* {incidenciaPopUp && <IncidenciaForm setIncidenciaPopUp={setIncidenciaPopUp} planchaId={planchas[0]} plancha={planchaSuelta} />} */}
             </>
         )

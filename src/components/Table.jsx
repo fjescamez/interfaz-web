@@ -50,6 +50,7 @@ function Table({
 }) {
     const puertoApi = 3000;
     const socket = useSocket();
+    const [checkedIndexes, setCheckedIndexes] = useState([]);
     const [orderBy, setOrderBy] = useState("");
     const [tableData, setTableData] = useState(initialData || []);
     const [modal, setModal] = useState(false);
@@ -207,7 +208,7 @@ function Table({
 
     const handleClick = (data, index) => {
         if (showChecks) {
-            handleChecked(data._id ? data._id : data.id);
+            handleChecked(data._id ? data._id : data.id, index);
             return;
         } else if (openRows) {
             return actions({ action: "openRow", data, index });
@@ -378,12 +379,19 @@ function Table({
         setChecked(newChecked);
     };
 
-    const handleChecked = (id) => {
-        setCheckedRows(prev =>
-            prev.includes(id)
-                ? prev.filter(e => e !== id)
-                : [...prev, id]
-        );
+    const handleChecked = (id, index) => {
+        setCheckedRows(prev => {
+            if (checkedIndexes.includes(index)) {
+                return prev.filter(e => e !== id);
+            }
+            return [...prev, id];
+        });
+
+        setCheckedIndexes(prev => {
+            return prev.includes(index)
+                ? prev.filter(e => e !== index)
+                : [...prev, index];
+        });
     };
 
     const checkAll = () => {
@@ -607,7 +615,7 @@ function Table({
                                             <input
                                                 type="checkbox"
                                                 className="check"
-                                                checked={checkedRows.includes(data._id || data.id)}
+                                                checked={checkedIndexes.includes(index)}
                                                 readOnly
                                             />
                                         </td>
