@@ -29,7 +29,6 @@ function AlbaranParcialComponent({ setTrabajosPopUp, planchaId, plancha, setTabl
     const actions = async (variables) => {
         const { action, data } = variables;
         const trabajosCompletos = [];
-        console.log("Trabajos checked: ", trabajosChecked);
         
         const countMap = trabajosChecked.reduce((acc, id) => {
             acc[id] = (acc[id] || 0) + 1;

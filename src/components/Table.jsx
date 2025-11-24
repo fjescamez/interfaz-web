@@ -451,9 +451,9 @@ function Table({
                             {(tableInfo.actions && !tableChecks && (!tableInfo?.actions.every(action => action.hasOwnProperty('noCheck'))) && ((!rolesActions?.length || rolesActions?.includes(session?.role) || (!usersActions?.length || usersActions?.includes(session?.username))))) && (
                                 showChecks
                                     ?
-                                    <MdLockOpen className="tableLock" onClick={() => { setShowChecks(false); setCheckedRows([]) }} />
+                                    <MdLockOpen className="tableLock" onClick={() => { setShowChecks(false); setCheckedRows([]); setCheckedIndexes([])}} />
                                     :
-                                    <MdLockOutline className="tableLock" onClick={() => { setShowChecks(true); setCheckedRows([]) }} />
+                                    <MdLockOutline className="tableLock" onClick={() => { setShowChecks(true); setCheckedRows([]); setCheckedIndexes([])}} />
                             )}
                             {!initialData && <HiOutlineRefresh className="tableRefresh" onClick={() => refreshTable()} />}
                             {(tableForm && (isAdmin || publicForm)) && (
@@ -548,6 +548,8 @@ function Table({
                                                             });
                                                             if (actionResult && actionResult.status) {
                                                                 setActionEnded(true);
+                                                                setCheckedRows([]);
+                                                                setCheckedIndexes([]);
                                                             }
                                                         }
                                                     }}
@@ -567,7 +569,7 @@ function Table({
                     {(showChecks && !noDataToShow && !tableCharging) && (
                         <div className="checkedRows">
                             <p>Ítem/s seleccionado/s: {checkedRows.length}</p>
-                            <p onClick={() => setCheckedRows([])} className="reset">Resetear selección</p>
+                            <p onClick={() => { setCheckedRows([]); setCheckedIndexes([]); }} className="reset">Resetear selección</p>
                         </div>
                     )}
                 </div>
