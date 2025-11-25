@@ -11,6 +11,7 @@ import { contactFormData } from "../helpers/formsData";
 import FormSection from "../components/formComponents/FormSection";
 import { fetchOneItem } from "../helpers/fetchData";
 import { contactTableInfo } from "../helpers/tablesInfo";
+import { useLocation } from "react-router-dom";
 
 function ContactDetails({ toggleKiosk }) {
     const [contact, setContact] = useState({});
@@ -23,6 +24,7 @@ function ContactDetails({ toggleKiosk }) {
     const [showInfo, setShowInfo] = useState(true);
     //const { grid } = usersDetails;
     const isAdmin = session.role === "Administrador";
+    const location = useLocation();
 
     const clienteNombreOptions = contact.cliente_nombre ? [contact.cliente_nombre] : [];
     const clienteCodigoOptions = contact.cliente_codigo ? [contact.cliente_codigo] : [];

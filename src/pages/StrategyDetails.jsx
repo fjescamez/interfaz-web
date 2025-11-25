@@ -9,6 +9,7 @@ import { useSession } from '../context/SessionContext';
 import StrategyForm from '../components/formComponents/StrategyForm';
 import DeleteForm from '../components/formComponents/DeleteForm';
 import { strategyTableInfo } from '../helpers/tablesInfo';
+import { useLocation } from "react-router-dom";
 
 function StrategyDetails({ toggleKiosk }) {
   const [strategy, setStrategy] = useState(undefined);
@@ -20,6 +21,7 @@ function StrategyDetails({ toggleKiosk }) {
   const [itemsData, setItemsData] = useState({});
   const { session } = useSession();
   const isAdmin = session.role === "Administrador";
+  const location = useLocation();
 
   useEffect(() => {
     const getStrategyDetails = async () => {

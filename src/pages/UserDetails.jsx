@@ -13,6 +13,7 @@ import GridComponent from "../components/GridComponent";
 import { usersDetails } from "../helpers/detailsGrid";
 import { userTableInfo } from "../helpers/tablesInfo";
 import { fetchOneItem } from "../helpers/fetchData";
+import { useLocation } from "react-router-dom";
 
 function UserDetails({ toggleKiosk }) {
     const [user, setUser] = useState({});
@@ -25,6 +26,7 @@ function UserDetails({ toggleKiosk }) {
     const [showInfo, setShowInfo] = useState(true);
     const { grid } = usersDetails;
     const isAdmin = session.role === "Administrador";
+    const location = useLocation();
 
     useEffect(() => {
         const getUserDetails = async () => {

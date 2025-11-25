@@ -8,6 +8,7 @@ import FormSection from '../components/formComponents/FormSection';
 import ClientConfigForm from '../components/formComponents/ClientConfigForm';
 import { notify } from '../helpers/notify';
 import { toast } from "react-toastify";
+import { useLocation } from "react-router-dom";
 
 function ClientConfig({ toggleKiosk }) {
     const [client, setClient] = useState({});
@@ -19,6 +20,7 @@ function ClientConfig({ toggleKiosk }) {
     const { id } = useParams();
     const navigate = useNavigate();
     const { closeTab } = useTabs();
+    const location = useLocation();
 
     const getClientDetails = async () => {
         const clientData = await fetchOneItem("clients", id);

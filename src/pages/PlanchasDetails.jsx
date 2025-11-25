@@ -7,6 +7,7 @@ import FormSection from "../components/formComponents/FormSection";
 import Table from "../components/Table";
 import { planchasTableInfo, trabajosPlanchaTableInfo } from "../helpers/tablesInfo";
 import DeleteForm from "../components/formComponents/DeleteForm";
+import { useLocation } from "react-router-dom";
 
 function PlanchasDetails() {
   const urlApi = import.meta.env.VITE_API_URL;
@@ -14,7 +15,7 @@ function PlanchasDetails() {
   const [plancha, setPlancha] = useState(null);
   const [deletePopup, setDeletePopup] = useState(false);
   const [trabajosPlancha, setTrabajosPlancha] = useState([]);
-  const location = window.location.pathname;
+  const location = useLocation();
 
   const getPlancha = async () => {
     const result = await fetchOneItem("planchas", id);

@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTabs } from "../context/TabsContext";
 import GroupForm from "../components/formComponents/GroupForm";
-
 import DetailsHeader from "../components/DetailsHeader";
 import { useSession } from "../context/SessionContext";
 import { groupFormData } from "../helpers/formsData";
@@ -13,6 +12,7 @@ import { fetchOneItem } from "../helpers/fetchData";
 import DeleteForm from "../components/formComponents/DeleteForm";
 import { groupTableInfo } from "../helpers/tablesInfo";
 import { ThreeDot } from 'react-loading-indicators';
+import { useLocation } from "react-router-dom";
 
 function GroupDetails({ toggleKiosk }) {
     const [group, setGroup] = useState({});
@@ -27,6 +27,7 @@ function GroupDetails({ toggleKiosk }) {
     const [showInfo, setShowInfo] = useState(true);
     //const { grid } = usersDetails;
     const isAdmin = session.role === "Administrador" || session.role === "Soporte";
+    const location = useLocation();
 
     useEffect(() => {
         const getGroupDetails = async () => {

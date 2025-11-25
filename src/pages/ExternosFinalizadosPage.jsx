@@ -4,11 +4,12 @@ import { externosFinalizadosTableInfo } from '../helpers/tablesInfo'
 import { postData } from '../helpers/fetchData';
 import { notify } from '../helpers/notify';
 import { toast } from "react-toastify";
+import { useLocation } from "react-router-dom";
 
 function ExternosFinalizadosPage() {
     const [tableInfo, setTableInfo] = useState(null); // Inicialmente null
     const [externosChecked, setExternosChecked] = useState([]);
-    const location = window.location.pathname;
+    const location = useLocation();
 
     const finalizadosActions = async (variables) => {
         const { action, data, setTableData } = variables;
@@ -28,11 +29,11 @@ function ExternosFinalizadosPage() {
 
     useEffect(() => {
         const updatedTableInfo = { ...externosFinalizadosTableInfo }; // Copia inicial
-        if (location.includes("/externosFinalizados")) {
+        if (location.pathname.includes("/externosFinalizados")) {
             updatedTableInfo.tableName = "externosFinalizados";
             updatedTableInfo.endPoint = "externalJobs/externosFinalizados";
             updatedTableInfo.headerTitle = "EXTERNOS FINALIZADOS";
-        } else if (location.includes("/externosAnulados")) {
+        } else if (location.pathname.includes("/externosAnulados")) {
             updatedTableInfo.tableName = "externosAnulados";
             updatedTableInfo.endPoint = "externalJobs/externosAnulados";
             updatedTableInfo.headerTitle = "EXTERNOS ANULADOS";
