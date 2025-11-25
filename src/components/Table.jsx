@@ -403,6 +403,15 @@ function Table({
                 return tableData.map(row => row._id || row.id);
             }
         });
+
+        setCheckedIndexes(prev => {
+            const allChecked = tableData.every((row, index) => prev.includes(index));
+            if (allChecked) {
+                return [];
+            } else {
+                return tableData.map((row, index) => index);
+            }
+        });
     };
 
     const handleRightClick = (e, value) => {
@@ -578,7 +587,7 @@ function Table({
                         <thead>
                             <tr>
                                 {showChecks && (
-                                    <th className="checkElement"><input type="checkbox" className="check" onChange={checkAll} checked={checkedRows.length === tableData.length && checkedRows.length > 0} /></th>
+                                    <th className="checkElement"><input type="checkbox" className="check" onChange={checkAll} checked={checkedIndexes.length === tableData.length && checkedIndexes.length > 0} /></th>
                                 )}
                                 {tableColumns.map((column) => (
                                     checked[column.key] && <th key={column.key} className="thClickable" onClick={() => changeOrderBy(column.key)}>
