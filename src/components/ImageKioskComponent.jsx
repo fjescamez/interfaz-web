@@ -10,7 +10,7 @@ import { SlBriefcase } from "react-icons/sl";
 import { postData } from "../helpers/fetchData";
 
 function ImageKioskComponent({ toggleKiosk, endpoint, id, client }) {
-    const puertoApi = 3000;
+    const urlApi = import.meta.env.VITE_API_URL;
     const inputRef = useRef(null);
     const [image, setImage] = useState(null);
     const { session, setSession } = useSession();
@@ -34,7 +34,7 @@ function ImageKioskComponent({ toggleKiosk, endpoint, id, client }) {
             const formData = new FormData();
             formData.append("avatar", image);
 
-            let url = `http://192.4.26.112:${puertoApi}/${endpoint}/avatar/${id}`;
+            let url = `${urlApi}/${endpoint}/avatar/${id}`;
             const session = JSON.parse(localStorage.getItem('session'));
 
             const response = await fetch(url, {

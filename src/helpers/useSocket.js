@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 
 export default function useSocket() {
-    const puertoApi = 3000;
-    const SOCKET_URL = `http://192.4.26.112:${puertoApi}`; // Cambia por tu servidor
+    const urlApi = import.meta.env.VITE_API_URL;
+    const SOCKET_URL = `${urlApi}`; // Cambia por tu servidor
 
     const [socket, setSocket] = useState(null);
 

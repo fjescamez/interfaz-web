@@ -12,7 +12,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const loginForm = useRef(null); // Referencia al contenedor
   const { setTabs } = useTabs();
-  const puertoApi = 3000;
+  const urlApi = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     if (session) {
@@ -47,7 +47,7 @@ function LoginPage() {
     }
 
     try {
-      const response = await fetch(`http://192.4.26.112:${puertoApi}/users/login`, {
+      const response = await fetch(`${urlApi}/users/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

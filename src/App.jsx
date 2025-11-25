@@ -8,7 +8,6 @@ import ClientsPage from "./pages/ClientsPage"
 import ContactsPage from "./pages/ContactsPage"
 import UserDropdownComponent from "./components/UserDropdownComponent";
 import { useSession } from "./context/SessionContext";
-import { isValidRoute } from "./routes";
 import ImageKioskComponent from "./components/ImageKioskComponent";
 import { ToastContainer } from "react-toastify";
 import UsersPage from "./pages/UsersPage";
@@ -163,7 +162,7 @@ function App() {
 
   return (
     <>
-      {window.location.pathname !== "/login" &&
+      {location.pathname !== "/login" &&
         <HeaderComponent
           toggleUserDropdown={toggleUserDropdown}
           isOnline={isOnline}
@@ -175,10 +174,10 @@ function App() {
           newestOnTop
           autoClose={3000}
         />
-        {window.location.pathname !== "/login" && <InputPistola />}
+        {location.pathname !== "/login" && <InputPistola />}
         {(isDropdownActive) && <UserDropdownComponent toggleUserDropdown={toggleUserDropdown} toggleKiosk={toggleKiosk} />}
         {isKioskActive && <ImageKioskComponent toggleKiosk={toggleKiosk} endpoint={kioskData.endpoint} id={kioskData.id} client={kioskData.client} />}
-        {window.location.pathname !== "/login" && <SideBarComponent isActive={isActive} setIsActive={setIsActive} />}
+        {location.pathname !== "/login" && <SideBarComponent isActive={isActive} setIsActive={setIsActive} />}
         <div className={`scrollTopArrow ${isArrowActive ? "arrowVisible" : ""}`} onClick={scrollTop}><FaArrowCircleUp /></div>
         <Routes>
           <Route path="*" element={<ErrorPage />} />

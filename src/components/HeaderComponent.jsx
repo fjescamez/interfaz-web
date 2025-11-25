@@ -1,6 +1,6 @@
 import { useTabs } from "../context/TabsContext";
 import TabsCrossSvg from "../assets/svg/TabsCrossSvg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./HeaderComponent.css";
 import { useSession } from "../context/SessionContext";
 import SimpleBar from 'simplebar-react';
@@ -10,6 +10,7 @@ import { IoMdCloseCircleOutline } from "react-icons/io";
 
 function HeaderComponent({ toggleUserDropdown, isOnline, setIsOnline }) {
     const { tabs, setTabs, closeTab, closeAllTabs } = useTabs();
+    const location = useLocation();
     const { avatar } = useSession();
     const navigate = useNavigate();
     const simpleBarRef = useRef();

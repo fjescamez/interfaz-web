@@ -3,10 +3,9 @@ import { notify } from "./notify";
 
 /* FETCH GENÉRICOS */
 export const fetchData = async (endPoint, searchValue, page = "1", setData, setTotal, clientFilter = "", userFilter = "") => {
-    const puertoApi = 3000;
+    const urlApi = import.meta.env.VITE_API_URL;
 
-    /* let url = `http://192.4.26.112:3000/${endPoint}/get/${page}`; */
-    let url = `http://192.4.26.112:${puertoApi}/${endPoint}/get/${page}`;
+    let url = `${urlApi}/${endPoint}/get/${page}`;
 
     const session = JSON.parse(localStorage.getItem('session'));
 
@@ -63,10 +62,9 @@ export const fetchData = async (endPoint, searchValue, page = "1", setData, setT
 };
 
 export const fetchOneItem = async (endPoint, id) => {
-    const puertoApi = 3000;
+    const urlApi = import.meta.env.VITE_API_URL;
 
-    /* let url = `http://192.4.26.112:3000/${endPoint}/${id}`; */
-    let url = `http://192.4.26.112:${puertoApi}/${endPoint}/${id}`;
+    let url = `${urlApi}/${endPoint}/${id}`;
 
     const session = JSON.parse(localStorage.getItem('session'));
 
@@ -87,10 +85,9 @@ export const fetchOneItem = async (endPoint, id) => {
 };
 
 export const postData = async (endPoint, data = {}) => {
-    const puertoApi = 3000;
+    const urlApi = import.meta.env.VITE_API_URL;
 
-    /* let url = `http://192.4.26.112:3000/${endPoint}`; */
-    let url = `http://192.4.26.112:${puertoApi}/${endPoint}`;
+    let url = `${urlApi}/${endPoint}`;
 
     const session = JSON.parse(localStorage.getItem('session'));
 
@@ -113,9 +110,9 @@ export const postData = async (endPoint, data = {}) => {
 };
 
 export const updateData = async (endPoint, data, id) => {
-    const puertoApi = 3000;
+    const urlApi = import.meta.env.VITE_API_URL;
 
-    let url = `http://192.4.26.112:${puertoApi}/${endPoint}/${id}`;
+    let url = `${urlApi}/${endPoint}/${id}`;
     const session = JSON.parse(localStorage.getItem('session'));
 
     try {
@@ -134,54 +131,10 @@ export const updateData = async (endPoint, data, id) => {
     }
 };
 
-/* export const deleteData = async (endPoint, id) => {
-    let url = `http://192.4.26.112:3000/${endPoint}/${id}`;
-    const session = JSON.parse(localStorage.getItem('session'));
-
-    try {
-        const response = await fetch(url, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${session.token}`
-            }
-        });
-        const result = await response.json();
-        console.log(result);
-        
-        return result;
-    } catch (error) {
-        notify(toast.error, 'error', 'Error', 'Ha ocurrido un error al eliminar los datos');
-    }
-}; */
-
-/* PREFERENCIAS DE USUARIO */
-/*
-export const fetchUserPreferences = async (username, table) => {
-    const url = `http://192.4.26.112:3000/userPreferences/get?username=${encodeURIComponent(username)}&table=${encodeURIComponent(table)}`;
-
-    try {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        const data = await response.json();
-        if (data.status === "success") {
-            return data
-        }
-    } catch (error) {
-        notify(toast.error, 'error', 'Error', error);
-    }
-}
-*/
-
 /* BORRAR VARIOS ELEMENTOS */
 export const deleteMultipleObjects = async (endPoint, data, setData) => {
-    /* let url = `http://192.4.26.112:3000/${endPoint}/remove`; */
-    const puertoApi = 3000;
-    let url = `http://192.4.26.112:${puertoApi}/${endPoint}/remove`;
+    const urlApi = import.meta.env.VITE_API_URL;
+    let url = `${urlApi}/${endPoint}/remove`;
 
     const session = JSON.parse(localStorage.getItem('session'));
 

@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import CompareMontajes from '../pedidoComponents/CompareMontajes';
 
 function MontajeTable({ setMontajeModal, fullOrder }) {
-    const puertoApi = 3000;
+    const urlApi = import.meta.env.VITE_API_URL;
     const [montajeIds, setMontajeIds] = useState([]);
     const [ripId, setRipId] = useState("");
     const [ripPopup, setRipPopup] = useState(false);
@@ -18,7 +18,7 @@ function MontajeTable({ setMontajeModal, fullOrder }) {
     const [montajeView, setMontajeView] = useState("");
 
     const solicitarVista = async () => {
-        const url = `http://192.4.26.112:${puertoApi}/montajes/solicitarVista`;
+        const url = `${urlApi}/montajes/solicitarVista`;
 
         try {
             const response = await fetch(url, {

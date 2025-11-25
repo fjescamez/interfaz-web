@@ -23,7 +23,7 @@ function DetailsHeader({
     hideDeleteIcon,
     grid
 }) {
-    const puertoApi = 3000;
+    const urlApi = import.meta.env.VITE_API_URL;
     const { session } = useSession();
     const isAdmin = session.role === "Administrador" || session.role === "Soporte";
 
@@ -47,7 +47,7 @@ function DetailsHeader({
                     {!hideEditIcon && <GrEdit className="edit" onClick={() => setEditPopup(true)} />}
                     {!hideAvatar &&
                         <div className="avatarImage clientAvatar">
-                            <img src={`http://192.4.26.112:${puertoApi}/uploads/avatars/${avatar}`} alt="" onClick={isAdmin ? (() => { if (toggleKiosk) toggleKiosk(endPoint, id, kioskData) }) : undefined} />
+                            <img src={`${urlApi}/uploads/avatars/${avatar}`} alt="" onClick={isAdmin ? (() => { if (toggleKiosk) toggleKiosk(endPoint, id, kioskData) }) : undefined} />
                         </div>
                     }
                     {!hideDeleteIcon && <BsTrash3Fill className="delete" onClick={isAdmin ? (() => setDeletePopup(true)) : undefined} />}

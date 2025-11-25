@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./ErrorPage.css";
 import { useEffect } from "react";
 import { useTabs } from "../context/TabsContext";
@@ -6,11 +6,13 @@ import { useTabs } from "../context/TabsContext";
 function ErrorPage() {
     const navigate = useNavigate();
     const location = useLocation();
+    const { setTabs } = useTabs();
     const { closeTab } = useTabs();
 
     useEffect(() => {
         if (location.pathname === "/") {
             navigate("/home", { replace: true });
+            setTabs([{ path: "/home", title: "INICIO" }]);
         }
     }, [location.pathname, navigate]);
 

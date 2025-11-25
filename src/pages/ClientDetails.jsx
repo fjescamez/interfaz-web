@@ -14,6 +14,7 @@ function ClientDetails({ toggleKiosk }) {
     const [client, setClient] = useState({});
     const { id } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
     const { closeTab, tabs, setTabs } = useTabs();
     const { grid } = clientsDetails;
     const [editPopup, setEditPopup] = useState(false);

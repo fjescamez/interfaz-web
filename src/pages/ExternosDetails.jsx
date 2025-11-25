@@ -6,6 +6,7 @@ import { externosFormData } from "../helpers/formsData";
 import FormSection from "../components/formComponents/FormSection";
 
 function ExternosDetails() {
+    const urlApi = import.meta.env.VITE_API_URL;
     const { id } = useParams();
     const [trabajo, setTrabajo] = useState();
 
@@ -42,8 +43,8 @@ function ExternosDetails() {
                 {trabajo?.documentName &&
                     <img
                         className="previoPlancha"
-                        src={`http://192.4.26.112:3000/externalJobs/image/${trabajo?.documentName}`}
-                        onClick={() => window.open(`http://192.4.26.112:3000/externalJobs/image/${trabajo?.documentName}`)}
+                        src={`${urlApi}/externalJobs/image/${trabajo?.documentName}`}
+                        onClick={() => window.open(`${urlApi}/externalJobs/image/${trabajo?.documentName}`)}
                         alt="Trabajo Externo"
                     />
                 }

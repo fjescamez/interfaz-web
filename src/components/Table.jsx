@@ -48,7 +48,7 @@ function Table({
     noActionRows,
     customTable
 }) {
-    const puertoApi = 3000;
+    const urlApi = import.meta.env.VITE_API_URL;
     const socket = useSocket();
     const [checkedIndexes, setCheckedIndexes] = useState([]);
     const [orderBy, setOrderBy] = useState("");
@@ -639,7 +639,7 @@ function Table({
                                         if (column.key === "avatar") {
                                             return (
                                                 <td key={column.key} className="imgTd">
-                                                    <img src={`http://192.4.26.112:${puertoApi}/uploads/avatars/${value}`} alt="" />
+                                                    <img src={`${urlApi}/uploads/avatars/${value}`} alt="" />
                                                 </td>
                                             );
                                         }

@@ -7,7 +7,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
 ).toString();
 
 function PdfAsImage({ url, className, noOpen }) {
-    const puertoApi = 3000;
+    const urlApi = import.meta.env.VITE_API_URL;
     /* PDF a imagen */
     const [imgSrc, setImgSrc] = useState(null);
 
@@ -18,7 +18,7 @@ function PdfAsImage({ url, className, noOpen }) {
 
         const renderPdf = async () => {
             try {
-                const pdf = await pdfjsLib.getDocument(`http://192.4.26.112:${puertoApi}/pdf/${url}`).promise;
+                const pdf = await pdfjsLib.getDocument(`${urlApi}/pdf/${url}`).promise;
                 const page = await pdf.getPage(1); // primera página
 
                 const scale = 0.5; // resolución
@@ -51,7 +51,7 @@ function PdfAsImage({ url, className, noOpen }) {
             {(url === "" || url === "no asignado") ? (
                 <h1>No hay previo</h1>
             ) : (
-                imgSrc ? <img src={imgSrc} className={className} onClick={!noOpen ? () => window.open(`http://192.4.26.112:${puertoApi}/pdf/${url}`, "_blank") : undefined}></img> : <OrbitProgress variant="dotted" color="var(--highlight)" size="large" />
+                imgSrc ? <img src={imgSrc} className={className} onClick={!noOpen ? () => window.open(`${urlApi}/pdf/${url}`, "_blank") : undefined}></img> : <OrbitProgress variant="dotted" color="var(--highlight)" size="large" />
             )
             }
         </>
