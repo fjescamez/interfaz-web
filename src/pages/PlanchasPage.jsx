@@ -5,6 +5,7 @@ import { postData } from '../helpers/fetchData';
 import { useSession } from '../context/SessionContext';
 import { notify } from '../helpers/notify';
 import { toast } from "react-toastify";
+import { useLocation } from "react-router-dom";
 import AlbaranParcialComponent from '../components/AlbaranParcialComponent';
 //import IncidenciaForm from '../components/formComponents/IncidenciaForm';
 
@@ -16,27 +17,29 @@ function PlanchasPage() {
     const [trabajosPopUp, setTrabajosPopUp] = useState(false);
     const [incidenciaPopUp, setIncidenciaPopUp] = useState(false);
     const [planchasDataSetter, setPlanchasDataSetter] = useState(null);
-    const location = window.location.pathname;
+    const location = useLocation();
 
     useEffect(() => {
         setTableInfo(null);
         setPlanchas([]);
         const updatedTableInfo = { ...planchasTableInfo }; // Copia inicial
-        if (location.includes("/planchasProduccion")) {
+        if (location.pathname.includes("/planchasProduccion")) {
             updatedTableInfo.tableName = "planchasProduccion";
             updatedTableInfo.endPoint = "planchasProduccion";
             updatedTableInfo.headerTitle = "PLANCHAS PRODUCCIÓN";
-        } else if (location.includes("/planchasPreproduccion")) {
+        } else if (location.pathname.includes("/planchasPreproduccion")) {
             updatedTableInfo.tableName = "planchasPreproduccion";
             updatedTableInfo.endPoint = "planchasPreproduccion";
             updatedTableInfo.headerTitle = "PLANCHAS PREPRODUCCIÓN";
-        } else if (location.includes("/planchasFinalizadas")) {
+        } else if (location.pathname.includes("/planchasFinalizadas")) {
             updatedTableInfo.tableName = "planchasFinalizadas";
             updatedTableInfo.endPoint = "planchasFinalizadas";
             updatedTableInfo.headerTitle = "PLANCHAS FINALIZADAS";
             updatedTableInfo.actions = updatedTableInfo.actions.filter(action => action.action !== "firmar");
         }
         setTableInfo(updatedTableInfo); // Actualiza el estado
+        console.log("Updated table info: ", updatedTableInfo);
+        
     }, [location]);
 
     const planchasActions = async (variables) => {
