@@ -5,7 +5,7 @@ import { fetchOneItem, postData } from '../helpers/fetchData';
 import { notify } from '../helpers/notify';
 import { toast } from "react-toastify";
 
-function AlbaranParcialComponent({ setTrabajosPopUp, planchaId, plancha, setTableData }) {
+function AlbaranParcialComponent({ setTrabajosPopUp, planchaId, plancha, setTableData, noActions }) {
     const [tableInfo, setTableInfo] = useState(trabajosPlanchaTableInfo);
     const [trabajos, setTrabajos] = useState([]);
     const [trabajosChecked, setTrabajosChecked] = useState([]);
@@ -13,23 +13,26 @@ function AlbaranParcialComponent({ setTrabajosPopUp, planchaId, plancha, setTabl
     const getTrabajos = async () => {
         const result = await fetchOneItem("planchas/trabajos", planchaId);
         setTrabajos(result);
-        setTableInfo(prev => ({
-            ...prev,
-            headerTitle: `TRABAJOS PLANCHA ${result[0]?.nombre_plancha || ''}`,
-            tableChecks: true,
-            actions: [
-                {
-                    title: "Solicitar",
-                    action: "solicitarParcial"
-                }
-            ]
-        }));
+
+        if (!noActions) {
+            setTableInfo(prev => ({
+                ...prev,
+                headerTitle: `TRABAJOS PLANCHA ${result[0]?.nombre_plancha || ''}`,
+                tableChecks: true,
+                actions: [
+                    {
+                        title: "Solicitar",
+                        action: "solicitarParcial"
+                    }
+                ]
+            }));
+        }
     }
 
     const actions = async (variables) => {
         const { action, data } = variables;
         const trabajosCompletos = [];
-        
+
         const countMap = trabajosChecked.reduce((acc, id) => {
             acc[id] = (acc[id] || 0) + 1;
             return acc;
@@ -74,6 +77,7 @@ function AlbaranParcialComponent({ setTrabajosPopUp, planchaId, plancha, setTabl
                         dinamicTableInfo={tableInfo}
                         initialData={trabajos}
                         customTable={true}
+                        noActionRows={true}
                     />
                 </div>
             </>

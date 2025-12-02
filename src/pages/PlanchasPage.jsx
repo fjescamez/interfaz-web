@@ -17,7 +17,9 @@ function PlanchasPage() {
     const [trabajosPopUp, setTrabajosPopUp] = useState(false);
     const [incidenciaPopUp, setIncidenciaPopUp] = useState(false);
     const [planchasDataSetter, setPlanchasDataSetter] = useState(null);
+    const [noActions, setNoActions] = useState(false);
     const location = useLocation();
+    const urlApi = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         setTableInfo(null);
@@ -38,8 +40,6 @@ function PlanchasPage() {
             updatedTableInfo.actions = updatedTableInfo.actions.filter(action => action.action !== "firmar");
         }
         setTableInfo(updatedTableInfo); // Actualiza el estado
-        console.log("Updated table info: ", updatedTableInfo);
-        
     }, [location]);
 
     const planchasActions = async (variables) => {
@@ -145,6 +145,22 @@ function PlanchasPage() {
                 // setIncidenciaPopUp(true);
                 setPlanchas([]);
                 return { status: 'success' };
+            case "verTrabajos":
+                if (planchas.length > 1) {
+                    notify(toast.error, 'error', '', 'Solo se puede ver los trabajos de una plancha a la vez');
+                    return { status: 'success' };
+                }
+                setNoActions(true);
+                setTrabajosPopUp(true);
+                return { status: 'success' };
+            case "abrirImagen":
+                if (planchas.length > 1) {
+                    notify(toast.error, 'error', '', 'Solo se puede abrir la imagen de una plancha a la vez');
+                    return { status: 'success' };
+                }
+
+                window.open(`${urlApi}/planchas/images/${plancha?.nombre_plancha}`, '_blank');
+                return { status: 'success' };
             default:
                 break;
         }
@@ -165,7 +181,7 @@ function PlanchasPage() {
                     tabTitleTemplate="PLANCHA {nombre_plancha}"
                     specificPath="/produccion/planchas"
                 />
-                {trabajosPopUp && <AlbaranParcialComponent setTrabajosPopUp={setTrabajosPopUp} planchaId={planchas[0]} plancha={planchaSuelta} setTableData={planchasDataSetter} />}
+                {trabajosPopUp && <AlbaranParcialComponent setTrabajosPopUp={setTrabajosPopUp} planchaId={planchas[0]} plancha={planchaSuelta} setTableData={planchasDataSetter} noActions={noActions} />}
                 {/* {incidenciaPopUp && <IncidenciaForm setIncidenciaPopUp={setIncidenciaPopUp} planchaId={planchas[0]} plancha={planchaSuelta} />} */}
             </>
         )
