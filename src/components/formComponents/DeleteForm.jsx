@@ -19,7 +19,8 @@ function DeleteForm({
     setTotal,
     isActive,
     setIsActive,
-    setActionEnded
+    setActionEnded,
+    extraBodyData
 }) {
     const { headerIcon, headerTitle, deleteTitle, endPoint, deleteActions } = tableInfo;
 
@@ -49,7 +50,8 @@ function DeleteForm({
                 ids: filesToDelete,
                 id_pedido: id,
                 //files: filesUrls ? filesUrls : [],
-                deleteActions
+                deleteActions,
+                ...extraBodyData || {}
             };
 
             result = await deleteMultipleObjects(endPoint, data, setData);
@@ -57,7 +59,8 @@ function DeleteForm({
             if (setActionEnded) setActionEnded(true);
         } else {
             const data = {
-                id
+                id,
+                ...extraBodyData || {}
             };
 
             result = await deleteMultipleObjects(endPoint, data, setData);

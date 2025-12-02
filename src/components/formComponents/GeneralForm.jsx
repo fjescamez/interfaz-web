@@ -167,7 +167,7 @@ function GeneralForm({
             if (setTableData) {
                 setTableData(prev =>
                     prev.map(obj =>
-                        obj._id === result.updatedItem._id
+                        (obj._id === result.updatedItem._id || obj.id === result.updatedItem.id)
                             ? { ...obj, ...inputData, _id: result.updatedItem._id }
                             : obj
                     )
@@ -180,9 +180,9 @@ function GeneralForm({
             }
         } else if (result.updatedItems) {
             setTableData(prev => {
-                return prev.map(order => {
-                    const updatedItem = result.updatedItems.find(updated => updated._id === order._id);
-                    return updatedItem ? { ...updatedItem } : order;
+                return prev.map(item => {
+                    const updatedItem = result.updatedItems.find(updated => updated._id === item._id);
+                    return updatedItem ? { ...updatedItem } : item;
                 });
             });
         }

@@ -48,72 +48,6 @@ function PlotterKiosk({ setPlotterKiosk, tareaGmg, setTareaGmg }) {
                 perfil: "ISO Coated V2 (39L)"
             }))
         }
-
-        /* if (updatedInputData.configuracion === "Manual") {
-            setGmgData(prev => ({ ...prev, configuracion: "Manual" }));
-            setFormData(prev => ({
-                ...prev,
-                formFields: prev.formFields.map(field => {
-                    if (field.htmlFor === "tipo_iso") {
-                        return {
-                            ...field,
-                            hideField: false
-                        }
-                    }
-                    if (field.htmlFor === "curva") {
-                        setGmgData(prev => ({ ...prev, curva: "" }));
-                        return { ...field, hideField: true };
-                    }
-                    if (field.htmlFor === "perfilColor") {
-                        setGmgData(prev => ({ ...prev, perfilColor: tareaGmg.perfil_iso }));
-                    }
-                    if (field.htmlFor === "tipo") {
-                        return { ...field, hideField: true };
-                    }
-                    if (field.inputName === "iso") {
-                        return { ...field, hideField: false };
-                    }
-                    return field;
-                })
-            }))
-        } else if (updatedInputData.configuracion === "Automática") {
-            // Resetear si vuelve a "Automática"
-            setGmgData(prev => ({ ...prev, configuracion: "Automática" }));
-            setFormData(prev => ({
-                ...prev,
-                formFields: prev.formFields.map(field => {
-                    if (field.htmlFor === "tipo") {
-                        return {
-                            ...field,
-                            options: tareaGmg.tipo
-                        }
-                    }
-                    if (field.inputName === "tipo_iso") {
-                        return { ...field, hideField: true };
-                    }
-                    if (field.htmlFor === "curva") {
-                        setGmgData(prev => ({ ...prev, curva: tareaGmg.curva }));
-                        return { ...field, hideField: false };
-                    }
-                    if (field.htmlFor === "perfilColor") {
-                        setGmgData(prev => ({ ...prev, perfilColor: tareaGmg.perfil }));
-                    }
-                    if (field.inputName === "iso") {
-                        setGmgData(prev => ({ ...prev, iso: "" }))
-                        return { ...field, hideField: true };
-                    }
-                    return field;
-                })
-            }));
-        }
-
-        if (updatedInputData.tipo) {
-            setGmgData(prev => ({ ...prev, tipo_iso: updatedInputData.tipo_iso }));
-        }
-
-        if (updatedInputData.iso) {
-            setGmgData(prev => ({ ...prev, iso: updatedInputData.iso }));
-        } */
     }
 
     useEffect(() => {
@@ -144,12 +78,6 @@ function PlotterKiosk({ setPlotterKiosk, tareaGmg, setTareaGmg }) {
                 estrategia: tareaGmg.estrategia,
                 fileItem: tareaGmg.fileItem,
                 registroPedido: tareaGmg.registroPedido
-                // cliente: tareaGmg.cliente,
-                // carpeta: tareaGmg.carpeta,
-                // id_pedido: tareaGmg.id_pedido,
-                // archivo: tareaGmg.archivo,
-                // id_archivo: tareaGmg.id_archivo,
-                // material: tareaGmg.material,
             }))
         }
     }, [tareaGmg]);

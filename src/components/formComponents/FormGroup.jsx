@@ -20,8 +20,10 @@ const FormGroup = React.memo(function FormGroup({
         inputName,
         minLength,
         disableField,
-        hideField
-    } = field;
+        hideField,
+        minNumber,
+        maxNumber
+    } = field;    
 
     return (
         <>
@@ -46,6 +48,9 @@ const FormGroup = React.memo(function FormGroup({
                             value={value}
                             className={error ? "error" : "" + inputType === "checkbox" ? "checkInput" : ""}
                             autoComplete="on"
+                            min={minNumber}
+                            max={maxNumber}
+                            step={inputType === "number" ? "0.01" : undefined}
                             disabled={disable || disableField}
                         />
                     }

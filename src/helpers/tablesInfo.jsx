@@ -13,6 +13,124 @@ import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
 import GroupsSvg from "../assets/svg/GroupsSvg";
 
+export const notificacionesStockTableInfo = {
+    tableName: "notificacionesStock",
+    endPoint: "stockProducts/notifications",
+    headerIcon: <FaBoxOpen />,
+    headerTitle: "NOTIFICACIONES",
+    tableColumns: [
+        {
+            header: "Categoría",
+            active: true,
+            key: "categoria_nombre"
+        },
+        {
+            header: "Producto",
+            active: true,
+            key: "nombre"
+        },
+        {
+            header: "Departamento",
+            active: true,
+            key: "departamento_nombre"
+        },
+        {
+            header: "Stock Mínimo",
+            active: true,
+            key: "stock_min"
+        },
+        {
+            header: "Stock Actual",
+            active: true,
+            key: "cantidad"
+        }
+    ]
+}
+
+export const registroTableInfo = {
+    tableName: "registro",
+    endPoint: "register",
+    headerIcon: <FaBoxOpen />,
+    headerTitle: "REGISTRO DE ACCIONES",
+    tableColumns: [
+        {
+            header: "Usuario",
+            active: true,
+            key: "usuario_nombre"
+        },
+        {
+            header: "Fecha",
+            active: true,
+            key: "fecha"
+        },
+        {
+            header: "Acción",
+            active: true,
+            key: "descripcion"
+        },
+        {
+            header: "Dpto.",
+            active: true,
+            key: "departamento_nombre"
+        },
+    ]
+}
+
+export const productosStockTableInfo = {
+    tableName: "productosStock",
+    endPoint: "stockProducts",
+    headerIcon: <FaBoxOpen />,
+    headerTitle: "PRODUCTOS",
+    tableForm: "ProductoStockForm",
+    tableColumns: [
+        {
+            header: "Código",
+            active: true,
+            key: "codigo"
+        },
+        {
+            header: "Nombre",
+            active: true,
+            key: "nombre"
+        },
+        {
+            header: "Categoría",
+            active: true,
+            key: "categoria_nombre"
+        },
+        {
+            header: "Departamento",
+            active: true,
+            key: "departamento_nombre"
+        },
+        {
+            header: "Cantidad",
+            active: true,
+            key: "cantidad"
+        }
+    ]
+};
+
+export const categoriasStockTableInfo = {
+    tableName: "categoriasStock",
+    endPoint: "stockCategories",
+    headerIcon: <FaBoxOpen />,
+    headerTitle: "CATEGORÍAS DE PRODUCTOS",
+    tableForm: "CategoriaStockForm",
+    tableColumns: [
+        {
+            header: "Nombre",
+            active: true,
+            key: "nombre"
+        },
+        {
+            header: "Descripción",
+            active: true,
+            key: "descripcion"
+        }
+    ]
+};
+
 export const refContinuosTableInfo = {
     tableName: "refContinuos",
     endPoint: "refProduccion/refContinuos",
@@ -404,6 +522,14 @@ export const planchasTableInfo = {
             title: "Incidencia",
             action: "incidencia"
         },
+        {
+            title: "Ver Trabajos",
+            action: "verTrabajos"
+        },
+        {
+            title: "Abrir Imagen",
+            action: "abrirImagen"
+        },
     ]
 };
 
@@ -488,8 +614,7 @@ export const tintasTableInfo = {
             action: "configPlancha",
             noCheck: true
         }
-    ],
-    tableChecks: true
+    ]
 }
 
 export const infoGmgTableInfo = {
@@ -526,7 +651,6 @@ export const ripTableInfo = {
     endPoint: "montajes/rip",
     headerIcon: <MontajeSvg />,
     headerTitle: "RIP MONTAJE",
-    tableChecks: true,
     tableColumns: [
         {
             header: "Color",
@@ -698,7 +822,6 @@ export const fileTableInfo = {
     endPoint: "files",
     headerIcon: <PiImagesLight />,
     headerTitle: "FICHAS",
-    tableChecks: true,
     tableColumns: [
         {
             header: "Previo",
@@ -740,7 +863,6 @@ export const orderLenTableInfo = {
     endPoint: "lenFiles",
     headerIcon: <LenFile />,
     headerTitle: "ARCHIVOS LEN",
-    tableChecks: true,
     tableColumns: [
         {
             header: "Archivo",
@@ -820,7 +942,6 @@ export const lenTableInfo = {
     endPoint: "lenFiles",
     headerIcon: <LenFile />,
     headerTitle: "ARCHIVOS LEN",
-    tableChecks: true,
     tableColumns: [
         {
             header: "Pedido",
@@ -1111,8 +1232,7 @@ export const orderTableInfo = {
             action: "desasignar"
         }
     ],
-    rolesActions: ["Manager", "Soporte"],
-    usersActions: ["n.morante", "a.artacho"]
+    rolesActions: ["Manager", "Soporte"]
 };
 
 export const clientTableInfo = {

@@ -70,7 +70,7 @@ function SideBarComponent({ isActive, setIsActive }) {
                 {(isAdmin || isProduccion || isOficina) && (
                     <>
                         <div className="border"></div>
-                        <div className={`icons ${isActive.produccion ? "active" : ""}`} onClick={() => handleClick("produccion", "PRODUCCION")} data-tooltip-id="my-tooltip" data-tooltip-content={"PRODUCCION"} >
+                        <div className={`icons ${isActive.produccion ? "active" : ""}`} onClick={() => handleClick("produccion", "PRODUCCIÓN")} data-tooltip-id="my-tooltip" data-tooltip-content={"PRODUCCIÓN"} >
                             <PiOven />
                         </div>
 

@@ -4,7 +4,7 @@ import $ from "jquery";
 function ChosenSelect({ options, name, onChange, multiple, value, disabled, className }) {
     const selectRef = useRef(null);
     const placeholderMultiple = disabled ? " " : "Elige uno o varios";
-    const placeholderSimple = disabled ? " " : "Selecciona una opción";    
+    const placeholderSimple = disabled ? " " : "Selecciona una opción";
 
     useEffect(() => {
         window.$ = $;
@@ -24,14 +24,15 @@ function ChosenSelect({ options, name, onChange, multiple, value, disabled, clas
                     if (multiple) {
                         const ids = Array.from(e.target.selectedOptions).map(opt => opt.value);
                         selectedValue = (typeof options[0] === "object" && name !== "ids")
-                            ? options.filter(o => ids.includes(o._id)) // devuelve array de objetos
+                            ? options.filter(o => ids.includes(o._id || o.id)) // devuelve array de objetos
                             : ids;
 
                         // selectedValue = ids;
                     } else {
                         const id = e.target.value;
+
                         selectedValue = (typeof options[0] === "object" && name !== "ids")
-                            ? options.find(o => o._id === id)
+                            ? options.find(o => (o._id === id || o.id === Number(id)))
                             : id;
                     }
 
@@ -62,9 +63,9 @@ function ChosenSelect({ options, name, onChange, multiple, value, disabled, clas
             value={
                 multiple
                     ? (Array.isArray(value)
-                        ? value.map(v => (typeof v === "object" ? v._id : v))
+                        ? value.map(v => (typeof v === "object" ? (v._id || v.id) : v))
                         : [])
-                    : (typeof value === "object" ? value._id : value || "")
+                    : (typeof value === "object" ? (value._id || value.id) : value || "")
             }
             onChange={onChange}
             disabled={disabled}
@@ -76,8 +77,8 @@ function ChosenSelect({ options, name, onChange, multiple, value, disabled, clas
                 let text = opt;
 
                 if (typeof opt === 'object') {
-                    value = opt._id;
-                    key = opt._id;
+                    value = opt._id || opt.id;
+                    key = opt._id || opt.id;
                     text = opt.textoOpcion;
                 }
 

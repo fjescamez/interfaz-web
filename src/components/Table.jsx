@@ -49,6 +49,7 @@ function Table({
     customTable
 }) {
     const urlApi = import.meta.env.VITE_API_URL;
+    const location = useLocation();
     const socket = useSocket();
     const [checkedIndexes, setCheckedIndexes] = useState([]);
     const [orderBy, setOrderBy] = useState("");
@@ -58,23 +59,23 @@ function Table({
     const [total, setTotal] = useState(0);
     const [page, setPage] = useState(1);
     const [actionEnded, setActionEnded] = useState(true);
+    const { tabs, setTabs } = useTabs();
+    const actualTab = (tabs.find(tab => tab.path === location.pathname));
     const [search, setSearch] = useState(orderFilter ? orderFilter : "");
     const [debouncedSearch, setDebouncedSearch] = useState(search);
     const navigate = useNavigate();
-    const location = useLocation();
     const { clienteCodigos, clienteDatos } = useClienteFilter();
     const clienteCodigo = clienteCodigos[location.pathname] || null;
     const clienteDato = clienteDatos[location.pathname] || null;
     const [tableInfo, setTableInfo] = useState(dinamicTableInfo);
-    const { headerIcon, headerTitle, tableColumns, tableName, endPoint, tableForm, tableChecks, defaultChecks, rolesActions, usersActions } = tableInfo;
+    const { headerIcon, headerTitle, tableColumns, tableName, endPoint, tableForm, rolesActions } = tableInfo;
     const tableActions = tableInfo.actions || [];
-    const { tabs, setTabs } = useTabs();
     const [editTable, setEditTable] = useState(false);
     const [advancedFilters, setAdvancedFilters] = useState(false);
-    const [advancedQuery, setAdvancedQuery] = useState({});
+    const [advancedQuery, setAdvancedQuery] = useState(null);
     const { session } = useSession();
     const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
-    const [showChecks, setShowChecks] = useState((tableChecks || defaultChecks) ? true : false);
+    const [showChecks, setShowChecks] = useState(tableActions.length > 0 && tableActions.some(action => !action.noCheck) && (rolesActions ? rolesActions.includes(session?.role) : true));
     const [tableCharging, setTableCharging] = useState(!initialData ? true : false);
     const [noDataToShow, setNoDataToShow] = useState(false);
     const [copyMenu, setCopyMenu] = useState({
@@ -87,7 +88,7 @@ function Table({
     const getData = async (page, searchValue = "", clientFilter = "") => {
         const result = await fetchData(endPoint, searchValue, page, setTableData, setTotal, clientFilter, userFilter);
         setTableCharging(false);
-        if (result && result.length < 1 && (!tableInfo.actions.some(item => alwaysVisibleActions?.includes(item.action)))) {
+        if (result && result.length < 1 && (!tableInfo.actions?.some(item => alwaysVisibleActions?.includes(item.action)))) {
             setNoDataToShow(true);
         } else {
             setNoDataToShow(false);
@@ -99,11 +100,20 @@ function Table({
             navigate("/login");
             return;
         }
+        
+        if (actualTab && actualTab.advancedQuery) {
+            setAdvancedFilters(true);
+            setAdvancedQuery(actualTab.advancedQuery);
+        } else if (actualTab && actualTab.search) {
+            setDebouncedSearch(actualTab.search);
+            setSearch(actualTab.search);
+        }
     }, []);
 
     useEffect(() => {
-        setSearch("");
-        setAdvancedQuery({});
+        if (!actualTab?.advancedQuery) {
+            setAdvancedQuery({});
+        }
         setPage(1);
     }, [location]);
 
@@ -160,13 +170,24 @@ function Table({
     }, [initialData]);
 
     useEffect(() => {
-        const searchParams = new URLSearchParams(advancedQuery).toString();
+        if (advancedQuery !== null) {
+            const searchParams = new URLSearchParams(advancedQuery).toString();
 
-        if (searchParams !== "") {
-            getData(page, searchParams, clienteCodigo || clientFilter);
-        } else {
-            if (!initialData) {
-                getData(page, search, clienteCodigo || clientFilter);
+            if (searchParams !== "") {
+                setTabs((prevTabs) =>
+                    prevTabs.map((tab) => {
+                        if (tab.path === location.pathname) {
+                            const { advancedQuery, ...rest } = tab; // Elimina advancedQuery
+                            return rest;
+                        }
+                        return tab;
+                    })
+                );
+                getData(page, searchParams, clienteCodigo || clientFilter);
+            } else {
+                if (!initialData) {
+                    getData(page, search, clienteCodigo || clientFilter);
+                }
             }
         }
     }, [advancedQuery]);
@@ -207,13 +228,52 @@ function Table({
     }, [page]);
 
     const handleClick = (data, index) => {
-        if (showChecks) {
-            handleChecked(data._id ? data._id : data.id, index);
-            return;
-        } else if (openRows) {
+        if (openRows) {
             return actions({ action: "openRow", data, index });
         } else if (noActionRows) {
             return;
+        }
+
+        if (Object.keys(advancedQuery || {}).length > 0) {
+            setTabs((prevTabs) =>
+                prevTabs.map((tab) => {
+                    if (tab.path === location.pathname) {
+                        return { ...tab, advancedQuery };
+                    }
+                    return tab;
+                })
+            );
+        } else {
+            setTabs((prevTabs) =>
+                prevTabs.map((tab) => {
+                    if (tab.path === location.pathname) {
+                        const { advancedQuery, ...rest } = tab; // Elimina advancedQuery
+                        return rest;
+                    }
+                    return tab;
+                })
+            );
+
+            if (search.length > 0) {
+                setTabs((prevTabs) =>
+                    prevTabs.map((tab) => {
+                        if (tab.path === location.pathname) {
+                            return { ...tab, search };
+                        }
+                        return tab;
+                    })
+                );
+            } else {
+                setTabs((prevTabs) =>
+                    prevTabs.map((tab) => {
+                        if (tab.path === location.pathname) {
+                            const { search, ...rest } = tab; // Elimina search
+                            return rest;
+                        }
+                        return tab;
+                    })
+                );
+            }
         }
 
         const { _id, id, id_plancha } = data;
@@ -229,7 +289,6 @@ function Table({
             });
         }
 
-        //setModal(false);
         if (setPopUpTable) {
             setPopUpTable(false);
         }
@@ -254,6 +313,7 @@ function Table({
     };
 
     const showMore = async () => {
+        setAdvancedFilters(false);
         setPage(prevPage => prevPage + 1);
     }
 
@@ -320,7 +380,9 @@ function Table({
     }, [orderBy]);
 
     useEffect(() => {
-        setSearch(orderFilter ? orderFilter : "");
+        if (orderFilter) {
+            setSearch(orderFilter ? orderFilter : "");
+        }
     }, [orderFilter])
 
     // Debounce para la búsqueda
@@ -337,6 +399,18 @@ function Table({
         if ((debouncedSearch.length >= 3 || debouncedSearch.length === 0) && !initialData) {
             setPage(1);
             getData(1, debouncedSearch, clienteCodigo || clientFilter);
+
+            if (debouncedSearch.length === 0) {
+                setTabs((prevTabs) =>
+                    prevTabs.map((tab) => {
+                        if (tab.path === location.pathname) {
+                            const { search, ...rest } = tab; // Elimina search
+                            return rest;
+                        }
+                        return tab;
+                    })
+                );
+            }
         }
     }, [debouncedSearch]);
 
@@ -457,14 +531,14 @@ function Table({
                             <h1>{specificHeaderTitle ? specificHeaderTitle : headerTitle}</h1>
                         </div>
                         <div className="headerActions">
-                            {(tableInfo.actions && !tableChecks && (!tableInfo?.actions.every(action => action.hasOwnProperty('noCheck'))) && ((!rolesActions?.length || rolesActions?.includes(session?.role) || (!usersActions?.length || usersActions?.includes(session?.username))))) && (
+                            {/* {(tableInfo.actions && !tableChecks && (!tableInfo?.actions.every(action => action.hasOwnProperty('noCheck'))) && ((!rolesActions?.length || rolesActions?.includes(session?.role) || (!usersActions?.length || usersActions?.includes(session?.username))))) && (
                                 showChecks
                                     ?
-                                    <MdLockOpen className="tableLock" onClick={() => { setShowChecks(false); setCheckedRows([]); setCheckedIndexes([])}} />
+                                    <MdLockOpen className="tableLock" onClick={() => { setShowChecks(false); setCheckedRows([]); setCheckedIndexes([]) }} />
                                     :
-                                    <MdLockOutline className="tableLock" onClick={() => { setShowChecks(true); setCheckedRows([]); setCheckedIndexes([])}} />
-                            )}
-                            {!initialData && <HiOutlineRefresh className="tableRefresh" onClick={() => refreshTable()} />}
+                                    <MdLockOutline className="tableLock" onClick={() => { setShowChecks(true); setCheckedRows([]); setCheckedIndexes([]) }} />
+                            )} */}
+                            {<HiOutlineRefresh className="tableRefresh" onClick={() => refreshTable()} />}
                             {(tableForm && (isAdmin || publicForm)) && (
                                 <button onClick={() => setModal(true)}>
                                     <svg id="Layer_1" data-name="Layer 1"
@@ -534,7 +608,7 @@ function Table({
                         (tableData.length > 0 || tableInfo.actions.some(item => alwaysVisibleActions?.includes(item.action))) &&
                         !(tableInfo.actions.length === 1 && tableInfo.actions[0].action === "eliminar") &&
                         !tableCharging &&
-                        (!rolesActions?.length || rolesActions?.includes(session.role) || (!usersActions?.length || usersActions?.includes(session.username))) && (
+                        (!rolesActions?.length || rolesActions?.includes(session?.role)) && (
                             <div className="tableInfoActions">
                                 {actionEnded
                                     ?
@@ -622,7 +696,7 @@ function Table({
                             {tableData.map((data, index) => (
                                 <tr key={data._id || index} onClick={() => handleClick(data, index)} className={data.xml ? (data.xml.numero.version === currentVersion ? "activeRow" : undefined) : undefined} >
                                     {showChecks && (
-                                        <td className="checkElement">
+                                        <td className="checkElement" onClick={(e) => { e.stopPropagation(); handleChecked(data._id || data.id, index); }}>
                                             <input
                                                 type="checkbox"
                                                 className="check"
@@ -734,7 +808,6 @@ function Table({
                     isActive={checkedRows}
                     setIsActive={setCheckedRows}
                     setActionEnded={setActionEnded}
-                //filesUrls={filesUrls}
                 />
             }
         </>

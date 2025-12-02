@@ -61,6 +61,29 @@ export const fetchData = async (endPoint, searchValue, page = "1", setData, setT
     }
 };
 
+export const fetchDataNoLimits = async (endPoint) => {
+    const urlApi = import.meta.env.VITE_API_URL;
+
+    let url = `${urlApi}/${endPoint}/getAll`;
+
+    const session = JSON.parse(localStorage.getItem('session'));
+
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session.token}`
+            }
+        })
+        const data = await response.json();
+
+        return data;
+    } catch (error) {
+        notify(toast.error, 'error', 'Error', 'Ha ocurrido un error al cargar los datos');
+    }
+}
+
 export const fetchOneItem = async (endPoint, id) => {
     const urlApi = import.meta.env.VITE_API_URL;
 

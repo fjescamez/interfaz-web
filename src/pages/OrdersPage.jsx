@@ -24,7 +24,6 @@ function OrdersPage({ filter, filterBandeja }) {
     if (session) {
         ({ role, username } = session);
         isManager = role === "Manager" || role === "Soporte";
-        isTeletrabajo = username === "n.morante" || username === "a.artacho";
     }
     const userFilter = filterBandeja ? username : "";
 
@@ -75,7 +74,7 @@ function OrdersPage({ filter, filterBandeja }) {
                 dinamicTableInfo={tableInfo}
                 normalizedData={true}
                 checkedRows={checkedOrders}
-                setCheckedRows={isManager || isTeletrabajo ? setCheckedOrders : null}
+                setCheckedRows={isManager ? setCheckedOrders : null}
                 actions={orderActions}
                 tabTitleTemplate={"{id_pedido}"}
                 specificPath={`/${tableInfo.tableName}`}

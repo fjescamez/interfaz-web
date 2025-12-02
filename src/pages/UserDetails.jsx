@@ -25,7 +25,7 @@ function UserDetails({ toggleKiosk }) {
     const { session } = useSession();
     const [showInfo, setShowInfo] = useState(true);
     const { grid } = usersDetails;
-    const isAdmin = session.role === "Administrador";
+    const isAdmin = session.role === "Administrador" || session.role === "Soporte";
     const location = useLocation();
 
     useEffect(() => {
@@ -62,6 +62,7 @@ function UserDetails({ toggleKiosk }) {
                     setModal={setEditPopup}
                     mode={"edit"}
                     user={user}
+                    setUser={setUser}
                 />
             )}
             {(deletePopup && isAdmin) && (
@@ -74,8 +75,8 @@ function UserDetails({ toggleKiosk }) {
             <div className="detailsScroll">
                 {showInfo
                     ? <div className="formSections">
-                        {userFormData.formSections.map((section) => (
-                            <div key={section.title} className="formSection">
+                        {userFormData.formSections.map((section, index) => (
+                            <div key={index} className="formSection">
                                 <FormSection
                                     sectionData={section}
                                     formFields={userFormData.formFields}

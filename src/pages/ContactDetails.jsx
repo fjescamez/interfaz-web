@@ -23,7 +23,7 @@ function ContactDetails({ toggleKiosk }) {
     const { session } = useSession();
     const [showInfo, setShowInfo] = useState(true);
     //const { grid } = usersDetails;
-    const isAdmin = session.role === "Administrador";
+    const isAdmin = session.role === "Administrador" || session.role === "Soporte";
     const location = useLocation();
 
     const clienteNombreOptions = contact.cliente_nombre ? [contact.cliente_nombre] : [];

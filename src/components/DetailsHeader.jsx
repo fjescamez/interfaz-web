@@ -7,6 +7,7 @@ import { TiInfoLarge } from 'react-icons/ti';
 function DetailsHeader({
     title,
     subtitle,
+    underTitle,
     avatar,
     endPoint,
     id,
@@ -40,6 +41,7 @@ function DetailsHeader({
                     <div className="details">
                         <h1>{title} {subtitle && <span>({subtitle})</span>}</h1>
                         {endPoint === "users" && <p><span>Departamento/s:</span> {(departments && departments[0]) ? departments.join(" - ") : "No asignado"}</p>}
+                        {underTitle && <p>{underTitle}</p>}
                     </div>
                     {(!hideInfoIcon && grid) && <TiInfoLarge style={showInfo ? { backgroundColor: "var(--highlight)" } : {}} onClick={toggleInfo} />}
                 </div>

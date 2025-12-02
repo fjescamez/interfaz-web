@@ -1,4 +1,4 @@
-import { FaUserCircle } from "react-icons/fa";
+import { FaUserCircle, FaBoxOpen } from "react-icons/fa";
 import { TiContacts } from "react-icons/ti";
 import { PiEnvelopeLight, PiNoteLight } from "react-icons/pi";
 import { BsFiletypeDoc, BsFiletypeXml } from "react-icons/bs";
@@ -10,6 +10,181 @@ import { AiOutlineSignature } from "react-icons/ai";
 import GroupsSvg from "../assets/svg/GroupsSvg";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
+
+export const ordenesFormData = {
+    headerIcon: <FaBoxOpen />,
+    headerTitle: "NUEVA ORDEN DE COMPRA",
+    formSections: [
+        {
+            rows: [
+                {
+                    groups: ["solicitante", "departamento"]
+                },
+                {
+                    groups: ["producto"]
+                },
+                {
+                    groups: ["cantidad_solicitada"]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "solicitante",
+            labelId: "solicitanteLabel",
+            labelTitle: "Solicitante",
+            inputType: "text",
+            inputId: "solicitante",
+            inputName: "solicitante",
+            required: true,
+            disableField: true
+        },
+        {
+            htmlFor: "departamento",
+            labelId: "departamentoLabel",
+            labelTitle: "Departamento",
+            inputType: "text",
+            inputId: "departamento",
+            inputName: "departamento",
+            required: true,
+            disableField: true
+        },
+        {
+            htmlFor: "producto",
+            labelId: "productoLabel",
+            labelTitle: "Producto",
+            inputType: "text",
+            inputId: "producto",
+            inputName: "producto",
+            required: true,
+            disableField: true
+        },
+        {
+            htmlFor: "cantidad_solicitada",
+            labelId: "cantidad_solicitadaLabel",
+            labelTitle: "Cantidad",
+            inputType: "number",
+            minNumber: 0,
+            inputId: "cantidad_solicitada",
+            inputName: "cantidad_solicitada",
+            required: true
+        },
+    ]
+}
+
+export const productosStockFormData = {
+    headerIcon: <FaBoxOpen />,
+    headerTitle: "AÑADIR PRODUCTO DE STOCK",
+    editTitle: "EDITAR PRODUCTO DE STOCK",
+    formSections: [
+        {
+            rows: [
+                {
+                    groups: ["nombre"]
+                },
+                {
+                    groups: ["categoria"]
+                },
+                {
+                    groups: ["departamento"]
+                },
+                {
+                    groups: ["stock_min", "cantidad"]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "nombre",
+            labelId: "nombreLabel",
+            labelTitle: "Nombre",
+            inputType: "text",
+            inputId: "nombre",
+            inputName: "nombre",
+            required: true
+        },
+        {
+            htmlFor: "categoria",
+            labelId: "categoriaLabel",
+            labelTitle: "Categoría",
+            select: "simple",
+            options: [],
+            inputId: "categoria",
+            inputName: "categoria",
+            required: true
+        },
+        {
+            htmlFor: "departamento",
+            labelId: "departamentoLabel",
+            labelTitle: "Departamento",
+            select: "simple",
+            options: [],
+            inputId: "departamento",
+            inputName: "departamento",
+            required: true
+        },
+        {
+            htmlFor: "stock_min",
+            labelId: "stock_minLabel",
+            labelTitle: "Stock Min",
+            inputType: "number",
+            minNumber: 0,
+            inputId: "stock_min",
+            inputName: "stock_min",
+            required: true
+        },
+        {
+            htmlFor: "cantidad",
+            labelId: "cantidadLabel",
+            labelTitle: "Cantidad",
+            inputType: "number",
+            minNumber: 0,
+            inputId: "cantidad",
+            inputName: "cantidad",
+            required: true
+        },
+    ]
+}
+
+export const categoriasStockFormData = {
+    headerIcon: <FaBoxOpen />,
+    headerTitle: "AÑADIR CATEGORÍA DE PRODUCTO",
+    editTitle: "EDITAR CATEGORÍA DE PRODUCTO",
+    formSections: [
+        {
+            rows: [
+                {
+                    groups: ["nombre"]
+                },
+                {
+                    groups: ["descripcion"]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "nombre",
+            labelId: "nombreLabel",
+            labelTitle: "Nombre",
+            inputType: "text",
+            inputId: "nombre",
+            inputName: "nombre",
+            required: true
+        },
+        {
+            htmlFor: "descripcion",
+            labelId: "descripcionLabel",
+            labelTitle: "Descripción",
+            textarea: true,
+            inputId: "descripcion",
+            inputName: "descripcion",
+            required: true
+        }
+    ]
+}
 
 export const refContinuosFormData = {
     headerIcon: <IoDocumentTextOutline />,
@@ -1062,6 +1237,18 @@ export const xmlFormData = {
                 },
                 {
                     groups: [
+                        "distancia_trapping",
+                        "intensidad"
+                    ]
+                },
+                {
+                    groups: [
+                        "remetido",
+                        "distancia_remetido"
+                    ]
+                },
+                {
+                    groups: [
                         "hacerSeparaciones"
                     ]
                 },
@@ -1087,7 +1274,8 @@ export const xmlFormData = {
                 },
                 {
                     groups: [
-                        "paradaFreecut"
+                        "paradaFreecut",
+                        "test"
                     ]
                 },
             ]
@@ -1283,7 +1471,7 @@ export const xmlFormData = {
             inputType: "checkbox",
             inputId: "paradaFreecut",
             inputName: "paradaFreecut"
-        },
+        }
     ]
 }
 
@@ -1780,6 +1968,17 @@ export const userFormData = {
     editTitle: "EDITAR USUARIO",
     formSections: [
         {
+            rows: [
+                {
+                    groups: [
+                        "role",
+                        "departments",
+                        "responsibleDepartments"
+                    ]
+                }
+            ]
+        },
+        {
             title: "Datos personales",
             rows: [
                 {
@@ -1802,16 +2001,6 @@ export const userFormData = {
                 },
             ]
         },
-        {
-            rows: [
-                {
-                    groups: [
-                        "role",
-                        "departments"
-                    ]
-                }
-            ]
-        }
     ],
     formFields: [
         {
@@ -1872,6 +2061,23 @@ export const userFormData = {
             ],
             inputId: "departments",
             inputName: "departments"
+        },
+        {
+            htmlFor: "responsibleDepartments",
+            labelId: "responsibleDepartmentsLabel",
+            labelTitle: "Responsable de",
+            select: "multiple",
+            options: [
+                "Oficina",
+                "Dibujo",
+                "Sólido",
+                "Líquido",
+                "Montaje",
+                "Expediciones",
+                "Técnico"
+            ],
+            inputId: "responsibleDepartments",
+            inputName: "responsibleDepartments"
         },
         {
             htmlFor: "email",

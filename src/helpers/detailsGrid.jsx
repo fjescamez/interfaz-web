@@ -1,7 +1,7 @@
 import { MdOutlineEmail } from "react-icons/md";
 import { CgFileDocument } from "react-icons/cg";
 import { TbColorSwatch } from "react-icons/tb";
-import { FiPrinter } from "react-icons/fi";
+import { FaBoxOpen } from "react-icons/fa";
 import { PiGear } from "react-icons/pi";
 import { TiContacts } from "react-icons/ti";
 import { IoDocumentTextOutline } from "react-icons/io5";
@@ -131,37 +131,37 @@ export const stockDetails = {
     title: "Control de Stock",
     grid: [
         {
-            icon: <FiPrinter />,
+            icon: <FaBoxOpen />,
             title: "Categorías",
             key: "categorias"
         },
         {
-            icon: <FiPrinter />,
+            icon: <FaBoxOpen />,
             title: "Productos",
             key: "productos"
         },
         {
-            icon: <FiPrinter />,
+            icon: <FaBoxOpen />,
             title: "Notificaciones",
-            key: "notifiaciones"
+            key: "notificacionesDepartamento"
         },
         {
-            icon: <FiPrinter />,
+            icon: <FaBoxOpen />,
             title: "Órdenes de compra",
             key: "ordenesCompra"
         },
         {
-            icon: <FiPrinter />,
+            icon: <FaBoxOpen />,
             title: "Registro",
             key: "registro"
         },
         {
-            icon: <FiPrinter />,
+            icon: <FaBoxOpen />,
             title: "Incidencias",
             key: "incidencias"
         },
         {
-            icon: <FiPrinter />,
+            icon: <FaBoxOpen />,
             title: "Inventario",
             key: "inventario"
         },
