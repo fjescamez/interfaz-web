@@ -100,6 +100,7 @@ function PlanchasPage() {
                     return { status: 'success' };
                 }
                 
+                setNoActions(false);
                 setPlanchasDataSetter(() => setTableData);
                 setTrabajosPopUp(true);
                 return { status: 'success' };
