@@ -111,6 +111,95 @@ function Table({
     }, []);
 
     useEffect(() => {
+        if (advancedQuery && Object.keys(advancedQuery).length > 0) {
+            setTabs((prevTabs) =>
+                prevTabs.map((tab) => {
+                    if (tab.path === location.pathname) {
+                        return { ...tab, advancedQuery };
+                    }
+                    return tab;
+                })
+            );
+        } else {
+            // Si advancedQuery está vacío, elimínalo de la pestaña actual
+            setTabs((prevTabs) =>
+                prevTabs.map((tab) => {
+                    if (tab.path === location.pathname) {
+                        const { advancedQuery, ...rest } = tab; // Elimina advancedQuery
+                        return rest;
+                    }
+                    return tab;
+                })
+            );
+        }
+
+        if (search.length > 0) {
+            setTabs((prevTabs) =>
+                prevTabs.map((tab) => {
+                    if (tab.path === location.pathname) {
+                        return { ...tab, search };
+                    }
+                    return tab;
+                })
+            );
+        } else {
+            setTabs((prevTabs) =>
+                prevTabs.map((tab) => {
+                    if (tab.path === location.pathname) {
+                        const { search, ...rest } = tab; // Elimina search
+                        return rest;
+                    }
+                    return tab;
+                })
+            );
+        }
+    }, [advancedQuery, search, setTabs, location.pathname]);
+
+    useEffect(() => {
+        if (Object.keys(advancedQuery || {}).length > 0) {
+            setTabs((prevTabs) =>
+                prevTabs.map((tab) => {
+                    if (tab.path === location.pathname) {
+                        return { ...tab, advancedQuery };
+                    }
+                    return tab;
+                })
+            );
+        } else {
+            setTabs((prevTabs) =>
+                prevTabs.map((tab) => {
+                    if (tab.path === location.pathname) {
+                        const { advancedQuery, ...rest } = tab; // Elimina advancedQuery
+                        return rest;
+                    }
+                    return tab;
+                })
+            );
+
+            if (search.length > 0) {
+                setTabs((prevTabs) =>
+                    prevTabs.map((tab) => {
+                        if (tab.path === location.pathname) {
+                            return { ...tab, search };
+                        }
+                        return tab;
+                    })
+                );
+            } else {
+                setTabs((prevTabs) =>
+                    prevTabs.map((tab) => {
+                        if (tab.path === location.pathname) {
+                            const { search, ...rest } = tab; // Elimina search
+                            return rest;
+                        }
+                        return tab;
+                    })
+                );
+            }
+        }
+    }, [search, advancedQuery]);
+
+    useEffect(() => {
         if (!actualTab?.advancedQuery) {
             setAdvancedQuery({});
         }
@@ -174,15 +263,6 @@ function Table({
             const searchParams = new URLSearchParams(advancedQuery).toString();
 
             if (searchParams !== "") {
-                setTabs((prevTabs) =>
-                    prevTabs.map((tab) => {
-                        if (tab.path === location.pathname) {
-                            const { advancedQuery, ...rest } = tab; // Elimina advancedQuery
-                            return rest;
-                        }
-                        return tab;
-                    })
-                );
                 getData(page, searchParams, clienteCodigo || clientFilter);
             } else {
                 if (!initialData) {
@@ -232,48 +312,6 @@ function Table({
             return actions({ action: "openRow", data, index });
         } else if (noActionRows) {
             return;
-        }
-
-        if (Object.keys(advancedQuery || {}).length > 0) {
-            setTabs((prevTabs) =>
-                prevTabs.map((tab) => {
-                    if (tab.path === location.pathname) {
-                        return { ...tab, advancedQuery };
-                    }
-                    return tab;
-                })
-            );
-        } else {
-            setTabs((prevTabs) =>
-                prevTabs.map((tab) => {
-                    if (tab.path === location.pathname) {
-                        const { advancedQuery, ...rest } = tab; // Elimina advancedQuery
-                        return rest;
-                    }
-                    return tab;
-                })
-            );
-
-            if (search.length > 0) {
-                setTabs((prevTabs) =>
-                    prevTabs.map((tab) => {
-                        if (tab.path === location.pathname) {
-                            return { ...tab, search };
-                        }
-                        return tab;
-                    })
-                );
-            } else {
-                setTabs((prevTabs) =>
-                    prevTabs.map((tab) => {
-                        if (tab.path === location.pathname) {
-                            const { search, ...rest } = tab; // Elimina search
-                            return rest;
-                        }
-                        return tab;
-                    })
-                );
-            }
         }
 
         const { _id, id, id_plancha } = data;
