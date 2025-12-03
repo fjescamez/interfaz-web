@@ -53,6 +53,10 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
         const ripTypes = ["ripAuto", "ripInterior", "ripExterior", "ripPixel"];
 
         if (ripTypes.includes(action)) {
+            if (action === "ripAuto" && fullOrder?.xml?.tecnicos?.tipo_impresion !== "INTERIOR" && fullOrder?.xml?.tecnicos?.tipo_impresion !== "EXTERIOR") {
+                return notify(toast.error, 'error', 'Error', 'El tipo de impresión no está definido en el pedido');
+            }
+
             const ripData = {
                 ids: colorIds,
                 action: title,

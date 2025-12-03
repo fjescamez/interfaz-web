@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { isValidRoute } from "../routes";
 
@@ -14,10 +14,6 @@ export function TabsProvider(props) {
         let title = path === "/home" ? "INICIO" : path.substring(1).toUpperCase();
         return path !== "/" ? [{ path, title }] : [];
     });
-
-    // Ya no se añade automáticamente la pestaña en useEffect.
-    // Ahora hay que añadir la pestaña manualmente desde el componente que navega,
-    // pasando el título
 
     const closeTab = (path) => {
         if (location.pathname === path) {
@@ -42,6 +38,35 @@ export function TabsProvider(props) {
     };
 
     const filteredTabs = tabs.filter(tab => !tab.path.startsWith("/login"));
+
+    useEffect(() => {
+        const handleKeyUp = (e) => {
+            if (e.key === "ArrowLeft") {
+                const currentIndex = filteredTabs.findIndex(tab => tab.path === location.pathname);
+                if (currentIndex > 0) {
+                    navigate(filteredTabs[currentIndex - 1].path);
+                }
+            }
+
+            if (e.key === "ArrowRight") {
+                const currentIndex = filteredTabs.findIndex(tab => tab.path === location.pathname);
+                if (currentIndex < filteredTabs.length - 1) {
+                    navigate(filteredTabs[currentIndex + 1].path);
+                }
+            }
+
+            if (e.key === "<") {
+                e.preventDefault();
+                closeTab(location.pathname);
+            }
+        };
+
+        window.addEventListener("keyup", handleKeyUp);
+
+        return () => {
+            window.removeEventListener("keyup", handleKeyUp);
+        };
+    }, [location.pathname, tabs]);
 
     return (
         <TabsContext.Provider value={{ tabs: filteredTabs, setTabs, closeTab, closeAllTabs }}>
