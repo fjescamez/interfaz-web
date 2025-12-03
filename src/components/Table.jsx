@@ -100,7 +100,7 @@ function Table({
             navigate("/login");
             return;
         }
-        
+
         if (actualTab && actualTab.advancedQuery) {
             setAdvancedFilters(true);
             setAdvancedQuery(actualTab.advancedQuery);
@@ -488,16 +488,35 @@ function Table({
         });
     };
 
-    const handleRightClick = (e, value) => {
+    const handleRightClick = (variables) => {
+        const { e, value, data } = variables;
         e.preventDefault();
+
         if (typeof value === "object") return;
+
         setCopyMenu({
             visible: true,
             x: e.pageX,
             y: e.pageY,
-            value
+            value,
+            data
         });
     };
+
+    const handleOpenInNewTab = (data) => {
+        const { _id, id, id_plancha } = data;
+        const tabTitle = tabTitleTemplate.replace(/\{(\w+)\}/g, (_, key) => data[key] || "");
+
+        let path = `${specificPath || location.pathname}/${id_plancha || id || _id}`;
+
+        // Solo agrega la pestaña si no existe
+        if (!tabs.some(tab => tab.path === path)) { // Redundante
+            setTabs(prev => {
+                if (prev.some(tab => tab.path === path)) return prev; // Redundante
+                return [...prev, { path, title: tabTitle.toUpperCase() }];
+            });
+        }
+    }
 
     const copyValue = () => {
         const tempInput = document.createElement("input");
@@ -694,7 +713,11 @@ function Table({
                                 </tr>
                             )}
                             {tableData.map((data, index) => (
-                                <tr key={data._id || index} onClick={() => handleClick(data, index)} className={data.xml ? (data.xml.numero.version === currentVersion ? "activeRow" : undefined) : undefined} >
+                                <tr
+                                    key={data._id || index}
+                                    onClick={() => handleClick(data, index)}
+                                    className={data.xml ? (data.xml.numero.version === currentVersion ? "activeRow" : undefined) : undefined}
+                                >
                                     {showChecks && (
                                         <td className="checkElement" onClick={(e) => { e.stopPropagation(); handleChecked(data._id || data.id, index); }}>
                                             <input
@@ -742,7 +765,13 @@ function Table({
                                                 key={column.key}
                                                 data-tooltip-id="my-tooltip"
                                                 data-tooltip-content={value}
-                                                onContextMenu={(e) => handleRightClick(e, value)}
+                                                onContextMenu={(e) => handleRightClick({ e, value, data })}
+                                                onMouseUp={(e) => {
+                                                    if (e.button === 1) {
+                                                        e.preventDefault();
+                                                        handleOpenInNewTab(data);
+                                                    }
+                                                }}
                                                 className={tdGrandes && tdGrandes.includes(column.key) ? "tdGrande" : ""}
                                             >
                                                 {/* Comprobación para que no reviente con objetos vacíos */}
@@ -768,6 +797,12 @@ function Table({
                             boxShadow: "0 2px 6px rgba(0,0,0,0.2)"
                         }}
                     >
+                        <p
+                            className="copyMenuItem"
+                            onClick={() => handleOpenInNewTab(copyMenu.data)}
+                        >
+                            Abrir en nueva pestaña
+                        </p>
                         <p
                             className="copyMenuItem"
                             onClick={copyValue}
