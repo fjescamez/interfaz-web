@@ -14,7 +14,7 @@ function ExternosPendientesPage() {
         const { action, data, setTableData } = variables;
         const trabajosCompletos = data.filter(item => externosChecked.includes(item._id));
 
-        if (action === "firmar" || action === "anular") {
+        if (action === "Firmar" || action === "Anular") {
             const signData = {
                 action,
                 idsTrabajos: externosChecked,
@@ -26,7 +26,7 @@ function ExternosPendientesPage() {
 
             if (response.status === "success") {
                 notify(toast.success, 'success', response.title);
-                setTableData(prev => prev.filter(item => !response.updatedData.includes(item._id)));
+                setTableData(prev => prev.filter(item => !response.updatedData.some(updatedItem => updatedItem._id === item._id)));
                 setExternosChecked([]);
             } else {
                 notify(toast.error, 'error', response.title);

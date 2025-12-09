@@ -24,10 +24,10 @@ function ExternosByClient() {
     }, [cliente]);
 
     const externosActions = async (variables) => {
-        const { action, data } = variables;
+        const { action, data, setTableData } = variables;
         const trabajosCompletos = data.filter(item => externosChecked.includes(item._id));
 
-        if (action === "firmar" || action === "anular") {
+        if (action === "Firmar" || action === "Anular") {
             const signData = {
                 action,
                 idsTrabajos: externosChecked,
@@ -39,12 +39,13 @@ function ExternosByClient() {
 
             if (response.status === "success") {
                 notify(toast.success, 'success', response.title);
-                setTableData(prev => prev.filter(item => !response.updatedData.includes(item._id)));
+                setTableData(prev => prev.filter(item => !response.updatedData.some(updatedItem => updatedItem._id === item._id)));
                 setExternosChecked([]);
+                return { status: "success" };
             } else {
                 notify(toast.error, 'error', response.title);
+                return { status: "success" };
             }
-            return { status: "success" };
         } else if (action === "restaurar") {
             const response = await postData('externalJobs/restaurar', { trabajos: trabajosCompletos });
             setExternosChecked([]);
