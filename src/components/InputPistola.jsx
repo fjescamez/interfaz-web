@@ -67,7 +67,7 @@ function InputPistola() {
             const trabajoExterno = await fetchOneItem("externalJobs/getByFileName", xmlFileName);
 
             const signData = {
-                action: "firmar",
+                action: "Firmar",
                 idsTrabajos: trabajoExterno._id,
                 trabajosCompletos: trabajoExterno,
                 usuario: session.username
