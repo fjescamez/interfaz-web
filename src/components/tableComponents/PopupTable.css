@@ -1,7 +1,7 @@
 .popUpTable {
     z-index: 5;
     position: fixed;
-    width: 79.5vw;
+    width: 80%;
     max-height: 85%;
     top: 50%;
     left: 49.7%;
