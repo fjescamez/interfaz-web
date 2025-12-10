@@ -1,6 +1,5 @@
 import { FaBoxOpen, FaUserCircle, FaStamp } from "react-icons/fa";
 import { TiContacts } from "react-icons/ti";
-import { MdOutlineEmail } from "react-icons/md";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { PiImagesLight, PiNoteLight } from "react-icons/pi";
 import { TbColorSwatch } from "react-icons/tb";
@@ -12,6 +11,96 @@ import LenFile from "../assets/svg/LenFile";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
 import GroupsSvg from "../assets/svg/GroupsSvg";
+
+export const addOrderTableInfo = {
+    tableName: "addOrder",
+    endPoint: "stockProducts",
+    headerIcon: <FaBoxOpen />,
+    headerTitle: "CREAR ORDEN DE COMPRA",
+    tableColumns: [
+        {
+            header: "Código",
+            active: true,
+            key: "codigo"
+        },
+        {
+            header: "Nombre",
+            active: true,
+            key: "nombre"
+        },
+        {
+            header: "Categoría",
+            active: true,
+            key: "categoria_nombre"
+        },
+        {
+            header: "Departamento",
+            active: true,
+            key: "departamento_nombre"
+        },
+        {
+            header: "Cantidad",
+            active: true,
+            key: "cantidad"
+        }
+    ]
+}
+
+export const ordenesCompraTableInfo = {
+    tableName: "ordenesCompra",
+    endPoint: "stockOrdenes",
+    headerIcon: <FaBoxOpen />,
+    headerTitle: "ÓRDENES DE COMPRA",
+    tableColumns: [
+        {
+            header: "Código",
+            active: true,
+            key: "codigo"
+        },
+        {
+            header: "Solicitante",
+            active: true,
+            key: "usuario_nombre"
+        },
+        {
+            header: "Fecha",
+            active: true,
+            key: "fecha"
+        },
+        {
+            header: "Producto",
+            active: true,
+            key: "producto_nombre"
+        },
+        {
+            header: "Referencia",
+            active: true,
+            key: "producto_codigo"
+        },
+        {
+            header: "Uds. Solicitadas",
+            active: true,
+            key: "cantidad_solicitada"
+        },
+        {
+            header: "Uds. Pendientes",
+            active: true,
+            key: "cantidad_pendiente"
+        },
+        {
+            header: "Estado",
+            active: true,
+            key: "estado_nombre"
+        }
+    ],
+    actions: [
+        {
+            title: "Añadir",
+            action: "addOrder",
+            noCheck: true
+        }
+    ]
+}
 
 export const notificacionesStockTableInfo = {
     tableName: "notificacionesStock",
@@ -107,6 +196,16 @@ export const productosStockTableInfo = {
             header: "Cantidad",
             active: true,
             key: "cantidad"
+        }
+    ],
+    actions: [
+        {
+            title: "Descontar",
+            action: "descontar"
+        },
+        {
+            title: "Incidencia",
+            action: "incidencia"
         }
     ]
 };
@@ -212,7 +311,7 @@ export const refPlanchasTableInfo = {
 export const pistolaTableInfo = {
     tableName: "pistola",
     headerIcon: <MdBarcodeReader />,
-    headerTitle: "ACCIONES PISTOLA",
+    headerTitle: "REGISTRO PISTOLA",
     tableColumns: [
         {
             header: "Nombre",
@@ -284,11 +383,11 @@ export const trabajosExternosTableInfo = {
     actions: [
         {
             title: "Firmar",
-            action: "firmar"
+            action: "Firmar"
         },
         {
             title: "Anular",
-            action: "anular"
+            action: "Anular"
         },
         {
             title: "Restaurar",
