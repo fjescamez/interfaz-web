@@ -24,15 +24,17 @@ function PedidoMadera({ orderXml }) {
 
         if (Array.isArray(madera_premontaje)) {
             madera_premontaje.forEach((item) => {
-                Object.keys(item).forEach((key) => {
-                    if (
-                        item[key] &&
-                        typeof item[key] === "object" &&
-                        Object.keys(item[key]).length === 0
-                    ) {
-                        item[key] = "";
-                    }
-                });
+                if (item) {
+                    Object.keys(item).forEach((key) => {
+                        if (
+                            item[key] &&
+                            typeof item[key] === "object" &&
+                            Object.keys(item[key]).length === 0
+                        ) {
+                            item[key] = "";
+                        }
+                    });
+                }
             });
         }
 
@@ -66,22 +68,26 @@ function PedidoMadera({ orderXml }) {
                                 <td><p className="highlight">ROTAR</p></td>
                                 <td><p className="highlight">ESPEC.</p></td>
                             </tr>
-                            {madera_premontaje?.map((spec) => (
-                                <tr key={spec.madera_premontaje_id}>
-                                    <td><p>{spec.madera_tmedida}</p></td>
-                                    <td><p>{spec.madera_ancho}</p></td>
-                                    <td><p>{spec.madera_alto}</p></td>
-                                    <td><p>{spec.madera_mvto_ancho}</p></td>
-                                    <td><p>{spec.madera_mvto_desarrollo}</p></td>
-                                    <td><p>{spec.madera_sepa_ancho}</p></td>
-                                    <td><p>{spec.madera_sepa_avance}</p></td>
-                                    <td><input type="checkbox" className="check" checked={spec.madera_capituladas === "-1"} readOnly /></td>
-                                    <td><p>{spec.madera_tablero_ancho}</p></td>
-                                    <td><p>{spec.madera_tablero_alto}</p></td>
-                                    <td><input type="checkbox" className="check" checked={spec.madera_tablero_rotado === "-1"} readOnly /></td>
-                                    <td><input type="checkbox" className="check" checked={spec.madera_montaje_esp === "-1"} readOnly /></td>
-                                </tr>
-                            ))}
+                            {madera_premontaje?.map((spec) => {
+                                if (spec) {
+                                    return (
+                                        <tr key={spec.madera_premontaje_id}>
+                                            <td><p>{spec.madera_tmedida}</p></td>
+                                            <td><p>{spec.madera_ancho}</p></td>
+                                            <td><p>{spec.madera_alto}</p></td>
+                                            <td><p>{spec.madera_mvto_ancho}</p></td>
+                                            <td><p>{spec.madera_mvto_desarrollo}</p></td>
+                                            <td><p>{spec.madera_sepa_ancho}</p></td>
+                                            <td><p>{spec.madera_sepa_avance}</p></td>
+                                            <td><input type="checkbox" className="check" checked={spec.madera_capituladas === "-1"} readOnly /></td>
+                                            <td><p>{spec.madera_tablero_ancho}</p></td>
+                                            <td><p>{spec.madera_tablero_alto}</p></td>
+                                            <td><input type="checkbox" className="check" checked={spec.madera_tablero_rotado === "-1"} readOnly /></td>
+                                            <td><input type="checkbox" className="check" checked={spec.madera_montaje_esp === "-1"} readOnly /></td>
+                                        </tr>
+                                    )
+                                }
+                            })}
                         </tbody>
                     </table>
                 </div>
