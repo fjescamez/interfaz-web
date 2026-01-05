@@ -11,6 +11,162 @@ import GroupsSvg from "../assets/svg/GroupsSvg";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
 
+export const incidenciaProductoFormData = {
+    headerIcon: <FaBoxOpen />,
+    headerTitle: "NUEVA INCIDENCIA DE PRODUCTO",
+    formSections: [
+        {
+            rows: [
+                {
+                    groups: ["solicitante"]
+                },
+                {
+                    groups: ["producto", "estado"]
+                },
+                {
+                    groups: ["descripcion"]
+                },
+                {
+                    groups: ["observaciones"]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "solicitante",
+            labelId: "solicitanteLabel",
+            labelTitle: "Solicitante",
+            inputType: "text",
+            inputId: "solicitante",
+            inputName: "solicitante",
+            disableField: true
+        },
+        {
+            htmlFor: "producto",
+            labelId: "productoLabel",
+            labelTitle: "Producto",
+            inputType: "text",
+            inputId: "producto",
+            inputName: "producto",
+            disableField: true
+        },
+        {
+            htmlFor: "estado",
+            labelId: "estadoLabel",
+            labelTitle: "Estado",
+            select: "simple",
+            options: [],
+            inputId: "estado",
+            inputName: "estado",
+            required: true
+        },
+        {
+            htmlFor: "descripcion",
+            labelId: "descripcionLabel",
+            labelTitle: "Descripción",
+            inputType: "text",
+            inputId: "descripcion",
+            inputName: "descripcion",
+            required: true
+        },
+        {
+            htmlFor: "observaciones",
+            labelId: "observacionesLabel",
+            labelTitle: "Observaciones",
+            textarea: true,
+            inputId: "observaciones",
+            inputName: "observaciones",
+            required: true
+        }
+    ]
+}
+
+export const descontarProductoFormData = {
+    headerIcon: <FaBoxOpen />,
+    headerTitle: "DESCONTAR STOCK",
+    formSections: [
+        {
+            rows: [
+                {
+                    groups: ["producto"]
+                },
+                {
+                    groups: ["estado_nombre", "departamento_nombre"]
+                },
+                {
+                    groups: ["stock_min", "cantidad"]
+                },
+                {
+                    groups: ["descontar"]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "producto",
+            labelId: "productoLabel",
+            labelTitle: "Producto",
+            inputType: "text",
+            inputId: "producto",
+            inputName: "producto",
+            required: true,
+            disableField: true
+        },
+        {
+            htmlFor: "estado_nombre",
+            labelId: "estado_nombreLabel",
+            labelTitle: "Estado",
+            inputType: "text",
+            inputId: "estado_nombre",
+            inputName: "estado_nombre",
+            required: true,
+            disableField: true
+        },
+        {
+            htmlFor: "departamento_nombre",
+            labelId: "departamento_nombreLabel",
+            labelTitle: "Departamento",
+            select: "simple",
+            options: [],
+            inputId: "departamento_nombre",
+            inputName: "departamento_nombre",
+            required: true,
+            disableField: true
+        },
+        {
+            htmlFor: "stock_min",
+            labelId: "stock_minLabel",
+            labelTitle: "Stock Mínimo",
+            inputType: "number",
+            inputId: "stock_min",
+            inputName: "stock_min",
+            disableField: true
+        },
+        {
+            htmlFor: "cantidad",
+            labelId: "cantidadLabel",
+            labelTitle: "Stock Actual",
+            inputType: "number",
+            inputId: "cantidad",
+            inputName: "cantidad",
+            required: true,
+            disableField: true
+        },
+        {
+            htmlFor: "descontar",
+            labelId: "descontarLabel",
+            labelTitle: "Descontar",
+            inputType: "number",
+            minNumber: 0,
+            inputId: "descontar",
+            inputName: "descontar",
+            required: true
+        },
+    ]
+};
+
 export const ordenesFormData = {
     headerIcon: <FaBoxOpen />,
     headerTitle: "NUEVA ORDEN DE COMPRA",
@@ -66,6 +222,7 @@ export const ordenesFormData = {
             labelTitle: "Cantidad",
             inputType: "number",
             minNumber: 0,
+            noDecimals: true,
             inputId: "cantidad_solicitada",
             inputName: "cantidad_solicitada",
             required: true
@@ -2053,11 +2210,11 @@ export const userFormData = {
             options: [
                 "Oficina",
                 "Dibujo",
-                "Sólido",
-                "Líquido",
+                "Solido",
+                "Liquido",
                 "Montaje",
                 "Expediciones",
-                "Técnico"
+                "Tecnico"
             ],
             inputId: "departments",
             inputName: "departments"
@@ -2070,11 +2227,11 @@ export const userFormData = {
             options: [
                 "Oficina",
                 "Dibujo",
-                "Sólido",
-                "Líquido",
+                "Solido",
+                "Liquido",
                 "Montaje",
                 "Expediciones",
-                "Técnico"
+                "Tecnico"
             ],
             inputId: "responsibleDepartments",
             inputName: "responsibleDepartments"
