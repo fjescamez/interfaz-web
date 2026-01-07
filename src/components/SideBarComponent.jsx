@@ -19,7 +19,7 @@ function SideBarComponent({ isActive, setIsActive }) {
     const teletabajo = ["n.morante", "a.artacho"];
     const isTeletrabajo = teletabajo.includes(session?.username);
     const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
-    const isProduccion = session?.departments?.includes("Sólido") || session?.departments?.includes("Líquido");
+    const isProduccion = session?.departments?.includes("Solido") || session?.departments?.includes("Liquido");
     const isOficina = session?.departments?.includes("Oficina");
 
     const handleClick = (icon, name) => {

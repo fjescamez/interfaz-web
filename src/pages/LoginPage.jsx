@@ -16,7 +16,7 @@ function LoginPage() {
 
   useEffect(() => {
     if (session) {
-      if (session.departments.includes("Sólido") || session.departments.includes("Líquido") || session.departments.includes("Montaje")) {
+      if (session.departments.includes("Solido") || session.departments.includes("Liquido") || session.departments.includes("Montaje")) {
         navigate("/produccion");
         setTabs([{ path: "/produccion", title: "PRODUCCION" }]);
       } else {
