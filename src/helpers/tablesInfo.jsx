@@ -272,7 +272,7 @@ export const refContinuosTableInfo = {
             active: true,
             key: "adaptador",
             check: true,
-            checkedCondition: 1
+            checkedConditions: [1]
         }
     ],
     actions: [
@@ -1269,21 +1269,21 @@ export const orderTableInfo = {
             active: true,
             key: "xml.numero.boceto",
             check: true,
-            checkedCondition: "-1"
+            checkedConditions: ["-1", "X"]
         },
         {
             header: "Cliché",
             active: true,
             key: "xml.numero.cliche",
             check: true,
-            checkedCondition: "-1"
+            checkedConditions: ["-1", "X"]
         },
         {
             header: "Plotter",
             active: true,
             key: "xml.tecnicos.plotter",
             check: true,
-            checkedCondition: "X"
+            checkedConditions: ["-1", "X"]
         },
         {
             header: "Prioridad",
@@ -1339,6 +1339,11 @@ export const clientTableInfo = {
     headerIcon: <SlBriefcase />,
     headerTitle: "CLIENTES",
     tableColumns: [
+        {
+            header: "Avatar",
+            active: true,
+            key: "avatar"
+        },
         {
             header: "Nombre comercial",
             active: true,

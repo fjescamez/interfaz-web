@@ -16,6 +16,11 @@ import { toast } from "react-toastify";
 import { fetchData, fetchOneItem, postData } from "../helpers/fetchData";
 import PdfAsImage from "../components/pedidoComponents/PdfAsImage";
 import { sanitizeData } from "../helpers/normalizeData";
+import { BsTrash3Fill } from "react-icons/bs";
+import { useSession } from "../context/SessionContext";
+import DeleteForm from "../components/formComponents/DeleteForm";
+import { orderTableInfo } from "../helpers/tablesInfo";
+import { BlinkBlur } from "react-loading-indicators";
 
 function OrderDetails() {
   const [fullOrder, setFullOrder] = useState({});
@@ -28,7 +33,8 @@ function OrderDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { closeTab, tabs, setTabs } = useTabs();
-  const session = JSON.parse(localStorage.getItem('session'));
+  const { session } = useSession();
+  const [deletePopup, setDeletePopup] = useState(false);
 
   const getOrderDetails = async (id) => {
     try {
@@ -38,7 +44,7 @@ function OrderDetails() {
         navigate("/pedidos");
         return;
       }
-      setOrderXml(sanitizeData(orderData.xml)); // Sanitize the data here
+      setOrderXml(sanitizeData(orderData.xml)); // Sanitizar los datos XML
       setFullOrder(sanitizeData(orderData));
     } catch (error) {
       notify(toast.error, "error", "Error en el pedido", "Ha ocurrido un error al cargar los datos del pedido");
@@ -106,6 +112,8 @@ function OrderDetails() {
         });
       }
       navigate(path);
+    } else {
+      notify(toast.warning, "warning", "No hay estrategia asociada");
     }
   }
 
@@ -131,6 +139,8 @@ function OrderDetails() {
   }
 
   useEffect(() => {
+    setFullOrder({});
+    setOrderXml({});
     getOrderDetails(id);
   }, [id]);
 
@@ -138,8 +148,8 @@ function OrderDetails() {
     if (fullOrder._id) {
       getStrategyDetails();
       getUnitarioView();
+      getOrderColors();
     }
-    getOrderColors();
   }, [fullOrder]);
 
   const fechaHora = orderXml.actividad?.revisiones.revision[0].revision_fechahora;
@@ -147,8 +157,9 @@ function OrderDetails() {
   const filePath = fullOrder.unitario?.includes("sinUnitario.png") ? "" : fullOrder.unitario?.replace("cloudflow://", "").replace("PEDIDOS_", "Pedidos ");
 
   return (
-    fullOrder._id && (
+    fullOrder._id ? (
       <>
+        {deletePopup && <DeleteForm setModal={setDeletePopup} id={fullOrder._id} tableInfo={orderTableInfo} />}
         <PedidoSideBar
           getOrderDetails={getOrderDetails}
           fullOrder={fullOrder}
@@ -231,7 +242,7 @@ function OrderDetails() {
                     <p>VERSIÓN</p>
                   </div>
                   <div className="body">
-                    <p>{orderXml.numero?.version}</p>
+                    <p>{orderXml.numero?.version} {/* <BsTrash3Fill onClick={() => setDeletePopup(true)} style={{ width: "3.5rem", height: "3.5rem", cursor: "pointer" }} /> */}</p>
                   </div>
                 </div>
                 <div className="footer">
@@ -381,7 +392,7 @@ function OrderDetails() {
                   <p>PREVIO DEL TRABAJO</p>
                 </div>
                 <div className="body">
-                  <div className="imgPrevio" onClick={() => window.open(unitarioView, "_blank")}>
+                  <div className="imgPrevio" onClick={() => { if (unitarioView !== "") window.open(unitarioView, "_blank") }}> {/* if para comprobar que haya link y no abra una pestaña vacía */}
                     <PdfAsImage url={filePath} noOpen={true} />
                   </div>
                 </div>
@@ -453,7 +464,7 @@ function OrderDetails() {
                     <p>DATOS TÉCNICOS</p>
                   </div>
                   <div className="body">
-                    <p>{orderXml.xml?.actividad.obs_actividad}</p>
+                    <p dangerouslySetInnerHTML={{ __html: orderXml?.actividad?.obs_actividad.replace(/\n/g, "<br />") }}></p>
                   </div>
                 </div>
               </div>
@@ -488,6 +499,13 @@ function OrderDetails() {
           </div>
         </div>
       </>
+    ) : (
+      <div className="detailsContainer">
+        <div className="executingContainer">
+          <BlinkBlur variant="dotted" color="var(--highlight)" size="large" speedPlus="0" />
+          <h1>Cargando</h1>
+        </div>
+      </div>
     )
   )
 }

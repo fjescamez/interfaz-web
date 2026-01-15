@@ -22,10 +22,11 @@ import TintasPopUp from "./TintasPopUp";
 import OpcionalesPopUp from "./OpcionalesPopUp";
 import OrderInfoPopUp from "./OrderInfoPopUp";
 import TraceTextPopUp from "./TraceTextPopUp";
-import DeleteForm from "../formComponents/DeleteForm";
-import { orderTableInfo } from "../../helpers/tablesInfo";
 import { useSession } from "../../context/SessionContext";
 import SignJobForm from "../formComponents/SignJobForm";
+import { PiStorefrontLight } from "react-icons/pi"
+import { orderTableInfo } from "../../helpers/tablesInfo";
+import DeleteForm from "../formComponents/DeleteForm";
 
 function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
     const { session } = useSession();
@@ -40,8 +41,8 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
     const [lenModal, setLenModal] = useState(false);
     const [filesModal, setFilesModal] = useState(false);
     const [traceModal, setTraceModal] = useState(false);
+    const [deletePopUp, setDeletePopUp] = useState(false);
     const [signJobModal, setSignJobModal] = useState(false);
-    const [deletePopup, setDeletePopup] = useState(false);
     const [montajeModal, setMontajeModal] = useState(false);
     const [plotterModal, setPlotterModal] = useState(false);
     const [tintasModal, setTintasModal] = useState(false);
@@ -55,6 +56,8 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
     const sideBarRef = useRef(null);
     const { tabs, setTabs } = useTabs();
     const folderUrl = fullOrder.rutaTrabajo?.replace("cloudflow://", "").replace("PEDIDOS_", "Pedidos ");
+    const isAdmin = session.role === "Administrador" || session.role === "Soporte";
+    const isTecnico = session.departments.includes("Tecnico");
 
     const updateOrder = async () => {
         setExecuting(true);
@@ -171,18 +174,18 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
             case "files":
                 setFilesModal(true);
                 break;
-            case "eliminar":
-                setDeletePopup(true);
-                break;
             case "traceText":
                 setTraceModal(true);
                 break;
             case "signJob":
                 setSignJobModal(true);
                 break;
+            case "deleteVersion":
+                setDeletePopUp(true);
+                break;
             case "kiosk":
-                const path = `${location.pathname}/kiosk`;
-                const tabTitle = `${fullOrder.id_pedido} | KIOSKO`;
+                const path = `${location.pathname}/kiosco`;
+                const tabTitle = `${fullOrder.id_pedido} | KIOSCO`;
 
                 if (!tabs.some(tab => tab.path === path)) {
                     setTabs(prev => {
@@ -249,15 +252,28 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
             {compareModal && <ComparePopUp setCompareModal={setCompareModal} rutaTrabajo={fullOrder.rutaTrabajo} />}
             {lenModal && <OrderLenTable setLenModal={setLenModal} orderId={fullOrder.id_pedido} />}
             {filesModal && <FileTable setFilesModal={setFilesModal} orderId={fullOrder.id_pedido} filePath={filePath} />}
-            {deletePopup && <DeleteForm setModal={setDeletePopup} id={fullOrder._id} tableInfo={orderTableInfo} />}
             {traceModal && <TraceTextPopUp setTraceModal={setTraceModal} rutaTrabajo={fullOrder.rutaTrabajo} unitario={fullOrder.unitario} />}
             {signJobModal && <SignJobForm setSignJobModal={setSignJobModal} fullOrder={fullOrder} />}
+            {deletePopUp && <DeleteForm setModal={setDeletePopUp} id={fullOrder._id} tableInfo={orderTableInfo} />}
             {montajeModal && <MontajeTable setMontajeModal={setMontajeModal} fullOrder={fullOrder} filePath={filePath} />}
             {plotterModal && <PlotterTable setPlotterModal={setPlotterModal} orderId={fullOrder.id_pedido} fullOrder={fullOrder} filePath={filePath} />}
             {tintasModal && <TintasPopUp setTintasModal={setTintasModal} fullOrder={fullOrder} />}
             {infoModal && <OrderInfoPopUp setInfoModal={setInfoModal} _id={fullOrder._id} />}
             {opcionalesModal && <OpcionalesPopUp setOpcionalesModal={setOpcionalesModal} fullOrder={fullOrder} />}
             <div className="pedidoSideBar" ref={sideBarRef}>
+                {isTecnico && (
+                    <div className="iconContainer" key={"test"}>
+                        <div
+                            className={"icons"}
+                            onClick={(e) => handleClick("kiosk", null, e)}
+                            data-tooltip-id="my-tooltip"
+                            data-tooltip-content={"KIOSKO"}
+                        >
+                            {<PiStorefrontLight />}
+                        </div>
+                        {<div className="border"></div>}
+                    </div>
+                )}
                 {orderSidebarIcons.map((icon, index) => (
                     <div className="iconContainer" key={index}>
                         <div
@@ -270,7 +286,7 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
                         >
                             {icon.icon}
                         </div>
-                        {(!icon.last) && <div className="border"></div>}
+                        {index < orderSidebarIcons.length - 1 && <div className="border"></div>}
                     </div>
                 ))}
             </div>

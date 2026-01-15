@@ -17,7 +17,6 @@ function FileTable({ setFilesModal, orderId, filePath }) {
 
         setFileIds([]);
         const response = await postData("files/print", data);
-        console.log(response);
 
         if (response.status === "success") {
             notify(toast.success, response.status, response.title, response.message);

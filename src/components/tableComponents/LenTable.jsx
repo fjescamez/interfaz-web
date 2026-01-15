@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import InfoTintasTramas from "../pedidoComponents/InfoTintasTramas";
 import { postData } from "../../helpers/fetchData";
+import BarnizPopUp from "../pedidoComponents/BarnizPopUp";
 
 function LenTable({
     setLenModal,
@@ -18,8 +19,12 @@ function LenTable({
     const [lenViewUrl, setLenViewUrl] = useState("");
     const [infoCurvasPopup, setInfoCurvasPopup] = useState(false);
     const [infoCurvas, setInfoCurvas] = useState(false);
+    const [barnizPopUp, setBarnizPopUp] = useState(false);
+    const [tableSetter, setTableSetter] = useState(undefined);
+    const [actionEnder, setActionEnder] = useState(undefined);
+    const [indexSetter, setIndexSetter] = useState(undefined);
 
-    const enviarProduccion = async (setTableData) => {
+    const enviarProduccion = async (setTableData, finishAction) => {
         if (lenIds.length > 0) {
             const data = {
                 action: "enviarProduccion",
@@ -38,6 +43,12 @@ function LenTable({
                         })
                     );
                     setLenIds([]);
+
+                    if (finishAction) {
+                        lenActions({ action: "finishProduccion" });
+                        return;
+                    }
+
                     return { status: "success", response };
                 } else {
                     notify(toast.error, data.status, data.title, data.message);
@@ -118,10 +129,28 @@ function LenTable({
     }
 
     const lenActions = (variables) => {
-        const { action, data, setTableData } = variables;
+        const { action, data, setTableData, setActionEnded, setCheckedIndexes } = variables;
+
         switch (action) {
             case "enviarProduccion":
-                return enviarProduccion(setTableData);
+                const lenCompletos = data.filter(len => lenIds.includes(len._id));
+
+                if (lenCompletos.some(len => len.color.toLowerCase().includes("barniz"))) {
+                    setBarnizPopUp(true);
+                    setTableSetter(() => setTableData);
+                    setActionEnder(() => setActionEnded);
+                    setIndexSetter(() => setCheckedIndexes);
+                    return { status: "waiting" };
+                } else {
+                    return enviarProduccion(setTableData);
+                }
+            case "finishProduccion":
+                console.log("Producción finalizada");
+
+                actionEnder(true);
+                setLenIds([]);
+                indexSetter([]);
+                return;
             case "infoCurvas":
                 return getInfoCurvas();
             case "solicitarVista":
@@ -150,6 +179,7 @@ function LenTable({
                             customTable={customTable}
                         />
                     </div>
+                    {barnizPopUp && <BarnizPopUp setBarnizPopUp={setBarnizPopUp} tableSetter={tableSetter} enviarProduccion={enviarProduccion} />}
                 </>
             ) : (
                 <>

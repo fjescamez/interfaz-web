@@ -10,7 +10,7 @@
         border-radius: 0.35rem;
         display: flex;
         flex-direction: column;
-        row-gap: 1rem;
+        row-gap: 1.5rem;
         font-size: 5rem;
 
         p {
@@ -47,9 +47,16 @@
             column-gap: 2rem;
         }
 
+        .display255025 {
+            display: grid;
+            grid-template-columns: minmax(0, 23.5%) 1fr minmax(0, 23.5%);
+            column-gap: 2rem;
+        }
+
         .displayAuto {
             display: flex;
             gap: 1rem 2rem;
+            align-items: flex-end;
 
             * {
                 flex: 1;

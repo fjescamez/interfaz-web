@@ -46,7 +46,10 @@ function Table({
     specificPath,
     openRows,
     noActionRows,
-    customTable
+    customTable,
+    noRefreshTable,
+    extraLogic,
+    extraStyles
 }) {
     const urlApi = import.meta.env.VITE_API_URL;
     const location = useLocation();
@@ -72,7 +75,7 @@ function Table({
     const tableActions = tableInfo.actions || [];
     const [editTable, setEditTable] = useState(false);
     const [advancedFilters, setAdvancedFilters] = useState(false);
-    const [advancedQuery, setAdvancedQuery] = useState(null);
+    const [advancedQuery, setAdvancedQuery] = useState({});
     const { session } = useSession();
     const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
     const [showChecks, setShowChecks] = useState(tableActions.length > 0 && tableActions.some(action => !action.noCheck) && (rolesActions ? rolesActions.includes(session?.role) : true));
@@ -85,7 +88,7 @@ function Table({
         value: ""
     });
 
-    const getData = async (page, searchValue = "", clientFilter = "") => {
+    const getData = async (page, searchValue = "", clientFilter = "") => {        
         const result = await fetchData(endPoint, searchValue, page, setTableData, setTotal, clientFilter, userFilter);
         setTableCharging(false);
         if (result && result.length < 1 && (!tableInfo.actions?.some(item => alwaysVisibleActions?.includes(item.action)))) {
@@ -108,6 +111,8 @@ function Table({
             setDebouncedSearch(actualTab.search);
             setSearch(actualTab.search);
         }
+
+        extraLogic && extraLogic();
     }, []);
 
     useEffect(() => {
@@ -200,9 +205,6 @@ function Table({
     }, [search, advancedQuery]);
 
     useEffect(() => {
-        if (!actualTab?.advancedQuery) {
-            setAdvancedQuery({});
-        }
         setPage(1);
     }, [location]);
 
@@ -258,9 +260,9 @@ function Table({
         }
     }, [initialData]);
 
-    useEffect(() => {
+    useEffect(() => {        
         if (advancedQuery !== null) {
-            const searchParams = new URLSearchParams(advancedQuery).toString();
+            const searchParams = new URLSearchParams(advancedQuery).toString();            
 
             if (searchParams !== "") {
                 getData(page, searchParams, clienteCodigo || clientFilter);
@@ -457,6 +459,7 @@ function Table({
     }
 
     const refreshTable = () => {
+        setCheckedIndexes([]);
         setPage(1);
         let searchParams = search;
         const advancedFilters = new URLSearchParams(advancedQuery).toString();
@@ -595,7 +598,7 @@ function Table({
                                     :
                                     <MdLockOutline className="tableLock" onClick={() => { setShowChecks(true); setCheckedRows([]); setCheckedIndexes([]) }} />
                             )} */}
-                            {<HiOutlineRefresh className="tableRefresh" onClick={() => refreshTable()} />}
+                            {!noRefreshTable && <HiOutlineRefresh className="tableRefresh" onClick={() => refreshTable()} />}
                             {(tableForm && (isAdmin || publicForm)) && (
                                 <button onClick={() => setModal(true)}>
                                     <svg id="Layer_1" data-name="Layer 1"
@@ -684,12 +687,16 @@ function Table({
                                                                 action: action.action,
                                                                 title: action.title,
                                                                 data: tableData,
+                                                                setCheckedIndexes,
+                                                                setActionEnded,
                                                                 setTableData
                                                             });
                                                             if (actionResult && actionResult.status) {
-                                                                setActionEnded(true);
-                                                                setCheckedRows([]);
-                                                                setCheckedIndexes([]);
+                                                                if (actionResult.status !== "waiting") {
+                                                                    setActionEnded(true);
+                                                                    if (setCheckedRows) setCheckedRows([]);
+                                                                    setCheckedIndexes([]);
+                                                                }
                                                             }
                                                         }
                                                     }}
@@ -782,7 +789,7 @@ function Table({
                                         if (column.check) {
                                             return (
                                                 <td key={column.key} className="checkTd">
-                                                    <input type="checkbox" className="check" checked={value === column.checkedCondition} readOnly />
+                                                    <input type="checkbox" className="check" checked={column.checkedConditions?.includes(value)} readOnly />
                                                 </td>
                                             );
                                         }
@@ -798,6 +805,9 @@ function Table({
                                                 </td>
                                             );
                                         }
+                                        const columnStyle = extraStyles?.find(style => style.key === column.key);
+                                        const styleToApply = columnStyle && columnStyle.condition(value) ? columnStyle.styles : {};
+
                                         return (
                                             <td
                                                 key={column.key}
@@ -811,6 +821,7 @@ function Table({
                                                     }
                                                 }}
                                                 className={tdGrandes && tdGrandes.includes(column.key) ? "tdGrande" : ""}
+                                                style={styleToApply}
                                             >
                                                 {/* Comprobación para que no reviente con objetos vacíos */}
                                                 {typeof value === 'object' ? " " : value}

@@ -22,8 +22,9 @@ const FormGroup = React.memo(function FormGroup({
         disableField,
         hideField,
         minNumber,
-        maxNumber
-    } = field;    
+        maxNumber,
+        noDecimals
+    } = field;
 
     return (
         <>
@@ -50,7 +51,7 @@ const FormGroup = React.memo(function FormGroup({
                             autoComplete="on"
                             min={minNumber}
                             max={maxNumber}
-                            step={inputType === "number" ? "0.01" : undefined}
+                            step={(inputType === "number" && !noDecimals) ? "0.01" : undefined}
                             disabled={disable || disableField}
                         />
                     }

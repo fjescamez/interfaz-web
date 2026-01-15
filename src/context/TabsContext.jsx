@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { isValidRoute } from "../routes";
 
 const TabsContext = createContext();
 
@@ -41,14 +40,14 @@ export function TabsProvider(props) {
 
     useEffect(() => {
         const handleKeyUp = (e) => {
-            if (e.key === "ArrowLeft") {
+            if (e.key === "ArrowLeft" && e.altKey && e.ctrlKey) {                
                 const currentIndex = filteredTabs.findIndex(tab => tab.path === location.pathname);
                 if (currentIndex > 0) {
                     navigate(filteredTabs[currentIndex - 1].path);
                 }
             }
 
-            if (e.key === "ArrowRight") {
+            if (e.key === "ArrowRight" && e.altKey && e.ctrlKey) {
                 const currentIndex = filteredTabs.findIndex(tab => tab.path === location.pathname);
                 if (currentIndex < filteredTabs.length - 1) {
                     navigate(filteredTabs[currentIndex + 1].path);

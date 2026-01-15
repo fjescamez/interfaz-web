@@ -29,7 +29,7 @@ function ChosenSelect({ options, name, onChange, multiple, value, disabled, clas
 
                         // selectedValue = ids;
                     } else {
-                        const id = e.target.value;
+                        const id = e.target.value;                        
 
                         selectedValue = (typeof options[0] === "object" && name !== "ids")
                             ? options.find(o => (o._id === id || o.id === Number(id)))
@@ -71,18 +71,16 @@ function ChosenSelect({ options, name, onChange, multiple, value, disabled, clas
             disabled={disabled}
             className={className}
         >
-            {options.map(opt => {
-                let key = opt;
+            {options.map((opt, index) => {
                 let value = opt;
                 let text = opt;
 
                 if (typeof opt === 'object') {
                     value = opt._id || opt.id;
-                    key = opt._id || opt.id;
                     text = opt.textoOpcion;
                 }
 
-                return <option key={key} value={value}>{text}</option>
+                return <option key={index} value={value}>{text}</option>
             })}
         </select>
     );

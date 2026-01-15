@@ -11,7 +11,7 @@ import DeleteForm from '../components/formComponents/DeleteForm';
 import { strategyTableInfo } from '../helpers/tablesInfo';
 import { useLocation } from "react-router-dom";
 
-function StrategyDetails({ toggleKiosk }) {
+function StrategyDetails() {
   const [strategy, setStrategy] = useState(undefined);
   const { id } = useParams();
   const { closeTab } = useTabs();
@@ -99,10 +99,9 @@ function StrategyDetails({ toggleKiosk }) {
     <>
       <div className="detailsContainer">
         <DetailsHeader
-          title={`Estrategia ${strategy?.codigo_estrategia}`}
+          title={`Estrategia ${strategy?.codigo_estrategia || ""}`}
           subtitle={strategy?.cliente_codigo}
           endPoint={"strategies"}
-          id={""}
           setEditPopup={setEditPopup}
           setDeletePopup={setDeletePopup}
           hideInfoIcon={true}

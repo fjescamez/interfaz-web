@@ -12,10 +12,25 @@ function EmailPopUp({ setEmailModal, fullOrder }) {
     const [formData, setFormData] = useState(emailFormData);
     const [para, setPara] = useState(false);
     const [adjuntos, setAdjuntos] = useState(false);
+    const [adjuntosList, setAdjuntosList] = useState([]);
     const [isExecuting, setIsExecuting] = useState(false);
     const [itemsData, setItemsData] = useState({
         id_pedido
     });
+
+    const adjuntarTodo = () => {
+        setItemsData(prev => ({
+            ...prev,
+            adjuntos: adjuntosList
+        }))
+    }
+
+    const desadjuntarTodo = () => {
+        setItemsData(prev => ({
+            ...prev,
+            adjuntos: []
+        }))
+    }
 
     const getTemplate = async () => {
         const data = {
@@ -102,6 +117,7 @@ function EmailPopUp({ setEmailModal, fullOrder }) {
             })
         }));
         setAdjuntos(true);
+        setAdjuntosList(adjuntos);
     }
 
     useEffect(() => {
@@ -120,6 +136,13 @@ function EmailPopUp({ setEmailModal, fullOrder }) {
                     itemsData={itemsData}
                     endpoint={"email/sendEmail"}
                     submitText={"Enviar"}
+                    extras={
+                        itemsData.adjuntos && itemsData.adjuntos.length === adjuntosList.length ? (
+                            <button type="button" onClick={desadjuntarTodo}>Desadjuntar todo</button>
+                        ) : (
+                            <button type="button" onClick={adjuntarTodo}>Adjuntar todo</button>
+                        )
+                    }
                 />
                 :
                 isExecuting && <ExecutingComponent message={"Cargando plantilla"} />

@@ -7,6 +7,7 @@ import App from './App.jsx'
 import { TabsProvider } from './context/TabsContext.jsx'
 import { SessionProvider } from './context/SessionContext.jsx'
 import { ClienteFilterProvider } from './context/ClientFilterContext.jsx'
+import { InputPistolaProvider } from './context/InputPistolaContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   //<StrictMode>
@@ -14,7 +15,9 @@ createRoot(document.getElementById('root')).render(
     <HashRouter>
       <TabsProvider>
         <SessionProvider>
-          <App />
+          <InputPistolaProvider>
+            <App />
+          </InputPistolaProvider>
         </SessionProvider>
       </TabsProvider>
     </HashRouter>

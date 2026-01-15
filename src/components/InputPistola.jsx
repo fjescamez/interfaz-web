@@ -5,10 +5,10 @@ import { notify } from "../helpers/notify";
 import { toast } from 'react-toastify';
 import { useTabs } from "../context/TabsContext";
 import { useNavigate } from 'react-router-dom';
+import { InputPistolaProvider, useInputPistola } from "../context/InputPistolaContext";
 
 function InputPistola() {
-    const inputRef = useRef(null);
-    const [triggerKeyPressed, setTriggerKeyPressed] = useState(false);
+    const { inputRef, triggerKeyPressed, setTriggerKeyPressed, accionPistola, setAccionPistola, usuarioPistola, setUsuarioPistola, handleCodigoLeido } = useInputPistola();
     const { session } = useSession();
     const { setTabs, tabs } = useTabs();
     const navigate = useNavigate();
@@ -39,6 +39,8 @@ function InputPistola() {
     }, [triggerKeyPressed]);
 
     const handleEnter = async (e) => {
+        handleCodigoLeido();
+
         const path = `/pistola`;
 
         if (!tabs.some(tab => tab.path === path)) {
@@ -58,32 +60,53 @@ function InputPistola() {
             codigo = e.target.value.replace("3", "").trim().toUpperCase();
         }
 
-        console.log("Codigo leído:", codigo);
-
         e.target.value = "";
 
-        if (codigo.startsWith("EX")) {
+        console.log("Código leído por pistola:", codigo);
+
+        // Cambiar por que empiece por?
+        const regexAccion = /^[A-Za-z][0-9]+[’']?[A-Za-z]{3}\?[A-Za-z][0-9]+[’']?[A-Za-z]{3}/;
+
+        if (regexAccion.test(codigo)) {
+            // Asignar acción
+            const parts = codigo.split("?");
+            const accionPart = parts[0];
+            const usuarioPart = parts[1];
+            const accionMatch = accionPart.match(/A(\d+)/); // Busca todos los números después de 'A'
+            const id_accion = accionMatch ? accionMatch[1] : null; // Extrae los números o null si no coincide
+            const usuarioMatch = usuarioPart.match(/U(\d+)/);
+            const id_usuario = usuarioMatch ? usuarioMatch[1] : null;
+
+            const accion = await fetchOneItem("pistola/getActionById", id_accion);
+
+            setAccionPistola(accion.nombre_accion);
+            setUsuarioPistola(id_usuario);
+            notify(toast.info, 'info', `Modo de la pistola establecido a: ${accion.nombre_accion}`);
+        } else if (codigo.startsWith("EX") && codigo.length === 9) { // Trabajos externos
             const xmlFileName = codigo.replace("EX", "") + ".xml";
             const trabajoExterno = await fetchOneItem("externalJobs/getByFileName", xmlFileName);
 
             const signData = {
-                action: "Firmar",
+                action: accionPistola || "Firmar",
                 idsTrabajos: trabajoExterno._id,
                 trabajosCompletos: trabajoExterno,
-                usuario: session.username
+                usuario: session.username,
+                id_usuario: usuarioPistola || null
             };
 
-            const firma = await postData("externalJobs/firmar", signData);
+            const accion = await postData("externalJobs/firmar", signData);
 
-            if (firma.status === "success") {
-                notify(toast.success, 'success', firma.title);
-                const existingFirmas = JSON.parse(localStorage.getItem("firmasPistola")) || [];
-                const updatedFirmas = [...existingFirmas, firma.nuevoRegistro];
+            if (accion.status === "success") {
+                notify(toast.success, 'success', accion.title);
+                const existingRegistros = JSON.parse(localStorage.getItem("registroPistola")) || [];
+                const updatedRegistros = [...existingRegistros, accion.nuevoRegistro];
 
-                localStorage.setItem("firmasPistola", JSON.stringify(updatedFirmas));
-            } else if (firma.status === "warning") {
-                notify(toast.warn, 'warning', firma.title);
+                localStorage.setItem("registroPistola", JSON.stringify(updatedRegistros));
+            } else if (accion.status === "warning") {
+                notify(toast.warn, 'warning', accion.title);
             }
+        } else if (codigo.startsWith("P") && codigo.length === 5) {
+
         } else {
             notify(toast.warn, 'warning', 'Código no reconocido por la pistola');
         }
@@ -92,7 +115,7 @@ function InputPistola() {
         inputRef.current?.blur();
     }
 
-    return <input ref={inputRef} className="input-pistola" type="text" onKeyDown={(e) => e.key === "Enter" && handleEnter(e)} />;
+    return <input ref={inputRef} name="inputPistola" className="input-pistola" type="text" onKeyDown={(e) => e.key === "Enter" && handleEnter(e)} />;
 }
 
 export default InputPistola;

@@ -4,6 +4,9 @@ import UserForm from "./UserForm";
 import GroupForm from "./GroupForm";
 import RefPlanchaForm from "./RefPlanchaForm";
 import RefContinuoForm from "./RefContinuoForm";
+import CategoriaStockForm from "./CategoriaStockForm";
+import ProductoStockForm from "./ProductoStockForm";
+import OrdenCompraForm from "./OrdenCompraForm";
 
 const formMap = {
     ContactForm,
@@ -11,7 +14,9 @@ const formMap = {
     UserForm,
     GroupForm,
     RefPlanchaForm,
-    RefContinuoForm
+    RefContinuoForm,
+    CategoriaStockForm,
+    ProductoStockForm
 }
 
 function AllForms({ tableForm, ...props }) {

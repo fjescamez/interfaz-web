@@ -7,9 +7,12 @@ import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
 import { useEffect, useRef } from "react";
 import { IoMdCloseCircleOutline } from "react-icons/io";
+import { useInputPistola } from "../context/InputPistolaContext";
+import { MdBarcodeReader } from "react-icons/md";
 
 function HeaderComponent({ toggleUserDropdown, isOnline, setIsOnline }) {
     const { tabs, setTabs, closeTab, closeAllTabs } = useTabs();
+    const { accionPistola } = useInputPistola();
     const location = useLocation();
     const { avatar } = useSession();
     const navigate = useNavigate();
@@ -28,9 +31,35 @@ function HeaderComponent({ toggleUserDropdown, isOnline, setIsOnline }) {
         return () => el.removeEventListener("wheel", onWheel);
     }, []);
 
+    /* let draggedTab;
+
+    function dragStart(event) {
+        draggedTab = event.target.closest('li');
+    }
+
+    function allowDrop(event) {
+        event.preventDefault();
+    }
+
+    function drop(event) {
+        event.preventDefault();
+
+        const targetTab = event.target.closest('li');
+        if (!targetTab || draggedTab === targetTab) return;
+
+        const rect = targetTab.getBoundingClientRect();
+        const isAfter = event.clientX > rect.left + rect.width / 2;
+
+        if (isAfter) {
+            targetTab.parentNode.insertBefore(draggedTab, targetTab.nextSibling);
+        } else {
+            targetTab.parentNode.insertBefore(draggedTab, targetTab);
+        }
+    } */
+
     return (
         <div className="pageHeader">
-            <h1 onClick={() => {
+            <h1 className="headerTitle" onClick={() => {
                 navigate("/home");
                 setTabs(prev => {
                     if (prev.some(tab => tab.path === "/home")) return prev;
@@ -38,7 +67,7 @@ function HeaderComponent({ toggleUserDropdown, isOnline, setIsOnline }) {
                 });
             }}>DISENGRAF</h1>
             <div className="tabsContainer">
-                <div className="tabs">
+                <div className="tabs" /* onDragOver={allowDrop} onDrop={drop} */>
                     <SimpleBar
                         direction="horizontal"
                         style={{ maxHeight: '100%' }}
@@ -58,6 +87,8 @@ function HeaderComponent({ toggleUserDropdown, isOnline, setIsOnline }) {
                                             closeTab(tab.path);
                                         }
                                     }}
+                                    /* draggable="true"
+                                    onDragStart={dragStart} */
                                 >
                                     {tab.title}
                                     <span>
@@ -80,6 +111,7 @@ function HeaderComponent({ toggleUserDropdown, isOnline, setIsOnline }) {
                 </div>
                 {tabs.length > 2 && <div className="closeAll" onClick={closeAllTabs}><IoMdCloseCircleOutline className="close" /></div>}
             </div>
+            <h1 className="accionPistola"><span><MdBarcodeReader />:</span> {accionPistola || "Sin definir"}</h1>
             <div className="userIconSvg">
                 <img className="avatar" src={avatar} alt="" onClick={toggleUserDropdown} />
                 <div className="onlineContainer" onClick={() => setIsOnline(!isOnline)}>

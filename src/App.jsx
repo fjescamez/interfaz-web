@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom"
+import { Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom"
 import { useEffect, useRef, useState } from "react";
 import ErrorPage from "./pages/ErrorPage"
 import HomePage from "./pages/HomePage"
@@ -42,6 +42,24 @@ import RefPlanchas from "./pages/RefPlanchas";
 import RefContinuos from "./pages/RefContinuos";
 import RefPlanchaDetails from "./pages/RefPlanchaDetails";
 import RefContinuoDetails from "./pages/RefContinuoDetails";
+import CategoriasStockPage from "./pages/CategoriasStockPage";
+import ProductosStockPage from "./pages/ProductosStockPage";
+import CategoriaDetails from "./pages/CategoriaDetails";
+import ProductoDetails from "./pages/ProductoDetails";
+import RegistroPage from "./pages/RegistroPage";
+import NotificacionesStockPage from "./pages/NotificacionesStockPage";
+import OrdenesCompraPage from "./pages/OrdenesCompraPage";
+import AddStockOrderPage from "./pages/AddStockOrderPage";
+
+function OrderKioskRouted({ configMode }) {
+  const { id } = useParams();
+  return (
+    <OrderKiosk
+      key={`${configMode ? "config" : "order"}-${id || ""}`}
+      configMode={configMode}
+    />
+  );
+}
 
 function App() {
   const icons = ["home", "pedidos", "bandeja", "len", "clientes", "produccion", "pistola", "stock", "usuarios"];
@@ -188,7 +206,8 @@ function App() {
           <Route path="/home/:id" element={<OrderDetails />} />)
           <Route path="/pedidos" element={<OrdersPage />} />
           <Route path="/pedidos/:id" element={<OrderDetails />} />
-          <Route path="/pedidos/:id/kiosk" element={<OrderKiosk />} />
+          <Route path="/pedidos/:id/kiosco" element={<OrderKioskRouted />} />
+          <Route path="/cliente/:id/kioscoConfig" element={<OrderKioskRouted configMode={true} />} />
           <Route path="/bandeja" element={<OrdersPage filterBandeja={true} />} />
           <Route path="/bandeja/:id" element={<OrderDetails />} />
           <Route path="/infoEmail/:id_pedido/:id" element={<EmailDetails />} />
@@ -224,6 +243,15 @@ function App() {
           <Route path="/produccion/refContinuos" element={<RefContinuos />} />
           <Route path="/produccion/refContinuos/:id" element={<RefContinuoDetails />} />
           <Route path="/stock" element={<StockPage />} />
+          <Route path="/stock/categorias" element={<CategoriasStockPage />} />
+          <Route path="/stock/categorias/:id" element={<CategoriaDetails />} />
+          <Route path="/stock/productos" element={<ProductosStockPage />} />
+          <Route path="/stock/productos/:id" element={<ProductoDetails />} />
+          <Route path="/stock/registro" element={<RegistroPage />} />
+          <Route path="/stock/notificaciones" element={<NotificacionesStockPage />} />
+          <Route path="/stock/notificacionesDepartamento" element={<NotificacionesStockPage filter={true} />} />
+          <Route path="/stock/ordenesCompra" element={<OrdenesCompraPage />} />
+          <Route path="/stock/crearOrden" element={<AddStockOrderPage />} />
           <Route path="/pistola" element={<TablaPistolaPage />} />
           <Route path="/usuarios" element={<UsersPage />} />
           <Route path="/usuarios/:id" element={<UserDetails toggleKiosk={toggleKiosk} />} />

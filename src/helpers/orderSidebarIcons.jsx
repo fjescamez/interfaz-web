@@ -96,22 +96,22 @@ export const orderSidebarIcons = [
         icon: <FaTasks />,
         buttons: [
             {
-                icon: <BsTrash3Fill />,
-                action: "eliminar",
-                tooltip: "ELIMINAR VERSIÓN",
-                first: true
-            },
-            {
                 icon: <RiText />,
                 action: "traceText",
-                tooltip: "TRAZAR TEXTO"
+                tooltip: "TRAZAR TEXTO",
+                first: true
             },
             {
                 icon: <AiOutlineSignature />,
                 action: "signJob",
                 tooltip: "FIRMAR TRABAJO",
                 assigned: true
-            }
+            },
+            {
+                icon: <BsTrash3Fill />,
+                action: "deleteVersion",
+                tooltip: "ELIMINAR VERSIÓN"
+            },
         ],
         tooltip: ""
     },
@@ -138,7 +138,6 @@ export const orderSidebarIcons = [
     {
         icon: <SlSpeech />,
         action: "opcionales",
-        tooltip: "OPCIONALES",
-        last: true
+        tooltip: "OPCIONALES"
     }
 ];

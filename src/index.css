@@ -153,6 +153,18 @@ svg {
     background: rgba(65, 65, 65, 0.8);
 }
 
+.overlay2 {
+    z-index: 6;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    background: rgba(65, 65, 65, 0.8);
+}
+
 .executingOverlay {
     z-index: 12;
     width: 100vw;
@@ -372,12 +384,12 @@ svg {
 .formGroup {
     display: flex;
     flex-direction: column;
-    margin-bottom: 1.5rem;
 
     &.formGroupRow {
         flex-direction: row;
         column-gap: 2rem;
         align-items: center;
+        justify-self: center;
 
         label {
             max-width: fit-content;
@@ -407,12 +419,28 @@ svg {
         border-radius: 1rem 1rem 0 0;
         padding: 0.25rem 1rem;
         font-size: 2rem;
-        max-width: fit-content;
+        /* max-width: fit-content; */
+        cursor: pointer;
     }
 
     .fullLabel {
-        border-radius: 1rem;
+        background: var(--orange-gradient);
+        color: black;
+        font-size: 2rem;
+        padding: 0.5rem 1rem;
         border: 2px solid var(--pantone431c);
+        border-radius: 1.5rem;
+        cursor: pointer;
+        width: fit-content;
+        align-self: center;
+
+        &:active {
+            transform: scale(0.99);
+        }
+
+        &:hover {
+            box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.3);
+        }
     }
 
     .noStyleLabel {
@@ -433,7 +461,7 @@ svg {
         font-family: 'Museo Sans', sans-serif;
         font-size: 2rem;
         border: 2px solid var(--header);
-        border-radius: 0 1.5rem 1.5rem 1.5rem;
+        border-radius: 0 0 1.5rem 1.5rem;
         padding: 1rem;
 
         &::placeholder {
@@ -457,7 +485,7 @@ svg {
         background-color: white;
         font-family: 'Museo Sans', sans-serif;
         border: 2px solid var(--header);
-        border-radius: 0 1.5rem 1.5rem 1.5rem;
+        border-radius: 0 0 1.5rem 1.5rem;
         padding: 0.80rem;
     }
 
@@ -491,6 +519,66 @@ svg {
             font-size: 1.7rem;
             text-decoration: underline;
         }
+    }
+}
+
+.submitButton {
+    background: var(--orange-gradient);
+    color: black;
+    font-size: 2rem;
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--header);
+    border-radius: 1.5rem;
+    cursor: pointer;
+    width: fit-content;
+    align-self: center;
+
+    &:active {
+        transform: scale(0.99);
+    }
+
+    &:hover {
+        box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.3);
+    }
+}
+
+.deleteButton {
+    background: var(--red-gradient);
+    color: black;
+    font-size: 2rem;
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--header);
+    border-radius: 1.5rem;
+    cursor: pointer;
+    width: fit-content;
+    align-self: center;
+
+    &:active {
+        transform: scale(0.99);
+    }
+
+    &:hover {
+        box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.3);
+    }
+}
+
+.playButton {
+    background: var(--green-gradient);
+    color: black;
+    font-size: 2rem;
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--header);
+    border-radius: 1.5rem;
+    cursor: pointer;
+    width: fit-content;
+    align-self: center;
+
+    &:active {
+        transform: scale(0.99);
+    }
+
+    &:hover {
+        box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.3);
     }
 }
 

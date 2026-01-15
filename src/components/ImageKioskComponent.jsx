@@ -7,7 +7,6 @@ import { IoMdCloseCircleOutline } from "react-icons/io";
 import DeleteForm from "./formComponents/DeleteForm";
 import { FaUserCircle } from "react-icons/fa";
 import { SlBriefcase } from "react-icons/sl";
-import { postData } from "../helpers/fetchData";
 
 function ImageKioskComponent({ toggleKiosk, endpoint, id, client }) {
     const urlApi = import.meta.env.VITE_API_URL;

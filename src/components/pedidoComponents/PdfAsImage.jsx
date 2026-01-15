@@ -39,7 +39,6 @@ function PdfAsImage({ url, className, noOpen }) {
         };
 
         if (url.includes("sinUnitario")) {
-            console.log("url sin unitario");
             setImgSrc("/assets/img/sinUnitario.png");
         } else {
             renderPdf();

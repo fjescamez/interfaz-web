@@ -3,14 +3,14 @@ import Table from '../components/Table'
 import { pistolaTableInfo } from '../helpers/tablesInfo'
 
 function TablaPistolaPage() {
-  const firmasExistentes = localStorage.getItem('firmasPistola');
-  const [initialData, setInitialData] = useState(firmasExistentes ? JSON.parse(firmasExistentes) : []);
+  const registrosExistentes = localStorage.getItem('registroPistola');
+  const [initialData, setInitialData] = useState(registrosExistentes ? JSON.parse(registrosExistentes) : []);
 
-  const firmasActions = (variables) => {
+  const registrosActions = (variables) => {
     const { action, setTableData } = variables;
 
     if (action === "limpiar") {
-      localStorage.removeItem('firmasPistola');
+      localStorage.removeItem('registroPistola');
       setTableData([]);
       return { status: 'success' };
     }
@@ -21,8 +21,10 @@ function TablaPistolaPage() {
       <Table
         dinamicTableInfo={pistolaTableInfo}
         initialData={initialData}
-        actions={firmasActions}
+        actions={registrosActions}
         noActionRows={true}
+        customTable={true}
+        noRefreshTable={true}
       />
     )
   )
