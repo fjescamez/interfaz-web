@@ -413,7 +413,7 @@ function OrderKiosk({ configMode }) {
   useEffect(() => {
     // Mensajes de error
     if (trappingData.manual) {
-      setOrderReport(prev => prev.filter(item => !item.type.includes("trapping") && item.status !== "warning"));
+      setOrderReport(prev => prev.filter(item => !item?.type?.includes("trapping") && item?.status !== "warning"));
     } else {
       const error1 = {
         status: "warning",
