@@ -206,6 +206,7 @@ function Table({
 
     useEffect(() => {
         setPage(1);
+        getData(1, search, clienteCodigo || clientFilter);
     }, [location]);
 
     useEffect(() => {
