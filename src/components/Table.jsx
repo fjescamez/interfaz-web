@@ -88,7 +88,7 @@ function Table({
         value: ""
     });
 
-    const getData = async (page, searchValue = "", clientFilter = "") => {        
+    const getData = async (page, searchValue = "", clientFilter = "") => {
         const result = await fetchData(endPoint, searchValue, page, setTableData, setTotal, clientFilter, userFilter);
         setTableCharging(false);
         if (result && result.length < 1 && (!tableInfo.actions?.some(item => alwaysVisibleActions?.includes(item.action)))) {
@@ -206,7 +206,17 @@ function Table({
 
     useEffect(() => {
         setPage(1);
-        getData(1, search, clienteCodigo || clientFilter);
+
+        if (actualTab && actualTab.advancedQuery) {
+            const searchParams = new URLSearchParams(actualTab.advancedQuery).toString();
+            getData(1, searchParams, clienteCodigo || clientFilter);
+        } else if (actualTab && actualTab.search) {
+            getData(1, actualTab.search, clienteCodigo || clientFilter);
+        } else {
+            if (!initialData) {
+                getData(1, search, clienteCodigo || clientFilter);
+            }
+        }
     }, [location]);
 
     useEffect(() => {
@@ -261,9 +271,9 @@ function Table({
         }
     }, [initialData]);
 
-    useEffect(() => {        
+    useEffect(() => {
         if (advancedQuery !== null) {
-            const searchParams = new URLSearchParams(advancedQuery).toString();            
+            const searchParams = new URLSearchParams(advancedQuery).toString();
 
             if (searchParams !== "") {
                 getData(page, searchParams, clienteCodigo || clientFilter);
@@ -460,6 +470,7 @@ function Table({
     }
 
     const refreshTable = () => {
+        if (initialData) return;
         setCheckedIndexes([]);
         setPage(1);
         let searchParams = search;
