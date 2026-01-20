@@ -20,7 +20,7 @@ export const kioskActions = [
     },
     {
         title: "CAMBIAN COLORES",
-        id: "coloresCambiar",
+        id: "salidaColores",
         openOnActive: true,
         specificClients: ["0159"],
         hideWhenConfig: true,
@@ -28,7 +28,7 @@ export const kioskActions = [
     },
     {
         title: "DIGIMARK",
-        id: "coloresDigimark",
+        id: "listDigimark",
         openOnActive: true,
         specificClients: ["0159"],
         hideWhenConfig: true,
@@ -48,6 +48,15 @@ export const kioskActions = [
         title: "PLOTTER",
         id: "plotter",
         disableOpen: true,
+        steps: [3]
+    },
+    {
+        title: "MÁCULAS",
+        id: "posMacula",
+        disableSwitch: true,
+        openOnActive: true,
+        onlyShowIfActive: true,
+        specificClients: ["0172"],
         steps: [3]
     },
     {
