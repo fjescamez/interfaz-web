@@ -471,7 +471,7 @@ function OrderKiosk({ configMode }) {
       component: <TrappingComponent trappingData={trappingData} setTrappingData={setTrappingData} />,
       data: trappingData
     },
-    "coloresCambiar": {
+    "salidaColores": {
       title: coloresCambiar.length > 0 ?
         `${coloresCambiar.map(color => color).join(", ")}` :
         "",
@@ -479,7 +479,7 @@ function OrderKiosk({ configMode }) {
       data: coloresCambiar,
       noSave: true
     },
-    "coloresDigimark": {
+    "listDigimark": {
       title: coloresDigimark.length > 0 ?
         `${coloresDigimark.map(color => color).join(", ")}` :
         "",
