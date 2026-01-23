@@ -4,7 +4,6 @@ import Table from '../Table';
 import { postData } from '../../helpers/fetchData';
 import RipPopUp from '../pedidoComponents/RipPopUp';
 import { notify } from '../../helpers/notify';
-import { toast } from 'react-toastify';
 import CompareMontajes from '../pedidoComponents/CompareMontajes';
 
 function MontajeTable({ setMontajeModal, fullOrder }) {
@@ -33,7 +32,7 @@ function MontajeTable({ setMontajeModal, fullOrder }) {
             })
             const data = await response.json();
             if (data.status === "success") {
-                notify(toast.success, data.status, data.title, data.message);
+                notify(data.status, data.title, data.message);
                 setMontajeIds([]);
                 const updatedActions = tableInfo.actions.map(action => {
                     if (action.action === "solicitarVista" || action.action === "visualizarMontaje") {
@@ -46,11 +45,11 @@ function MontajeTable({ setMontajeModal, fullOrder }) {
 
                 return data;
             } else {
-                notify(toast.error, data.status, data.title, data.message);
+                notify(data.status, data.title, data.message);
                 return data;
             }
         } catch (error) {
-            notify(toast.error, 'error', 'Error', error);
+            notify('error', 'Error', error);
         }
     }
 
@@ -63,7 +62,7 @@ function MontajeTable({ setMontajeModal, fullOrder }) {
             return { status: "success" };
         } else if (action === "comparar") {
             if (montajeIds.length > 1) {
-                notify(toast.error, "error", "Demasiadas selecciones", "Por favor, seleccione un solo elemento para poder realizar esta acción.");
+                notify("error", "Demasiadas selecciones", "Por favor, seleccione un solo elemento para poder realizar esta acción.");
                 return { status: "success" };
             }
 
@@ -72,7 +71,7 @@ function MontajeTable({ setMontajeModal, fullOrder }) {
             return { status: "success" };
         } else if (action === "solicitarVista") {
             if (montajeIds.length > 1) {
-                notify(toast.error, "error", "Demasiadas selecciones", "Por favor, seleccione un solo elemento para poder realizar esta acción.");
+                notify("error", "Demasiadas selecciones", "Por favor, seleccione un solo elemento para poder realizar esta acción.");
                 return { status: "success" };
             }
 

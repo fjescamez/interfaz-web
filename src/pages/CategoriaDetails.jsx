@@ -6,7 +6,6 @@ import { fetchData, fetchOneItem } from '../helpers/fetchData';
 import CategoriaStockForm from '../components/formComponents/CategoriaStockForm';
 import DeleteForm from '../components/formComponents/DeleteForm';
 import { notify } from '../helpers/notify';
-import { toast } from "react-toastify";
 import { useSession } from '../context/SessionContext';
 import ProductoTable from '../components/tableComponents/ProductoTable';
 
@@ -47,7 +46,7 @@ function CategoriaDetails() {
 
   const handleDelete = () => {
     if (tableData.length > 0) {
-      notify(toast.error, 'error', 'Error', 'No se puede eliminar la categoría porque tiene productos asociados');
+      notify('error', 'Error', 'No se puede eliminar la categoría porque tiene productos asociados');
     } else {
       setDeletePopUp(true);
     }

@@ -15,7 +15,7 @@ function ClientDetails({ toggleKiosk }) {
     const { id } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
-    const { closeTab, tabs, setTabs } = useTabs();
+    const { closeTab, tabs, createTab } = useTabs();
     const { grid } = clientsDetails;
     const [editPopup, setEditPopup] = useState(false);
     const [showInfo, setShowInfo] = useState(false);
@@ -47,13 +47,9 @@ function ClientDetails({ toggleKiosk }) {
                 setClienteCodigos(prev => ({ ...prev, [path]: client.code }));
                 setClienteDatos(prev => ({ ...prev, [path]: client }));
             }
-
-            setTabs(prev => {
-                if (prev.some(tab => tab.path === path)) return prev;
-                return [...prev, { path, title: tabTitle }];
-            });
         }
-        navigate(path);
+
+        createTab(path, tabTitle);
     };
 
     return (

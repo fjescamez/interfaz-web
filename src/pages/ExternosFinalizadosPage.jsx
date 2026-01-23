@@ -3,7 +3,6 @@ import Table from '../components/Table'
 import { externosFinalizadosTableInfo } from '../helpers/tablesInfo'
 import { postData } from '../helpers/fetchData';
 import { notify } from '../helpers/notify';
-import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
 
 function ExternosFinalizadosPage() {
@@ -21,7 +20,7 @@ function ExternosFinalizadosPage() {
             if (response.status === "success") {
                 setTableData(prev => prev.filter(item => !response.trabajos.some(trabajo => trabajo._id === item._id)));
                 setExternosChecked([]);
-                notify(toast.success, 'success', response.title);
+                notify('success', response.title);
             }
             return { status: "success" };
         }

@@ -1,12 +1,12 @@
 import "./OrderKiosk.css";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import Switch from '@mui/material/Switch';
-import { MdKeyboardArrowDown, MdKeyboardArrowRight } from 'react-icons/md';
-import { IoWarningOutline, IoRefresh } from "react-icons/io5";
+import { useEffect, useMemo, useRef, useState } from "react";
+import Switch from "@mui/material/Switch";
+import { MdKeyboardArrowDown, MdKeyboardArrowRight } from "react-icons/md";
+import { IoWarningOutline } from "react-icons/io5";
 import { kioskActions } from "../helpers/orderKioskActions";
 import { BlinkBlur } from "react-loading-indicators";
-import { FaGear } from 'react-icons/fa6';
+import { FaGear } from "react-icons/fa6";
 import UnitarioComponent from "../components/orderKioskComponents/UnitarioComponent";
 import TrappingComponent from "../components/orderKioskComponents/TrappingComponent";
 import BocetoComponent from "../components/orderKioskComponents/BocetoComponent";
@@ -17,88 +17,158 @@ import OtraDocComponent from "../components/orderKioskComponents/OtraDocComponen
 import ColoresComponent from "../components/orderKioskComponents/ColoresComponent";
 import FreecutComponent from "../components/orderKioskComponents/FreecutComponent";
 import { notify } from "../helpers/notify";
-import { toast } from "react-toastify";
 import MontajeAvanzadoComponent from "../components/orderKioskComponents/MontajeAvanzadoComponent";
 import ExecutingComponent from "../components/ExecutingComponent";
 import "./HomePage.css";
 import { useTabs } from "../context/TabsContext";
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useTabState } from "../context/TabStateContext";
+import { useLocation } from "react-router-dom";
 import ReporteComponent from "../components/orderKioskComponents/ReporteComponent";
-import { useSession } from "../context/SessionContext";
 import InfoPopUp from "../components/InfoPopUp";
 import { HiOutlineRefresh } from "react-icons/hi";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import ChosenSelect from "../components/formComponents/ChosenSelect";
-import { handleExceptions, kioskConfigAuto, kioskConfigManual } from "../components/orderKioskComponents/configBehavior";
+import {
+  handleExceptions,
+  kioskConfigAuto,
+  resetKiosk,
+} from "../components/orderKioskComponents/configBehavior";
 import { OrbitProgress } from "react-loading-indicators";
+import PosMaculaComponent from "../components/orderKioskComponents/PosMaculaComponent";
+import CheckSvg from "../assets/svg/CheckSvg";
+import WarningSvg from "../assets/svg/WarningSvg";
+import ErrorSvg from "../assets/svg/ErrorSvg";
+import { FaPause } from "react-icons/fa6";
 
 function OrderKiosk({ configMode }) {
   const { id } = useParams();
-  const { setTabs, tabs, closeTab } = useTabs();
-  const navigate = useNavigate();
+  const { tabs, createTab } = useTabs();
+  const { saveTabState, getTabState, updateTabState, postDataContext } = useTabState();
   const location = useLocation();
-  const [kioskName, setKioskName] = useState("");
-  const [createKiosk, setCreateKiosk] = useState(false);
-  const [kioskOptions, setKioskOptions] = useState([
-    "Automática",
-    "Manual"
-  ]);
-  const [chosenKiosk, setChosenKiosk] = useState({});
-  const [defaultKiosk, setDefaultKiosk] = useState({});
-  const [step, setStep] = useState(1);
-  const [loadingOrderReport, setLoadingOrderReport] = useState(false);
-  const [loadingFileReport, setLoadingFileReport] = useState(false);
-  const [orderReport, setOrderReport] = useState([]);
-  const [fileReport, setFileReport] = useState([]);
-  const [reportModification, setReportModification] = useState(null);
-  const [reportWarnings, setReportWarnings] = useState(0);
-  const [reportErrors, setReportErrors] = useState(0);
-  const [reportFixes, setReportFixes] = useState(0);
-  const [infoPopUp, setInfoPopUp] = useState(false);
-  const [infoContent, setInfoContent] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [order, setOrder] = useState(null);
-  const [orderXml, setOrderXml] = useState(null);
-  const [cliente, setCliente] = useState(null);
-  const [unitarioMetadata, setUnitarioMetadata] = useState({});
-  const { session } = useSession();
-  const [isOpen, setIsOpen] = useState({
-    "unitario": true,
-    "reportePrevio": true
+  const tabKey = location.pathname;
+  const isMountedRef = useRef(true);
+  const isSyncingFromTabRef = useRef(false);
+  const lastTabKeyRef = useRef(null);
+
+  const [state, setState] = useState(() => getTabState(tabKey) || {
+    kioskName: "",
+    createKiosk: false,
+    kioskOptions: ["Automática", "Manual"],
+    chosenKiosk: {},
+    defaultKiosk: {},
+    step: 1,
+    loadingOrderReport: false,
+    loadingFileReport: false,
+    loadingTrapping: false,
+    workableId: null,
+    nodeId: null,
+    orderReport: [],
+    fileReport: [],
+    reportModification: null,
+    reportWarnings: 0,
+    reportErrors: 0,
+    reportFixes: 0,
+    infoPopUp: false,
+    infoContent: "",
+    loading: false,
+    order: null,
+    orderXml: null,
+    cliente: null,
+    unitarioMetadata: {},
+    isOpen: { unitario: true, reportePrevio: true },
+    isActive: { unitario: true, reportePrevio: true },
+    orderColors: [],
+    orderColorsObjects: [],
+    unitarios: [],
+    unitarioData: {
+      archivo: null
+    },
+    trappingData: {
+      distancia_trapping: "0",
+      intensidad: 100,
+      remetido: "No",
+      distancia_remetido: "0",
+    },
+    isTrappingWaiting: false,
+    isTrappingDone: false,
+    isTrappingCanceled: false,
+    bocetos: [{ id: 0, rasterizado: false, lpi: "300", formato: "Pdf", tipo: "Compuesto" }],
+    fichas: [{ id: 0, rasterizado: false, lpi: "300", formato: "Pdf", tipo: "Compuesto" }],
+    posMacula: "",
+    freecutData: {},
+    freeCutColors: [],
+    montajeData: [],
+    otraDocumentacion: {},
+    countOtraDoc: {},
+    salidaColores: [],
+    listDigimark: [],
+    coloresForm: undefined,
+    coloresInputData: {},
+    coloresDigimarkForm: undefined,
+    digimarkInputData: {},
+    configAvanzadaData: [],
+    actividad: "",
   });
-  const [isActive, setIsActive] = useState({
-    "unitario": true,
-    "reportePrevio": true,
-  });
-  const [orderColors, setOrderColors] = useState([]);
-  const [orderColorsObjects, setOrderColorsObjects] = useState([]);
-  const [unitarios, setUnitarios] = useState([]);
-  const [unitarioData, setUnitarioData] = useState(null);
-  const [trappingData, setTrappingData] = useState({
-    distancia_trapping: "0",
-    intensidad: 100,
-    remetido: "No",
-    distancia_remetido: "0"
-  });
-  const [bocetos, setBocetos] = useState([
-    { id: 0, rasterizado: false, lpi: "300", formato: "Pdf", tipo: "Compuesto" }
-  ]);
-  const [fichas, setFichas] = useState([
-    { id: 0, rasterizado: false, lpi: "300", formato: "Pdf", tipo: "Compuesto" }
-  ]);
-  const [freecutData, setFreecutData] = useState({});
-  const [freeCutColors, setFreecutColors] = useState([]);
-  const [montajeData, setMontajeData] = useState([]);
-  //const [montajeMaderaData, setMontajeMaderaData] = useState([]);
-  const [otraDocumentacion, setOtraDocumentacion] = useState({});
-  const [coloresCambiar, setColoresCambiar] = useState([]);
-  const [coloresDigimark, setColoresDigimark] = useState([]);
-  const [coloresForm, setColoresForm] = useState(undefined);
-  const [coloresInputData, setColoresInputData] = useState({});
-  const [coloresDigimarkForm, setColoresDigimarkForm] = useState(undefined);
-  const [digimarkInputData, setDigimarkInputData] = useState({});
-  const [configAvanzadaData, setConfigAvanzadaData] = useState([]);
-  const [actividad, setActividad] = useState("");
+
+  const tabExists = useMemo(
+    () => tabs.some((tab) => tab.path === tabKey),
+    [tabs, tabKey]
+  );
+
+  useEffect(() => {
+    if (!tabExists) return;
+    if (isSyncingFromTabRef.current) {
+      isSyncingFromTabRef.current = false;
+      return;
+    }
+    saveTabState(tabKey, state);
+  }, [tabKey, state, tabExists]);
+
+  useEffect(() => {
+    if (!tabKey || lastTabKeyRef.current === tabKey) return;
+    lastTabKeyRef.current = tabKey;
+    const externalState = getTabState(tabKey);
+    if (!externalState) return;
+    isSyncingFromTabRef.current = true;
+    setState(externalState);
+  }, [tabKey]);
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  const updateState = (keyOrUpdater, value) => {
+    if (typeof keyOrUpdater === "function") {
+      setState((prev) => {
+        const nextPartial = keyOrUpdater(prev) || {};
+        const keys = Object.keys(nextPartial);
+        const hasChanges = keys.some((key) => !Object.is(prev[key], nextPartial[key]));
+        return hasChanges ? { ...prev, ...nextPartial } : prev;
+      });
+      return;
+    }
+
+    if (keyOrUpdater && typeof keyOrUpdater === "object" && !Array.isArray(keyOrUpdater)) {
+      setState((prev) => {
+        const nextPartial = keyOrUpdater;
+        const keys = Object.keys(nextPartial);
+        const hasChanges = keys.some((key) => !Object.is(prev[key], nextPartial[key]));
+        return hasChanges ? { ...prev, ...nextPartial } : prev;
+      });
+      return;
+    }
+
+    setState((prev) => {
+      const nextValue = typeof value === "function" ? value(prev[keyOrUpdater], prev) : value;
+      if (Object.is(prev[keyOrUpdater], nextValue)) return prev;
+      return {
+        ...prev,
+        [keyOrUpdater]: nextValue
+      };
+    });
+  };
 
   const createDefaultStation = (orderBase, item) => ({
     _id: orderBase?._id || "",
@@ -126,21 +196,21 @@ function OrderKiosk({ configMode }) {
   });
 
   useEffect(() => {
-    setOrder(null);
+    updateState("order", null);
     const getOrder = async () => {
       const result = await fetchOneItem("orders/getOrder", id);
-      setOrder(result);
-      setOrderXml(result.xml);
-      setActividad(result.xml?.actividad?.id || "");
+      updateState("order", result);
+      updateState("orderXml", result.xml);
+      updateState("actividad", result.xml?.actividad?.id || "");
       if (result.xml?.actividad?.id !== "MADERA") {
-        setConfigAvanzadaData([]);
+        updateState("configAvanzadaData", []);
       } else {
         const maderaElements =
           result?.xml?.actividad?.madera?.madera_premontaje?.map((item) => ({
             elementId: item?.madera_tmedida || "",
             stations: [createDefaultStation(result, item)]
           })) || [];
-        setConfigAvanzadaData(maderaElements);
+        updateState("configAvanzadaData", maderaElements);
       }
     };
 
@@ -148,13 +218,13 @@ function OrderKiosk({ configMode }) {
   }, [id]);
 
   useEffect(() => {
-    if (order && unitarioMetadata && unitarioMetadata.number_of_pages && orderXml?.actividad?.id !== "MADERA") {
+    if (state.order && state.unitarioMetadata && state.unitarioMetadata.number_of_pages && state.orderXml?.actividad?.id !== "MADERA") {
       let HCount, HGap, VCount, VGap;
-      const datosCarton = orderXml?.actividad?.carton;
-      const datosFlexible = orderXml?.actividad?.flexible;
-      const datosEtiquetas = orderXml?.actividad?.adhesivo;
+      const datosCarton = state.orderXml?.actividad?.carton;
+      const datosFlexible = state.orderXml?.actividad?.flexible;
+      const datosEtiquetas = state.orderXml?.actividad?.adhesivo;
 
-      switch (actividad) {
+      switch (state.actividad) {
         case "CARTON":
           VCount = datosCarton?.carton_motivos || 1;
           HCount = datosCarton?.carton_caidas || 1;
@@ -174,14 +244,14 @@ function OrderKiosk({ configMode }) {
           break;
       }
 
-      const numberOfPages = unitarioMetadata.number_of_pages;
+      const numberOfPages = state.unitarioMetadata.number_of_pages;
       const stations = Array.from({ length: numberOfPages }, (_, index) => {
         const pageIndex = index + 1;
         return {
-          _id: order?._id || "",
-          id_pedido: order?.id_pedido || "",
+          _id: state.order?._id || "",
+          id_pedido: state.order?.id_pedido || "",
           numeroPaginas: numberOfPages,
-          OneUp: `${order?.id_pedido} ${order?.xml?.numero?.marca}` || "",
+          OneUp: `${state.order?.id_pedido} ${state.order?.xml?.numero?.marca}` || "",
           PageBox: "TrimBox",
           PageIndex: pageIndex,
           Orientation: "up",
@@ -203,40 +273,45 @@ function OrderKiosk({ configMode }) {
         };
       });
 
-      setConfigAvanzadaData([
+      updateState("configAvanzadaData", [
         {
-          elementId: order?.id_pedido || order?._id || "",
+          elementId: state.order?.id_pedido || state.order?._id || "",
           stations
         }
       ]);
     }
-  }, [unitarioMetadata, order, actividad]);
+  }, [state.unitarioMetadata, state.order, state.actividad]);
+
+  const getUnitarios = async () => {
+    const result = await postData("orderKiosks/getUnitario", state.order);
+
+    updateState("unitarios", result.options);
+
+    let unitarioDefault = "";
+
+    if (result.options.filter(option => option.type === "Packz") && result.options.filter(option => option.type === "Packz").length === 1) {
+      unitarioDefault = result.options.filter(option => option.type === "Packz")[0];
+    } else if (result.options.filter(option => option.type === "Illustrator") && result.options.filter(option => option.type === "Illustrator").length === 1 && result.options.filter(option => option.type === "Packz").length === 0) {
+      unitarioDefault = result.options.filter(option => option.type === "Illustrator")[0];
+    }
+
+    updateState("unitarioData", {
+      archivo: unitarioDefault
+    });
+  }
+
+  useEffect(() => {
+    console.log(state.unitarios);
+    
+  }, [state.unitarios]);
 
   useEffect(() => {
     const getOrderColors = async () => {
-      const response = await fetchData("colors", order?.unitario);
-      setOrderColors(response.map(color => {
+      const response = await fetchData("colors", state.order?.unitario);
+      updateState("orderColors", response.map(color => {
         return color.color;
       }));
-      setOrderColorsObjects(response);
-    }
-
-    const getUnitarios = async () => {
-      const result = await postData("orderKiosks/getUnitario", order);
-
-      setUnitarios(result.options);
-
-      let unitarioDefault = "";
-
-      if (result.options.filter(option => option.type === "Packz") && result.options.filter(option => option.type === "Packz").length === 1) {
-        unitarioDefault = result.options.filter(option => option.type === "Packz")[0];
-      } else if (result.options.filter(option => option.type === "Illustrator") && result.options.filter(option => option.type === "Illustrator").length === 1 && result.options.filter(option => option.type === "Packz").length === 0) {
-        unitarioDefault = result.options.filter(option => option.type === "Illustrator")[0];
-      }
-
-      setUnitarioData({
-        archivo: unitarioDefault
-      });
+      updateState("orderColorsObjects", response);
     }
 
     const getClienteConfig = async () => {
@@ -244,16 +319,16 @@ function OrderKiosk({ configMode }) {
       let cliente_id = id;
       let cliente_codigo = "";
 
-      if (orderXml?.numero) {
-        cliente_codigo = orderXml.numero.cliente_codigo || "";
+      if (state.orderXml?.numero) {
+        cliente_codigo = state.orderXml.numero.cliente_codigo || "";
         resultados = await fetchData("clients", cliente_codigo);
-        setCliente(resultados[0] || {});
+        updateState("cliente", resultados[0] || {});
         cliente_id = resultados[0]?._id || "";
       }
 
       if (configMode) {
         const cliente = await fetchOneItem("clients", id);
-        setCliente(cliente.results || {});
+        updateState("cliente", cliente.results || {});
       }
 
       if (cliente_id !== "") {
@@ -262,87 +337,120 @@ function OrderKiosk({ configMode }) {
         if (clientConfig && clientConfig?.configuraciones?.kioscos.length > 0) {
           const kioscoDefault = clientConfig.configuraciones.kioscos.find(kiosk => kiosk.kioscoDefault === true) || clientConfig.configuraciones.kioscos[0];
 
-          setKioskOptions(prevOptions => [
-            ...prevOptions,
+          updateState("kioskOptions", [
+            ...state.kioskOptions,
             ...clientConfig.configuraciones.kioscos.map(kiosk => ({
               ...kiosk,
               textoOpcion: kiosk.nombre
             }))
           ]);
-          setDefaultKiosk(kioscoDefault);
-          setChosenKiosk(kioscoDefault);
+          updateState("defaultKiosk", kioscoDefault);
+          updateState("chosenKiosk", kioscoDefault);
         } else {
-          setDefaultKiosk(kioskOptions[0]);
-          setChosenKiosk(kioskOptions[0]);
+          updateState("defaultKiosk", state.kioskOptions[0]);
+          updateState("chosenKiosk", state.kioskOptions[0]);
         }
       }
     }
 
-    getClienteConfig();
-
-    if (order?.unitario) {
-      getOrderColors();
-      getUnitarios();
+    if (!state.cliente) {
+      getClienteConfig();
     }
-  }, [order]);
+
+    if (state.order && state.unitarios.length === 0) {
+      getUnitarios();
+      if (state.order?.unitario) {
+        getOrderColors();
+      }
+    }
+  }, [state.order]);
 
   useEffect(() => {
-    if (chosenKiosk !== "Automática" && chosenKiosk !== "Manual") {
-      const activosDefault = chosenKiosk?.activosDefault || [];
-      const abiertosDefault = chosenKiosk?.abiertosDefault || [];
+    if (state.chosenKiosk !== "Automática" && state.chosenKiosk !== "Manual") {
+      const activosDefault = state.chosenKiosk?.activosDefault || [];
+      const abiertosDefault = state.chosenKiosk?.abiertosDefault || [];
 
-      if (chosenKiosk?.activosDefault?.length > 0) {
-        setIsActive((prev) => {
+      if (state.chosenKiosk?.activosDefault?.length > 0) {
+        updateState("isActive", (prevIsActive) => {
           const newIsActive = {};
           activosDefault.forEach((item) => {
             newIsActive[item] = true;
           });
-          return { ...prev, ...newIsActive };
+          return { ...prevIsActive, ...newIsActive };
         });
       }
 
-      if (chosenKiosk?.abiertosDefault?.length > 0) {
-        setIsOpen((prev) => {
+      if (state.chosenKiosk?.abiertosDefault?.length > 0) {
+        updateState("isOpen", (prevIsOpen) => {
           const newIsOpen = {};
           abiertosDefault.forEach((item) => {
             newIsOpen[item] = true;
           });
-          return { ...prev, ...newIsOpen };
+          return { ...prevIsOpen, ...newIsOpen };
         });
       }
 
-      const datosDefault = chosenKiosk?.datosDefault || {};
+      const datosDefault = state.chosenKiosk?.datosDefault || {};
 
       if (datosDefault.trapping && Object.keys(datosDefault.trapping).length > 0) {
-        setTrappingData(datosDefault.trapping);
+        updateState("trappingData", datosDefault.trapping);
       }
 
       if (datosDefault.bocetos && datosDefault.bocetos.length > 0) {
-        setBocetos(datosDefault.bocetos);
+        updateState("bocetos", datosDefault.bocetos);
       }
 
       if (datosDefault.fichas && datosDefault.fichas.length > 0) {
-        setFichas(datosDefault.fichas);
+        updateState("fichas", datosDefault.fichas);
       }
     } else {
-      if (orderXml && actividad) {
-        if (chosenKiosk === "Automática") {
-          kioskConfigAuto({ orderXml, actividad, setIsActive, setOtraDocumentacion, orderColorsObjects });
-        } else if (chosenKiosk === "Manual") {
-          kioskConfigManual({ setIsActive });
+      if (state.orderXml && state.actividad) {
+        if (state.chosenKiosk === "Automática") {
+          kioskConfigAuto({
+            orderXml: state.orderXml,
+            actividad: state.actividad,
+            setIsActive: (updater) => updateState("isActive", updater),
+            setOtraDocumentacion: (updater) => updateState("otraDocumentacion", updater),
+            orderColorsObjects: state.orderColorsObjects
+          });
+        } else if (state.chosenKiosk === "Manual") {
+          resetKiosk({
+            setIsActive: (updater) => updateState("isActive", updater),
+            setIsOpen: (updater) => updateState("isOpen", updater)
+          });
         }
       }
     }
 
+    if (state.orderXml?.tecnicos && state.orderXml?.tecnicos?.trapping !== " ") {
+      const trapping = state.orderXml?.tecnicos?.trapping.replace(",", ".").split(" ")[0];
 
-  }, [chosenKiosk, orderXml, actividad, orderColorsObjects]);
+      updateState("trappingData", {
+        ...state.trappingData,
+        distancia_trapping: trapping
+      });
+    }
+  }, [state.chosenKiosk, state.orderXml, state.actividad, state.orderColorsObjects]);
+
+  useEffect(() => {
+    const shouldEnablePosMacula = Boolean(state.isActive?.plotter || state.isActive?.fichas);
+
+    updateState("isActive", (prevIsActive) => {
+      if (prevIsActive?.posMacula === shouldEnablePosMacula) return prevIsActive;
+
+      return {
+        ...prevIsActive,
+        posMacula: shouldEnablePosMacula
+      };
+    });
+  }, [state.isActive?.plotter, state.isActive?.fichas, state.isActive?.posMacula]);
 
   useEffect(() => {
     const generateColoresForm = () => {
       const formSections = [
         {
           rows: [
-            ...orderColors.map((color) => {
+            ...state.orderColors.map((color) => {
               return {
                 groups: [color]
               }
@@ -351,10 +459,10 @@ function OrderKiosk({ configMode }) {
         }
       ];
 
-      setColoresForm({
+      updateState("coloresForm", {
         formSections,
         formFields: [
-          ...orderColors.map((color) => ({
+          ...state.orderColors.map((color) => ({
             htmlFor: `${color}`,
             labelId: `${color}Label`,
             labelTitle: `${color}`,
@@ -370,7 +478,7 @@ function OrderKiosk({ configMode }) {
       const formSections = [
         {
           rows: [
-            ...orderColors.map((color) => {
+            ...state.orderColors.map((color) => {
               return {
                 groups: [`${color}_Digimark`]
               }
@@ -379,9 +487,9 @@ function OrderKiosk({ configMode }) {
         }
       ];
 
-      setColoresDigimarkForm({
+      updateState("coloresDigimarkForm", {
         formSections,
-        formFields: orderColors.map((color) => ({
+        formFields: state.orderColors.map((color) => ({
           htmlFor: `${color}_Digimark`,
           labelId: `${color}_DigimarkLabel`,
           labelTitle: `${color}`,
@@ -392,28 +500,28 @@ function OrderKiosk({ configMode }) {
       });
     };
 
-    if (orderColors.length > 0) {
+    if (state.orderColors.length > 0) {
       generateColoresForm();
       generateColoresDigimarkForm();
     }
-  }, [orderColors]);
+  }, [state.orderColors]);
 
   useEffect(() => {
-    if (orderColors.length > 0) {
-      setFreecutColors(orderColors.map(color => ({
+    if (state.orderColors.length > 0) {
+      updateState("freeCutColors", state.orderColors.map(color => ({
         checked: false,
         color,
         des_vert: "0",
         caidas: "Cortadas"
       })));
     }
-  }, [orderColors]);
+  }, [state.orderColors]);
 
   // Control de errores trapping
   useEffect(() => {
     // Mensajes de error
-    if (trappingData.manual) {
-      setOrderReport(prev => prev.filter(item => !item?.type?.includes("trapping") && item?.status !== "warning"));
+    if (state.trappingData.manual) {
+      updateState("orderReport", (prevOrderReport) => prevOrderReport.filter(item => !item?.type?.includes("trapping") && item?.status !== "warning"));
     } else {
       const error1 = {
         status: "warning",
@@ -426,18 +534,18 @@ function OrderKiosk({ configMode }) {
         type: ["trapping"]
       };
 
-      setOrderReport(prev => {
-        let next = prev;
+      updateState("orderReport", (prevOrderReport) => {
+        let next = prevOrderReport;
         // Añadir error1 si corresponde
-        if ((trappingData.distancia_trapping === "0" || trappingData.distancia_trapping === "") && trappingData.remetido === "No") {
-          const exists = prev.some(item => item.message === error1.message && JSON.stringify(item.type) === JSON.stringify(error1.type));
+        if ((state.trappingData.distancia_trapping === "0" || state.trappingData.distancia_trapping === "") && state.trappingData.remetido === "No") {
+          const exists = prevOrderReport.some(item => item.message === error1.message && JSON.stringify(item.type) === JSON.stringify(error1.type));
           if (!exists) next = [...next, error1];
         } else {
           // Eliminar error1 si ya no corresponde
           next = next.filter(item => !(item.message === error1.message && JSON.stringify(item.type) === JSON.stringify(error1.type)));
         }
         // Añadir error2 si corresponde
-        if (trappingData.remetido !== "No" && (trappingData.distancia_remetido === "0" || trappingData.distancia_remetido === "")) {
+        if (state.trappingData.remetido !== "No" && (state.trappingData.distancia_remetido === "0" || state.trappingData.distancia_remetido === "")) {
           const exists = next.some(item => item.message === error2.message && JSON.stringify(item.type) === JSON.stringify(error2.type));
           if (!exists) next = [...next, error2];
         } else {
@@ -447,77 +555,130 @@ function OrderKiosk({ configMode }) {
         return next;
       });
     }
-  }, [trappingData]);
+  }, [state.trappingData]);
+
+  useEffect(() => {
+    if (!state.isActive?.posMacula) return;
+
+    const errorPosMacula = {
+      status: "error",
+      message: "No hay posición de mácula seleccionada",
+      type: ["posMacula"]
+    };
+
+    const hasValue = String(state.posMacula ?? "").trim() !== "";
+
+    updateState("orderReport", (prevOrderReport) => {
+      let next = prevOrderReport;
+
+      if (!hasValue) {
+        const exists = prevOrderReport.some(
+          (item) => item.message === errorPosMacula.message && JSON.stringify(item.type) === JSON.stringify(errorPosMacula.type)
+        );
+        if (!exists) next = [...next, errorPosMacula];
+      } else {
+        next = next.filter(
+          (item) => !(item.message === errorPosMacula.message && JSON.stringify(item.type) === JSON.stringify(errorPosMacula.type))
+        );
+      }
+
+      return next;
+    });
+  }, [state.posMacula, state.isActive?.posMacula]);
+
+  useEffect(() => {
+    if (Object.keys(state.otraDocumentacion).length > 0) {
+      const tiposCertificado = ['certificadoControl', 'certificadoContinuos', 'certificadoCodigos', 'unitarioPng'];
+      const tiposEtiqueta = ['etiquetasMontaje', 'etiquetasPlotter', 'etiquetasPrueba'];
+
+      const certificadosTrue = tiposCertificado.filter((key) => state.otraDocumentacion[key]).length;
+      const etiquetasTrue = tiposEtiqueta.filter((key) => state.otraDocumentacion[key]).length;
+
+      updateState("countOtraDoc", {
+        certificados: certificadosTrue,
+        etiquetas: etiquetasTrue,
+      });
+
+      updateState("isActive", (prev) => ({
+        ...prev,
+        otraDocumentacion: true
+      }));
+    }
+  }, [state.otraDocumentacion]);
 
   const components = {
     "unitario": {
-      title: `${unitarioData?.archivo?.name || ""} - ${unitarioData?.archivo?.type || ""}`,
-      component: <UnitarioComponent unitarios={unitarios} unitarioData={unitarioData} setUnitarioData={setUnitarioData} order={order} />,
-      data: unitarioData?.archivo,
+      title: `${state.unitarioData?.archivo?.name || ""} - ${state.unitarioData?.archivo?.type || ""}`,
+      component: <UnitarioComponent unitarios={state.unitarios} unitarioData={state.unitarioData} setUnitarioData={(value) => updateState("unitarioData", value)} order={state.order} />,
+      data: state.unitarioData?.archivo,
       noSave: true
     },
     "reportePrevio": {
-      title: (!loadingFileReport && !loadingOrderReport ? (reportErrors + reportWarnings === 0 ? "Sin errores ni advertencias" : `Correcciones: ${reportFixes} | Advertencias: ${reportWarnings} | Errores: ${reportErrors} `) : ""),
-      component: <ReporteComponent loadingOrderReport={loadingOrderReport} loadingFileReport={loadingFileReport} orderReport={orderReport} fileReport={fileReport} reportModification={reportModification} setInfoPopUp={setInfoPopUp} setInfoContent={setInfoContent} />,
-      data: orderReport,
+      title: (!state.loadingFileReport && !state.loadingOrderReport ? (state.reportErrors + state.reportWarnings === 0 ? "Sin errores ni advertencias" : `Correcciones: ${state.reportFixes} | Advertencias: ${state.reportWarnings} | Errores: ${state.reportErrors} | ${state.reportModification ? `Ult. análisis: ${state.reportModification}` : ""} `) : ""),
+      component: <ReporteComponent loadingOrderReport={state.loadingOrderReport} loadingFileReport={state.loadingFileReport} orderReport={state.orderReport} fileReport={state.fileReport} reportModification={state.reportModification} setInfoPopUp={(value) => updateState("infoPopUp", value)} setInfoContent={(value) => updateState("infoContent", value)} />,
+      data: state.orderReport,
       noSave: true
     },
     "trapping": {
-      title: trappingData.manual ? "Manual" : `
-      ${trappingData.distancia_trapping} mm,
-      ${trappingData.intensidad}%,
-      ${trappingData.remetido}${trappingData.remetido !== "No" ? `, ${trappingData.distancia_remetido} mm` : ""}
+      title: state.trappingData.manual ? "Manual" : `
+      ${state.trappingData.distancia_trapping} mm,
+      ${state.trappingData.intensidad}%,
+      ${state.trappingData.remetido}${state.trappingData.remetido !== "No" ? `, ${state.trappingData.distancia_remetido} mm` : ""}
       `,
-      component: <TrappingComponent trappingData={trappingData} setTrappingData={setTrappingData} />,
-      data: trappingData
+      component: <TrappingComponent id_pedido={state.order?.id_pedido} trappingData={state.trappingData} updateState={updateState} workableId={state.workableId} nodeId={state.nodeId} loadingTrapping={state.loadingTrapping} isTrappingDone={state.isTrappingDone} isTrappingWaiting={state.isTrappingWaiting} isTrappingCanceled={state.isTrappingCanceled} />,
+      data: state.trappingData
     },
     "salidaColores": {
-      title: coloresCambiar.length > 0 ?
-        `${coloresCambiar.map(color => color).join(", ")}` :
+      title: state.salidaColores.length > 0 ?
+        `${state.salidaColores.map(color => color).join(", ")}` :
         "",
-      component: <ColoresComponent formData={coloresForm} colores={orderColors} setColoresList={setColoresCambiar} inputData={coloresInputData} setInputData={setColoresInputData} />,
-      data: coloresCambiar,
+      component: <ColoresComponent formData={state.coloresForm} colores={state.orderColors} setColoresList={(value) => updateState("salidaColores", value)} inputData={state.coloresInputData} setInputData={(value) => updateState("coloresInputData", value)} />,
+      data: state.salidaColores,
       noSave: true
     },
     "listDigimark": {
-      title: coloresDigimark.length > 0 ?
-        `${coloresDigimark.map(color => color).join(", ")}` :
+      title: state.listDigimark.length > 0 ?
+        `${state.listDigimark.map(color => color).join(", ")}` :
         "",
-      component: <ColoresComponent formData={coloresDigimarkForm} colores={orderColors} setColoresList={setColoresDigimark} inputData={digimarkInputData} setInputData={setDigimarkInputData} />,
-      data: coloresDigimark,
+      component: <ColoresComponent formData={state.coloresDigimarkForm} colores={state.orderColors} setColoresList={(value) => updateState("listDigimark", value)} inputData={state.digimarkInputData} setInputData={(value) => updateState("digimarkInputData", value)} />,
+      data: state.listDigimark,
       noSave: true
     },
     "bocetos": {
-      title: bocetos.length === 1 ?
-        `1 Boceto: ${bocetos[0].rasterizado ? `${bocetos[0].lpi} lpi, ` : ""}${bocetos[0].formato}, ${bocetos[0].tipo}` :
-        bocetos.length > 1 ? `${bocetos.length} bocetos (Desplegar para ver más)` : "",
-      component: <BocetoComponent opciones={bocetos} setOpciones={setBocetos} />,
-      data: bocetos
+      title: state.bocetos.length === 1 ?
+        `1 Boceto: ${state.bocetos[0].rasterizado ? `${state.bocetos[0].lpi} lpi, ` : ""}${state.bocetos[0].formato}, ${state.bocetos[0].tipo}` :
+        state.bocetos.length > 1 ? `${state.bocetos.length} bocetos (Desplegar para ver más)` : "",
+      component: <BocetoComponent opciones={state.bocetos} setOpciones={(value) => updateState("bocetos", value)} />,
+      data: state.bocetos
     },
     "fichas": {
-      title: fichas.length === 1 ?
-        `1 Ficha: ${fichas[0].rasterizado ? `${fichas[0].lpi} lpi, ` : ""}${fichas[0].formato}, ${fichas[0].tipo}` :
-        fichas.length > 1 ? `${fichas.length} fichas (Desplegar para ver más)` : "",
-      component: <BocetoComponent opciones={fichas} setOpciones={setFichas} />,
-      data: fichas
+      title: state.fichas.length === 1 ?
+        `1 Ficha: ${state.fichas[0].rasterizado ? `${state.fichas[0].lpi} lpi, ` : ""}${state.fichas[0].formato}, ${state.fichas[0].tipo}` :
+        state.fichas.length > 1 ? `${state.fichas.length} fichas (Desplegar para ver más)` : "",
+      component: <BocetoComponent opciones={state.fichas} setOpciones={(value) => updateState("fichas", value)} />,
+      data: state.fichas
     },
     "plotter": {
       data: {
-        plotterData: isActive.plotter ? true : false
+        plotterData: state.isActive.plotter ? true : false
       }
+    },
+    "posMacula": {
+      component: <PosMaculaComponent posMacula={state.posMacula} setPosMacula={(value) => updateState("posMacula", value)} />,
+      data: state.posMacula
     },
     "montaje": {
       title: "",
-      component: <MontajeComponent orderXml={orderXml} montajeData={montajeData} setMontajeData={setMontajeData} setConfigAvanzadaData={setConfigAvanzadaData} isActive={isActive} setIsActive={setIsActive} setIsOpen={setIsOpen} />,
-      data: montajeData,
+      component: <MontajeComponent orderXml={state.orderXml} montajeData={state.montajeData} setMontajeData={(value) => updateState("montajeData", value)} setConfigAvanzadaData={(value) => updateState("configAvanzadaData", value)} isActive={state.isActive} setIsActive={(value) => updateState("isActive", value)} setIsOpen={(value) => updateState("isOpen", value)} />,
+      data: state.montajeData,
       noSave: true
     },
     "freecut": {
-      title: freeCutColors.filter(color => color.checked).length > 0 ?
-        `${freeCutColors.filter(color => color.checked).map(color => color).join(", ")}` :
+      title: state.freeCutColors.filter(color => color.checked).length > 0 ?
+        `${state.freeCutColors.filter(color => color.checked).map(color => color.color).join(", ")}` :
         "",
-      component: <FreecutComponent freecutData={freecutData} setFreecutData={setFreecutData} colores={orderColors} freeCutColors={freeCutColors} setFreeCutColors={setFreecutColors} />,
-      data: freecutData,
+      component: <FreecutComponent freecutData={state.freecutData} setFreecutData={(value) => updateState("freecutData", value)} colores={state.orderColors} freeCutColors={state.freeCutColors} setFreeCutColors={(value) => updateState("freeCutColors", value)} />,
+      data: state.freecutData,
       noSave: true
     },
     "especial": {
@@ -525,49 +686,54 @@ function OrderKiosk({ configMode }) {
     },
     "configAvanzadaMontaje": {
       title: "",
-      component: <MontajeAvanzadoComponent actividad={actividad} configAvanzadaData={configAvanzadaData} setConfigAvanzadaData={setConfigAvanzadaData} />,
-      data: configAvanzadaData,
+      component: <MontajeAvanzadoComponent actividad={state.actividad} configAvanzadaData={state.configAvanzadaData} setConfigAvanzadaData={(value) => updateState("configAvanzadaData", value)} />,
+      data: state.configAvanzadaData,
       noSave: true
     },
     "otraDocumentacion": {
-      title: "",
-      component: <OtraDocComponent otraDocumentacion={otraDocumentacion} setOtraDocumentacion={setOtraDocumentacion} />,
-      data: otraDocumentacion,
+      title: `Certificados: ${state.countOtraDoc.certificados || 0} | Etiquetas: ${state.countOtraDoc.etiquetas || 0} | Separaciones: ${state.otraDocumentacion.separaciones?.hacer ? 'Sí' : 'No'}`,
+      component: <OtraDocComponent otraDocumentacion={state.otraDocumentacion} setOtraDocumentacion={(value) => updateState("otraDocumentacion", value)} setCountOtraDoc={(value) => updateState("countOtraDoc", value)} />,
+      data: state.otraDocumentacion,
       noSave: true
     }
   }
 
   const resetComponentesData = () => {
-    setTrappingData({
-      distancia_trapping: "0",
-      intensidad: 100,
-      remetido: "No",
-      distancia_remetido: "0"
+    updateState({
+      trappingData: {
+        distancia_trapping: "0",
+        intensidad: 100,
+        remetido: "No",
+        distancia_remetido: "0"
+      },
+      salidaColores: [],
+      listDigimark: [],
+      bocetos: [
+        { id: 0, rasterizado: false, lpi: "300", formato: "Pdf", tipo: "Compuesto" }
+      ],
+      fichas: [
+        { id: 0, rasterizado: false, lpi: "300", formato: "Pdf", tipo: "Compuesto" }
+      ],
+      montajeData: [],
+      freecutData: {},
+      configAvanzadaData: [],
+      otraDocumentacion: {},
     });
-    setColoresCambiar([]);
-    setColoresDigimark([]);
-    setBocetos([
-      { id: 0, rasterizado: false, lpi: "300", formato: "Pdf", tipo: "Compuesto" }
-    ]);
-    setFichas([
-      { id: 0, rasterizado: false, lpi: "300", formato: "Pdf", tipo: "Compuesto" }
-    ]);
-    setMontajeData([]);
-    setFreecutData({});
-    setConfigAvanzadaData([]);
-    setOtraDocumentacion({});
   }
 
   const handleSubmit = async (action) => {
-    setLoading(true);
     let dataToSend = {
-      _id: order?._id || "",
-      id_pedido: order?.id_pedido || ""
+      _id: state.order?._id || "",
+      id_pedido: state.order?.id_pedido || ""
     };
 
     if (action === "submit") {
-      Object.keys(isActive).forEach(key => {
-        if (isActive[key]) {
+      dataToSend.salidaColores = state.salidaColores || [];
+      dataToSend.listDigimark = state.listDigimark || [];
+      dataToSend.listMontajes = Object.keys(state.montajeData || {}).filter((key) => state.montajeData[key]?.isActive) || [];
+
+      Object.keys(state.isActive).forEach(key => {
+        if (state.isActive[key]) {
           dataToSend[key] = components[key].data;
         }
       });
@@ -581,37 +747,50 @@ function OrderKiosk({ configMode }) {
 
     // En MADERA la config avanzada se activa por elemento desde "Montaje",
     // no desde el switch general de kioskActions.
-    if (actividad === "MADERA") {
-      const activeConfigKeys = Object.keys(montajeData || {}).filter((key) => {
-        const item = montajeData?.[key];
+    if (state.actividad === "MADERA") {
+      const activeConfigKeys = Object.keys(state.montajeData || {}).filter((key) => {
+        const item = state.montajeData?.[key];
         return item?.isActive && item?.isConfigAvanzadaActive;
       });
 
       if (activeConfigKeys.length > 0) {
-        dataToSend.configAvanzadaMontaje = (configAvanzadaData || []).filter((el) =>
+        dataToSend.configAvanzadaMontaje = (state.configAvanzadaData || []).filter((el) =>
           activeConfigKeys.includes(el?.elementId)
         );
       }
     }
 
     if (action === "submit") {
-      console.log(dataToSend);
+      if (state.isActive.trapping && !state.isTrappingDone) {
+        updateState("loadingTrapping", true);
+        dataToSend.holdInKiosk = true;
+      } else {
+        updateState("loading", true);
+      }
 
       const result = await postData("orderKiosks/kioscoPedidoAuto", dataToSend);
       if (result.status === "success") {
-        notify(toast.success, "success", result.title, result.message);
-        /* closeTab(location.pathname); */
+        if (result.workable_id && result.node_id) {
+          updateState("workableId", result.workable_id);
+          updateState("nodeId", result.node_id);
+          updateState("isTrappingWaiting", true);
+          updateState("isOpen", (prevIsOpen) => ({
+            ...prevIsOpen,
+            trapping: true
+          }));
+        }
+        notify("success", result.title, result.message);
       } else {
-        notify(toast.error, "error", result.title, result.message);
+        notify("error", result.title, result.message);
       }
     } else if (action === "saveConfig") {
-      const activosDefault = Object.keys(isActive).filter(key => isActive[key]);
-      const abiertosDefault = Object.keys(isOpen).filter(key => isOpen[key]);
+      const activosDefault = Object.keys(state.isActive).filter(key => state.isActive[key]);
+      const abiertosDefault = Object.keys(state.isOpen).filter(key => state.isOpen[key]);
       const datosDefault = dataToSend;
 
       const data = {
-        cliente_id: cliente._id || "",
-        nombre: kioskName || "",
+        cliente_id: state.cliente._id || "",
+        nombre: state.kioskName || "",
         activosDefault,
         abiertosDefault,
         datosDefault
@@ -619,176 +798,242 @@ function OrderKiosk({ configMode }) {
 
       const result = await postData("clientConfig/update", data);
       if (result.status === "success") {
-        notify(toast.success, "success", "Configuración guardada", "La configuración del kiosco se ha guardado correctamente para este cliente.");
+        notify("success", "Configuración guardada", "La configuración del kiosco se ha guardado correctamente para este cliente.");
         /* closeTab(location.pathname); */
       } else {
-        notify(toast.error, "error", "Error al guardar", "Ha ocurrido un error al guardar la configuración del kiosco para este cliente.");
+        notify("error", "Error al guardar", "Ha ocurrido un error al guardar la configuración del kiosco para este cliente.");
       }
     } else if (action === "deleteConfig") {
-      const result = await postData("clientConfig/delete", { cliente_id: cliente._id, key: "kioscos", nombre: chosenKiosk.nombre || null });
+      const result = await postData("clientConfig/delete", { cliente_id: state.cliente._id, key: "kioscos", nombre: state.chosenKiosk.nombre || null });
 
       if (result.status === "success") {
-        notify(toast[result.status], result.status, result.title, result.message);
+        notify(result.status, result.title, result.message);
         /* closeTab(location.pathname); */
       } else if (result.status === "warning") {
-        notify(toast[result.status], result.status, result.title, result.message);
+        notify(result.status, result.title, result.message);
       }
     }
 
-    setLoading(false);
+    updateState("loadingTrapping", false);
+    updateState("loading", false);
   };
 
   const handleReport = async (action) => {
-    setIsOpen((prev) => ({
-      ...prev,
-      "unitario": false,
-      "reportePrevio": true
-    }));
-    setIsActive((prev) => ({
-      ...prev,
-      "reportePrevio": true
-    }));
-    setStep(2);
-    setLoadingOrderReport(true);
-    setLoadingFileReport(true);
+    const loadingUpdate = (prev) => ({
+      isOpen: {
+        ...prev.isOpen,
+        "unitario": false,
+        "reportePrevio": true
+      },
+      isActive: {
+        ...prev.isActive,
+        "reportePrevio": true
+      },
+      step: 2,
+      loadingOrderReport: true,
+      loadingFileReport: true
+    });
 
-    const reportResult1 = await postData("orderKiosks/orderReport", {
-      _id: order?._id || "",
-      id_pedido: order?.id_pedido || ""
-    }).then(res => {
-      setOrderReport(prev => {
-        if (action === "forceReport") {
-          return res.report || [];
-        } else {
-          const newReport = res.report || [];
-          return [...newReport, ...prev];
-        }
+    if (action === "forceReport") {
+      updateState("isTrappingDone", false);
+      resetKiosk({
+        setIsActive: (updater) => updateState("isActive", updater),
+        setIsOpen: (updater) => updateState("isOpen", updater)
       });
-      setLoadingOrderReport(false);
-      return res;
+    }
+
+    updateTabState(tabKey, loadingUpdate);
+    if (isMountedRef.current) {
+      updateState(loadingUpdate);
+    }
+
+    await postDataContext("orderKiosks/orderReport", {
+      _id: state.order?._id || "",
+      id_pedido: state.order?.id_pedido || ""
+    }, (res) => {
+      const applyOrderReport = (prev) => {
+        const previousReport = prev.orderReport || [];
+        const incomingReport = res.report || [];
+        const uniqueIncoming = incomingReport.filter((item) =>
+          !previousReport.some((prevItem) => (
+            prevItem.status === item.status
+            && prevItem.message === item.message
+            && JSON.stringify(prevItem.type || []) === JSON.stringify(item.type || [])
+          ))
+        );
+        const nextOrderReport = previousReport.concat(uniqueIncoming);
+        const orderHasErrors = (res.report || []).some((item) => item.status === "error" && !item.type);
+        const fileHasErrors = (prev.fileReport || []).some((item) => item.status === "error" && !item.type);
+        const canAdvance = !orderHasErrors && !fileHasErrors && !prev.loadingFileReport;
+
+        return {
+          orderReport: nextOrderReport,
+          loadingOrderReport: false,
+          step: canAdvance ? 3 : prev.step
+        };
+      };
+
+      updateTabState(tabKey, applyOrderReport);
+      if (isMountedRef.current) {
+        updateState(applyOrderReport);
+      }
+    }, (res) => {
+      const applyOrderReportError = (prev) => ({
+        orderReport: [{
+          status: "error",
+          message: "No se ha podido generar el reporte del pedido."
+        }],
+        loadingOrderReport: false,
+        step: prev.step
+      });
+
+      updateTabState(tabKey, applyOrderReportError);
+      if (isMountedRef.current) {
+        updateState(applyOrderReportError);
+        notify("error", res.title || "Error", "Ha ocurrido un error inesperado al generar el reporte del pedido.");
+      }
     });
 
     let dataToReport = {
-      _id: order?._id || "",
-      id_pedido: order?.id_pedido || ""
+      _id: state.order?._id || "",
+      id_pedido: state.order?.id_pedido || ""
     };
 
-    Object.keys(isActive).forEach(key => {
-      if (isActive[key]) {
+    Object.keys(state.isActive).forEach(key => {
+      if (state.isActive[key]) {
         dataToReport[key] = components[key].data;
       }
     });
 
-    const reportResult2 = await postData("orderKiosks/fileReport", {
-      /* _id: order?._id || "",
-      unitario: unitarioData?.archivo || null,
-      id_pedido: order?.id_pedido || "",
-      forceReport: action === "forceReport" ? true : false,
-      trappingData */
+    await postDataContext("orderKiosks/fileReport", {
       ...dataToReport,
       forceReport: action === "forceReport" ? true : false
-    }).then(res => {
-      setFileReport(res.report || []);
-      setLoadingFileReport(false);
-      setReportModification(res.modification || null);
-      setUnitarioMetadata({
-        number_of_pages: res.number_of_pages || 1
-      });
-      return res;
-    });
+    }, (res) => {
+      const applyFileReport = (prev) => {
+        const nextFileReport = res.report || [];
+        const orderHasErrors = (prev.orderReport || []).some((item) => item.status === "error" && !item.type);
+        const fileHasErrors = (nextFileReport || []).some((item) => item.status === "error" && !item.type);
+        const canAdvance = !orderHasErrors && !fileHasErrors && !prev.loadingOrderReport;
 
-    //setReportePrevio(result.report);
-    if (!reportResult1?.report?.some(item => item.status === "error") && !reportResult2?.report?.some(item => item.status === "error")) setStep(3);
+        return {
+          fileReport: nextFileReport,
+          loadingFileReport: false,
+          reportModification: res.modification || null,
+          unitarioMetadata: {
+            number_of_pages: res.number_of_pages || 1
+          },
+          step: canAdvance ? 3 : prev.step
+        };
+      };
+
+      updateTabState(tabKey, applyFileReport);
+      if (isMountedRef.current) {
+        updateState(applyFileReport);
+      }
+    }, (res) => {
+      const applyFileReportError = (prev) => ({
+        fileReport: [{
+          status: "error",
+          message: "No se ha podido generar el reporte del archivo."
+        }],
+        loadingFileReport: false,
+        step: prev.step
+      });
+
+      updateTabState(tabKey, applyFileReportError);
+      if (isMountedRef.current) {
+        updateState(applyFileReportError);
+        notify("error", res.title || "Error", "Ha ocurrido un error inesperado al generar el reporte del archivo.");
+      }
+    });
   }
 
   useEffect(() => {
-    const totalFixes = (orderReport?.filter(item => item.status === "info").length || 0) +
-      (fileReport?.filter(item => item.status === "info").length || 0);
-    const totalWarnings = (orderReport?.filter(item => item.status === "warning").length || 0) +
-      (fileReport?.filter(item => item.status === "warning").length || 0);
-    const totalErrors = (orderReport?.filter(item => item.status === "error").length || 0) +
-      (fileReport?.filter(item => item.status === "error").length || 0);
+    const totalFixes = (state.orderReport?.filter(item => item.status === "info").length || 0) +
+      (state.fileReport?.filter(item => item.status === "info").length || 0);
+    const totalWarnings = (state.orderReport?.filter(item => item.status === "warning").length || 0) +
+      (state.fileReport?.filter(item => item.status === "warning").length || 0);
+    const totalErrors = (state.orderReport?.filter(item => item.status === "error").length || 0) +
+      (state.fileReport?.filter(item => item.status === "error").length || 0);
 
-    setReportFixes(totalFixes);
-    setReportWarnings(totalWarnings);
-    setReportErrors(totalErrors);
-  }, [orderReport, fileReport]);
+    updateState({
+      reportFixes: totalFixes,
+      reportWarnings: totalWarnings,
+      reportErrors: totalErrors
+    });
+  }, [state.orderReport, state.fileReport]);
 
-  const maderaConfigBlocks = actividad === "MADERA"
-    ? (orderXml?.actividad?.madera?.madera_premontaje || [])
+  const maderaConfigBlocks = state.actividad === "MADERA"
+    ? (state.orderXml?.actividad?.madera?.madera_premontaje || [])
       .map((item) => item?.madera_tmedida)
       .filter(Boolean)
-      .filter((key) => montajeData?.[key]?.isActive && montajeData?.[key]?.isConfigAvanzadaActive)
+      .filter((key) => state.montajeData?.[key]?.isActive && state.montajeData?.[key]?.isConfigAvanzadaActive)
     : [];
 
   const setConfigAvanzadaDataForElementId = (elementId, updater) => {
-    setConfigAvanzadaData((prevGlobal) => {
-      const idx = (prevGlobal || []).findIndex((el) => el?.elementId === elementId);
-      if (idx === -1) return prevGlobal;
+    updateState("configAvanzadaData", (prevConfigAvanzadaData) => {
+      const idx = (prevConfigAvanzadaData || []).findIndex((el) => el?.elementId === elementId);
+      if (idx === -1) return prevConfigAvanzadaData;
 
-      const localPrev = [prevGlobal[idx]];
+      const localPrev = [prevConfigAvanzadaData[idx]];
       const localNext = typeof updater === "function" ? updater(localPrev) : updater;
       const nextElement = (localNext && localNext[0]) ? localNext[0] : localPrev[0];
 
-      const nextGlobal = [...prevGlobal];
-      nextGlobal[idx] = nextElement;
-      return nextGlobal;
+      const nextConfigAvanzadaData = [...prevConfigAvanzadaData];
+      nextConfigAvanzadaData[idx] = nextElement;
+      return nextConfigAvanzadaData;
     });
   };
 
   const navigateToConfig = () => {
-    const path = `/cliente/${cliente._id}/kioscoConfig`;
+    const path = `/cliente/${state.cliente._id}/kioscoConfig`;
 
-    if (!tabs.some(tab => tab.path === path)) {
-      setTabs(prev => {
-        if (prev.some(tab => tab.path === path)) return prev;
-        return [...prev, { path, title: `CONFIG. KIOSCO ${cliente?.name || ""}` }];
-      });
-    }
-
-    navigate(path);
+    createTab(path, `CONFIG. KIOSCO ${state.cliente?.name || ""}`);
   }
 
   useEffect(() => {
-    if (!isActive.montaje) {
-      setMontajeData([]);
-      if (isActive["configAvanzadaMontaje"]) {
-        setIsActive((prev) => ({
-          ...prev,
+    if (!state.isActive.montaje) {
+      updateState("montajeData", []);
+      if (state.isActive["configAvanzadaMontaje"]) {
+        updateState("isActive", (prevIsActive) => ({
+          ...prevIsActive,
           "configAvanzadaMontaje": false
         }));
       }
-      if (isActive["especial"]) {
-        setIsActive((prev) => ({
-          ...prev,
+      if (state.isActive["especial"]) {
+        updateState("isActive", (prevIsActive) => ({
+          ...prevIsActive,
           "especial": false
         }));
       }
     }
-  }, [isActive]);
+  }, [state.isActive]);
 
   return (
-    loading ? (
+    state.loading ? (
       <ExecutingComponent />
     ) : (
       <div className="detailsContainer">
         <ReactTooltip id="my-tooltip" />
-        {((!configMode && unitarioData) || (configMode && cliente)) && !loading ? (
+        {(!configMode && state.unitarios.length > 0 || (configMode && state.cliente)) && !state.loading ? (
           <>
             <DetailsHeader
-              title={configMode ? `Config. Kiosco ${cliente?.name || ""}` : `Kiosco ${order?.id_pedido || ""}`}
-              subtitle={configMode ? "" : orderXml?.numero?.cliente_nombre || ""}
-              /* hideAvatar={true}
-              hideEditIcon={!configMode}
-              hideDeleteIcon={true} */
+              title={
+                configMode
+                  ? `Config. Kiosco ${state.cliente?.name || ""}`
+                  : `Kiosco ${state.order?.id_pedido || ""}`
+              }
+              subtitle={
+                configMode ? "" : state.orderXml?.numero?.cliente_nombre || ""
+              }
               insteadOfActions={
                 <div className="formGroup">
                   <label>Configuración de Kiosco:</label>
                   <ChosenSelect
-                    options={kioskOptions || []}
+                    options={state.kioskOptions || []}
                     name="kioskSelect"
-                    onChange={(e) => setChosenKiosk(e.target.value)}
-                    value={chosenKiosk || kioskOptions[0]}
+                    onChange={(e) => updateState("chosenKiosk", e.target.value)}
+                    value={state.chosenKiosk || state.kioskOptions[0]}
                   />
                 </div>
               }
@@ -796,20 +1041,19 @@ function OrderKiosk({ configMode }) {
             <div className="detailsKiosk">
               <div className="detailsKioskHeader">
                 {configMode && (
-                  createKiosk ? (
+                  state.createKiosk ? (
                     <>
                       <button
                         className="submitButton"
                         onClick={() => {
-                          setCreateKiosk(false);
-                          setChosenKiosk(defaultKiosk || {});
+                          updateState((prev) => ({ createKiosk: false, chosenKiosk: prev.defaultKiosk || {} }));
                         }}
                       >
                         Volver a modo edición
                       </button>
                       <div className="formGroup">
                         <label>Nombre de configuración:</label>
-                        <input type="text" value={kioskName} onChange={(e) => setKioskName(e.target.value)} />
+                        <input type="text" value={state.kioskName} onChange={(e) => updateState("kioskName", e.target.value)} />
                       </div>
                     </>
                   ) : (
@@ -821,12 +1065,11 @@ function OrderKiosk({ configMode }) {
                           if (selectElement && typeof $(selectElement).chosen === "function") {
                             $(selectElement).chosen("destroy");
                           }
-                          setKioskName("");
-                          setCreateKiosk(true);
-                          setChosenKiosk({});
+                          updateState("kioskName", "");
+                          updateState("createKiosk", true);
+                          updateState("chosenKiosk", {});
                           resetComponentesData();
-                          setIsOpen({});
-                          setIsActive({});
+                          updateState({ isOpen: {}, isActive: {} });
                         }}
                       >
                         Pasar a modo creación
@@ -848,76 +1091,86 @@ function OrderKiosk({ configMode }) {
               </div>
               {kioskActions
                 .filter(option => {
-                  const clientOk = (!option.specificClients || option.specificClients.includes(orderXml?.numero?.cliente_codigo));
+                  const clientOk = (!option.specificClients || option.specificClients.includes(state.orderXml?.numero?.cliente_codigo));
                   if (!clientOk) return false;
 
                   if (configMode && option.hideWhenConfig) return false;
 
-                  if (order && actividad === "MADERA" && option.id === "configAvanzadaMontaje") return false;
+                  if (state.order && state.actividad === "MADERA" && option.id === "configAvanzadaMontaje") return false;
 
                   if (!option.onlyShowIfActive) return true;
 
-                  return isActive[option.id];
+                  return state.isActive[option.id];
                 })
                 .map((option, index) => (
-                  ((!configMode && option.steps.includes(step)) || configMode) && (
+                  ((!configMode && option.steps.includes(state.step)) || configMode) && (
                     <div className="kioskAction" key={option.id}>
-                      <div className={`actionHeader ${isOpen[option.id] ? "open" : ""}`}>
+                      <div className={`actionHeader ${state.isOpen[option.id] ? "open" : ""}`}>
                         <Switch
                           className="kioskSwitch"
-                          checked={isActive[option.id] || false}
+                          checked={state.isActive[option.id] || false}
                           disabled={option.disableSwitch || false}
                           onClick={() => {
-                            if ((option.id === "coloresCambiar" || option.id === "coloresDigimark") && orderColors.length === 0) {
-                              notify(toast.warning, "warning", "Sin colores", "Este pedido no tiene colores");
+                            if ((option.id === "salidaColores" || option.id === "listDigimark") && state.orderColors.length === 0) {
+                              notify("warning", "Sin colores", "Este pedido no tiene colores");
                             } else {
-                              if (isActive[option.id] && isOpen[option.id]) {
-                                setIsOpen((prev) => ({
-                                  ...prev,
+                              if (state.isActive[option.id] && state.isOpen[option.id]) {
+                                updateState("isOpen", (prevIsOpen) => ({
+                                  ...prevIsOpen,
                                   [option.id]: false
                                 }));
                               }
 
-                              if (!isActive[option.id] && option.openOnActive) {
-                                setIsOpen((prev) => ({
-                                  ...prev,
+                              if (!state.isActive[option.id] && option.openOnActive) {
+                                updateState("isOpen", (prevIsOpen) => ({
+                                  ...prevIsOpen,
                                   [option.id]: true
                                 }));
                               }
 
-                              setIsActive((prev) => ({
-                                ...prev,
-                                [option.id]: !prev[option.id]
+                              updateState("isActive", (prevIsActive) => ({
+                                ...prevIsActive,
+                                [option.id]: !prevIsActive[option.id]
                               }));
 
                               handleExceptions({
                                 module: option.id,
-                                isActive,
-                                setIsActive,
-                                actividad,
-                                cliente,
-                                setOtraDocumentacion
+                                isActive: state.isActive,
+                                setIsActive: (updater) => updateState("isActive", updater),
+                                actividad: state.actividad,
+                                cliente: state.cliente,
+                                setOtraDocumentacion: (updater) => updateState("otraDocumentacion", updater)
                               });
                             }
                           }}
                         />
-                        <p>{option.title} <span>{isActive[option.id] && components[option.id]?.title || ""}</span></p>
-                        {!configMode && (orderReport.some(item => item.type && item.type.includes(option.id)) || fileReport.some(item => item.type && item.type.includes(option.id))) ? (
+                        <p>{option.title} <span>{state.isActive[option.id] && components[option.id]?.title || ""}</span></p>
+                        {!configMode && (state.orderReport.some(item => item.type && item.type.includes(option.id)) || state.fileReport.some(item => item.type && item.type.includes(option.id))) ? (
                           <div
                             className="warning"
                             onClick={() => {
-                              setInfoContent(orderReport.concat(fileReport)
+                              updateState("infoContent", state.orderReport.concat(state.fileReport)
                                 .filter(item => item.type && item.type.includes(option.id))
-                                .map(item => item.message)
-                              );
-                              setInfoPopUp(true);
+                                .map(item => {
+                                  const icon = item.status === "success" || item.status === "info" ? <CheckSvg /> :
+                                    item.status === "warning" ? <WarningSvg /> :
+                                      <ErrorSvg />;
+                                  return (<p>{icon} {item.message}</p>)
+                                }));
+                              updateState("infoPopUp", true);
                             }}
                           >
                             <div className="warningContent">
-                              <p>{orderReport.concat(fileReport)
+                              <p>{state.orderReport.concat(state.fileReport)
                                 .filter(item => item.type && item.type.includes(option.id))
                                 .length}</p>
-                              <IoWarningOutline className="warningIcon" />
+                              {state.orderReport.concat(state.fileReport)
+                                .filter(item => item.type && item.type.includes(option.id))
+                                .some(item => item.status === "error") ? (
+                                <IoWarningOutline className="errorIcon" />
+                              ) : (
+                                <IoWarningOutline className="warningIcon" />
+                              )}
                             </div>
                           </div>
                         ) : (
@@ -927,106 +1180,114 @@ function OrderKiosk({ configMode }) {
                               data-tooltip-id="my-tooltip"
                               data-tooltip-content={
                                 option.id === "unitario" ?
-                                  (!loadingFileReport && !loadingOrderReport ? "Reiniciar unitario" : "Generando reporte previo, espere...") :
-                                  (!loadingFileReport && !loadingOrderReport ? "Reenviar reporte previo" : "Generando reporte previo, espere...")
+                                  (!state.loadingFileReport && !state.loadingOrderReport ? "Reiniciar unitario" : "Generando reporte previo, espere...") :
+                                  (!state.loadingFileReport && !state.loadingOrderReport ? "Reenviar reporte previo" : "Generando reporte previo, espere...")
                               }
                               onClick={() => {
-                                if (!loadingFileReport && !loadingOrderReport) {
+                                if (!state.loadingFileReport && !state.loadingOrderReport) {
                                   if (option.id === "unitario") {
-                                    setStep(1);
-                                    setIsOpen((prev) => ({
-                                      ...prev,
-                                      "unitario": true
+                                    updateState((prev) => ({
+                                      step: 1,
+                                      isOpen: {
+                                        ...prev.isOpen,
+                                        "unitario": true
+                                      },
+                                      orderReport: prev.orderReport.filter(item => (item.type && item.type.includes("trapping"))),
+                                      fileReport: []
                                     }));
-                                    setOrderReport(prev => [
-                                      ...prev.filter(item => (item.type && item.type.includes("trapping")))
-                                    ]);
-                                    setFileReport([]);
                                   } else if (option.id === "reportePrevio") {
-                                    setIsOpen((prev) => ({
-                                      ...prev,
+                                    updateState("isOpen", (prevIsOpen) => ({
+                                      ...prevIsOpen,
                                       "reportePrevio": true
                                     }));
                                     handleReport("forceReport");
                                   }
                                 } else {
-                                  notify(toast.warning, "warning", "Reporte en curso", "Espere a que termine el reporte en curso");
+                                  notify("warning", "Reporte en curso", "Espere a que termine el reporte en curso");
                                 }
                               }}
                             >
-                              {((loadingOrderReport || loadingFileReport) && option.id === "reportePrevio") ? (
-                                <OrbitProgress variant="dotted" color={"var(--highlight)"} size="medium" />
+                              {((state.loadingOrderReport || state.loadingFileReport) && option.id === "reportePrevio") ? (
+                                <OrbitProgress variant="dotted" color={"var(--highlight)"} size="small" />
                               ) : (
                                 <HiOutlineRefresh className="refreshIcon" />
                               )}
                             </div>
                           ) : (
-                            <div></div>
+                            <div>
+                              {state.loadingTrapping && option.id === "trapping" && <OrbitProgress variant="dotted" color={"var(--highlight)"} size="small" />}
+                              {state.isTrappingWaiting && !state.loadingTrapping && option.id === "trapping" && <FaPause color={"var(--highlight)"} />}
+                              {state.isTrappingDone && !state.loadingTrapping && option.id === "trapping" && <CheckSvg />}
+                              {state.isTrappingCanceled && !state.loadingTrapping && option.id === "trapping" && <ErrorSvg />}
+                            </div>
                           )
                         )
                         }
                         <div className="openArrow">
-                          {isOpen[option.id] ?
+                          {state.isOpen[option.id] ?
                             <MdKeyboardArrowDown
-                              className={"openArrowIcon"}
+                              className="openArrowIcon"
                               onClick={() =>
-                                setIsOpen((prev) => ({
-                                  ...prev,
-                                  [option.id]: !prev[option.id]
+                                updateState("isOpen", (prevIsOpen) => ({
+                                  ...prevIsOpen,
+                                  [option.id]: !prevIsOpen[option.id]
                                 }))
                               } />
                             :
                             <MdKeyboardArrowRight
-                              className={"openArrowIcon"}
+                              className="openArrowIcon"
                               onClick={() => {
-                                if (!(option.id === "unitario" && step > 1) && !option.disableOpen) {
-                                  setIsOpen((prev) => ({
-                                    ...prev,
-                                    [option.id]: !prev[option.id]
+                                if (!(option.id === "unitario" && state.step > 1) && !option.disableOpen) {
+                                  updateState("isOpen", (prevIsOpen) => ({
+                                    ...prevIsOpen,
+                                    [option.id]: !prevIsOpen[option.id]
                                   }))
                                 }
                               }} />}
                         </div>
                       </div>
-                      {isOpen[option.id] && (components[option.id].component)}
+                      {state.isOpen[option.id] && (components[option.id].component)}
                     </div>
                   )
                 ))}
 
               {maderaConfigBlocks.map((key) => {
                 const openKey = `configAvanzada${key}`;
-                const element = (configAvanzadaData || []).find((el) => el?.elementId === key);
+                const element = (state.configAvanzadaData || []).find((el) => el?.elementId === key);
                 if (!element) return null;
                 const elementArray = [element];
 
                 return (
                   <div className="kioskAction" key={openKey}>
-                    <div className={`actionHeader ${isOpen[openKey] ? "open" : ""}`}>
+                    <div className={`actionHeader ${state.isOpen[openKey] ? "open" : ""}`}>
                       <Switch className="kioskSwitch" checked={true} disabled />
                       <p>{key}</p>
+                      <div></div>
                       <div className="openArrow">
-                        {isOpen[openKey] ? (
+                        {state.isOpen[openKey] ? (
                           <MdKeyboardArrowDown
-                            onClick={() => setIsOpen((prev) => ({
-                              ...prev,
-                              [openKey]: !prev[openKey]
+                            className="openArrowIcon"
+                            onClick={() => updateState("isOpen", (prevIsOpen) => ({
+                              ...prevIsOpen,
+                              [openKey]: !prevIsOpen[openKey]
                             }))}
                           />
                         ) : (
                           <MdKeyboardArrowRight
-                            onClick={() => setIsOpen((prev) => ({
-                              ...prev,
-                              [openKey]: !prev[openKey]
+                            className="openArrowIcon"
+                            onClick={() => updateState("isOpen", (prevIsOpen) => ({
+                              ...prevIsOpen,
+                              [openKey]: !prevIsOpen[openKey]
                             }))}
                           />
                         )}
                       </div>
                     </div>
 
-                    {isOpen[openKey] && (
+                    {state.isOpen[openKey] && (
                       <MontajeAvanzadoComponent
                         configAvanzadaData={elementArray}
-                        setConfigAvanzadaData={(updater) => setConfigAvanzadaDataForElementId(key, updater)}
+                        setConfigAvanzadaData={(value) => setConfigAvanzadaDataForElementId(key, value)}
                       />
                     )}
                   </div>
@@ -1034,12 +1295,14 @@ function OrderKiosk({ configMode }) {
               })}
               <div className="buttons">
                 {!configMode ? (
-                  step === 1 ? <button className="submitButton" onClick={handleReport}>Preparar &#9658;</button> :
-                    step === 3 && <button className="playButton" onClick={() => handleSubmit('submit')}>Lanzar &#9658;</button>
+                  !state.loadingTrapping && (
+                    state.step === 1 ? <button className="submitButton" onClick={handleReport}>Preparar &#9658;</button> :
+                      state.step === 3 && <button className="playButton" onClick={() => handleSubmit('submit')}>Lanzar &#9658;</button>
+                  )
                 ) : (
                   <>
-                    <button className="submitButton" onClick={() => handleSubmit('saveConfig')}>{createKiosk ? "Guardar nueva configuración" : "Editar configuración"}</button>
-                    {!createKiosk && <button className="deleteButton" onClick={() => handleSubmit('deleteConfig')}>Borrar configuración de kiosco</button>}
+                    <button className="submitButton" onClick={() => handleSubmit('saveConfig')}>{state.createKiosk ? "Guardar nueva configuración" : "Editar configuración"}</button>
+                    {!state.createKiosk && <button className="deleteButton" onClick={() => handleSubmit('deleteConfig')}>Borrar configuración de kiosco</button>}
                   </>
                 )}
               </div>
@@ -1051,7 +1314,7 @@ function OrderKiosk({ configMode }) {
             <h1>Cargando</h1>
           </div>
         )}
-        {infoPopUp && <InfoPopUp setInfoPopUp={setInfoPopUp} infoContent={infoContent} />}
+        {state.infoPopUp && <InfoPopUp setInfoPopUp={(value) => updateState("infoPopUp", value)} infoContent={state.infoContent} />}
       </div>
     )
   )

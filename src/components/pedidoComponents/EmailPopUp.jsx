@@ -4,7 +4,6 @@ import GeneralForm from '../formComponents/GeneralForm';
 import { emailFormData } from '../../helpers/formsData';
 import ExecutingComponent from '../ExecutingComponent';
 import { notify } from '../../helpers/notify';
-import { toast } from 'react-toastify';
 
 function EmailPopUp({ setEmailModal, fullOrder }) {
     const { id_pedido, xml } = fullOrder;
@@ -56,7 +55,7 @@ function EmailPopUp({ setEmailModal, fullOrder }) {
         if ((contacts.length + groups.length) < 1) {
             setIsExecuting(false);
             setEmailModal(false);
-            return notify(toast.error, 'error', 'Error', 'Este cliente no tiene contactos');
+            return notify('error', 'Error', 'Este cliente no tiene contactos');
         }
 
         const totalContacts = contacts.length + groups.length;

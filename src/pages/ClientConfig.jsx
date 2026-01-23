@@ -7,7 +7,6 @@ import { clientConfigFormData } from '../helpers/formsData';
 import FormSection from '../components/formComponents/FormSection';
 import ClientConfigForm from '../components/formComponents/ClientConfigForm';
 import { notify } from '../helpers/notify';
-import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
 
 function ClientConfig({ toggleKiosk }) {
@@ -45,7 +44,7 @@ function ClientConfig({ toggleKiosk }) {
         const groups = await fetchData("groups", "", 1, null, null, client.code);
 
         if ((contacts.length + groups.length) < 1) {
-            notify(toast.warning, 'warning', 'Aviso', 'Este cliente no tiene contactos');
+            notify('warning', 'Aviso', 'Este cliente no tiene contactos');
             return;
         }
 

@@ -105,8 +105,20 @@ export function kioskConfigAuto({ orderXml, actividad, setIsActive, setOtraDocum
     }
 }
 
-export function kioskConfigManual({ setIsActive }) {
+export function resetKiosk({ setIsActive, setIsOpen }) {
     setIsActive(prev => {
+        const allKeysFalse = Object.keys(prev).reduce((acc, key) => {
+            if (key !== "unitario" && key !== "reportePrevio") {
+                acc[key] = false;
+            }
+            return acc;
+        }, {});
+        return {
+            ...prev,
+            ...allKeysFalse
+        };
+    });
+    setIsOpen(prev => {
         const allKeysFalse = Object.keys(prev).reduce((acc, key) => {
             if (key !== "unitario" && key !== "reportePrevio") {
                 acc[key] = false;

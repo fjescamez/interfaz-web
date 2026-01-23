@@ -3,7 +3,7 @@ import { PiMinusCircle, PiPlusCircle } from "react-icons/pi";
 import ChosenSelect from "../formComponents/ChosenSelect";
 import "./KioskComponents.css";
 import { notify } from "../../helpers/notify";
-import { toast } from "react-toastify";
+
 
 function BocetoComponent({ opciones, setOpciones }) {
     const options1 = [
@@ -67,6 +67,7 @@ function BocetoComponent({ opciones, setOpciones }) {
                                             type="text"
                                             value={opcion.lpi}
                                             onChange={e => handleChange(opcion.id, "lpi", e.target.value)}
+                                            id="lpiInput"
                                         />
                                         <div className="lpi">
                                             <p>lpi</p>
@@ -75,13 +76,13 @@ function BocetoComponent({ opciones, setOpciones }) {
                                 )}
                             </div>
                             <ChosenSelect
-                                name={opcion.id}
+                                name={`formato-${index}`}
                                 options={options1}
                                 value={opcion.formato}
                                 onChange={e => handleChange(opcion.id, "formato", e.target.value)}
                             />
                             <ChosenSelect
-                                name={opcion.id}
+                                name={`tipo-${index}`}
                                 options={options}
                                 value={opcion.tipo}
                                 onChange={e => handleChange(opcion.id, "tipo", e.target.value)}

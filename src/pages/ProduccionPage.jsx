@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import DetailsHeader from '../components/DetailsHeader'
 import GridComponent from '../components/GridComponent'
 import { IoDocumentTextOutline } from "react-icons/io5";
@@ -23,21 +22,14 @@ function ProduccionPage() {
         externos_finalizados: 0,
         externos_anulados: 0
     });
-    const navigate = useNavigate();
-    const { tabs, setTabs } = useTabs();
+    const { createTab } = useTabs();
 
     const referenciasGridClick = async (key, title) => {
         const path = `/produccion/${key}`;
 
         const tabTitle = key === "refPlanchas" ? "REF. PLANCHAS" : "REF. CONTINUOS";
 
-        if (!tabs.some(tab => tab.path === path)) {
-            setTabs(prev => {
-                if (prev.some(tab => tab.path === path)) return prev;
-                return [...prev, { path, title: tabTitle }];
-            });
-        }
-        navigate(path);
+        createTab(path, tabTitle);
     };
 
     const planchasGridClick = async (key, title) => {
@@ -45,13 +37,7 @@ function ProduccionPage() {
 
         const tabTitle = key === "trabajosPlanchas" ? "TRABAJOS PLANCHAS" : (key !== "planchas" ? `PLANCHAS ${title.toUpperCase()}` : title.toUpperCase());
 
-        if (!tabs.some(tab => tab.path === path)) {
-            setTabs(prev => {
-                if (prev.some(tab => tab.path === path)) return prev;
-                return [...prev, { path, title: tabTitle }];
-            });
-        }
-        navigate(path);
+        createTab(path, tabTitle);
     };
 
     const externosGridClick = async (key, title) => {
@@ -59,13 +45,7 @@ function ProduccionPage() {
 
         const tabTitle = `EXTERNOS ${title.toUpperCase()}`;
 
-        if (!tabs.some(tab => tab.path === path)) {
-            setTabs(prev => {
-                if (prev.some(tab => tab.path === path)) return prev;
-                return [...prev, { path, title: tabTitle }];
-            });
-        }
-        navigate(path);
+        createTab(path, tabTitle);
     };
 
     const getPlanchasCount = async () => {

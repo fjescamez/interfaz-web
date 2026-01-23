@@ -1,30 +1,24 @@
 import { useState, useEffect, useRef } from "react";
 import "./LoginPage.css";
-import { useNavigate } from "react-router-dom";
 import { useSession } from "../context/SessionContext";
 import { notify } from "../helpers/notify";
-import { toast } from "react-toastify";
 import { useTabs } from "../context/TabsContext";
-//import { fetchUserPreferences } from "../helpers/fetchData";
 
 function LoginPage() {
   const { session, setSession } = useSession();
-  const navigate = useNavigate();
   const loginForm = useRef(null); // Referencia al contenedor
-  const { setTabs } = useTabs();
+  const { createTab } = useTabs();
   const urlApi = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     if (session) {
       if (session.departments.includes("Solido") || session.departments.includes("Liquido") || session.departments.includes("Montaje")) {
-        navigate("/produccion");
-        setTabs([{ path: "/produccion", title: "PRODUCCION" }]);
+        createTab("/produccion", "PRODUCCION");
       } else {
-        navigate("/home");
-        setTabs([{ path: "/home", title: "INICIO" }]);
+        createTab("/home", "INICIO");
       }
     }
-  }, [session, navigate]);
+  }, [session]);
 
   const [user, setUser] = useState({
     username: "",
@@ -57,17 +51,13 @@ function LoginPage() {
 
       const data = await response.json();
 
-      /* const hasPreferences = userPreferences.status === "success"; */
-
       if (!data.message) {
-        //getUserPreferences();
-
         localStorage.setItem('session', JSON.stringify(data.user));
         setSession(data.user);
-        notify(toast.success, "success", "Sesión iniciada con éxito");
+        notify("success", "Sesión iniciada con éxito");
 
       } else {
-        notify(toast.error, data.status, data.title, data.message);
+        notify(data.status, data.title, data.message);
         if (loginForm.current) {
           loginForm.current.classList.remove("shake");
           // Fuerza el reflow para reiniciar la animación si ya estaba

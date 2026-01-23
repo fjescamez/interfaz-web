@@ -3,7 +3,7 @@ import Table from './Table';
 import { trabajosPlanchaTableInfo } from '../helpers/tablesInfo';
 import { fetchOneItem, postData } from '../helpers/fetchData';
 import { notify } from '../helpers/notify';
-import { toast } from "react-toastify";
+
 
 function AlbaranParcialComponent({ setTrabajosPopUp, planchaId, plancha, setTableData, noActions }) {
     const [tableInfo, setTableInfo] = useState(trabajosPlanchaTableInfo);
@@ -49,11 +49,11 @@ function AlbaranParcialComponent({ setTrabajosPopUp, planchaId, plancha, setTabl
             const response = await postData('planchas/solicitarAlbaran', { plancha, accion: 'albaranParcial', trabajos: trabajosCompletos });
 
             if (response.status === 'success') {
-                notify(toast.success, 'success', response.title, response.message);
+                notify('success', response.title, response.message);
                 setTrabajosPopUp(false);
                 setTableData(prev => prev.map(item => item.id === plancha.id ? response.updatedData : item));
             } else {
-                notify(toast.error, 'error', response.title, response.message);
+                notify('error', response.title, response.message);
             }
         }
 

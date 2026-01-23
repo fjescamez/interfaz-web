@@ -1,64 +1,147 @@
 import Switch from '@mui/material/Switch';
 import { useEffect } from 'react';
 import { notify } from '../../helpers/notify';
-import { toast } from "react-toastify";
 
 function MontajeComponent({ orderXml, montajeData, setMontajeData, setConfigAvanzadaData, isActive, setIsActive, setIsOpen }) {
   useEffect(() => {
-    if (orderXml?.actividad?.id === "MADERA" && isActive.montaje) {
-      orderXml?.actividad?.madera?.madera_premontaje.forEach(item => {
-        if (item.madera_capituladas === "-1" || item.madera_montaje_esp === "-1" || item.madera_tablero_rotado === "-1") {
-          setMontajeData(prev => ({
-            ...prev,
-            [item.madera_tmedida]: {
-              isActive: true,
-              isConfigAvanzadaActive: true
-            }
-          }));
+    if (orderXml?.actividad?.id !== "MADERA" || !isActive.montaje) return;
 
-          setIsOpen((prev) => ({
-            ...prev,
-            [item.madera_tmedida]: true,
-            [`configAvanzada${item.madera_tmedida}`]: true
-          }));
+    const items = orderXml?.actividad?.madera?.madera_premontaje || [];
+    if (items.length === 0) return;
 
-          if (item.madera_capituladas === "-1") {
-            setConfigAvanzadaData(prev => prev.map(data => {
-              if (data.elementId === item.madera_tmedida) {
-                return {
-                  ...data,
-                  stations: [
-                    {
-                      ...data.stations[0],
-                      HeadTurn: "column"
-                    },
-                    ...data.stations.slice(1)
-                  ]
-                };
-              }
-              return data;
-            }));
-          } else if (item.madera_tablero_rotado === "-1") {
-            setConfigAvanzadaData(prev => prev.map(data => {
-              if (data.elementId === item.madera_tmedida) {
-                return {
-                  ...data,
-                  stations: [
-                    {
-                      ...data.stations[0],
-                      Orientation: "up"
-                    },
-                    ...data.stations.slice(1)
-                  ]
-                };
-              }
-              return data;
-            }));
-          }
+    setMontajeData((prev) => {
+      let changed = false;
+      const next = { ...prev };
+
+      items.forEach((item) => {
+        const key = item?.madera_tmedida;
+        if (!key) return;
+        const prevEntry = prev?.[key];
+        if (prevEntry) return;
+
+        next[key] = {
+          ...prevEntry,
+          isActive: true
+        };
+        changed = true;
+      });
+
+      return changed ? next : prev;
+    });
+  }, [orderXml?.actividad?.id, orderXml?.actividad?.madera?.madera_premontaje, isActive.montaje, setMontajeData]);
+
+  useEffect(() => {
+    if (orderXml?.actividad?.id !== "MADERA" || !isActive.montaje) return;
+
+    const items = orderXml?.actividad?.madera?.madera_premontaje || [];
+    if (items.length === 0) return;
+
+    const itemsToConfigure = items.filter((item) => (
+      item.madera_capituladas === "-1"
+      || item.madera_montaje_esp === "-1"
+      || item.madera_tablero_rotado === "-1"
+    ));
+
+    if (itemsToConfigure.length === 0) return;
+
+    setMontajeData((prev) => {
+      let changed = false;
+      const next = { ...prev };
+
+      itemsToConfigure.forEach((item) => {
+        const key = item.madera_tmedida;
+        if (!key) return;
+        const prevEntry = prev?.[key];
+
+        if (prevEntry?.manualOverride) return;
+
+        if (prevEntry) {
+          const shouldActivate = !prevEntry.isActive || !prevEntry.isConfigAvanzadaActive;
+          if (!shouldActivate) return;
+
+          next[key] = {
+            ...prevEntry,
+            isActive: true,
+            isConfigAvanzadaActive: true
+          };
+          changed = true;
+          return;
+        }
+
+        next[key] = {
+          ...prevEntry,
+          isActive: true,
+          isConfigAvanzadaActive: true
+        };
+        changed = true;
+      });
+
+      return changed ? next : prev;
+    });
+
+    setIsOpen((prev) => {
+      let changed = false;
+      const next = { ...prev };
+
+      itemsToConfigure.forEach((item) => {
+        const key = item.madera_tmedida;
+        if (!key) return;
+        if (!next[key]) {
+          next[key] = true;
+          changed = true;
+        }
+        const configKey = `configAvanzada${key}`;
+        if (!next[configKey]) {
+          next[configKey] = true;
+          changed = true;
         }
       });
-    }
-  }, [isActive]);
+
+      return changed ? next : prev;
+    });
+
+    setConfigAvanzadaData((prev) => {
+      let changed = false;
+      const next = (prev || []).map((data) => {
+        const item = itemsToConfigure.find((it) => it.madera_tmedida === data.elementId);
+        if (!item) return data;
+
+        if (item.madera_capituladas === "-1") {
+          if (data.stations?.[0]?.HeadTurn === "column") return data;
+          changed = true;
+          return {
+            ...data,
+            stations: [
+              {
+                ...data.stations[0],
+                HeadTurn: "column"
+              },
+              ...data.stations.slice(1)
+            ]
+          };
+        }
+
+        if (item.madera_tablero_rotado === "-1") {
+          if (data.stations?.[0]?.Orientation === "up") return data;
+          changed = true;
+          return {
+            ...data,
+            stations: [
+              {
+                ...data.stations[0],
+                Orientation: "up"
+              },
+              ...data.stations.slice(1)
+            ]
+          };
+        }
+
+        return data;
+      });
+
+      return changed ? next : prev;
+    });
+  }, [orderXml?.actividad?.id, orderXml?.actividad?.madera?.madera_premontaje, isActive.montaje, setMontajeData, setIsOpen, setConfigAvanzadaData]);
 
   return (
     <div className="actionBody">
@@ -81,7 +164,7 @@ function MontajeComponent({ orderXml, montajeData, setMontajeData, setConfigAvan
                       freecut: true
                     }));
                   } else {
-                    notify(toast.warning, "warning", "Activa el montaje para usar esta opción");
+                    notify("warning", "Activa el montaje para usar esta opción");
                   }
                 }}
               />
@@ -103,7 +186,7 @@ function MontajeComponent({ orderXml, montajeData, setMontajeData, setConfigAvan
                       especial: true
                     }));
                   } else {
-                    notify(toast.warning, "warning", "Activa el montaje para usar esta opción");
+                    notify("warning", "Activa el montaje para usar esta opción");
                   }
                 }}
               />
@@ -125,7 +208,7 @@ function MontajeComponent({ orderXml, montajeData, setMontajeData, setConfigAvan
                       configAvanzadaMontaje: true
                     }));
                   } else {
-                    notify(toast.warning, "warning", "Activa el montaje para usar esta opción");
+                    notify("warning", "Activa el montaje para usar esta opción");
                   }
                 }}
               />
@@ -134,56 +217,60 @@ function MontajeComponent({ orderXml, montajeData, setMontajeData, setConfigAvan
           </div>
         ) : (
           // PARA MADERA
-          orderXml?.actividad?.madera?.madera_premontaje.map((item, index) => (
-            <div className="switches" key={index}>
-              <div className="switchGroup">
-                <Switch
-                  className="kioskSwitch"
-                  checked={montajeData[item.madera_tmedida]?.isActive || false}
-                  onChange={e => {
-                    const isActive = e.target.checked;
-                    setMontajeData(prev => ({
-                      ...prev,
-                      [item.madera_tmedida]: {
-                        ...prev[item.madera_tmedida],
-                        isActive,
-                        isConfigAvanzadaActive: isActive ? prev[item.madera_tmedida]?.isConfigAvanzadaActive || false : false
-                      }
-                    }));
+          orderXml?.actividad?.madera?.madera_premontaje.map((item, index) => {
+            return (
+              <div className="switches" key={index}>
+                <div className="switchGroup">
+                  <Switch
+                    className="kioskSwitch"
+                    checked={montajeData[item.madera_tmedida]?.isActive || false}
+                    onChange={e => {
+                      const isActive = e.target.checked;
+                      setMontajeData(prev => ({
+                        ...prev,
+                        [item.madera_tmedida]: {
+                          ...prev[item.madera_tmedida],
+                          manualOverride: true,
+                          isActive,
+                          isConfigAvanzadaActive: isActive ? prev[item.madera_tmedida]?.isConfigAvanzadaActive || false : false
+                        }
+                      }));
 
-                    setIsOpen((prev) => ({
-                      ...prev,
-                      [item.madera_tmedida]: true
-                    }));
-                  }}
-                />
-                <p>{item.madera_tmedida}</p>
-              </div>
-              <div className="switchGroup">
-                <Switch
-                  className="kioskSwitch"
-                  checked={montajeData[item.madera_tmedida]?.isConfigAvanzadaActive || false}
-                  onChange={e => {
-                    const isConfigAvanzadaActive = e.target.checked;
-                    setMontajeData(prev => ({
-                      ...prev,
-                      [item.madera_tmedida]: {
-                        ...prev[item.madera_tmedida],
-                        isConfigAvanzadaActive,
-                        isActive: isConfigAvanzadaActive ? true : prev[item.madera_tmedida]?.isActive || false
-                      }
-                    }));
+                      setIsOpen((prev) => ({
+                        ...prev,
+                        [item.madera_tmedida]: true
+                      }));
+                    }}
+                  />
+                  <p>{item.madera_tmedida}</p>
+                </div>
+                <div className="switchGroup">
+                  <Switch
+                    className="kioskSwitch"
+                    checked={montajeData[item.madera_tmedida]?.isConfigAvanzadaActive || false}
+                    onChange={e => {
+                      const isConfigAvanzadaActive = e.target.checked;
+                      setMontajeData(prev => ({
+                        ...prev,
+                        [item.madera_tmedida]: {
+                          ...prev[item.madera_tmedida],
+                          manualOverride: true,
+                          isConfigAvanzadaActive,
+                          isActive: isConfigAvanzadaActive ? true : prev[item.madera_tmedida]?.isActive || false
+                        }
+                      }));
 
-                    setIsOpen((prev) => ({
-                      ...prev,
-                      [`configAvanzada${item.madera_tmedida}`]: true
-                    }));
-                  }}
-                />
-                <p>Config. Avanzada</p>
+                      setIsOpen((prev) => ({
+                        ...prev,
+                        [`configAvanzada${item.madera_tmedida}`]: true
+                      }));
+                    }}
+                  />
+                  <p>Config. Avanzada</p>
+                </div>
               </div>
-            </div>
-          ))
+            )
+          })
         )}
       </div>
     </div>

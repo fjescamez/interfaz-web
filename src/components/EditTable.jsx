@@ -2,7 +2,7 @@ import "./EditTable.css";
 import { updateData } from "../helpers/fetchData";
 import { useSession } from "../context/SessionContext";
 import { notify } from "../helpers/notify";
-import { toast } from "react-toastify";
+
 
 function EditTable({ checked, checkColumn, tableInfo, setEditTable }) {
     const { session, setSession } = useSession();
@@ -15,7 +15,7 @@ function EditTable({ checked, checkColumn, tableInfo, setEditTable }) {
             const updatedSession = { ...session, preferences: result.preferences };
             localStorage.setItem("session", JSON.stringify(updatedSession));
             setSession(updatedSession);
-            notify(toast.success, 'success', result.title, result.message)
+            notify('success', result.title, result.message)
             setEditTable(false);
         }
     }

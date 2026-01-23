@@ -1,7 +1,6 @@
 import DetailsHeader from "../components/DetailsHeader";
 import { useSession } from "../context/SessionContext";
 import GridComponent from "../components/GridComponent";
-import { useNavigate } from "react-router-dom";
 import { FaGear } from 'react-icons/fa6';
 import "./HomePage.css";
 
@@ -12,8 +11,7 @@ function HomePage({ toggleKiosk }) {
   const generalGrid = [clientsDetails, produccionPlanchasDetails];
   const { session } = useSession();
   const user = session;
-  const { tabs, setTabs } = useTabs();
-  const navigate = useNavigate();
+  const { createTab } = useTabs();
   const hideKeys = ["configuracion"];
 
   const homeClick = async (key, title) => {
@@ -21,13 +19,7 @@ function HomePage({ toggleKiosk }) {
 
     const tabTitle = `${user?.name} | ${title.toUpperCase()}`;
 
-    if (!tabs.some(tab => tab.path === path)) {
-      setTabs(prev => {
-        if (prev.some(tab => tab.path === path)) return prev;
-        return [...prev, { path, title: tabTitle }];
-      });
-    }
-    navigate(path);
+    createTab(path, tabTitle);
   };
 
   return (

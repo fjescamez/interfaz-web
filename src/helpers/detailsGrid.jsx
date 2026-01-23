@@ -6,6 +6,18 @@ import { PiGear } from "react-icons/pi";
 import { TiContacts } from "react-icons/ti";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import GroupsSvg from "../assets/svg/GroupsSvg";
+import { HiOutlineRefresh } from "react-icons/hi";
+
+export const paginaSoporteDetails = {
+    title: "Soporte",
+    grid: [
+        {
+            icon: <HiOutlineRefresh />,
+            title: "Sincronizar Clientes BBDD",
+            key: "sincronizarClientes"
+        }
+    ]
+}
 
 export const produccionReferenciasDetails = {
     title: "Referencias",

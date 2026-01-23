@@ -1,7 +1,6 @@
 import { useState } from "react"
 import Table from "../Table";
 import { notify } from "../../helpers/notify";
-import { toast } from "react-toastify";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import InfoTintasTramas from "../pedidoComponents/InfoTintasTramas";
 import { postData } from "../../helpers/fetchData";
@@ -35,7 +34,7 @@ function LenTable({
                 const response = await postData("lenFiles/enviarProduccion", data);
 
                 if (response.status === "success") {
-                    notify(toast.success, response.status, response.title, response.message);
+                    notify(response.status, response.title, response.message);
                     setTableData(prevData =>
                         prevData.map(row => {
                             const updated = response.enviado.listLen.find(len => len._id === row._id);
@@ -51,11 +50,11 @@ function LenTable({
 
                     return { status: "success", response };
                 } else {
-                    notify(toast.error, data.status, data.title, data.message);
+                    notify(data.status, data.title, data.message);
                     return { status: "error", response };
                 }
             } catch (error) {
-                notify(toast.error, 'error', 'Error', error);
+                notify('error', 'Error', error);
             }
         }
     };
@@ -70,16 +69,16 @@ function LenTable({
             const response = await postData("lenFiles/infoCurvas", data);
 
             if (response.status === "success") {
-                notify(toast.success, response.status, response.title, response.message);
+                notify(response.status, response.title, response.message);
                 setInfoCurvasPopup(true);
                 setInfoCurvas(response.info.contents.listRegistroColor);
                 return response;
             } else {
-                notify(toast.error, response.status, response.title, response.message);
+                notify(response.status, response.title, response.message);
                 return response;
             }
         } catch (error) {
-            notify(toast.error, 'error', 'Error', error);
+            notify('error', 'Error', error);
         }
     }
 
@@ -98,7 +97,7 @@ function LenTable({
         if (lenIds.length === 1) {
             data._id = lenIds[0];
         } else if (lenIds.length > 1) {
-            notify(toast.error, 'error', 'Error', 'Solo se puede seleccionar un LEN para solicitar vista');
+            notify('error', 'Error', 'Solo se puede seleccionar un LEN para solicitar vista');
             return { status: "error" };
         }
 
@@ -106,7 +105,7 @@ function LenTable({
             const response = await postData("lenFiles/solicitarVista", data);
 
             if (response.status === "success") {
-                notify(toast.success, response.status, response.title, response.message);
+                notify(response.status, response.title, response.message);
                 let updatedActions = tableInfo.actions.map(action => {
                     if (action.action === "visualizarLen") {
                         return { ...action, hidden: false };
@@ -120,11 +119,11 @@ function LenTable({
 
                 return response;
             } else {
-                notify(toast.error, response.status, response.title, response.message);
+                notify(response.status, response.title, response.message);
                 return response;
             }
         } catch (error) {
-            notify(toast.error, 'error', 'Error', error);
+            notify('error', 'Error', error);
         }
     }
 

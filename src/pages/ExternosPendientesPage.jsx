@@ -4,7 +4,6 @@ import { trabajosExternosTableInfo } from '../helpers/tablesInfo'
 import { postData } from '../helpers/fetchData';
 import { useSession } from '../context/SessionContext';
 import { notify } from '../helpers/notify';
-import { toast } from "react-toastify";
 
 function ExternosPendientesPage() {
     const [externosChecked, setExternosChecked] = useState([]);
@@ -25,17 +24,17 @@ function ExternosPendientesPage() {
             const response = await postData('externalJobs/firmar', signData);
 
             if (response.status === "success") {
-                notify(toast.success, 'success', response.title);
+                notify('success', response.title);
                 setTableData(prev => prev.filter(item => !response.updatedData.some(updatedItem => updatedItem._id === item._id)));
                 setExternosChecked([]);
             } else {
-                notify(toast.error, 'error', response.title);
+                notify('error', response.title);
             }
             return { status: "success" };
         } else if (action === "restaurar") {
             const response = await postData('externalJobs/restaurar', { trabajos: trabajosCompletos });
             setExternosChecked([]);
-            notify(toast.success, 'success', response.title);
+            notify('success', response.title);
             return { status: "success" };
         }
     }

@@ -1,9 +1,6 @@
 import { useState } from "react";
 import Table from "../components/Table.jsx";
 import { contactTableInfo } from "../helpers/tablesInfo.jsx";
-import { postData } from "../helpers/fetchData.jsx";
-import { notify } from "../helpers/notify.jsx";
-import { toast } from "react-toastify";
 import GroupForm from "../components/formComponents/GroupForm.jsx";
 import { useClienteFilter } from "../context/ClientFilterContext.jsx";
 import { useLocation } from "react-router-dom";
@@ -22,10 +19,10 @@ function ContactsPage({ filter }) {
             /* const response = await postData("groups", contactIds);
 
             if (response.status === "success") {
-                notify(toast.success, 'success', 'Operación exitosa', 'El grupo se ha creado correctamente');
+                notify('success', 'Operación exitosa', 'El grupo se ha creado correctamente');
                 setContactIds([]);
             } else {
-                notify(toast.error, 'error', 'Error', 'Ha ocurrido un error al crear el grupo');
+                notify('error', 'Error', 'Ha ocurrido un error al crear el grupo');
             } */
         }
         return { status: "success" };

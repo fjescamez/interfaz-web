@@ -1,6 +1,5 @@
 import "./SideBarComponent.css"
 import HomeSvg from "../assets/svg/HomeSvg"
-import { useNavigate } from "react-router-dom";
 import { FaBoxOpen, FaUserCircle } from "react-icons/fa";
 import { useTabs } from "../context/TabsContext";
 import { IoDocumentTextOutline } from "react-icons/io5";
@@ -11,16 +10,17 @@ import { PiOven } from "react-icons/pi";
 import { BsFillInboxFill } from "react-icons/bs";
 import { useSession } from "../context/SessionContext";
 import { MdBarcodeReader } from "react-icons/md";
+import { FaScrewdriverWrench } from "react-icons/fa6";
 
 function SideBarComponent({ isActive, setIsActive }) {
-    const navigate = useNavigate();
-    const { setTabs } = useTabs();
+    const { createTab } = useTabs();
     const { session } = useSession();
     const teletabajo = ["n.morante", "a.artacho"];
     const isTeletrabajo = teletabajo.includes(session?.username);
     const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
     const isProduccion = session?.departments?.includes("Solido") || session?.departments?.includes("Liquido");
     const isOficina = session?.departments?.includes("Oficina");
+    const isSoporte = session?.role === "Soporte";
 
     const handleClick = (icon, name) => {
         setIsActive(prev => {
@@ -32,13 +32,7 @@ function SideBarComponent({ isActive, setIsActive }) {
             return { ...allFalse, [icon]: true };
         });
 
-        setTabs(prev => {
-            if (prev.some(tab => tab.path === `/${icon}`)) return prev;
-            return [...prev, { path: `/${icon}`, title: name }];
-        });
-
-        // Navega según el icono
-        navigate(`/${icon}`);
+        createTab(`/${icon}`, name);
     }
 
     return (
@@ -93,6 +87,14 @@ function SideBarComponent({ isActive, setIsActive }) {
                         <div className="border"></div>
                         <div className={`icons ${isActive.usuarios ? "active" : ""}`} onClick={() => handleClick("usuarios", "USUARIOS")} data-tooltip-id="my-tooltip" data-tooltip-content={"USUARIOS"} >
                             <FaUserCircle />
+                        </div>
+                    </>
+                )}
+                {isSoporte && (
+                    <>
+                        <div className="border"></div>
+                        <div className={`icons ${isActive.soporte ? "active" : ""}`} onClick={() => handleClick("soporte", "SOPORTE")} data-tooltip-id="my-tooltip" data-tooltip-content={"SOPORTE"} >
+                            <FaScrewdriverWrench />
                         </div>
                     </>
                 )}

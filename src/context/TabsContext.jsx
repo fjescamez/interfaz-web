@@ -1,11 +1,13 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTabState } from "./TabStateContext"; // Importar el contexto de estado de pestañas
 
 const TabsContext = createContext();
 
 export function TabsProvider(props) {
     const location = useLocation();
     const navigate = useNavigate();
+    const { removeTabState } = useTabState(); // Obtener la función para eliminar el estado
 
     // Solo inicializa la pestaña actual si es válida
     const [tabs, setTabs] = useState(() => {
@@ -13,6 +15,19 @@ export function TabsProvider(props) {
         let title = path === "/home" ? "INICIO" : path.substring(1).toUpperCase();
         return path !== "/" ? [{ path, title }] : [];
     });
+
+    const createTab = (path, title, open = true) => {
+        setTabs((prev) => {
+            if (prev.some((tab) => tab.path === path)) {
+                return prev;
+            }
+            return [...prev, { path, title }];
+        });
+
+        if (open) {
+            navigate(path);
+        }
+    };
 
     const closeTab = (path) => {
         if (location.pathname === path) {
@@ -24,13 +39,14 @@ export function TabsProvider(props) {
                 // Si no hay más pestañas, navega a /home y crea la pestaña de inicio
                 setTabs([{ path: "/home", title: "INICIO" }]);
                 navigate("/home");
-                return;
             }
         }
         setTabs(prev => prev.filter(tab => tab.path !== path));
+        removeTabState(path); // Eliminar el estado de la pestaña cerrada
     };
 
     const closeAllTabs = () => {
+        filteredTabs.forEach(tab => removeTabState(tab.path));
         setTabs([]);
         setTabs([{ path: "/home", title: "INICIO" }]);
         navigate("/home");
@@ -68,7 +84,7 @@ export function TabsProvider(props) {
     }, [location.pathname, tabs]);
 
     return (
-        <TabsContext.Provider value={{ tabs: filteredTabs, setTabs, closeTab, closeAllTabs }}>
+        <TabsContext.Provider value={{ tabs: filteredTabs, setTabs, createTab, closeTab, closeAllTabs }}>
             {props.children}
         </TabsContext.Provider>
     );

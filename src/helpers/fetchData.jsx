@@ -1,4 +1,3 @@
-import { toast } from 'react-toastify';
 import { notify } from "./notify";
 
 /* FETCH GENÉRICOS */
@@ -34,7 +33,7 @@ export const fetchData = async (endPoint, searchValue, page = "1", setData, setT
                 localStorage.removeItem('session');
                 window.location.href = '/login';
             } else {
-                notify(toast.error, 'error', 'Error', errorData.error || 'Error desconocido');
+                notify('error', 'Error', errorData.error || 'Error desconocido');
             }
             return [];
         }
@@ -56,7 +55,7 @@ export const fetchData = async (endPoint, searchValue, page = "1", setData, setT
         return data.results;
     } catch (error) {
         if (session) {
-            notify(toast.error, 'error', 'Error', 'Ha ocurrido un error al cargar los datos');
+            notify('error', 'Error', 'Ha ocurrido un error al cargar los datos');
         }
     }
 };
@@ -80,7 +79,7 @@ export const fetchDataNoLimits = async (endPoint) => {
 
         return data;
     } catch (error) {
-        notify(toast.error, 'error', 'Error', 'Ha ocurrido un error al cargar los datos');
+        notify('error', 'Error', 'Ha ocurrido un error al cargar los datos');
     }
 }
 
@@ -103,7 +102,7 @@ export const fetchOneItem = async (endPoint, id) => {
 
         return data;
     } catch (error) {
-        notify(toast.error, 'error', 'Error', error);
+        notify('error', 'Error', error);
     }
 };
 
@@ -127,7 +126,7 @@ export const postData = async (endPoint, data = {}) => {
 
         return result;
     } catch (error) {
-        notify(toast.error, 'error', 'Error', 'Ha ocurrido un error al enviar los datos');
+        notify('error', 'Error', 'Ha ocurrido un error al enviar los datos');
         return { status: "error" };
     }
 };
@@ -150,7 +149,7 @@ export const updateData = async (endPoint, data, id) => {
         const result = await response.json();
         return result;
     } catch (error) {
-        notify(toast.error, 'error', 'Error', error);
+        notify('error', 'Error', error);
     }
 };
 
@@ -177,6 +176,6 @@ export const deleteMultipleObjects = async (endPoint, data, setData) => {
         }
         return result;
     } catch (error) {
-        notify(toast.error, 'error', 'Error', 'Ha ocurrido un error al eliminar los datos');
+        notify('error', 'Error', 'Ha ocurrido un error al eliminar los datos');
     }
 };

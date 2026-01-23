@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
 import { fetchOneItem } from '../helpers/fetchData'
 import { notify } from '../helpers/notify'
-import { toast } from 'react-toastify'
 import DetailsHeader from '../components/DetailsHeader'
 import { observacionesTecnicasFormData } from '../helpers/formsData'
 import FormSection from '../components/formComponents/FormSection'
@@ -24,11 +23,11 @@ function ObservacionesTecnicas() {
                     if (data) {
                         setOrderData(data);
                     } else {
-                        notify(toast.error, "error", "Error", "No se pudo cargar la información de las observaciones técnicas");
+                        notify("error", "Error", "No se pudo cargar la información de las observaciones técnicas");
                     }
                 }
             } catch (error) {
-                notify(toast.error, "error", "Error", "Ha ocurrido un error al cargar los datos")
+                notify("error", "Error", "Ha ocurrido un error al cargar los datos")
             }
         }
         loadOrderData()

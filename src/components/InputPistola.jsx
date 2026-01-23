@@ -2,16 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { fetchOneItem, postData } from "../helpers/fetchData";
 import { useSession } from "../context/SessionContext";
 import { notify } from "../helpers/notify";
-import { toast } from 'react-toastify';
 import { useTabs } from "../context/TabsContext";
-import { useNavigate } from 'react-router-dom';
-import { InputPistolaProvider, useInputPistola } from "../context/InputPistolaContext";
+import { useInputPistola } from "../context/InputPistolaContext";
 
 function InputPistola() {
     const { inputRef, triggerKeyPressed, setTriggerKeyPressed, accionPistola, setAccionPistola, usuarioPistola, setUsuarioPistola, handleCodigoLeido } = useInputPistola();
     const { session } = useSession();
-    const { setTabs, tabs } = useTabs();
-    const navigate = useNavigate();
+    const { createTab } = useTabs();
 
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -43,14 +40,7 @@ function InputPistola() {
 
         const path = `/pistola`;
 
-        if (!tabs.some(tab => tab.path === path)) {
-            setTabs(prev => {
-                if (prev.some(tab => tab.path === path)) return prev;
-                return [...prev, { path, title: 'PISTOLA' }];
-            });
-        }
-
-        navigate(path);
+        createTab(path, "PISTOLA");
 
         let codigo = "";
 
@@ -81,7 +71,7 @@ function InputPistola() {
 
             setAccionPistola(accion.nombre_accion);
             setUsuarioPistola(id_usuario);
-            notify(toast.info, 'info', `Modo de la pistola establecido a: ${accion.nombre_accion}`);
+            notify('info', `Modo de la pistola establecido a: ${accion.nombre_accion}`);
         } else if (codigo.startsWith("EX") && codigo.length === 9) { // Trabajos externos
             const xmlFileName = codigo.replace("EX", "") + ".xml";
             const trabajoExterno = await fetchOneItem("externalJobs/getByFileName", xmlFileName);
@@ -97,18 +87,18 @@ function InputPistola() {
             const accion = await postData("externalJobs/firmar", signData);
 
             if (accion.status === "success") {
-                notify(toast.success, 'success', accion.title);
+                notify('success', accion.title);
                 const existingRegistros = JSON.parse(localStorage.getItem("registroPistola")) || [];
                 const updatedRegistros = [...existingRegistros, accion.nuevoRegistro];
 
                 localStorage.setItem("registroPistola", JSON.stringify(updatedRegistros));
             } else if (accion.status === "warning") {
-                notify(toast.warn, 'warning', accion.title);
+                notify('warning', accion.title);
             }
         } else if (codigo.startsWith("P") && codigo.length === 5) {
 
         } else {
-            notify(toast.warn, 'warning', 'Código no reconocido por la pistola');
+            notify('warning', 'Código no reconocido por la pistola');
         }
 
         codigo = "";

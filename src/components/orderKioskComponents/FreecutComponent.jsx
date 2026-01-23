@@ -4,6 +4,33 @@ import Switch from '@mui/material/Switch';
 import ChosenSelect from "../formComponents/ChosenSelect";
 
 function FreecutComponent({ freecutData, setFreecutData, colores, freeCutColors, setFreeCutColors }) {
+    const colorsWithFreecut = ["FREECUT", ...(colores || [])];
+
+    useEffect(() => {
+        if (!colores || colores.length === 0) return;
+        const safeColors = Array.isArray(freeCutColors) ? freeCutColors : [];
+        const colorMap = new Map(
+            safeColors
+                .filter((color) => color && (color.color || color.name))
+                .map((color) => [color.color || color.name, color])
+        );
+
+        const normalized = colorsWithFreecut.map((color) => (
+            colorMap.get(color) || {
+                checked: false,
+                color,
+                des_vert: "0",
+                caidas: "Cortadas"
+            }
+        ));
+
+        const hasSameLength = safeColors.length === normalized.length;
+        const hasSameOrder = hasSameLength && normalized.every((item, index) => safeColors[index]?.color === item.color);
+
+        if (!hasSameLength || !hasSameOrder) {
+            setFreeCutColors(normalized);
+        }
+    }, [colores, freeCutColors, setFreeCutColors, colorsWithFreecut]);
     const handleChange = (fieldName, value) => {
         setFreecutData((prev) => ({
             ...prev,
@@ -14,20 +41,23 @@ function FreecutComponent({ freecutData, setFreecutData, colores, freeCutColors,
     const handleColors = (index, field, value) => {        
         if (!index && index !== 0) {            
             if (field === "caidas") {
-                setFreeCutColors((prevColors) => {
-                    return [...prevColors, { name: "ALL", [field]: value }];
-                });
+                setFreecutData((prev) => ({
+                    ...prev,
+                    caidasAll: value
+                }));
             }
 
             setFreeCutColors((prevColors) => {
-                return prevColors.map((color) => ({
+                const safeColors = Array.isArray(prevColors) ? prevColors : [];
+                return safeColors.map((color) => ({
                     ...color,
                     [field]: value
                 }));
             });
         } else {
             setFreeCutColors((prevColors) => {
-                const updatedColors = [...prevColors];
+                const safeColors = Array.isArray(prevColors) ? prevColors : [];
+                const updatedColors = [...safeColors];
                 updatedColors[index] = {
                     ...updatedColors[index],
                     [field]: value
@@ -38,9 +68,10 @@ function FreecutComponent({ freecutData, setFreecutData, colores, freeCutColors,
     };
 
     useEffect(() => {
+        const safeColors = Array.isArray(freeCutColors) ? freeCutColors : [];
         setFreecutData((prev) => ({
             ...prev,
-            colores: freeCutColors.filter(color => color.checked)
+            colores: safeColors.filter(color => color.checked)
         }));
     }, [freeCutColors]);
 
@@ -73,7 +104,7 @@ function FreecutComponent({ freecutData, setFreecutData, colores, freeCutColors,
                         <input type="text" onChange={(e) => handleColors(null, "des_vert", e.target.value)} />
                         <ChosenSelect
                             name={""}
-                            value={freeCutColors.find(color => color.name === "ALL")?.caidas || ""}
+                            value={freecutData.caidasAll || ""}
                             options={["Cortadas", "Completo", "Izquierda", "Derecha"]}
                             onChange={e => handleColors(null, "caidas", e.target.value)}
                         />
@@ -85,7 +116,7 @@ function FreecutComponent({ freecutData, setFreecutData, colores, freeCutColors,
                         <p>CAÍDAS</p>
                     </div>
                     <div className="coloresFreecut">
-                        {colores.map((color, index) => (
+                        {colorsWithFreecut.map((color, index) => (
                             <div className="colorFreecut" key={index}>
                                 <Switch className="kioskSwitch" checked={freeCutColors[index]?.checked || false} onChange={e => handleColors(index, "checked", e.target.checked)} />
                                 <input type="text" name={`colorFreecut-${index}`} id={`colorFreecut-${index}`} value={color} disabled />

@@ -4,7 +4,6 @@ import { infoGmgTableInfo } from '../../helpers/tablesInfo'
 import { IoMdCloseCircleOutline } from 'react-icons/io';
 import { postData } from '../../helpers/fetchData';
 import { notify } from '../../helpers/notify';
-import { toast } from 'react-toastify';
 import InfoTintasTramas from '../pedidoComponents/InfoTintasTramas';
 
 function InfoGmgTable({ setGmgPopup, setPlotterModal, orderId }) {
@@ -32,7 +31,7 @@ function InfoGmgTable({ setGmgPopup, setPlotterModal, orderId }) {
         const { action, data } = variables;
         if (action === "openRow") {
             if (!data.xmp) {
-                notify(toast.error, 'error', 'Error', 'No hay info para mostrar');
+                notify('error', 'Error', 'No hay info para mostrar');
                 return { status: "error" };
             }
 
@@ -40,7 +39,7 @@ function InfoGmgTable({ setGmgPopup, setPlotterModal, orderId }) {
             const response = await postData("plotter/infoGmg", { rowObject: data });
 
             if (response.status === "error") {
-                notify(toast.error, 'error', response.title, response.message);
+                notify('error', response.title, response.message);
             } else {
                 setInfoGmg(response.info.listRegistroColor);
                 return { status: "success" };

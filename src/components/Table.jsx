@@ -21,7 +21,7 @@ import { normalizeData } from "../helpers/normalizeData";
 import { fetchData } from "../helpers/fetchData";
 import { ThreeDot } from "react-loading-indicators";
 import { notify } from "../helpers/notify";
-import { toast } from "react-toastify";
+
 import { MdLockOpen, MdLockOutline } from "react-icons/md";
 import { BsTrash3Fill } from "react-icons/bs";
 import useSocket from "../helpers/useSocket";
@@ -62,7 +62,7 @@ function Table({
     const [total, setTotal] = useState(0);
     const [page, setPage] = useState(1);
     const [actionEnded, setActionEnded] = useState(true);
-    const { tabs, setTabs } = useTabs();
+    const { tabs, setTabs, createTab } = useTabs();
     const actualTab = (tabs.find(tab => tab.path === location.pathname));
     const [search, setSearch] = useState(orderFilter ? orderFilter : "");
     const [debouncedSearch, setDebouncedSearch] = useState(search);
@@ -279,7 +279,7 @@ function Table({
                 getData(page, searchParams, clienteCodigo || clientFilter);
             } else {
                 if (!initialData) {
-                    getData(page, search, clienteCodigo || clientFilter);
+                    getData(page, search || actualTab.search, clienteCodigo || clientFilter);
                 }
             }
         }
@@ -332,18 +332,12 @@ function Table({
 
         let path = `${specificPath || location.pathname}/${id_plancha || id || _id}`;
 
-        // Solo agrega la pestaña si no existe
-        if (!tabs.some(tab => tab.path === path)) { // Redundante
-            setTabs(prev => {
-                if (prev.some(tab => tab.path === path)) return prev; // Redundante
-                return [...prev, { path, title: tabTitle.toUpperCase() }];
-            });
-        }
-
         if (setPopUpTable) {
             setPopUpTable(false);
         }
-        navigate(path, { state: { data } });
+
+        // Solo agrega la pestaña si no existe
+        createTab(path, tabTitle.toUpperCase());
         return;
     }
 
@@ -564,10 +558,7 @@ function Table({
 
         // Solo agrega la pestaña si no existe
         if (!tabs.some(tab => tab.path === path)) { // Redundante
-            setTabs(prev => {
-                if (prev.some(tab => tab.path === path)) return prev; // Redundante
-                return [...prev, { path, title: tabTitle.toUpperCase() }];
-            });
+            createTab(path, tabTitle.toUpperCase(), false);
         }
     }
 
@@ -603,13 +594,6 @@ function Table({
                             <h1>{specificHeaderTitle ? specificHeaderTitle : headerTitle}</h1>
                         </div>
                         <div className="headerActions">
-                            {/* {(tableInfo.actions && !tableChecks && (!tableInfo?.actions.every(action => action.hasOwnProperty('noCheck'))) && ((!rolesActions?.length || rolesActions?.includes(session?.role) || (!usersActions?.length || usersActions?.includes(session?.username))))) && (
-                                showChecks
-                                    ?
-                                    <MdLockOpen className="tableLock" onClick={() => { setShowChecks(false); setCheckedRows([]); setCheckedIndexes([]) }} />
-                                    :
-                                    <MdLockOutline className="tableLock" onClick={() => { setShowChecks(true); setCheckedRows([]); setCheckedIndexes([]) }} />
-                            )} */}
                             {!noRefreshTable && <HiOutlineRefresh className="tableRefresh" onClick={() => refreshTable()} />}
                             {(tableForm && (isAdmin || publicForm)) && (
                                 <button onClick={() => setModal(true)}>
@@ -644,7 +628,6 @@ function Table({
                                         onClick={() => {
                                             if (search.length > 0) {
                                                 setPage(1);
-                                                getData(1, "", clienteCodigo);
                                             }
                                             searchInputRef.current?.focus(); // Hacer focus en el input
                                             setSearch("");
@@ -692,7 +675,7 @@ function Table({
                                                     key={action.action}
                                                     onClick={async () => {
                                                         if (!action.noCheck && checkedRows < 1) {
-                                                            notify(toast.error, 'error', 'Error', 'Esta acción requiere selección')
+                                                            notify('error', 'Error', 'Esta acción requiere selección')
                                                         } else {
                                                             setActionEnded(false);
                                                             const actionResult = await actions({

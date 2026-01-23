@@ -3,6 +3,7 @@ import { GoDownload, GoUpload } from "react-icons/go";
 import { PiClockUser } from "react-icons/pi";
 import { LuCheck } from "react-icons/lu";
 import { IoHandLeftOutline } from "react-icons/io5";
+import { BsTrash3Fill } from "react-icons/bs";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useTabs } from "../context/TabsContext";
@@ -12,12 +13,9 @@ import PedidoFlexible from "../components/pedidoComponents/PedidoFlexible";
 import PedidoEtiquetas from "../components/pedidoComponents/PedidoEtiquetas";
 import PedidoSideBar from "../components/pedidoComponents/PedidoSideBar";
 import { notify } from "../helpers/notify";
-import { toast } from "react-toastify";
 import { fetchData, fetchOneItem, postData } from "../helpers/fetchData";
 import PdfAsImage from "../components/pedidoComponents/PdfAsImage";
 import { sanitizeData } from "../helpers/normalizeData";
-import { BsTrash3Fill } from "react-icons/bs";
-import { useSession } from "../context/SessionContext";
 import DeleteForm from "../components/formComponents/DeleteForm";
 import { orderTableInfo } from "../helpers/tablesInfo";
 import { BlinkBlur } from "react-loading-indicators";
@@ -32,8 +30,7 @@ function OrderDetails() {
   const location = useLocation();
   const { id } = useParams();
   const navigate = useNavigate();
-  const { closeTab, tabs, setTabs } = useTabs();
-  const { session } = useSession();
+  const { closeTab, createTab } = useTabs();
   const [deletePopup, setDeletePopup] = useState(false);
 
   const getOrderDetails = async (id) => {
@@ -47,7 +44,7 @@ function OrderDetails() {
       setOrderXml(sanitizeData(orderData.xml)); // Sanitizar los datos XML
       setFullOrder(sanitizeData(orderData));
     } catch (error) {
-      notify(toast.error, "error", "Error en el pedido", "Ha ocurrido un error al cargar los datos del pedido");
+      notify("error", "Error en el pedido", "Ha ocurrido un error al cargar los datos del pedido");
     }
   }
 
@@ -62,13 +59,7 @@ function OrderDetails() {
     const path = `/clientes/${_id}`;
     const tabTitle = orderXml.numero?.cliente_nombre;
 
-    if (!tabs.some(tab => tab.path === path)) {
-      setTabs(prev => {
-        if (prev.some(tab => tab.path === path)) return prev;
-        return [...prev, { path, title: tabTitle }];
-      });
-    }
-    navigate(path);
+    createTab(path, tabTitle);
   }
 
   const getStrategyDetails = async () => {
@@ -105,15 +96,9 @@ function OrderDetails() {
       const path = `/estrategias/${estrategiaId}`;
       const tabTitle = `ESTRATEGIA ${codigoEstrategia}`;
 
-      if (!tabs.some(tab => tab.path === path)) {
-        setTabs(prev => {
-          if (prev.some(tab => tab.path === path)) return prev;
-          return [...prev, { path, title: tabTitle }];
-        });
-      }
-      navigate(path);
+      createTab(path, tabTitle);
     } else {
-      notify(toast.warning, "warning", "No hay estrategia asociada");
+      notify("warning", "No hay estrategia asociada");
     }
   }
 
@@ -121,14 +106,7 @@ function OrderDetails() {
     const path = `/fichaTecnica/${id}`;
     const tabTitle = `OBS. TÉCNICAS ${fullOrder.id_pedido}`;
 
-    if (!tabs.some(tab => tab.path === path)) {
-      setTabs(prev => {
-        if (prev.some(tab => tab.path === path)) return prev;
-        return [...prev, { path, title: tabTitle }];
-      });
-    }
-
-    navigate(path, { state: { fullOrder: fullOrder } });
+    createTab(path, tabTitle);
   }
 
   const getUnitarioView = async () => {

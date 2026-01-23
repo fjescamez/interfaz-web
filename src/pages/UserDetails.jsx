@@ -12,8 +12,9 @@ import FormSection from "../components/formComponents/FormSection";
 import GridComponent from "../components/GridComponent";
 import { usersDetails } from "../helpers/detailsGrid";
 import { userTableInfo } from "../helpers/tablesInfo";
-import { fetchOneItem } from "../helpers/fetchData";
+import { fetchDataNoLimits, fetchOneItem } from "../helpers/fetchData";
 import { useLocation } from "react-router-dom";
+import { HiOutlineRefresh } from "react-icons/hi";
 
 function UserDetails({ toggleKiosk }) {
     const [user, setUser] = useState({});

@@ -5,7 +5,6 @@ import Table from '../components/Table';
 import { useSession } from '../context/SessionContext';
 import { postData } from '../helpers/fetchData';
 import { notify } from '../helpers/notify';
-import { toast } from "react-toastify";
 
 function ExternosByClient() {
     const { cliente } = useParams();
@@ -38,18 +37,18 @@ function ExternosByClient() {
             const response = await postData('externalJobs/firmar', signData);
 
             if (response.status === "success") {
-                notify(toast.success, 'success', response.title);
+                notify('success', response.title);
                 setTableData(prev => prev.filter(item => !response.updatedData.some(updatedItem => updatedItem._id === item._id)));
                 setExternosChecked([]);
                 return { status: "success" };
             } else {
-                notify(toast.error, 'error', response.title);
+                notify('error', response.title);
                 return { status: "success" };
             }
         } else if (action === "restaurar") {
             const response = await postData('externalJobs/restaurar', { trabajos: trabajosCompletos });
             setExternosChecked([]);
-            notify(toast.success, 'success', response.title);
+            notify('success', response.title);
             return { status: "success" };
         }
     }

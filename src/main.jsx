@@ -8,18 +8,21 @@ import { TabsProvider } from './context/TabsContext.jsx'
 import { SessionProvider } from './context/SessionContext.jsx'
 import { ClienteFilterProvider } from './context/ClientFilterContext.jsx'
 import { InputPistolaProvider } from './context/InputPistolaContext.jsx'
+import { TabStateProvider } from './context/TabStateContext'
 
 createRoot(document.getElementById('root')).render(
   //<StrictMode>
   <ClienteFilterProvider>
     <HashRouter>
-      <TabsProvider>
-        <SessionProvider>
-          <InputPistolaProvider>
-            <App />
-          </InputPistolaProvider>
-        </SessionProvider>
-      </TabsProvider>
+      <TabStateProvider>
+        <TabsProvider>
+          <SessionProvider>
+            <InputPistolaProvider>
+              <App />
+            </InputPistolaProvider>
+          </SessionProvider>
+        </TabsProvider>
+      </TabStateProvider>
     </HashRouter>
   </ClienteFilterProvider>
   //</StrictMode>,

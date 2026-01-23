@@ -6,7 +6,7 @@ import { ThreeDot } from 'react-loading-indicators';
 import { BiFolder } from 'react-icons/bi';
 import { IoDocumentTextOutline } from 'react-icons/io5';
 import { notify } from "../../helpers/notify";
-import { toast } from "react-toastify";
+
 
 function TraceTextPopUp({ setTraceModal, rutaTrabajo, unitario }) {
     const [navigation, setNavigation] = useState([]);
@@ -62,7 +62,7 @@ function TraceTextPopUp({ setTraceModal, rutaTrabajo, unitario }) {
         }
 
         postData("tasks/trazarTexto", data);
-        notify(toast.success, "success", "Trazado de texto iniciado", "");
+        notify("success", "Trazado de texto iniciado", "");
         setTraceModal(false);
     }
 

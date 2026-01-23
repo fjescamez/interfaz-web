@@ -2,7 +2,6 @@ import DetailsHeader from '../components/DetailsHeader';
 import { stockDetails } from "../helpers/detailsGrid";
 import GridComponent from "../components/GridComponent";
 import { useTabs } from '../context/TabsContext';
-import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from 'react';
 import { fetchData } from '../helpers/fetchData';
 import { useSession } from '../context/SessionContext';
@@ -12,8 +11,7 @@ function StockPage() {
     const { grid } = stockDetails;
     const [total, setTotal] = useState(0);
     const [gridWithTotal, setGridWithTotal] = useState(grid);
-    const { tabs, setTabs } = useTabs();
-    const navigate = useNavigate();
+    const { createTab } = useTabs();
     const { session } = useSession();
     const userFilter = session ? session?.departments : "";
     const isAdmin = session.role === "Administrador" || session.role === "Soporte";
@@ -29,13 +27,7 @@ function StockPage() {
             tabTitle = "ÓRDENES DE COMPRA";
         }
 
-        if (!tabs.some(tab => tab.path === path)) {
-            setTabs(prev => {
-                if (prev.some(tab => tab.path === path)) return prev;
-                return [...prev, { path, title: tabTitle }];
-            });
-        }
-        navigate(path);
+        createTab(path, tabTitle);
     }
 
     const getTotalNotificaciones = async () => {

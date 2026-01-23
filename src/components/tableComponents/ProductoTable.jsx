@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { toast } from "react-toastify";
 import Table from '../Table';
 import DescontarProductoForm from '../formComponents/DescontarProductoForm';
 import { productosStockTableInfo } from '../../helpers/tablesInfo';
@@ -21,14 +20,14 @@ function ProductoTable({ userFilter, tableInfo, customTable, specificPath, initi
 
         if (action === "descontar") {
             if (checkedRows.length > 1) {
-                notify(toast.error, 'error', 'Error', 'Solo se puede descontar el stock de un producto a la vez.');
+                notify('error', 'Error', 'Solo se puede descontar el stock de un producto a la vez.');
                 return { status: "error" };
             }
             setDescontarPopUp(true);
             return { status: "success" };
         } else if (action === "incidencia") {
             if (checkedRows.length > 1) {
-                notify(toast.error, 'error', 'Error', 'Solo se puede reportar la incidencia de un producto a la vez.');
+                notify('error', 'Error', 'Solo se puede reportar la incidencia de un producto a la vez.');
                 return { status: "error" };
             }
             setIncidenciaPopUp(true);

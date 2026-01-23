@@ -1,12 +1,12 @@
 import "./PedidoSideBar.css";
 import { orderSidebarIcons, clientApps } from "../../helpers/orderSidebarIcons";
 import { useRef, useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { useTabs } from "../../context/TabsContext";
 import { fetchData, postData } from "../../helpers/fetchData";
 import { notify } from "../../helpers/notify";
-import { toast } from "react-toastify";
+
 import NoteTable from "../tableComponents/NoteTable";
 import VersionTable from "../tableComponents/VersionTable";
 import OrderLenTable from "../tableComponents/OrderLenTable";
@@ -30,7 +30,6 @@ import DeleteForm from "../formComponents/DeleteForm";
 
 function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
     const { session } = useSession();
-    const navigate = useNavigate();
     const location = useLocation();
     const [noteModal, setNoteModal] = useState(false);
     const [versionsModal, setVersionsModal] = useState(false);
@@ -54,7 +53,7 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
     const [buttonBar, setButtonBar] = useState({ visible: false, buttons: [], position: { top: 0, left: 0 } });
     const buttonBarRef = useRef(null);
     const sideBarRef = useRef(null);
-    const { tabs, setTabs } = useTabs();
+    const { tabs, createTab } = useTabs();
     const folderUrl = fullOrder.rutaTrabajo?.replace("cloudflow://", "").replace("PEDIDOS_", "Pedidos ");
     const isAdmin = session.role === "Administrador" || session.role === "Soporte";
     const isTecnico = session.departments.includes("Tecnico");
@@ -73,10 +72,10 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
         const response = await postData("orders/updateOrder", data);
 
         if (response && response.status === "success") {
-            notify(toast.success, response.status, response.title, "")
+            notify(response.status, response.title, "")
             setFullOrder(response.response.updatedOrder);
         } else {
-            notify(toast.error, response.status, response.title, "");
+            notify(response.status, response.title, "");
         }
 
         setExecuting(false);
@@ -187,13 +186,7 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
                 const path = `${location.pathname}/kiosco`;
                 const tabTitle = `${fullOrder.id_pedido} | KIOSCO`;
 
-                if (!tabs.some(tab => tab.path === path)) {
-                    setTabs(prev => {
-                        if (prev.some(tab => tab.path === path)) return prev;
-                        return [...prev, { path, title: tabTitle }];
-                    });
-                }
-                navigate(path);
+                createTab(path, tabTitle);
                 break;
             case "tintas":
                 setTintasModal(true);

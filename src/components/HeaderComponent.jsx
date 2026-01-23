@@ -11,7 +11,7 @@ import { useInputPistola } from "../context/InputPistolaContext";
 import { MdBarcodeReader } from "react-icons/md";
 
 function HeaderComponent({ toggleUserDropdown, isOnline, setIsOnline }) {
-    const { tabs, setTabs, closeTab, closeAllTabs } = useTabs();
+    const { tabs, createTab, closeTab, closeAllTabs } = useTabs();
     const { accionPistola } = useInputPistola();
     const location = useLocation();
     const { avatar } = useSession();
@@ -60,11 +60,7 @@ function HeaderComponent({ toggleUserDropdown, isOnline, setIsOnline }) {
     return (
         <div className="pageHeader">
             <h1 className="headerTitle" onClick={() => {
-                navigate("/home");
-                setTabs(prev => {
-                    if (prev.some(tab => tab.path === "/home")) return prev;
-                    return [...prev, { path: "/home", title: "INICIO" }];
-                });
+                createTab("/home", "INICIO");
             }}>DISENGRAF</h1>
             <div className="tabsContainer">
                 <div className="tabs" /* onDragOver={allowDrop} onDrop={drop} */>

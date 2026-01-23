@@ -3,7 +3,6 @@ import { fileTableInfo } from '../../helpers/tablesInfo';
 import Table from '../Table';
 import { postData } from '../../helpers/fetchData';
 import { notify } from '../../helpers/notify';
-import { toast } from 'react-toastify';
 
 function FileTable({ setFilesModal, orderId, filePath }) {
     const [fileIds, setFileIds] = useState([]);
@@ -19,9 +18,9 @@ function FileTable({ setFilesModal, orderId, filePath }) {
         const response = await postData("files/print", data);
 
         if (response.status === "success") {
-            notify(toast.success, response.status, response.title, response.message);
+            notify(response.status, response.title, response.message);
         } else {
-            notify(toast.error, response.status, response.title, response.message);
+            notify(response.status, response.title, response.message);
         }
         return response;
     }

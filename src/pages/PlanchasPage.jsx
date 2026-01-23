@@ -4,7 +4,6 @@ import { planchasTableInfo } from '../helpers/tablesInfo';
 import { postData } from '../helpers/fetchData';
 import { useSession } from '../context/SessionContext';
 import { notify } from '../helpers/notify';
-import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
 import AlbaranParcialComponent from '../components/AlbaranParcialComponent';
 //import IncidenciaForm from '../components/formComponents/IncidenciaForm';
@@ -52,7 +51,7 @@ function PlanchasPage() {
                 const sincronizado = await postData('planchas/sincronizar');
                 setPlanchas([]);
                 if (sincronizado.status === 'success') {
-                    notify(toast.success, 'success', sincronizado.title, sincronizado.message);
+                    notify('success', sincronizado.title, sincronizado.message);
                     setTableData(prev => [...sincronizado.newItems, ...prev]);
                 }
                 return { status: 'success' };
@@ -61,24 +60,24 @@ function PlanchasPage() {
                 const updated = await postData('planchas/firmar', { ids: planchas, username: session.username });
                 setPlanchas([]);
                 if (updated.status === 'success') {
-                    notify(toast.success, 'success', updated.title, updated.message);
+                    notify('success', updated.title, updated.message);
                     setTableData(updated.updatedData.results);
                 }
                 return { status: 'success' };
             case "solicitarAlbaran":
 
                 if (planchas.length > 1) {
-                    notify(toast.error, 'error', '', 'Solo se puede solicitar el albarán de una plancha a la vez');
+                    notify('error', '', 'Solo se puede solicitar el albarán de una plancha a la vez');
                     return { status: 'success' };
                 } else if (plancha.id_estado_albaran !== 20) {
-                    notify(toast.error, 'error', '', 'El albarán de esta plancha ya está solicitado');
+                    notify('error', '', 'El albarán de esta plancha ya está solicitado');
                     return { status: 'success' };
                 }
 
                 const albaran = await postData('planchas/solicitarAlbaran', { plancha, accion: 'solicitarAlbaran' });
                 setPlanchas([]);
                 if (albaran.status === 'success') {
-                    notify(toast.success, 'success', albaran.title, albaran.message);
+                    notify('success', albaran.title, albaran.message);
                     // Actualizar la plancha en la tabla
                     if (albaran.updatedData) {
                         setTableData(prev =>
@@ -88,15 +87,15 @@ function PlanchasPage() {
                         );
                     }
                 } else {
-                    notify(toast.error, 'error', albaran.title, albaran.message);
+                    notify('error', albaran.title, albaran.message);
                 }
                 return { status: 'success' };
             case "albaranParcial":
                 if (planchas.length > 1) {
-                    notify(toast.error, 'error', '', 'Solo se puede solicitar el albarán parcial de una plancha a la vez');
+                    notify('error', '', 'Solo se puede solicitar el albarán parcial de una plancha a la vez');
                     return { status: 'success' };
                 } else if (plancha.id_estado_albaran !== 20) {
-                    notify(toast.error, 'error', '', 'El albarán de esta plancha ya está solicitado');
+                    notify('error', '', 'El albarán de esta plancha ya está solicitado');
                     return { status: 'success' };
                 }
                 
@@ -106,32 +105,32 @@ function PlanchasPage() {
                 return { status: 'success' };
             case "resetearAlbaran":
                 if (planchas.length > 1) {
-                    notify(toast.error, 'error', '', 'Solo se puede resetear el albarán de una plancha a la vez');
+                    notify('error', '', 'Solo se puede resetear el albarán de una plancha a la vez');
                     return { status: 'success' };
                 } else if (plancha.id_estado_albaran === 20) {
-                    notify(toast.error, 'error', '', 'El albarán de esta plancha no está solicitado');
+                    notify('error', '', 'El albarán de esta plancha no está solicitado');
                     return { status: 'success' };
                 }
 
                 const resetAlbaran = await postData('planchas/resetearAlbaran', { id: planchas[0] });
                 setPlanchas([]);
                 if (resetAlbaran.status === 'success') {
-                    notify(toast.success, 'success', resetAlbaran.title, resetAlbaran.message);
+                    notify('success', resetAlbaran.title, resetAlbaran.message);
                     setTableData(resetAlbaran.updatedData.results);
                 } else {
-                    notify(toast.error, 'error', resetAlbaran.title, resetAlbaran.message);
+                    notify('error', resetAlbaran.title, resetAlbaran.message);
                 }
                 return { status: 'success' };
             case "incidencia":
                 if (planchas.length > 1) {
-                    notify(toast.error, 'error', '', 'Solo se puede generar una incidencia para una plancha a la vez');
+                    notify('error', '', 'Solo se puede generar una incidencia para una plancha a la vez');
                     return { status: 'success' };
                 }
 
                 const response = await postData('planchas/generarIncidencia', { username: session.username, planchaId: planchas[0] });
 
                 if (response.status === 'success') {
-                    notify(toast.success, 'success', response.title);
+                    notify('success', response.title);
                     setTableData(prev =>
                         prev.map(item =>
                             item.id === response.plancha
@@ -140,7 +139,7 @@ function PlanchasPage() {
                         )
                     );
                 } else {
-                    notify(toast.error, 'error', response.title);
+                    notify('error', response.title);
                 }
 
                 // setIncidenciaPopUp(true);
@@ -148,7 +147,7 @@ function PlanchasPage() {
                 return { status: 'success' };
             case "verTrabajos":
                 if (planchas.length > 1) {
-                    notify(toast.error, 'error', '', 'Solo se puede ver los trabajos de una plancha a la vez');
+                    notify('error', '', 'Solo se puede ver los trabajos de una plancha a la vez');
                     return { status: 'success' };
                 }
                 setNoActions(true);
@@ -156,7 +155,7 @@ function PlanchasPage() {
                 return { status: 'success' };
             case "abrirImagen":
                 if (planchas.length > 1) {
-                    notify(toast.error, 'error', '', 'Solo se puede abrir la imagen de una plancha a la vez');
+                    notify('error', '', 'Solo se puede abrir la imagen de una plancha a la vez');
                     return { status: 'success' };
                 }
 

@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { notify } from "../helpers/notify";
-import { toast } from "react-toastify";
+
 import TabsCrossSvg from "../assets/svg/TabsCrossSvg";
 import { useSession } from "../context/SessionContext";
 import { IoMdCloseCircleOutline } from "react-icons/io";
@@ -52,7 +52,7 @@ function ImageKioskComponent({ toggleKiosk, endpoint, id, client }) {
                     body: endpoint === "users" ? "Su avatar de usuario ha sido actualizado correctamente" : "El logo de cliente ha sido actualizado correctamente."
                 };
 
-                notify(toast.success, notification.type, notification.title, notification.body);
+                notify(notification.type, notification.title, notification.body);
 
                 setImage(null);
 
@@ -67,7 +67,7 @@ function ImageKioskComponent({ toggleKiosk, endpoint, id, client }) {
                 title: "Error al actualizar el avatar",
                 body: `No se ha podido actualizar el avatar. Error: ${error.message}`
             };
-            notify(toast.error, notification.type, notification.title, notification.body);
+            notify(notification.type, notification.title, notification.body);
             return;
         }
 

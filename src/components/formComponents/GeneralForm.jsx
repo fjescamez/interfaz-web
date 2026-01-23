@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import { toast } from 'react-toastify';
 import { notify } from "../../helpers/notify";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import { postData, updateData } from "../../helpers/fetchData";
@@ -95,7 +94,7 @@ function GeneralForm({
         { afterSubmit && afterSubmit() }
 
         if (tableSelection && tableSelection.length < 1) {
-            notify(toast.error, 'error', 'Error', 'Debe seleccionar algún elemento de la tabla.');
+            notify('error', 'Error', 'Debe seleccionar algún elemento de la tabla.');
             return;
         }
 
@@ -150,13 +149,13 @@ function GeneralForm({
 
         if (result && result.status === "success") {
             setExecuting(false);
-            notify(toast.success, result.status, result.title, result.message);
+            notify(result.status, result.title, result.message);
             setModal(false);
             setError("");
             if (setMode) setMode("");
         } else {
             setExecuting(false);
-            notify(toast.error, result.status, result.title, result.message);
+            notify(result.status, result.title, result.message);
         }
 
         if (result.allItems) {

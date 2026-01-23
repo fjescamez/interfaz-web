@@ -1,8 +1,7 @@
 import Switch from '@mui/material/Switch';
 import { useEffect } from 'react';
 
-function OtraDocComponent({ otraDocumentacion, setOtraDocumentacion }) {
-  return (
+function OtraDocComponent({ otraDocumentacion, setOtraDocumentacion, setCountOtraDoc }) {  return (
     <div className="actionBody">
       <div className="otraDoc">
         <section className="otraDocSection">

@@ -4,7 +4,6 @@ import Table from "../Table"
 import { fetchOneItem, postData } from "../../helpers/fetchData";
 import ExecutingComponent from "../ExecutingComponent";
 import { notify } from "../../helpers/notify";
-import { toast } from "../../../node_modules/react-toastify/dist/index";
 import MetodosImpresion from "./MetodosImpresion";
 
 function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
@@ -54,7 +53,7 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
 
         if (ripTypes.includes(action)) {
             if (action === "ripAuto" && fullOrder?.xml?.tecnicos?.tipo_impresion !== "INTERIOR" && fullOrder?.xml?.tecnicos?.tipo_impresion !== "EXTERIOR") {
-                return notify(toast.error, 'error', 'Error', 'El tipo de impresión no está definido en el pedido');
+                return notify('error', 'Error', 'El tipo de impresión no está definido en el pedido');
             }
 
             const ripData = {
@@ -70,9 +69,9 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
             const response = await postData("montajes/rip", ripData);
 
             if (response.status === "success") {
-                notify(toast.success, response.status, response.title, response.message);
+                notify(response.status, response.title, response.message);
             } else {
-                notify(toast.error, response.status, response.title, response.message);
+                notify(response.status, response.title, response.message);
             }
 
             setRipModal(false);
@@ -90,9 +89,9 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
             const response = await postData("montajes/rip/arrastradores", data);
 
             if (response.status === "success") {
-                notify(toast.success, response.status, response.title, response.message);
+                notify(response.status, response.title, response.message);
             } else {
-                notify(toast.error, response.status, response.title, response.message);
+                notify(response.status, response.title, response.message);
             }
 
             return { status: response.status };
@@ -108,9 +107,9 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
             const response = await postData("montajes/rip/cortes_desarrollo", data);
 
             if (response.status === "success") {
-                notify(toast.success, response.status, response.title, response.message);
+                notify(response.status, response.title, response.message);
             } else {
-                notify(toast.error, response.status, response.title, response.message);
+                notify(response.status, response.title, response.message);
             }
 
             return { status: response.status };
@@ -125,10 +124,10 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
             const response = await postData("montajes/rip/freecutManual", data);
 
             if (response.status === "success") {
-                notify(toast.success, response.status, response.title, response.message);
+                notify(response.status, response.title, response.message);
                 window.open('http://192.4.26.120:9090/portal.cgi?hub&topbar=true', '_blank');
             } else {
-                notify(toast.error, response.status, response.title, response.message);
+                notify(response.status, response.title, response.message);
             }
 
             return { status: response.status };

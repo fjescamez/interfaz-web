@@ -8,11 +8,10 @@ function UnitarioComponent({ unitarios, unitarioData, setUnitarioData, order }) 
     const handleForm = (e) => {
         const { name, value } = e.target;
 
-        setUnitarioData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    }
+        const updatedData = { ...unitarioData, [name]: value };
+
+        setUnitarioData(updatedData);
+    };
 
     const opciones = unitarios.map(unitario => ({
         ...unitario,

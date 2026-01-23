@@ -1,17 +1,15 @@
-import { useNavigate } from 'react-router-dom';
 import Table from '../Table';
 import { emailInfoTableInfo } from '../../helpers/tablesInfo';
 import { useTabs } from '../../context/TabsContext';
 import { normalizeData } from '../../helpers/normalizeData';
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { fetchOneItem } from '../../helpers/fetchData';
 import ExecutingComponent from '../ExecutingComponent';
 
 function OrderInfoPopUp({ setInfoModal, _id }) {
     const [order, setOrder] = useState({});
     const [normalizedData, setNormalizedData] = useState([]);
-    const navigate = useNavigate();
-    const { setTabs, tabs } = useTabs();
+    const { createTab } = useTabs();
 
     const getOrder = async () => {
         const response = await fetchOneItem('orders/getOrder', _id);
@@ -35,14 +33,7 @@ function OrderInfoPopUp({ setInfoModal, _id }) {
             const path = `/infoEmail/${order.id_pedido}/${index + 1}`;
             const tabTitle = `EMAIL ${index + 1} | ${order.id_pedido}`;
 
-            if (!tabs.some(tab => tab.path === path)) {
-                setTabs(prev => {
-                    if (prev.some(tab => tab.path === path)) return prev;
-                    return [...prev, { path, title: tabTitle }];
-                });
-            }
-
-            navigate(path);
+            createTab(path, tabTitle);
 
             return { status: "success" };
         }

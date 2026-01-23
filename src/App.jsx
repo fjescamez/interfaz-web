@@ -50,6 +50,7 @@ import RegistroPage from "./pages/RegistroPage";
 import NotificacionesStockPage from "./pages/NotificacionesStockPage";
 import OrdenesCompraPage from "./pages/OrdenesCompraPage";
 import AddStockOrderPage from "./pages/AddStockOrderPage";
+import Soporte from "./pages/Soporte";
 
 function OrderKioskRouted({ configMode }) {
   const { id } = useParams();
@@ -62,7 +63,7 @@ function OrderKioskRouted({ configMode }) {
 }
 
 function App() {
-  const icons = ["home", "pedidos", "bandeja", "len", "clientes", "produccion", "pistola", "stock", "usuarios"];
+  const icons = ["home", "pedidos", "bandeja", "len", "clientes", "produccion", "pistola", "stock", "usuarios", "soporte"];
   const location = useLocation();
   const { session } = useSession();
   const navigate = useNavigate();
@@ -85,6 +86,7 @@ function App() {
     if (pathname.startsWith("/pistola")) return "pistola";
     if (pathname.startsWith("/stock")) return "stock";
     if (pathname.startsWith("/usuarios")) return "usuarios";
+    if (pathname.startsWith("/soporte")) return "soporte";
     return "home";
   };
 
@@ -255,6 +257,7 @@ function App() {
           <Route path="/pistola" element={<TablaPistolaPage />} />
           <Route path="/usuarios" element={<UsersPage />} />
           <Route path="/usuarios/:id" element={<UserDetails toggleKiosk={toggleKiosk} />} />
+          <Route path="/soporte" element={<Soporte />} />
           <Route path="/test" element={<HomePage />} />
         </Routes>
       </div>

@@ -37,7 +37,7 @@ function ReporteComponent({ loadingOrderReport, loadingFileReport, orderReport, 
                 </div>
                 <div className="fileReport">
                     <div className="title">
-                        <h2>Reporte de archivo {!loadingFileReport && <span>{`${reportModification ? `(Último análisis: ${reportModification})` : ""}`}</span>}</h2>
+                        <h2>Reporte de archivo</h2>
                         {loadingFileReport && <OrbitProgress variant="dotted" color={"var(--highlight)"} size="medium" />}
                     </div>
                     {!loadingFileReport && <ul className="reportePrevioList">

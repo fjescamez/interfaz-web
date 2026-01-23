@@ -29,7 +29,7 @@ function InfoPopUp({ setInfoPopUp, infoContent }) {
                     {Array.isArray(infoContent) ? (
                         <ul>
                             {infoContent.map((info, index) => (
-                                <li key={index}>- {info}</li>
+                                <li key={index}>{info}</li>
                             ))}
                         </ul>
                     ) : (

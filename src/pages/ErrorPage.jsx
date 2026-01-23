@@ -6,13 +6,12 @@ import { useTabs } from "../context/TabsContext";
 function ErrorPage() {
     const navigate = useNavigate();
     const location = useLocation();
-    const { setTabs } = useTabs();
+    const { createTab } = useTabs();
     const { closeTab } = useTabs();
 
     useEffect(() => {
         if (location.pathname === "/") {
-            navigate("/home", { replace: true });
-            setTabs([{ path: "/home", title: "INICIO" }]);
+            createTab("/home", "INICIO");
         }
     }, [location.pathname, navigate]);
 

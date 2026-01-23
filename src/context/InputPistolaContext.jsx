@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, useRef, useEffect } from "react";
 import { notify } from "../helpers/notify";
-import { toast } from "react-toastify";
 
 const InputPistolaContext = createContext();
 
@@ -13,7 +12,7 @@ export function InputPistolaProvider(props) {
 
     const resetAccionPistola = () => {
         setAccionPistola(null);
-        notify(toast.warning, "warning", "Aviso", "La acción de pistola ha sido reiniciada por inactividad");
+        notify("warning", "Aviso", "La acción de pistola ha sido reiniciada por inactividad");
     };
 
     const handleCodigoLeido = () => {

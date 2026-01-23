@@ -6,7 +6,6 @@ import { useSession } from "../context/SessionContext";
 import AsignarPedidoForm from "../components/formComponents/AsignarPedidoForm";
 import { postData } from "../helpers/fetchData";
 import { notify } from "../helpers/notify";
-import { toast } from "react-toastify";
 import { BsFillInboxFill } from "react-icons/bs";
 
 function OrdersPage({ filter, filterBandeja }) {
@@ -54,7 +53,7 @@ function OrdersPage({ filter, filterBandeja }) {
                 setCheckedOrders([]);
                 const result = await postData("orders/desasignarPedido", { pedidos: pedidosSeleccionados });
                 if (result.status === "success") {
-                    notify(toast.success, 'success', 'Operación exitosa');
+                    notify('success', 'Operación exitosa');
                     setTableData(() => {
                         return data.map(order => {
                             const updatedOrder = result.updatedItems.find(updated => updated._id === order._id);

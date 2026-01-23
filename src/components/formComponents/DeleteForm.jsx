@@ -1,6 +1,6 @@
 import { IoMdCloseCircleOutline } from "react-icons/io"
 import { deleteMultipleObjects, updateData } from "../../helpers/fetchData";
-import { toast } from "react-toastify";
+
 import { notify } from "../../helpers/notify";
 import { useTabs } from "../../context/TabsContext";
 import { useLocation } from "react-router-dom";
@@ -68,7 +68,7 @@ function DeleteForm({
         }
 
         if (result.status === "success") {
-            notify(toast.success, result.status, result.title, result.message);
+            notify(result.status, result.title, result.message);
             if (Array.isArray(isActive)) {
                 setIsActive([]);
             } else {
@@ -85,7 +85,7 @@ function DeleteForm({
                 setData(data.filter(obj => !filesToDelete.includes(obj._id || obj.id)));
             }
         } else {
-            notify(toast.error, result.status, result.title, result.message);
+            notify(result.status, result.title, result.message);
         }
     }
 

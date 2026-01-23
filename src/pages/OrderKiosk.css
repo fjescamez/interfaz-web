@@ -118,6 +118,12 @@
                             height: 4rem;
                             color: var(--highlight);
                         }
+
+                        .errorIcon {
+                            width: 4rem;
+                            height: 4rem;
+                            color: red;
+                        }
                     }
                 }
             }
