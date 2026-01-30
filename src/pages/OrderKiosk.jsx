@@ -441,7 +441,7 @@ function OrderKiosk({ configMode }) {
   }, [state.chosenKiosk, state.orderXml, state.actividad, state.orderColorsObjects]);
 
   useEffect(() => {
-    const shouldEnablePosMacula = Boolean(state.isActive?.plotter || state.isActive?.fichas);
+    const shouldEnablePosMacula = Boolean((state.isActive?.plotter || state.isActive?.fichas) && state.orderXml?.numero?.cliente_codigo === "0172");
 
     updateState("isActive", (prevIsActive) => {
       if (prevIsActive?.posMacula === shouldEnablePosMacula) return prevIsActive;
@@ -797,7 +797,7 @@ function OrderKiosk({ configMode }) {
       } else {
         notify("error", result.title, result.message);
       }
-      console.log(dataToSend);
+      //console.log(dataToSend);
 
     } else if (action === "saveConfig") {
       const activosDefault = Object.keys(state.isActive).filter(key => state.isActive[key]);
