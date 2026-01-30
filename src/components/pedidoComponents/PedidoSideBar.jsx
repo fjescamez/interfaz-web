@@ -24,7 +24,6 @@ import OrderInfoPopUp from "./OrderInfoPopUp";
 import TraceTextPopUp from "./TraceTextPopUp";
 import { useSession } from "../../context/SessionContext";
 import SignJobForm from "../formComponents/SignJobForm";
-import { PiStorefrontLight } from "react-icons/pi"
 import { orderTableInfo } from "../../helpers/tablesInfo";
 import DeleteForm from "../formComponents/DeleteForm";
 
@@ -53,10 +52,8 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
     const [buttonBar, setButtonBar] = useState({ visible: false, buttons: [], position: { top: 0, left: 0 } });
     const buttonBarRef = useRef(null);
     const sideBarRef = useRef(null);
-    const { tabs, createTab } = useTabs();
+    const { createTab } = useTabs();
     const folderUrl = fullOrder.rutaTrabajo?.replace("cloudflow://", "").replace("PEDIDOS_", "Pedidos ");
-    const isAdmin = session.role === "Administrador" || session.role === "Soporte";
-    const isTecnico = session.departments.includes("Tecnico");
 
     const updateOrder = async () => {
         setExecuting(true);
@@ -254,19 +251,6 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
             {infoModal && <OrderInfoPopUp setInfoModal={setInfoModal} _id={fullOrder._id} />}
             {opcionalesModal && <OpcionalesPopUp setOpcionalesModal={setOpcionalesModal} fullOrder={fullOrder} />}
             <div className="pedidoSideBar" ref={sideBarRef}>
-                {isTecnico && (
-                    <div className="iconContainer" key={"test"}>
-                        <div
-                            className={"icons"}
-                            onClick={(e) => handleClick("kiosk", null, e)}
-                            data-tooltip-id="my-tooltip"
-                            data-tooltip-content={"KIOSKO"}
-                        >
-                            {<PiStorefrontLight />}
-                        </div>
-                        {<div className="border"></div>}
-                    </div>
-                )}
                 {orderSidebarIcons.map((icon, index) => (
                     <div className="iconContainer" key={index}>
                         <div

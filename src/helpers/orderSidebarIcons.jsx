@@ -61,6 +61,11 @@ export const orderSidebarIcons = [
                 icon: <BsFiletypeXml />,
                 action: "kioscoXml",
                 tooltip: "KIOSCO XML"
+            },
+            {
+                icon: <PiStorefrontLight />,
+                action: "kiosk",
+                tooltip: "KIOSCO AUTO"
             }
         ],
         tooltip: ""
