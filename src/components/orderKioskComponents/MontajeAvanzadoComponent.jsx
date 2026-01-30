@@ -78,7 +78,11 @@ function MontajeAvanzadoComponent({ configAvanzadaData, setConfigAvanzadaData })
       OneUp: `${order?.id_pedido} ${order?.xml?.numero?.marca}` || "",
       PageBox: "TrimBox",
       PageIndex: 1,
-      Orientation: "up",
+      Orientation: {
+        _id: "up",
+        orientation: "up",
+        textoOpcion: "Original"
+      },
       StartNewLane: true,
       HCount: 1,
       HOffset: 0,
@@ -93,7 +97,8 @@ function MontajeAvanzadoComponent({ configAvanzadaData, setConfigAvanzadaData })
       BleedLimitLeft: 0,
       BleedLimitRight: 0,
       BleedLimitTop: 0,
-      BleedLimitBottom: 0
+      BleedLimitBottom: 0,
+      unitarioUrl: order?.unitario || ""
     };
 
     setConfigAvanzadaData((prev) => prev.map((element, elementIndex) => {

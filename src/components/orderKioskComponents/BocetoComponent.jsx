@@ -57,11 +57,11 @@ function BocetoComponent({ opciones, setOpciones }) {
                     <div className="boceto" key={opcion.id}>
                         {index !== 0 && <div className="separator" />}
                         <div className="row">
-                            <p><strong>{index + 1}</strong></p>
+                            {/* <p><strong>{index + 1}</strong></p> */}
                             <div className="firstGroup">
                                 <p><strong>¿Rasterizar?</strong></p>
                                 <Switch className="kioskSwitch" onClick={() => checkActive(opcion.id)} checked={opcion.rasterizado} />
-                                {opcion.rasterizado && (
+                                {/* {opcion.rasterizado && (
                                     <div className="lpiGroup">
                                         <input
                                             type="text"
@@ -73,9 +73,9 @@ function BocetoComponent({ opciones, setOpciones }) {
                                             <p>lpi</p>
                                         </div>
                                     </div>
-                                )}
+                                )} */}
                             </div>
-                            <ChosenSelect
+                            {/* <ChosenSelect
                                 name={`formato-${index}`}
                                 options={options1}
                                 value={opcion.formato}
@@ -88,7 +88,7 @@ function BocetoComponent({ opciones, setOpciones }) {
                                 onChange={e => handleChange(opcion.id, "tipo", e.target.value)}
                             />
                             {opciones.indexOf(opcion) === 0 && <PiPlusCircle onClick={agregarBoceto} />}
-                            {opciones.indexOf(opcion) !== 0 && <PiMinusCircle onClick={() => eliminarBoceto(opcion.id)} />}
+                            {opciones.indexOf(opcion) !== 0 && <PiMinusCircle onClick={() => eliminarBoceto(opcion.id)} />} */}
                         </div>
                     </div>
                 ))}

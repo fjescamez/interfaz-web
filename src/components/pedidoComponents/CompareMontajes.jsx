@@ -6,12 +6,14 @@ import Table from '../Table';
 import { allMontajesTableInfo } from '../../helpers/tablesInfo';
 import { postData } from '../../helpers/fetchData';
 import { ThreeDot } from 'react-loading-indicators';
+import { addKeyListener } from '../../helpers/toggleModal';
 
 function CompareMontajes({ setModal, montaje }) {
     const [file1, setFile1] = useState(montaje || undefined);
     const [file2, setFile2] = useState(undefined);
     const [compareLink, setCompareLink] = useState("");
     const [loadingLink, setLoadingLink] = useState(false);
+    addKeyListener(setModal);
 
     const actions = (variables) => {
         const { action, data } = variables;

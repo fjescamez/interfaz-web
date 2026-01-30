@@ -1,5 +1,6 @@
 import React from "react";
 import ChosenSelect from "./ChosenSelect"
+import Switch from "@mui/material/Switch";
 
 const FormGroup = React.memo(function FormGroup({
     handleForm,
@@ -79,22 +80,35 @@ const FormGroup = React.memo(function FormGroup({
                         </div>
                     }
                     {(inputType && inputType === "checkbox") &&
-                        <input
-                            type="checkbox"
-                            id={inputId}
-                            name={inputName}
-                            checked={!!value}
-                            onChange={(e) =>
-                                handleForm({ target: { name: inputName, value: e.target.checked } })
-                            }
-                            readOnly={disable || disableField}
-                        />
+                        <>
+                            {/* <input
+                                type="checkbox"
+                                id={inputId}
+                                name={inputName}
+                                checked={!!value}
+                                onChange={(e) =>
+                                    handleForm({ target: { name: inputName, value: e.target.checked } })
+                                }
+                                readOnly={disable || disableField}
+                            /> */}
+                            <Switch className="formSwitch"
+                                checked={value}
+                                onClick={handleForm ? () =>
+                                    handleForm({ target: { name: inputName, value: !value } })
+                                    : undefined
+                                }
+                                readOnly={disable || disableField}
+                            />
+                        </>
                     }
                     {(labelId && inputType && inputType === "checkbox") &&
                         <label
                             htmlFor={htmlFor}
                             id={labelId}
                             className={error ? "errorLabel" : "" + inputType === "checkbox" ? "fullLabel" : ""}
+                            onClick={() =>
+                                handleForm({ target: { name: inputName, value: !value } })
+                            }
                         >
                             {labelTitle}
                         </label>

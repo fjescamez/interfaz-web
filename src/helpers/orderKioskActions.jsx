@@ -35,12 +35,12 @@ export const kioskActions = [
         steps: [3]
     },
     {
-        title: "BOCETOS",
+        title: "BOCETO",
         id: "bocetos",
         steps: [3]
     },
     {
-        title: "FICHAS",
+        title: "FICHA",
         id: "fichas",
         steps: [3]
     },
@@ -243,18 +243,22 @@ export const avanzadoFormData = {
             options: [
                 {
                     _id: "up",
+                    orientation: "up",
                     textoOpcion: "Original"
                 },
                 {
                     _id: "down",
+                    orientation: "down",
                     textoOpcion: "Rotada 180º"
                 },
                 {
                     _id: "right",
+                    orientation: "right",
                     textoOpcion: "Rotada 90º"
                 },
                 {
                     _id: "left",
+                    orientation: "left",
                     textoOpcion: "Rotada -90º"
                 }
             ],

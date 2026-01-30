@@ -6,12 +6,13 @@ import { ThreeDot } from 'react-loading-indicators';
 import { BiFolder } from 'react-icons/bi';
 import { IoDocumentTextOutline } from 'react-icons/io5';
 import { notify } from "../../helpers/notify";
-
+import { addKeyListener } from "../../helpers/toggleModal";
 
 function TraceTextPopUp({ setTraceModal, rutaTrabajo, unitario }) {
     const [navigation, setNavigation] = useState([]);
     const [loading, setLoading] = useState(true);
     const [file, setFile] = useState("");
+    addKeyListener(setTraceModal);
 
     useEffect(() => {
         const getNavigation = async () => {

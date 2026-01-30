@@ -390,6 +390,7 @@ svg {
         column-gap: 2rem;
         align-items: center;
         justify-self: center;
+        max-width: fit-content;
 
         label {
             max-width: fit-content;
@@ -398,6 +399,41 @@ svg {
         input {
             max-width: 2rem;
             min-height: 2rem;
+        }
+    }
+
+    .formSwitch {
+        max-width: 4.5rem;
+        height: 2.6rem;
+        padding: 0;
+        outline: 2px solid white;
+        border-radius: 1.5rem;
+
+        .MuiSwitch-switchBase {
+            padding: 1rem;
+            padding: 3px;
+        }
+
+        .MuiSwitch-thumb {
+            width: 1.9rem;
+            height: 1.9rem;
+        }
+
+        .MuiSwitch-track {
+            border-radius: 1rem;
+            background-color: white;
+            border: 2px solid var(--pantone431c);
+            border-radius: 1.5rem;
+            opacity: 1;
+        }
+
+        .MuiSwitch-switchBase.Mui-checked {
+            color: var(--highlight);
+        }
+
+        .Mui-checked+.MuiSwitch-track {
+            background-color: white !important;
+            opacity: 1 !important;
         }
     }
 
@@ -431,7 +467,7 @@ svg {
         border: 2px solid var(--pantone431c);
         border-radius: 1.5rem;
         cursor: pointer;
-        width: fit-content;
+        min-width: fit-content;
         align-self: center;
 
         &:active {

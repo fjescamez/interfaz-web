@@ -17,10 +17,11 @@ function FreecutComponent({ freecutData, setFreecutData, colores, freeCutColors,
 
         const normalized = colorsWithFreecut.map((color) => (
             colorMap.get(color) || {
-                checked: false,
+                check: false,
                 color,
-                des_vert: "0",
-                caidas: "Cortadas"
+                distancia: "0",
+                caidas: "CORTADAS",
+                plancha: "MIXTO"
             }
         ));
 
@@ -31,6 +32,7 @@ function FreecutComponent({ freecutData, setFreecutData, colores, freeCutColors,
             setFreeCutColors(normalized);
         }
     }, [colores, freeCutColors, setFreeCutColors, colorsWithFreecut]);
+
     const handleChange = (fieldName, value) => {
         setFreecutData((prev) => ({
             ...prev,
@@ -38,8 +40,8 @@ function FreecutComponent({ freecutData, setFreecutData, colores, freeCutColors,
         }));
     }
 
-    const handleColors = (index, field, value) => {        
-        if (!index && index !== 0) {            
+    const handleColors = (index, field, value) => {
+        if (!index && index !== 0) {
             if (field === "caidas") {
                 setFreecutData((prev) => ({
                     ...prev,
@@ -71,7 +73,7 @@ function FreecutComponent({ freecutData, setFreecutData, colores, freeCutColors,
         const safeColors = Array.isArray(freeCutColors) ? freeCutColors : [];
         setFreecutData((prev) => ({
             ...prev,
-            colores: safeColors.filter(color => color.checked)
+            colores: safeColors
         }));
     }, [freeCutColors]);
 
@@ -99,13 +101,13 @@ function FreecutComponent({ freecutData, setFreecutData, colores, freeCutColors,
                         />
                     </div>
                     <div className="colorFreecut">
-                        <Switch className="kioskSwitch" checked={freeCutColors.every(color => color.checked)} onChange={e => handleColors(null, "checked", e.target.checked)} />
+                        <Switch className="kioskSwitch" checked={freeCutColors.every(color => color.check)} onChange={e => handleColors(null, "check", e.target.checked)} />
                         <input type="text" value="CAMBIAR A TODOS" disabled />
-                        <input type="text" onChange={(e) => handleColors(null, "des_vert", e.target.value)} />
+                        <input type="text" onChange={(e) => handleColors(null, "distancia", e.target.value)} />
                         <ChosenSelect
                             name={""}
                             value={freecutData.caidasAll || ""}
-                            options={["Cortadas", "Completo", "Izquierda", "Derecha"]}
+                            options={["CORTADAS", "COMPLETO", "IZQUIERDA", "DERECHA"]}
                             onChange={e => handleColors(null, "caidas", e.target.value)}
                         />
                     </div>
@@ -118,12 +120,12 @@ function FreecutComponent({ freecutData, setFreecutData, colores, freeCutColors,
                     <div className="coloresFreecut">
                         {colorsWithFreecut.map((color, index) => (
                             <div className="colorFreecut" key={index}>
-                                <Switch className="kioskSwitch" checked={freeCutColors[index]?.checked || false} onChange={e => handleColors(index, "checked", e.target.checked)} />
+                                <Switch className="kioskSwitch" checked={freeCutColors[index]?.check || false} onChange={e => handleColors(index, "check", e.target.checked)} />
                                 <input type="text" name={`colorFreecut-${index}`} id={`colorFreecut-${index}`} value={color} disabled />
-                                <input type="text" name={`colorFreecut-${index}`} id={`colorFreecut-${index}`} value={freeCutColors[index]?.des_vert || ""} onChange={e => handleColors(index, "des_vert", e.target.value)} />
+                                <input type="text" name={`colorFreecut-${index}`} id={`colorFreecut-${index}`} value={freeCutColors[index]?.distancia || ""} onChange={e => handleColors(index, "distancia", e.target.value)} />
                                 <ChosenSelect
                                     name={index}
-                                    options={["Cortadas", "Completo", "Izquierda", "Derecha"]}
+                                    options={["CORTADAS", "COMPLETO", "IZQUIERDA", "DERECHA"]}
                                     value={freeCutColors[index]?.caidas || ""}
                                     onChange={e => handleColors(index, "caidas", e.target.value)}
                                 />

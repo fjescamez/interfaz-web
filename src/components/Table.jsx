@@ -5,9 +5,8 @@ import AllForms from "./formComponents/AllForms";
 import DeleteForm from "./formComponents/DeleteForm";
 import PdfAsImage from "../components/pedidoComponents/PdfAsImage";
 import { useLocation, useNavigate } from "react-router-dom";
-import { toggleModal } from "../helpers/toggleModal";
 import { HiViewColumns } from "react-icons/hi2";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { useTabs } from "../context/TabsContext";
 import { HiOutlineRefresh } from "react-icons/hi";
@@ -25,6 +24,7 @@ import { notify } from "../helpers/notify";
 import { MdLockOpen, MdLockOutline } from "react-icons/md";
 import { BsTrash3Fill } from "react-icons/bs";
 import useSocket from "../helpers/useSocket";
+import { addKeyListener } from "../helpers/toggleModal";
 
 function Table({
     normalizedData,
@@ -72,6 +72,7 @@ function Table({
     const clienteDato = clienteDatos[location.pathname] || null;
     const [tableInfo, setTableInfo] = useState(dinamicTableInfo);
     const { headerIcon, headerTitle, tableColumns, tableName, endPoint, tableForm, rolesActions } = tableInfo;
+    const [columns, setColumns] = useState(tableColumns);
     const tableActions = tableInfo.actions || [];
     const [editTable, setEditTable] = useState(false);
     const [advancedFilters, setAdvancedFilters] = useState(false);
@@ -87,6 +88,10 @@ function Table({
         y: 0,
         value: ""
     });
+
+    if (setPopUpTable) {
+        addKeyListener(setPopUpTable);
+    }
 
     const getData = async (page, searchValue = "", clientFilter = "") => {
         const result = await fetchData(endPoint, searchValue, page, setTableData, setTotal, clientFilter, userFilter);
@@ -279,7 +284,8 @@ function Table({
                 getData(page, searchParams, clienteCodigo || clientFilter);
             } else {
                 if (!initialData) {
-                    getData(page, search || actualTab.search, clienteCodigo || clientFilter);
+                    setPage(1);
+                    getData(1, search || actualTab.search, clienteCodigo || clientFilter);
                 }
             }
         }
@@ -358,7 +364,7 @@ function Table({
     };
 
     const showMore = async () => {
-        setAdvancedFilters(false);
+        // setAdvancedFilters(false);
         setPage(prevPage => prevPage + 1);
     }
 
@@ -582,7 +588,56 @@ function Table({
         return () => window.removeEventListener("click", handleClickOutside);
     }, [copyMenu.visible]);
 
-    const searchInputRef = useState(null);
+    const searchInputRef = useRef(null);
+
+    // Funcionalidad para mover las columnas (falta guardar en BBDD)
+    // (
+    const draggedKeyRef = useRef(null);
+
+    function dragStart(event) {
+        const th = event.target.closest('th');
+        if (!th) return;
+        draggedKeyRef.current = th.dataset.key || null;
+    }
+
+    function allowDrop(event) {
+        event.preventDefault();
+    }
+
+    function drop(event) {
+        event.preventDefault();
+
+        const targetTab = event.target.closest('th');
+        if (!targetTab) return;
+
+        const targetKey = targetTab.dataset.key;
+        const draggedKey = draggedKeyRef.current;
+
+        if (!draggedKey || draggedKey === targetKey) {
+            draggedKeyRef.current = null;
+            return;
+        }
+
+        const oldIndex = columns.findIndex(c => c.key === draggedKey);
+        const newIndex = columns.findIndex(c => c.key === targetKey);
+        if (oldIndex === -1 || newIndex === -1) {
+            draggedKeyRef.current = null;
+            return;
+        }
+
+        const rect = targetTab.getBoundingClientRect();
+        const isAfter = event.clientX > rect.left + rect.width / 2;
+        let insertIndex = isAfter ? newIndex + 1 : newIndex;
+
+        const newColumns = [...columns];
+        const [moved] = newColumns.splice(oldIndex, 1);
+        if (oldIndex < insertIndex) insertIndex--;
+        newColumns.splice(insertIndex, 0, moved);
+
+        setColumns(newColumns);
+        draggedKeyRef.current = null;
+    }
+    // )
 
     return (
         <>
@@ -648,7 +703,7 @@ function Table({
                                     >
                                         Filtros avanzados
                                     </button>
-                                    <HiViewColumns className="tableEdit" onClick={() => toggleModal(setEditTable, editTable)} />
+                                    <HiViewColumns className="tableEdit" onClick={() => setEditTable(prev => !prev)} />
                                 </>
                             )}
                             {editTable && <EditTable checked={checked} checkColumn={checkColumn} tableInfo={tableInfo} setEditTable={setEditTable} />}
@@ -718,19 +773,28 @@ function Table({
                 <div className="tableScroll">
                     <table>
                         <thead>
-                            <tr>
+                            <tr /* onDragOver={allowDrop} onDrop={drop} */>
                                 {showChecks && (
                                     <th className="checkElement"><input type="checkbox" className="check" onChange={checkAll} checked={checkedIndexes.length === tableData.length && checkedIndexes.length > 0} /></th>
                                 )}
-                                {tableColumns.map((column) => (
-                                    checked[column.key] && <th key={column.key} className="thClickable" onClick={() => changeOrderBy(column.key)}>
-                                        <div className="thContent">
-                                            <p>{column.header != "Avatar" && column.header}</p>
-                                            {orderBy.column === column.key ? (
-                                                orderBy.direction === "asc" ? <TbTriangleFilled /> : <TbTriangleInvertedFilled />
-                                            ) : null}
-                                        </div>
-                                    </th>
+                                {columns.map((column) => (
+                                    checked[column.key] && (
+                                        <th
+                                            key={column.key}
+                                            data-key={column.key}
+                                            className="thClickable"
+                                            onClick={() => changeOrderBy(column.key)}
+                                            /* draggable="true"
+                                            onDragStart={dragStart} */
+                                        >
+                                            <div className="thContent">
+                                                <p>{column.header != "Avatar" && column.header}</p>
+                                                {orderBy.column === column.key ? (
+                                                    orderBy.direction === "asc" ? <TbTriangleFilled /> : <TbTriangleInvertedFilled />
+                                                ) : null}
+                                            </div>
+                                        </th>
+                                    )
                                 ))}
                             </tr>
                         </thead>
@@ -738,7 +802,7 @@ function Table({
                             {advancedFilters && (
                                 <tr style={{ textAlign: "center" }}>
                                     {showChecks && <td></td>}
-                                    {tableColumns.map((column) => (
+                                    {columns.map((column) => (
                                         checked[column.key] && (
                                             <td key={column.key}>
                                                 <input
@@ -768,7 +832,7 @@ function Table({
                                             />
                                         </td>
                                     )}
-                                    {tableColumns.map((column) => {
+                                    {columns.map((column) => {
                                         if (!checked[column.key]) return null;
                                         let value = data[column.key];
                                         if (Array.isArray(value)) value = value.join(" - ");

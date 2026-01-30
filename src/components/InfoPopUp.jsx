@@ -2,19 +2,10 @@ import { IoMdCloseCircleOutline } from 'react-icons/io';
 import { TiInfoLarge } from 'react-icons/ti';
 import { useEffect } from "react";
 import "./InfoPopUp.css";
+import { addKeyListener } from '../helpers/toggleModal';
 
 function InfoPopUp({ setInfoPopUp, infoContent }) {
-    useEffect(() => {
-        const handleKeyDown = (e) => {
-            if (e.key === "Escape") {
-                setInfoPopUp(false);
-            }
-        };
-        window.addEventListener("keydown", handleKeyDown);
-        return () => {
-            window.removeEventListener("keydown", handleKeyDown);
-        };
-    }, [setInfoPopUp]);
+    addKeyListener(setInfoPopUp);
 
     return (
         <>

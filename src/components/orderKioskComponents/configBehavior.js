@@ -158,7 +158,7 @@ export function handleExceptions({ module, isActive, setIsActive, actividad, cli
         }));
     }
 
-    if (module === "montaje" && !isActive.montaje && actividad === "MADERA") {
+    if (module === "montaje" && !isActive.montaje && (actividad === "MADERA" || actividad === "CARTON")) {
         setOtraDocumentacion((prev) => ({
             ...prev,
             etiquetasMontaje: true

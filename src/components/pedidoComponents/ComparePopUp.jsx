@@ -5,6 +5,7 @@ import { postData } from '../../helpers/fetchData';
 import { BiFolder } from 'react-icons/bi';
 import { IoDocumentTextOutline } from 'react-icons/io5';
 import { ThreeDot } from 'react-loading-indicators';
+import { addKeyListener } from '../../helpers/toggleModal';
 
 function ComparePopUp({ setCompareModal, rutaTrabajo }) {
   const [indexacion, setIndexacion] = useState([]);
@@ -14,6 +15,7 @@ function ComparePopUp({ setCompareModal, rutaTrabajo }) {
   const [lastClickedFile, setLastClickedFile] = useState(null);
   const [comparar, setComparar] = useState("");
   const [compareLink, setCompareLink] = useState("");
+  addKeyListener(setCompareModal);
 
   const post = {
     extraInputs: {

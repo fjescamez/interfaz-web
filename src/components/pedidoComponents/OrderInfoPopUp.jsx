@@ -5,11 +5,13 @@ import { normalizeData } from '../../helpers/normalizeData';
 import { useEffect, useState } from 'react';
 import { fetchOneItem } from '../../helpers/fetchData';
 import ExecutingComponent from '../ExecutingComponent';
+import { addKeyListener } from '../../helpers/toggleModal';
 
 function OrderInfoPopUp({ setInfoModal, _id }) {
     const [order, setOrder] = useState({});
     const [normalizedData, setNormalizedData] = useState([]);
     const { createTab } = useTabs();
+    addKeyListener(setInfoModal);
 
     const getOrder = async () => {
         const response = await fetchOneItem('orders/getOrder', _id);

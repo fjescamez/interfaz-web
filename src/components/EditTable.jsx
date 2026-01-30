@@ -2,11 +2,12 @@ import "./EditTable.css";
 import { updateData } from "../helpers/fetchData";
 import { useSession } from "../context/SessionContext";
 import { notify } from "../helpers/notify";
-
+import { addKeyListener } from "../helpers/toggleModal";
 
 function EditTable({ checked, checkColumn, tableInfo, setEditTable }) {
     const { session, setSession } = useSession();
     const { tableColumns, endPoint } = tableInfo;
+    addKeyListener(setEditTable);
 
     const savePreferences = async (data) => {
         const result = await updateData("userPreferences", data, session.username);

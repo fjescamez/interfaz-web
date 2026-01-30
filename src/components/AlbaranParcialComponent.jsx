@@ -3,12 +3,13 @@ import Table from './Table';
 import { trabajosPlanchaTableInfo } from '../helpers/tablesInfo';
 import { fetchOneItem, postData } from '../helpers/fetchData';
 import { notify } from '../helpers/notify';
-
+import { addKeyListener } from '../helpers/toggleModal';
 
 function AlbaranParcialComponent({ setTrabajosPopUp, planchaId, plancha, setTableData, noActions }) {
     const [tableInfo, setTableInfo] = useState(trabajosPlanchaTableInfo);
     const [trabajos, setTrabajos] = useState([]);
     const [trabajosChecked, setTrabajosChecked] = useState([]);
+    addKeyListener(setTrabajosPopUp);
 
     const getTrabajos = async () => {
         const result = await fetchOneItem("planchas/trabajos", planchaId);

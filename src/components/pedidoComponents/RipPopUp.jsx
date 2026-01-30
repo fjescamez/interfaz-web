@@ -5,6 +5,8 @@ import { fetchOneItem, postData } from "../../helpers/fetchData";
 import ExecutingComponent from "../ExecutingComponent";
 import { notify } from "../../helpers/notify";
 import MetodosImpresion from "./MetodosImpresion";
+import FreecutPopUp from "../tableComponents/FreecutPopUp";
+import { addKeyListener } from "../../helpers/toggleModal";
 
 function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
     const [colorIds, setColorIds] = useState([]);
@@ -12,6 +14,8 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
     const [id_archivo, setId_archivo] = useState("");
     const [tableInfo, setTableInfo] = useState(ripTableInfo);
     const [planchasModal, setPlanchasModal] = useState(false);
+    const [freecutPopup, setFreecutPopup] = useState(false);
+    addKeyListener(setRipModal);
 
     const [tintas, setTintas] = useState([]);
 
@@ -114,7 +118,7 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
 
             return { status: response.status };
         } else if (action === "freecutManual") {
-            const data = {
+            /* const data = {
                 extraInputs: {
                     file: montaje,
                     id_pedido: fullOrder.id_pedido
@@ -128,9 +132,11 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
                 window.open('http://192.4.26.120:9090/portal.cgi?hub&topbar=true', '_blank');
             } else {
                 notify(response.status, response.title, response.message);
-            }
+            } */
+            setTintas(data);
+            setFreecutPopup(true);
 
-            return { status: response.status };
+            return { status: "success" };
         } else if (action === "configPlancha") {
             setTintas(data);
             setPlanchasModal(true);
@@ -140,32 +146,35 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
 
     return (
         <>
-            {montaje ?
-                (!planchasModal ?
-                    <div className="popUpTable">
-                        <Table
-                            actions={ripActions}
-                            checkedRows={colorIds}
-                            setCheckedRows={setColorIds}
-                            dinamicTableInfo={tableInfo}
-                            specificHeaderTitle={`RIP MONTAJE | ${id_archivo}`}
-                            orderFilter={montaje}
-                            setPopUpTable={setRipModal}
-                            customTable={true}
+            {!freecutPopup ? (
+                montaje ?
+                    (!planchasModal ?
+                        <div className="popUpTable">
+                            <Table
+                                actions={ripActions}
+                                checkedRows={colorIds}
+                                setCheckedRows={setColorIds}
+                                dinamicTableInfo={tableInfo}
+                                specificHeaderTitle={`RIP MONTAJE | ${id_archivo}`}
+                                orderFilter={montaje}
+                                setPopUpTable={setRipModal}
+                                customTable={true}
+                            />
+                        </div>
+                        :
+                        <MetodosImpresion
+                            setPlanchasModal={setPlanchasModal}
+                            id_pedido={fullOrder.id_pedido}
+                            file={montaje}
+                            tintas={tintas}
                         />
-                    </div>
-                    :
-                    <MetodosImpresion
-                        setPlanchasModal={setPlanchasModal}
-                        id_pedido={fullOrder.id_pedido}
-                        file={montaje}
-                        tintas={tintas}
-                    />
 
-                )
-                :
-                <ExecutingComponent />
-            }
+                    )
+                    :
+                    <ExecutingComponent />
+            ) : (
+                <FreecutPopUp setFreecutModal={setFreecutPopup} colores={tintas} id_pedido={fullOrder.id_pedido} montaje={montaje} />
+            )}
         </>
     )
 }

@@ -4,6 +4,7 @@ import { IoMdCloseCircleOutline } from "react-icons/io";
 import { postData, updateData } from "../../helpers/fetchData";
 import FormSection from "./FormSection";
 import ExecutingComponent from "../ExecutingComponent";
+import { addKeyListener } from "../../helpers/toggleModal";
 
 function GeneralForm({
     setModal,
@@ -29,6 +30,7 @@ function GeneralForm({
     const [executing, setExecuting] = useState(false);
     const [error, setError] = useState("");
     const [inputData, setInputData] = useState(itemsData || {});
+    addKeyListener(setModal);
 
     const requiredFields = formFields.reduce((acc, field) => {
         if (field.required) acc[field.inputName] = !field.required;

@@ -3,11 +3,13 @@ import Table from '../Table'
 import { tintasTableInfo } from '../../helpers/tablesInfo';
 import MetodosImpresion from './MetodosImpresion';
 import { postData } from '../../helpers/fetchData';
+import { addKeyListener } from '../../helpers/toggleModal';
 
 function TintasPopUp({ setTintasModal, fullOrder }) {
     const [tintasIds, setTintasIds] = useState([]);
     const [planchasModal, setPlanchasModal] = useState(false);
     const [tintas, setTintas] = useState([]);
+    addKeyListener(setTintasModal);
 
     const tintasActions = async (variables) => {
         const { action, data } = variables;

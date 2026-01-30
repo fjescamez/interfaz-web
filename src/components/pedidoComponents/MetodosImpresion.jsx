@@ -1,6 +1,7 @@
 import GeneralForm from '../formComponents/GeneralForm'
 import { metodosImpresionFormData } from '../../helpers/formsData'
 import { useEffect, useState } from 'react'
+import { addKeyListener } from '../../helpers/toggleModal';
 
 function MetodosImpresion({ setPlanchasModal, id_pedido, file, tintas }) {
   const [formData, setFormData] = useState(metodosImpresionFormData);
@@ -9,6 +10,7 @@ function MetodosImpresion({ setPlanchasModal, id_pedido, file, tintas }) {
     id_pedido,
     file
   });
+  addKeyListener(setPlanchasModal);
 
   const createForm = () => {
     setFormData(prev => {

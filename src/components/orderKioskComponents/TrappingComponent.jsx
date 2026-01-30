@@ -5,6 +5,8 @@ import { useTabState } from '../../context/TabStateContext';
 import { notify } from '../../helpers/notify';
 
 import { useLocation } from "react-router-dom";
+import { useEffect } from 'react';
+import SubmitButton from '../buttons/SubmitButton';
 
 function TrappingComponent({ id_pedido, trappingData, updateState, workableId, nodeId, loadingTrapping, isTrappingDone, isTrappingWaiting, isTrappingCanceled }) {
     const { postDataContext, updateTabState } = useTabState();
@@ -57,7 +59,7 @@ function TrappingComponent({ id_pedido, trappingData, updateState, workableId, n
             updateState("loadingTrapping", false);
             updateTabState(key, applyTrappingConfirmation);
             console.log(res);
-            
+
             if (res.isTrappingCanceled) {
                 updateState("isTrappingCanceled", true);
                 updateState("isTrappingWaiting", false);
@@ -75,6 +77,11 @@ function TrappingComponent({ id_pedido, trappingData, updateState, workableId, n
 
         setLoadingTrappingTabState(false);
     }
+
+    useEffect(() => {
+        console.log(isTrappingWaiting);
+    }, []);
+
 
     return (
         <div className="actionBody">
@@ -113,9 +120,9 @@ function TrappingComponent({ id_pedido, trappingData, updateState, workableId, n
                 )}
                 {isTrappingWaiting && !loadingTrapping && (
                     <div className="buttons">
-                        <button className="submitButton" onClick={() => handleTrappingConfirmation("aceptar")}>Aceptar</button>
-                        <button className="submitButton" onClick={() => handleTrappingConfirmation("modificar")}>Modificar valor</button>
-                        <button className="submitButton" onClick={() => handleTrappingConfirmation("cancelar")}>Cancelar y eliminar trapping</button>
+                        <SubmitButton onClick={() => handleTrappingConfirmation("aceptar")} text="Aceptar" />
+                        <SubmitButton onClick={() => handleTrappingConfirmation("modificar")} text="Modificar valor" />
+                        <SubmitButton onClick={() => handleTrappingConfirmation("cancelar")} text="Cancelar y eliminar trapping" />
                     </div>
                 )}
             </div>

@@ -10,6 +10,7 @@ import DeleteForm from "../formComponents/DeleteForm";
 import { MdKeyboardArrowDown, MdKeyboardArrowRight } from "react-icons/md";
 import { GrEdit } from "react-icons/gr";
 import { notify } from "../../helpers/notify";
+import { addKeyListener } from "../../helpers/toggleModal";
 
 function NoteTable({ setNoteModal, pedido, id_pedido }) {
     const { headerIcon, headerTitle, tableColumns } = noteTableInfo;
@@ -17,6 +18,7 @@ function NoteTable({ setNoteModal, pedido, id_pedido }) {
     const [mode, setMode] = useState("");
     const [notes, setNotes] = useState([]);
     const [deleteForm, setDeleteForm] = useState(false);
+    addKeyListener(setNoteModal);
 
     const [isActive, setIsActive] = useState(() => {
         const initial = {};

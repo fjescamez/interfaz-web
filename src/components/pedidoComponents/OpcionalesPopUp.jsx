@@ -1,8 +1,11 @@
 import { SlSpeech } from "react-icons/sl";
 import { IoMdCloseCircleOutline } from 'react-icons/io';
 import "./OpcionalesPopUp.css";
+import { addKeyListener } from "../../helpers/toggleModal";
 
 function OpcionalesPopUp({ setOpcionalesModal, fullOrder }) {
+    addKeyListener(setOpcionalesModal);
+
     return (
         <>
             <div className="overlay"></div>

@@ -1,15 +1,17 @@
 import Switch from '@mui/material/Switch';
 import { useEffect } from 'react';
 import { notify } from '../../helpers/notify';
+import KioscoPersoMontaje from './KioscoPersoMontaje';
+import { globalKioskVariables } from './kioscoPersoConfig';
 
-function MontajeComponent({ orderXml, montajeData, setMontajeData, setConfigAvanzadaData, isActive, setIsActive, setIsOpen }) {
+function MontajeComponent({ orderXml, montajeData, configAvanzadaData, updateState, kioscoPersoData, colores, isActive}) {
   useEffect(() => {
     if (orderXml?.actividad?.id !== "MADERA" || !isActive.montaje) return;
 
     const items = orderXml?.actividad?.madera?.madera_premontaje || [];
     if (items.length === 0) return;
 
-    setMontajeData((prev) => {
+    updateState("montajeData", (prev) => {
       let changed = false;
       const next = { ...prev };
 
@@ -28,7 +30,7 @@ function MontajeComponent({ orderXml, montajeData, setMontajeData, setConfigAvan
 
       return changed ? next : prev;
     });
-  }, [orderXml?.actividad?.id, orderXml?.actividad?.madera?.madera_premontaje, isActive.montaje, setMontajeData]);
+  }, [orderXml?.actividad?.id, orderXml?.actividad?.madera?.madera_premontaje, isActive.montaje, updateState]);
 
   useEffect(() => {
     if (orderXml?.actividad?.id !== "MADERA" || !isActive.montaje) return;
@@ -44,7 +46,7 @@ function MontajeComponent({ orderXml, montajeData, setMontajeData, setConfigAvan
 
     if (itemsToConfigure.length === 0) return;
 
-    setMontajeData((prev) => {
+    updateState("montajeData", (prev) => {
       let changed = false;
       const next = { ...prev };
 
@@ -79,7 +81,7 @@ function MontajeComponent({ orderXml, montajeData, setMontajeData, setConfigAvan
       return changed ? next : prev;
     });
 
-    setIsOpen((prev) => {
+    updateState("isOpen", (prev) => {
       let changed = false;
       const next = { ...prev };
 
@@ -100,7 +102,7 @@ function MontajeComponent({ orderXml, montajeData, setMontajeData, setConfigAvan
       return changed ? next : prev;
     });
 
-    setConfigAvanzadaData((prev) => {
+    updateState("configAvanzadaData", (prev) => {
       let changed = false;
       const next = (prev || []).map((data) => {
         const item = itemsToConfigure.find((it) => it.madera_tmedida === data.elementId);
@@ -141,7 +143,7 @@ function MontajeComponent({ orderXml, montajeData, setMontajeData, setConfigAvan
 
       return changed ? next : prev;
     });
-  }, [orderXml?.actividad?.id, orderXml?.actividad?.madera?.madera_premontaje, isActive.montaje, setMontajeData, setIsOpen, setConfigAvanzadaData]);
+  }, [orderXml?.actividad?.id, orderXml?.actividad?.madera?.madera_premontaje, isActive.montaje, updateState]);
 
   return (
     <div className="actionBody">
@@ -176,12 +178,12 @@ function MontajeComponent({ orderXml, montajeData, setMontajeData, setConfigAvan
                 checked={isActive.especial || false}
                 onChange={e => {
                   if (isActive.montaje) {
-                    setIsActive(prev => ({
+                    updateState("isActive", prev => ({
                       ...prev,
                       especial: e.target.checked
                     }));
 
-                    setIsOpen((prev) => ({
+                    updateState("isOpen", (prev) => ({
                       ...prev,
                       especial: true
                     }));
@@ -198,12 +200,12 @@ function MontajeComponent({ orderXml, montajeData, setMontajeData, setConfigAvan
                 checked={isActive.configAvanzadaMontaje || false}
                 onChange={e => {
                   if (isActive.montaje) {
-                    setIsActive(prev => ({
+                    updateState("isActive", prev => ({
                       ...prev,
                       configAvanzadaMontaje: e.target.checked
                     }));
 
-                    setIsOpen((prev) => ({
+                    updateState("isOpen", (prev) => ({
                       ...prev,
                       configAvanzadaMontaje: true
                     }));
@@ -226,7 +228,7 @@ function MontajeComponent({ orderXml, montajeData, setMontajeData, setConfigAvan
                     checked={montajeData[item.madera_tmedida]?.isActive || false}
                     onChange={e => {
                       const isActive = e.target.checked;
-                      setMontajeData(prev => ({
+                      updateState("montajeData", prev => ({
                         ...prev,
                         [item.madera_tmedida]: {
                           ...prev[item.madera_tmedida],
@@ -236,7 +238,7 @@ function MontajeComponent({ orderXml, montajeData, setMontajeData, setConfigAvan
                         }
                       }));
 
-                      setIsOpen((prev) => ({
+                      updateState("isOpen", (prev) => ({
                         ...prev,
                         [item.madera_tmedida]: true
                       }));
@@ -250,7 +252,7 @@ function MontajeComponent({ orderXml, montajeData, setMontajeData, setConfigAvan
                     checked={montajeData[item.madera_tmedida]?.isConfigAvanzadaActive || false}
                     onChange={e => {
                       const isConfigAvanzadaActive = e.target.checked;
-                      setMontajeData(prev => ({
+                      updateState("montajeData", prev => ({
                         ...prev,
                         [item.madera_tmedida]: {
                           ...prev[item.madera_tmedida],
@@ -260,7 +262,7 @@ function MontajeComponent({ orderXml, montajeData, setMontajeData, setConfigAvan
                         }
                       }));
 
-                      setIsOpen((prev) => ({
+                      updateState("isOpen", (prev) => ({
                         ...prev,
                         [`configAvanzada${item.madera_tmedida}`]: true
                       }));
@@ -271,6 +273,11 @@ function MontajeComponent({ orderXml, montajeData, setMontajeData, setConfigAvan
               </div>
             )
           })
+        )}
+        {orderXml?.numero?.cliente_codigo && Object.values(globalKioskVariables).some(arr => arr.includes(orderXml.numero.cliente_codigo)) && (
+          <>
+            <KioscoPersoMontaje orderXml={orderXml} kioscoPersoData={kioscoPersoData} updateState={updateState} colores={colores} configAvanzadaData={configAvanzadaData} />
+          </>
         )}
       </div>
     </div>

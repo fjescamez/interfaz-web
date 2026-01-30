@@ -6,7 +6,6 @@ import { MdKeyboardArrowDown, MdKeyboardArrowRight } from "react-icons/md";
 import { IoWarningOutline } from "react-icons/io5";
 import { kioskActions } from "../helpers/orderKioskActions";
 import { BlinkBlur } from "react-loading-indicators";
-import { FaGear } from "react-icons/fa6";
 import UnitarioComponent from "../components/orderKioskComponents/UnitarioComponent";
 import TrappingComponent from "../components/orderKioskComponents/TrappingComponent";
 import BocetoComponent from "../components/orderKioskComponents/BocetoComponent";
@@ -39,6 +38,7 @@ import CheckSvg from "../assets/svg/CheckSvg";
 import WarningSvg from "../assets/svg/WarningSvg";
 import ErrorSvg from "../assets/svg/ErrorSvg";
 import { FaPause } from "react-icons/fa6";
+import SubmitButton from "../components/buttons/SubmitButton";
 
 function OrderKiosk({ configMode }) {
   const { id } = useParams();
@@ -95,9 +95,12 @@ function OrderKiosk({ configMode }) {
     bocetos: [{ id: 0, rasterizado: false, lpi: "300", formato: "Pdf", tipo: "Compuesto" }],
     fichas: [{ id: 0, rasterizado: false, lpi: "300", formato: "Pdf", tipo: "Compuesto" }],
     posMacula: "",
-    freecutData: {},
+    freecutData: {
+      posiCortes: "Izquierda"
+    },
     freeCutColors: [],
     montajeData: [],
+    kioscoPersoData: {},
     otraDocumentacion: {},
     countOtraDoc: {},
     salidaColores: [],
@@ -177,14 +180,18 @@ function OrderKiosk({ configMode }) {
     OneUp: `${orderBase?.id_pedido} ${orderBase?.xml?.numero?.marca}` || "",
     PageBox: "TrimBox",
     PageIndex: 1,
-    Orientation: "left",
+    Orientation: {
+      _id: "left",
+      orientation: "left",
+      textoOpcion: "Rotada -90º"
+    },
     StartNewLane: true,
     HCount: item.madera_mvto_ancho || 1,
     HOffset: 0,
-    HGap: item.madera_sepa_ancho || 0,
+    HGap: item.madera_sepa_ancho ? item.madera_sepa_ancho : 0,
     VCount: item.madera_mvto_desarrollo || 1,
     VOffset: 0,
-    VGap: item.madera_sepa_avance || 0,
+    VGap: item.madera_sepa_avance ? item.madera_sepa_avance : 0,
     StaggerDirection: "none",
     StaggerOffset: 0,
     RestartAfter: 0,
@@ -192,7 +199,8 @@ function OrderKiosk({ configMode }) {
     BleedLimitLeft: 0,
     BleedLimitRight: 0,
     BleedLimitTop: 0,
-    BleedLimitBottom: 0
+    BleedLimitBottom: 0,
+    unitarioUrl: state.order?.unitario || ""
   });
 
   useEffect(() => {
@@ -254,14 +262,18 @@ function OrderKiosk({ configMode }) {
           OneUp: `${state.order?.id_pedido} ${state.order?.xml?.numero?.marca}` || "",
           PageBox: "TrimBox",
           PageIndex: pageIndex,
-          Orientation: "up",
+          Orientation: {
+            _id: "up",
+            orientation: "up",
+            textoOpcion: "Original"
+          },
           StartNewLane: true,
           HCount,
           HOffset: 0,
-          HGap,
+          HGap: HGap || 0,
           VCount,
           VOffset: 0,
-          VGap,
+          VGap: VGap || 0,
           StaggerDirection: "none",
           StaggerOffset: 0,
           RestartAfter: 0,
@@ -269,7 +281,8 @@ function OrderKiosk({ configMode }) {
           BleedLimitLeft: 0,
           BleedLimitRight: 0,
           BleedLimitTop: 0,
-          BleedLimitBottom: 0
+          BleedLimitBottom: 0,
+          unitarioUrl: state.order?.unitario || ""
         };
       });
 
@@ -298,12 +311,7 @@ function OrderKiosk({ configMode }) {
     updateState("unitarioData", {
       archivo: unitarioDefault
     });
-  }
-
-  useEffect(() => {
-    console.log(state.unitarios);
-    
-  }, [state.unitarios]);
+  };
 
   useEffect(() => {
     const getOrderColors = async () => {
@@ -507,15 +515,16 @@ function OrderKiosk({ configMode }) {
   }, [state.orderColors]);
 
   useEffect(() => {
-    if (state.orderColors.length > 0) {
-      updateState("freeCutColors", state.orderColors.map(color => ({
-        checked: false,
-        color,
-        des_vert: "0",
-        caidas: "Cortadas"
+    if (state.orderColorsObjects.length > 0) {
+      updateState("freeCutColors", state.orderColorsObjects.map(color => ({
+        check: false,
+        color: color.color,
+        distancia: "0",
+        caidas: "CORTADAS",
+        plancha: color.planchaArchivo || ""
       })));
     }
-  }, [state.orderColors]);
+  }, [state.orderColorsObjects]);
 
   // Control de errores trapping
   useEffect(() => {
@@ -645,16 +654,18 @@ function OrderKiosk({ configMode }) {
       noSave: true
     },
     "bocetos": {
-      title: state.bocetos.length === 1 ?
-        `1 Boceto: ${state.bocetos[0].rasterizado ? `${state.bocetos[0].lpi} lpi, ` : ""}${state.bocetos[0].formato}, ${state.bocetos[0].tipo}` :
-        state.bocetos.length > 1 ? `${state.bocetos.length} bocetos (Desplegar para ver más)` : "",
+      /*  title: state.bocetos.length === 1 ?
+         `1 Boceto: ${state.bocetos[0].rasterizado ? `${state.bocetos[0].lpi} lpi, ` : ""}${state.bocetos[0].formato}, ${state.bocetos[0].tipo}` :
+         state.bocetos.length > 1 ? `${state.bocetos.length} bocetos (Desplegar para ver más)` : "", */
+      title: `Rasterizado: ${state.bocetos.some(boceto => boceto.rasterizado) ? 'Sí' : 'No'}`,
       component: <BocetoComponent opciones={state.bocetos} setOpciones={(value) => updateState("bocetos", value)} />,
       data: state.bocetos
     },
     "fichas": {
-      title: state.fichas.length === 1 ?
-        `1 Ficha: ${state.fichas[0].rasterizado ? `${state.fichas[0].lpi} lpi, ` : ""}${state.fichas[0].formato}, ${state.fichas[0].tipo}` :
-        state.fichas.length > 1 ? `${state.fichas.length} fichas (Desplegar para ver más)` : "",
+      /*  title: state.fichas.length === 1 ?
+         `1 Ficha: ${state.fichas[0].rasterizado ? `${state.fichas[0].lpi} lpi, ` : ""}${state.fichas[0].formato}, ${state.fichas[0].tipo}` :
+         state.fichas.length > 1 ? `${state.fichas.length} fichas (Desplegar para ver más)` : "", */
+      title: `Rasterizado: ${state.fichas.some(ficha => ficha.rasterizado) ? 'Sí' : 'No'}`,
       component: <BocetoComponent opciones={state.fichas} setOpciones={(value) => updateState("fichas", value)} />,
       data: state.fichas
     },
@@ -669,13 +680,16 @@ function OrderKiosk({ configMode }) {
     },
     "montaje": {
       title: "",
-      component: <MontajeComponent orderXml={state.orderXml} montajeData={state.montajeData} setMontajeData={(value) => updateState("montajeData", value)} setConfigAvanzadaData={(value) => updateState("configAvanzadaData", value)} isActive={state.isActive} setIsActive={(value) => updateState("isActive", value)} setIsOpen={(value) => updateState("isOpen", value)} />,
+      component: <MontajeComponent orderXml={state.orderXml} montajeData={state.montajeData} configAvanzadaData={state.configAvanzadaData} kioscoPersoData={state.kioscoPersoData} colores={state.orderColors} isActive={state.isActive} updateState={updateState} /* setMontajeData={(value) => updateState("montajeData", value)} setConfigAvanzadaData={(value) => updateState("configAvanzadaData", value)} setIsActive={(value) => updateState("isActive", value)} setIsOpen={(value) => updateState("isOpen", value)} */ />,
       data: state.montajeData,
       noSave: true
     },
+    "kioscoPerso": {
+      data: state.kioscoPersoData
+    },
     "freecut": {
-      title: state.freeCutColors.filter(color => color.checked).length > 0 ?
-        `${state.freeCutColors.filter(color => color.checked).map(color => color.color).join(", ")}` :
+      title: state.freeCutColors.filter(color => color.check).length > 0 ?
+        `${state.freeCutColors.filter(color => color.check).map(color => color.color).join(", ")}` :
         "",
       component: <FreecutComponent freecutData={state.freecutData} setFreecutData={(value) => updateState("freecutData", value)} colores={state.orderColors} freeCutColors={state.freeCutColors} setFreeCutColors={(value) => updateState("freeCutColors", value)} />,
       data: state.freecutData,
@@ -783,6 +797,8 @@ function OrderKiosk({ configMode }) {
       } else {
         notify("error", result.title, result.message);
       }
+      console.log(dataToSend);
+
     } else if (action === "saveConfig") {
       const activosDefault = Object.keys(state.isActive).filter(key => state.isActive[key]);
       const abiertosDefault = Object.keys(state.isOpen).filter(key => state.isOpen[key]);
@@ -823,7 +839,7 @@ function OrderKiosk({ configMode }) {
       isOpen: {
         ...prev.isOpen,
         "unitario": false,
-        "reportePrevio": true
+        "reportePrevio": false
       },
       isActive: {
         ...prev.isActive,
@@ -955,6 +971,13 @@ function OrderKiosk({ configMode }) {
       (state.fileReport?.filter(item => item.status === "warning").length || 0);
     const totalErrors = (state.orderReport?.filter(item => item.status === "error").length || 0) +
       (state.fileReport?.filter(item => item.status === "error").length || 0);
+
+    if (totalErrors + totalWarnings > 0 && !state.loadingFileReport && !state.loadingOrderReport) {
+      updateState("isOpen", (prevIsOpen) => ({
+        ...prevIsOpen,
+        reportePrevio: true
+      }));
+    }
 
     updateState({
       reportFixes: totalFixes,
@@ -1296,12 +1319,12 @@ function OrderKiosk({ configMode }) {
               <div className="buttons">
                 {!configMode ? (
                   !state.loadingTrapping && (
-                    state.step === 1 ? <button className="submitButton" onClick={handleReport}>Preparar &#9658;</button> :
+                    state.step === 1 ? <SubmitButton onClick={handleReport} text="Preparar &#9658;" /> :
                       state.step === 3 && <button className="playButton" onClick={() => handleSubmit('submit')}>Lanzar &#9658;</button>
                   )
                 ) : (
                   <>
-                    <button className="submitButton" onClick={() => handleSubmit('saveConfig')}>{state.createKiosk ? "Guardar nueva configuración" : "Editar configuración"}</button>
+                    <SubmitButton onClick={() => handleSubmit('saveConfig')} text={state.createKiosk ? "Guardar nueva configuración" : "Editar configuración"} />
                     {!state.createKiosk && <button className="deleteButton" onClick={() => handleSubmit('deleteConfig')}>Borrar configuración de kiosco</button>}
                   </>
                 )}

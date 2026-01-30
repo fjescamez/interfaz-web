@@ -1,11 +1,11 @@
-import DetailsHeader from '../components/DetailsHeader'
-import GridComponent from '../components/GridComponent'
-import { IoDocumentTextOutline } from "react-icons/io5";
+import DetailsHeader from '../components/DetailsHeader';
+import GridComponent from '../components/GridComponent';
 import { produccionPlanchasDetails, produccionReferenciasDetails, produccionTrabajosDetails } from '../helpers/detailsGrid';
 import { useTabs } from "../context/TabsContext";
 import { fetchData } from "../helpers/fetchData";
 import { useEffect, useState } from "react";
 import { useSession } from "../context/SessionContext";
+import { PiOven } from "react-icons/pi";
 
 function ProduccionPage() {
     const { session } = useSession();
@@ -74,7 +74,7 @@ function ProduccionPage() {
                 grid: [
                     firstElement,
                     ...clientes.map(cliente => ({
-                        icon: <IoDocumentTextOutline />,
+                        icon: <PiOven />,
                         title: cliente.username,
                         key: cliente.username,
                         body: cliente.total

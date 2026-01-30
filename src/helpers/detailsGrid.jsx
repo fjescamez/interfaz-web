@@ -7,6 +7,7 @@ import { TiContacts } from "react-icons/ti";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import GroupsSvg from "../assets/svg/GroupsSvg";
 import { HiOutlineRefresh } from "react-icons/hi";
+import { PiOven } from "react-icons/pi";
 
 export const paginaSoporteDetails = {
     title: "Soporte",
@@ -23,12 +24,12 @@ export const produccionReferenciasDetails = {
     title: "Referencias",
     grid: [
         {
-            icon: <IoDocumentTextOutline />,
+            icon: <PiOven />,
             title: "Ref. Planchas",
             key: "refPlanchas"
         },
         {
-            icon: <IoDocumentTextOutline />,
+            icon: <PiOven />,
             title: "Ref. Continuos",
             key: "refContinuos"
         }
@@ -39,27 +40,27 @@ export const produccionPlanchasDetails = {
     title: "Planchas",
     grid: [
         {
-            icon: <IoDocumentTextOutline />,
+            icon: <PiOven />,
             title: "Planchas",
             key: "planchas"
         },
         {
-            icon: <IoDocumentTextOutline />,
+            icon: <PiOven />,
             title: "Pre-producción",
             key: "planchasPreproduccion"
         },
         {
-            icon: <IoDocumentTextOutline />,
+            icon: <PiOven />,
             title: "Producción",
             key: "planchasProduccion"
         },
         {
-            icon: <IoDocumentTextOutline />,
+            icon: <PiOven />,
             title: "Finalizadas",
             key: "planchasFinalizadas"
         },
         {
-            icon: <IoDocumentTextOutline />,
+            icon: <PiOven />,
             title: "Trabajos",
             key: "trabajosPlanchas"
         },
@@ -70,17 +71,17 @@ export const produccionTrabajosDetails = {
     title: "Trabajos externos",
     grid: [
         {
-            icon: <IoDocumentTextOutline />,
+            icon: <PiOven />,
             title: "Pendientes",
             key: "externosPendientes"
         },
         {
-            icon: <IoDocumentTextOutline />,
+            icon: <PiOven />,
             title: "Finalizados",
             key: "externosFinalizados"
         },
         {
-            icon: <IoDocumentTextOutline />,
+            icon: <PiOven />,
             title: "Anulados",
             key: "externosAnulados"
         },
