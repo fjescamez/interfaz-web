@@ -1121,6 +1121,10 @@ function OrderKiosk({ configMode }) {
 
                   if (state.order && state.actividad === "MADERA" && option.id === "configAvanzadaMontaje") return false;
 
+                  if (option.id === "salidaColores" && state.orderXml?.numero?.cliente_codigo === "0168") {
+                    return state.isActive.plotter;
+                  }
+
                   if (!option.onlyShowIfActive) return true;
 
                   return state.isActive[option.id];

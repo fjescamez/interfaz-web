@@ -22,7 +22,7 @@ export const kioskActions = [
         title: "CAMBIAN COLORES",
         id: "salidaColores",
         openOnActive: true,
-        specificClients: ["0159"],
+        specificClients: ["0159", "0168"],
         hideWhenConfig: true,
         steps: [3]
     },
