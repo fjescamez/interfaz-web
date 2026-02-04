@@ -235,6 +235,11 @@ svg {
                 }
             }
 
+            .stroke {
+                fill: none !important;
+                stroke: white;
+            }
+
             h1 {
                 font-size: 4rem;
                 color: white;
@@ -253,18 +258,6 @@ svg {
     .formBody {
         height: 100%;
     }
-
-    /* .narrow {
-        display: flex;
-        flex-direction: column;
-        row-gap: 1rem;
-    }
-
-    .wide {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        column-gap: 2rem;
-    } */
 
     form {
         background-image: url("./assets/img/FONDO_CLARO.png");
@@ -387,7 +380,7 @@ svg {
 
     &.formGroupRow {
         flex-direction: row;
-        column-gap: 2rem;
+        column-gap: 1.5rem;
         align-items: center;
         justify-self: center;
         max-width: fit-content;

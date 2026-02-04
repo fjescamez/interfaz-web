@@ -6,7 +6,14 @@ export const globalKioskVariables = {
     microDerecha: ["0101", "0160", "0156", "0038"],
     caidas_cortadas: ["0159", "0360"],
     posicionCortesCaidas: ["0159", "0360"],
-    microVertical: ["0156", "0038"]
+    microVertical: ["0156", "0038"],
+    pestana: ["CARTON"],
+    poscicionPestana: ["CARTON"],
+    posVarilla: ["CARTON"],
+    checkRegistron: ["0022"],
+    despRegistron: ["0022"],
+    mastercut: ["0022"],
+    tomaPinza: ["0022"]
 };
 
 export const globalKioskForm = [
@@ -71,4 +78,75 @@ export const globalKioskForm = [
         inputId: "posicionCortesCaidas",
         inputName: "posicionCortesCaidas"
     },
+    {
+        htmlFor: "pestana",
+        labelId: "pestanaLabel",
+        labelTitle: "Pestaña",
+        inputType: "number",
+        minNumber: 0,
+        inputId: "pestana",
+        inputName: "pestana"
+    },
+    {
+        htmlFor: "poscicionPestana",
+        labelId: "poscicionPestanaLabel",
+        labelTitle: "Posición Pestaña",
+        select: "simple",
+        options: [
+            "CENTRADO",
+            "IZQUIERDA",
+            "DERECHA"
+        ],
+        inputId: "poscicionPestana",
+        inputName: "poscicionPestana"
+    },
+    {
+        htmlFor: "posVarilla",
+        labelId: "posVarillaLabel",
+        labelTitle: "Posición Varilla",
+        select: "simple",
+        options: [
+            "ARRIBA",
+            "ABAJO"
+        ],
+        inputId: "posVarilla",
+        inputName: "posVarilla"
+    },
+    {
+        htmlFor: "checkRegistron",
+        labelId: "checkRegistronLabel",
+        labelTitle: "Check Registron",
+        inputType: "checkbox",
+        inputId: "checkRegistron",
+        inputName: "checkRegistron"
+    },
+    {
+        htmlFor: "despRegistron",
+        labelId: "despRegistronLabel",
+        labelTitle: "Desplazamiento Registron",
+        inputType: "number",
+        inputId: "despRegistron",
+        inputName: "despRegistron"
+    },
+    {
+        htmlFor: "mastercut",
+        labelId: "mastercutLabel",
+        labelTitle: "Mastercut",
+        inputType: "checkbox",
+        inputId: "mastercut",
+        inputName: "mastercut"
+    },
+    {
+        htmlFor: "tomaPinza",
+        labelId: "tomaPinzaLabel",
+        labelTitle: "Toma Pinza",
+        select: "simple",
+        options: [
+            "15",
+            "25",
+            "-1"
+        ],
+        inputId: "tomaPinza",
+        inputName: "tomaPinza"
+    }
 ]

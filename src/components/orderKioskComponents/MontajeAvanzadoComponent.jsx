@@ -8,7 +8,7 @@ import { postData } from '../../helpers/fetchData';
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { ThreeDot } from 'react-loading-indicators';
 
-function MontajeAvanzadoComponent({ configAvanzadaData, setConfigAvanzadaData }) {
+function MontajeAvanzadoComponent({ state, updateState, configAvanzadaData, setConfigAvanzadaData }) {
   const [formData, setFormData] = useState(avanzadoFormData);
   const [actualElementIndex, setActualElementIndex] = useState(0);
   const [actualStationIndex, setActualStationIndex] = useState(0);
@@ -40,11 +40,20 @@ function MontajeAvanzadoComponent({ configAvanzadaData, setConfigAvanzadaData })
       ...prev,
       formFields: prev.formFields.map(field => {
         if (field.htmlFor === "PageIndex") {
-          return {
-            ...field,
-            options: [
-              ...Array.from({ length: activeStation?.numeroPaginas || 1 }, (_, i) => i + 1)
-            ]
+          if (activeStation && activeStation.actividadPedido === "MADERA") {
+            return {
+              ...field,
+              options: activeStation?.listadoTablillas || [],
+              labelTitle: "Tablilla"
+            }
+          } else {
+            return {
+              ...field,
+              options: [
+                ...Array.from({ length: activeStation?.numeroPaginas || 1 }, (_, i) => i + 1)
+              ],
+              labelTitle: "Página"
+            }
           }
         }
         return field;
@@ -66,6 +75,7 @@ function MontajeAvanzadoComponent({ configAvanzadaData, setConfigAvanzadaData })
   }, [stations?.length, actualStationIndex, actualElementIndex]);
 
   const addFileConfig = async (order) => {
+    const actividadPedido = order?.xml?.actividad?.id;
     setExecutingAction(true);
     const metadata = await postData("orders/getUnitarioMetadata", { file: order.unitario });
     setExecutingAction(false);
@@ -77,7 +87,7 @@ function MontajeAvanzadoComponent({ configAvanzadaData, setConfigAvanzadaData })
       numeroPaginas: metadata?.number_of_pages || 1,
       OneUp: `${order?.id_pedido} ${order?.xml?.numero?.marca}` || "",
       PageBox: "TrimBox",
-      PageIndex: 1,
+      PageIndex: actividadPedido === "MADERA" ? order?.xml?.actividad?.madera?.madera_premontaje?.[0]?.madera_tmedida : 1,
       Orientation: {
         _id: "up",
         orientation: "up",
@@ -98,7 +108,9 @@ function MontajeAvanzadoComponent({ configAvanzadaData, setConfigAvanzadaData })
       BleedLimitRight: 0,
       BleedLimitTop: 0,
       BleedLimitBottom: 0,
-      unitarioUrl: order?.unitario || ""
+      unitarioUrl: order?.unitario || "",
+      listadoTablillas: actividadPedido === "MADERA" ? order?.xml?.actividad?.madera?.madera_premontaje.map(item => item.madera_tmedida) || [] : [],
+      actividadPedido
     };
 
     setConfigAvanzadaData((prev) => prev.map((element, elementIndex) => {
@@ -132,7 +144,7 @@ function MontajeAvanzadoComponent({ configAvanzadaData, setConfigAvanzadaData })
   };
 
   const removeFileConfig = () => {
-    if (stations.length === 0) return;
+    if (stations.length < 2) return;
 
     setConfigAvanzadaData((prev) => prev.map((element, elementIndex) => {
       if (elementIndex !== actualElementIndex) return element;
@@ -179,6 +191,76 @@ function MontajeAvanzadoComponent({ configAvanzadaData, setConfigAvanzadaData })
     setActualStationIndex(prev => prev + 1);
   }
 
+  useEffect(() => {
+    if (state.order && state.unitarioMetadata && state.unitarioMetadata.number_of_pages && state.orderXml?.actividad?.id !== "MADERA") {
+      let HCount, HGap, VCount, VGap;
+      const datosCarton = state.orderXml?.actividad?.carton;
+      const datosFlexible = state.orderXml?.actividad?.flexible;
+      const datosEtiquetas = state.orderXml?.actividad?.adhesivo;
+
+      switch (state.actividad) {
+        case "CARTON":
+          VCount = datosCarton?.carton_motivos || 1;
+          HCount = datosCarton?.carton_caidas || 1;
+          break;
+        case "FLEXIBLE":
+          VCount = datosFlexible?.flexible_motivos || 1;
+          HCount = datosFlexible?.flexible_caidas || 1;
+          break;
+        case "ETIQUETAS":
+          HCount = datosEtiquetas?.adhesivo_mvto_avance || 1;
+          HGap = datosEtiquetas?.adhesivo_sepa_avance || 0;
+          VCount = datosEtiquetas?.adhesivo_mvto_ancho || 1;
+          VGap = datosEtiquetas?.adhesivo_sepa_ancho || 0;
+          break;
+
+        default:
+          break;
+      }
+
+      const numberOfPages = state.unitarioMetadata.number_of_pages;
+      const stations = Array.from({ length: numberOfPages }, (_, index) => {
+        const pageIndex = index + 1;
+        return {
+          _id: state.order?._id || "",
+          id_pedido: state.order?.id_pedido || "",
+          numeroPaginas: numberOfPages,
+          OneUp: `${state.order?.id_pedido} ${state.order?.xml?.numero?.marca}` || "",
+          PageBox: "TrimBox",
+          PageIndex: pageIndex,
+          Orientation: {
+            _id: "up",
+            orientation: "up",
+            textoOpcion: "Original"
+          },
+          StartNewLane: true,
+          HCount,
+          HOffset: 0,
+          HGap: HGap || 0,
+          VCount,
+          VOffset: 0,
+          VGap: VGap || 0,
+          StaggerDirection: "none",
+          StaggerOffset: 0,
+          RestartAfter: 0,
+          HeadTurn: "none",
+          BleedLimitLeft: 0,
+          BleedLimitRight: 0,
+          BleedLimitTop: 0,
+          BleedLimitBottom: 0,
+          unitarioUrl: state.order?.unitario || ""
+        };
+      });
+
+      updateState("configAvanzadaData", [
+        {
+          elementId: state.order?.id_pedido || state.order?._id || "",
+          stations
+        }
+      ]);
+    }
+  }, [state.unitarioMetadata, state.order, state.actividad]);
+
   return (
     <div className="actionBody">
       <div className="configAvanzadaMontaje">
@@ -197,7 +279,7 @@ function MontajeAvanzadoComponent({ configAvanzadaData, setConfigAvanzadaData })
                       className={`selectorItem ${actualStationIndex === index ? "selectorActive" : ""}`}
                     >
                       <p>{config.id_pedido}</p>
-                      <p>{`Página: ${config.PageIndex}`}</p>
+                      <p>{config.actividadPedido !== "MADERA" && "Página: "}{config.PageIndex}</p>
                     </div>
                   ))}
                 </div>

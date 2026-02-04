@@ -11,6 +11,7 @@ import LenFile from "../assets/svg/LenFile";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
 import GroupsSvg from "../assets/svg/GroupsSvg";
+import { GoVersions } from "react-icons/go";
 
 export const addOrderTableInfo = {
     tableName: "addOrder",
@@ -1184,7 +1185,7 @@ export const noteTableInfo = {
 export const versionTableInfo = {
     tableName: "versiones",
     endPoint: "orders/versions",
-    headerIcon: <IoDocumentTextOutline />,
+    headerIcon: <GoVersions />,
     headerTitle: "VERSIONES DEL PEDIDO",
     tableColumns: [
         {
@@ -1502,6 +1503,7 @@ export const strategyTableInfo = {
     tableName: "estrategias",
     headerIcon: <TbColorSwatch />,
     headerTitle: "ESTRATEGIAS DE COLOR",
+    tableForm: "StrategyForm",
     tableColumns: [
         {
             header: "Cod. Cliente",

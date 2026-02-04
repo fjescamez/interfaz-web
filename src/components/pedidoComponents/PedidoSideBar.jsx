@@ -24,6 +24,7 @@ import OrderInfoPopUp from "./OrderInfoPopUp";
 import TraceTextPopUp from "./TraceTextPopUp";
 import { useSession } from "../../context/SessionContext";
 import SignJobForm from "../formComponents/SignJobForm";
+import { PiStorefrontLight } from "react-icons/pi"
 import { orderTableInfo } from "../../helpers/tablesInfo";
 import DeleteForm from "../formComponents/DeleteForm";
 
@@ -54,6 +55,8 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
     const sideBarRef = useRef(null);
     const { createTab } = useTabs();
     const folderUrl = fullOrder.rutaTrabajo?.replace("cloudflow://", "").replace("PEDIDOS_", "Pedidos ");
+    const isAdmin = session.role === "Administrador" || session.role === "Soporte";
+    const isTecnico = session.departments.includes("Tecnico");
 
     const updateOrder = async () => {
         setExecuting(true);

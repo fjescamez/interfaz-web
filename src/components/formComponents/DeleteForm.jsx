@@ -19,6 +19,7 @@ function DeleteForm({
     setTotal,
     isActive,
     setIsActive,
+    setCheckedIndexes,
     setActionEnded,
     extraBodyData
 }) {
@@ -83,6 +84,9 @@ function DeleteForm({
 
             if (data && setData) {
                 setData(data.filter(obj => !filesToDelete.includes(obj._id || obj.id)));
+            }
+            if (setCheckedIndexes) {
+                setCheckedIndexes([]);
             }
         } else {
             notify(result.status, result.title, result.message);

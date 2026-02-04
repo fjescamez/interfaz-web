@@ -950,6 +950,7 @@ function Table({
                     setTotal={setTotal}
                     isActive={checkedRows}
                     setIsActive={setCheckedRows}
+                    setCheckedIndexes={setCheckedIndexes}
                     setActionEnded={setActionEnded}
                 />
             }

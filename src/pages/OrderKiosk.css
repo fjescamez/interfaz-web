@@ -23,19 +23,18 @@
 
             .kioskSwitch {
                 width: 4.5rem;
-                height: 2.6rem;
+                height: 2.5rem;
                 padding: 0;
                 outline: 2px solid white;
                 border-radius: 1.5rem;
 
                 .MuiSwitch-switchBase {
-                    padding: 1rem;
-                    padding: 3px;
+                    padding: 3px -1px;
                 }
 
                 .MuiSwitch-thumb {
-                    width: 1.9rem;
-                    height: 1.9rem;
+                    width: 1.8rem;
+                    height: 1.8rem;
                 }
 
                 .MuiSwitch-track {
@@ -55,7 +54,7 @@
                 display: grid;
                 grid-template-columns: auto 1fr auto auto;
                 column-gap: 1.75rem;
-                padding: 1rem 2rem;
+                padding: 0.7rem 2rem;
                 background: var(--pantone431c);
                 background: linear-gradient(0deg, rgba(87, 102, 113, 1) 65%, rgba(255, 255, 255, 1) 110%);
                 border: 2px solid var(--pantone431c);
@@ -66,22 +65,22 @@
                     color: white;
                     font-family: 'Museo Slab 700';
                     padding-top: 5px;
-                    font-size: 2.2rem;
+                    font-size: 2rem;
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
 
                     span {
                         font-family: 'Museo Sans 700 Italic';
-                        font-size: 2rem;
+                        font-size: 1.8rem;
                         color: var(--backgrounds);
                     }
                 }
 
                 .openArrowIcon {
                     cursor: pointer;
-                    width: 3.5rem;
-                    height: 3.5rem;
+                    width: 3rem;
+                    height: 3rem;
                     color: white;
                     background-color: var(--backgrounds);
                     border: 2px solid white;
@@ -90,8 +89,12 @@
 
                 .warning {
                     cursor: pointer;
+                    width: fit-content;
+                    height: fit-content;
 
                     .refreshIcon {
+                        width: 3.5rem;
+                        height: 3.5rem;
                         color: var(--highlight);
 
                         &:hover {
@@ -105,23 +108,24 @@
 
                     .warningContent {
                         display: flex;
-                        align-items: flex-end;
+                        align-items: center;
                         column-gap: 0.5rem;
 
                         p {
+                            line-height: 2.5rem;
                             font-size: 2.5rem;
                             color: white;
                         }
 
                         .warningIcon {
-                            width: 4rem;
-                            height: 4rem;
+                            width: 3.5rem;
+                            height: 3.5rem;
                             color: var(--highlight);
                         }
 
                         .errorIcon {
-                            width: 4rem;
-                            height: 4rem;
+                            width: 3.5rem;
+                            height: 3.5rem;
                             color: red;
                         }
                     }
@@ -141,16 +145,6 @@
             display: flex;
             justify-content: center;
             column-gap: 1.5rem;
-        }
-
-        .custom-tooltip-kiosco {
-            opacity: 1 !important;
-
-            ul {
-                display: flex;
-                flex-direction: column;
-                row-gap: 1rem;
-            }
         }
     }
 }

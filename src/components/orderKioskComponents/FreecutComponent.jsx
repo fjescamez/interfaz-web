@@ -3,8 +3,20 @@ import FormGroup from "../formComponents/FormGroup";
 import Switch from '@mui/material/Switch';
 import ChosenSelect from "../formComponents/ChosenSelect";
 
-function FreecutComponent({ freecutData, setFreecutData, colores, freeCutColors, setFreeCutColors }) {
+function FreecutComponent({ state, updateState, freecutData, setFreecutData, colores, freeCutColors, setFreeCutColors }) {
     const colorsWithFreecut = ["FREECUT", ...(colores || [])];
+
+    useEffect(() => {
+    if (state && state.orderColorsObjects.length > 0) {
+      updateState("freeCutColors", state.orderColorsObjects.map(color => ({
+        check: false,
+        color: color.color,
+        distancia: "0",
+        caidas: "CORTADAS",
+        plancha: color.planchaArchivo || ""
+      })));
+    }
+  }, [state?.orderColorsObjects]);
 
     useEffect(() => {
         if (!colores || colores.length === 0) return;

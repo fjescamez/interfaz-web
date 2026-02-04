@@ -7,6 +7,9 @@ function KioscoPersoMontaje({ orderXml, kioscoPersoData, updateState, colores, c
     const [clientFormFields, setClientFormFields] = useState(Object.keys(globalKioskVariables).filter(key =>
         globalKioskVariables[key].includes(orderXml.numero.cliente_codigo)
     ));
+    const [actividadFormFields, setActividadFormFields] = useState(Object.keys(globalKioskVariables).filter(key =>
+        globalKioskVariables[key].includes(orderXml?.actividad?.id)
+    ));
 
     useEffect(() => {
         updateState("isActive", prev => ({
@@ -43,6 +46,26 @@ function KioscoPersoMontaje({ orderXml, kioscoPersoData, updateState, colores, c
                         }));
                     });
                 }
+            }
+
+            if (orderXml.actividad.id === "CARTON" && !kioscoPersoData.poscicionPestana) {
+                updateState("kioscoPersoData", prevData => ({
+                    ...prevData,
+                    pestana: 0,
+                    poscicionPestana: "CENTRADO",
+                    posVarilla: "ARRIBA"
+                }));
+
+                if (cliente_codigo === "0022" && !kioscoPersoData.tomaPinza) {
+                    updateState("kioscoPersoData", prevData => ({
+                        ...prevData,
+                        checkRegistron: false,
+                        despRegistron: 0,
+                        mastercut: false,
+                        tomaPinza: "15"
+                    }));
+                }
+
             }
         }
     }, [orderXml]);
@@ -90,18 +113,41 @@ function KioscoPersoMontaje({ orderXml, kioscoPersoData, updateState, colores, c
 
     return (
         <div className="kioscoPerso">
-            <hr className="separator" />
-            <div className="kioscoPersoForm">
-                {globalKioskForm.filter(field => clientFormFields.includes(field.inputName)).map((field, index) => (
-                    <div className={`formGroup ${(field.inputType === "checkbox" || field.inputType === "radioGroup") ? "formGroupRow" : ""}`} key={index}>
-                        <FormGroup
-                            handleForm={handleForm}
-                            value={kioscoPersoData[field.inputName] || 0}
-                            field={field}
-                        />
+            {actividadFormFields.length > 0 && (
+                <>
+                    <hr className="separator" />
+                    <div className="kioscoPersoForm">
+                        {globalKioskForm.filter(field => actividadFormFields.includes(field.inputName)).map((field, index) => (
+                            <div className={`formGroup ${(field.inputType === "checkbox" || field.inputType === "radioGroup") ? "formGroupRow" : ""}`} key={index}>
+                                <FormGroup
+                                    handleForm={handleForm}
+                                    value={kioscoPersoData[field.inputName] || 0}
+                                    field={field}
+                                />
+                            </div>
+                        ))}
                     </div>
-                ))}
-            </div>
+                </>
+            )}
+            {clientFormFields.length > 0 && (
+                <>
+                    <hr className="separator" />
+                    <div className="kioscoPersoForm">
+                        {clientFormFields.length > 0 && globalKioskForm.filter(field => clientFormFields.includes(field.inputName)).map((field, index) => (
+                            <div className={`formGroup ${(field.inputType === "checkbox" || field.inputType === "radioGroup") ? "formGroupRow" : ""}`} key={index}>
+                                <FormGroup
+                                    handleForm={handleForm}
+                                    value={kioscoPersoData[field.inputName] || 0}
+                                    field={field}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                </>
+            )}
+            {orderXml?.numero?.cliente_codigo === "0022" && (
+                <p className="kioscoPersoInfo">Para numeros de troquel 20.000, 50.000 y 80.000 usar marcas MASTERCUT</p>
+            )}
             {(orderXml?.numero?.cliente_codigo === "0156" || orderXml?.numero?.cliente_codigo === "0038") && (
                 <>
                     <p className="microVertical">Micropunto vertical</p>

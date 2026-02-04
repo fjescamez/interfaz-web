@@ -1,11 +1,58 @@
+.kioskModuleTitle {
+    &:hover {
+        cursor: pointer;
+        text-decoration: underline;
+    }
+}
+
 .actionBody {
-    padding: 2rem;
+    padding: 2rem 7rem;
     align-items: center;
     background: white;
     background: linear-gradient(0deg, rgb(255, 255, 255) 60%, rgb(184, 190, 195) 100%);
     border: 2px solid var(--pantone431c);
     border-top: none;
     border-radius: 0 0 1rem 1rem;
+
+    .kioskFormRow {
+        display: flex;
+        gap: 1rem 2rem;
+        align-items: flex-end;
+
+        * {
+            flex: 1;
+        }
+    }
+
+    .kioskColoresForm {
+        display: flex;
+        flex-direction: column;
+        row-gap: 2rem;
+
+        .selectAll {
+            background: var(--orange-gradient);
+            color: black;
+            font-size: 2rem;
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--header);
+            border-radius: 1.5rem;
+            cursor: pointer;
+            width: fit-content;
+            align-self: center;
+
+            &:active {
+                transform: scale(0.99);
+            }
+
+            &:hover {
+                box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        label {
+            font-size: 1.85rem;
+        }
+    }
 
     .noColors {
         font-size: 3rem;
@@ -17,26 +64,6 @@
 
         .formSection {
             width: 100% !important;
-        }
-    }
-
-    .selectAll {
-        background: var(--orange-gradient);
-        color: black;
-        font-size: 2rem;
-        padding: 0.5rem 1rem;
-        border: 2px solid var(--header);
-        border-radius: 1.5rem;
-        cursor: pointer;
-        width: fit-content;
-        align-self: center;
-
-        &:active {
-            transform: scale(0.99);
-        }
-
-        &:hover {
-            box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.3);
         }
     }
 
@@ -204,7 +231,7 @@
     .kioscoPerso {
         display: flex;
         flex-direction: column;
-        row-gap: 1.5rem;
+        row-gap: 2.5rem;
 
         .separator {
             background-color: rgb(120, 120, 120);
@@ -219,6 +246,11 @@
             gap: 1.5rem;
         }
 
+        .kioscoPersoInfo {
+            text-align: center;
+            font-size: 2.3rem;
+        }
+
         .microVertical {
             font-size: 3rem;
             text-align: center;
@@ -228,12 +260,12 @@
 
 .switches {
     display: flex;
-    column-gap: 2rem;
+    column-gap: 3rem;
 
     .switchGroup {
         display: flex;
         align-items: center;
-        column-gap: 0.75rem;
+        column-gap: 1rem;
         font-size: 3rem;
     }
 }
@@ -253,10 +285,10 @@
 
 .configAvanzadaMontaje {
     .fileConfigSelector {
+        overflow-y: auto;
         padding: 1.5rem;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(15rem, 15rem));
-        gap: 1.5rem;
+        display: flex;
+        gap: 1rem;
         border: 2px solid var(--pantone431c);
         background-color: white;
 
@@ -266,8 +298,8 @@
             row-gap: 1rem;
             padding: 1rem 2rem;
             cursor: pointer;
-            max-width: fit-content;
-            border: 3px solid transparent;
+            min-width: fit-content;
+            border: 3px solid var(--backgrounds);
 
             p {
                 text-align: center;
@@ -323,17 +355,6 @@
 
         h2 {
             font-size: 2.5rem;
-        }
-    }
-
-    .custom-tooltip-reporte {
-        font-size: 10rem !important;
-        opacity: 1 !important;
-
-        ul {
-            display: flex;
-            flex-direction: column;
-            row-gap: 1rem;
         }
     }
 }

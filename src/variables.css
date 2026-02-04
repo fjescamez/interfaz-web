@@ -5,6 +5,7 @@
     --details: #efeeec;
     --hover: #fedba7;
     --highlight: #f9af3c;
+    --highlight-low-opacity: rgb(255, 224, 173);
     --orange-gradient: linear-gradient(0deg, rgba(248, 175, 61, 1) 30%, rgba(255, 255, 255, 1) 100%);
     --green-gradient: linear-gradient(0deg, rgba(0, 128, 0, 1) 30%, rgba(255, 255, 255, 1) 100%);
     --grey-gradient: linear-gradient(0deg, rgba(87, 102, 113, 1) 65%, rgba(255, 255, 255, 1) 110%);

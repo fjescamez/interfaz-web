@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { unitarioFormData } from "../../helpers/orderKioskActions";
 import FormSection from "../formComponents/FormSection";
+import FormGroup from "../formComponents/FormGroup";
 
 function UnitarioComponent({ unitarios, unitarioData, setUnitarioData, order }) {
     const [formData, setFormData] = useState(unitarioFormData);
@@ -37,18 +38,15 @@ function UnitarioComponent({ unitarios, unitarioData, setUnitarioData, order }) 
 
     return (
         <div className="actionBody">
-            <div className="formSections">
-                {formData.formSections.map((section, sectionIndex) => (
-                    <div className="formSection" key={sectionIndex}>
-                        <FormSection
-                            sectionData={section}
-                            formFields={formData.formFields}
-                            inputData={unitarioData}
-                            handleForm={handleForm}
-                        />
-                    </div>
-                ))}
-            </div>
+            {formData.formFields.map((field, index) => (
+                <div className="formGroup" key={index}>
+                    <FormGroup
+                        value={unitarioData ? unitarioData[field.inputName] ?? "" : ""}
+                        handleForm={handleForm}
+                        field={field}
+                    />
+                </div>
+            ))}
         </div>
     )
 }

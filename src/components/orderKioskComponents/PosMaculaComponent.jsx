@@ -1,13 +1,42 @@
-import React from 'react'
+import { useEffect } from 'react'
 import ChosenSelect from '../formComponents/ChosenSelect'
 
-function PosMaculaComponent({ posMacula, setPosMacula }) {
+function PosMaculaComponent({ state, updateState }) {
     const options = [
         "",
         "Izquierda",
         "Ambos Lados",
         "Derecha"
     ]
+
+    useEffect(() => {
+        if (!state.isActive?.posMacula) return;
+
+        const errorPosMacula = {
+            status: "error",
+            message: "No hay posición de mácula seleccionada",
+            type: ["posMacula"]
+        };
+
+        const hasValue = String(state.posMacula ?? "").trim() !== "";
+
+        updateState("orderReport", (prevOrderReport) => {
+            let next = prevOrderReport;
+
+            if (!hasValue) {
+                const exists = prevOrderReport.some(
+                    (item) => item.message === errorPosMacula.message && JSON.stringify(item.type) === JSON.stringify(errorPosMacula.type)
+                );
+                if (!exists) next = [...next, errorPosMacula];
+            } else {
+                next = next.filter(
+                    (item) => !(item.message === errorPosMacula.message && JSON.stringify(item.type) === JSON.stringify(errorPosMacula.type))
+                );
+            }
+
+            return next;
+        });
+    }, [state.posMacula, state.isActive?.posMacula, state.orderXml]);
 
     return (
         <div className="actionBody">
@@ -17,8 +46,8 @@ function PosMaculaComponent({ posMacula, setPosMacula }) {
                     <ChosenSelect
                         name="posMacula"
                         options={options}
-                        value={posMacula}
-                        onChange={(e) => setPosMacula(e.target.value)}
+                        value={state.posMacula}
+                        onChange={(e) => updateState("posMacula", e.target.value)}
                     />
                 </div>
             </form>

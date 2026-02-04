@@ -4,7 +4,7 @@ import { notify } from '../../helpers/notify';
 import KioscoPersoMontaje from './KioscoPersoMontaje';
 import { globalKioskVariables } from './kioscoPersoConfig';
 
-function MontajeComponent({ orderXml, montajeData, configAvanzadaData, updateState, kioscoPersoData, colores, isActive}) {
+function MontajeComponent({ state, orderXml, montajeData, configAvanzadaData, updateState, kioscoPersoData, colores, isActive }) {
   useEffect(() => {
     if (orderXml?.actividad?.id !== "MADERA" || !isActive.montaje) return;
 
@@ -145,33 +145,54 @@ function MontajeComponent({ orderXml, montajeData, configAvanzadaData, updateSta
     });
   }, [orderXml?.actividad?.id, orderXml?.actividad?.madera?.madera_premontaje, isActive.montaje, updateState]);
 
+  const createDefaultStation = (orderBase, item) => ({
+    _id: orderBase?._id || "",
+    id_pedido: orderBase?.id_pedido || "",
+    numeroPaginas: 1,
+    OneUp: `${orderBase?.id_pedido} ${orderBase?.xml?.numero?.marca}` || "",
+    PageBox: "TrimBox",
+    PageIndex: item.madera_tmedida,
+    Orientation: {
+      _id: "left",
+      orientation: "left",
+      textoOpcion: "Rotada -90º"
+    },
+    StartNewLane: true,
+    HCount: item.madera_mvto_ancho || 1,
+    HOffset: 0,
+    HGap: item.madera_sepa_ancho ? item.madera_sepa_ancho : 0,
+    VCount: item.madera_mvto_desarrollo || 1,
+    VOffset: 0,
+    VGap: item.madera_sepa_avance ? item.madera_sepa_avance : 0,
+    StaggerDirection: "none",
+    StaggerOffset: 0,
+    RestartAfter: 0,
+    HeadTurn: "none",
+    BleedLimitLeft: 0,
+    BleedLimitRight: 0,
+    BleedLimitTop: 0,
+    BleedLimitBottom: 0,
+    unitarioUrl: state.order?.unitario || "",
+    listadoTablillas: orderBase?.xml?.actividad?.madera?.madera_premontaje.map(item => item.madera_tmedida) || [],
+    actividadPedido: "MADERA"
+  });
+
+  useEffect(() => {
+    if (orderXml?.actividad?.id === "MADERA") {
+      const maderaElements =
+        orderXml?.actividad?.madera?.madera_premontaje?.map((item) => ({
+          elementId: item?.madera_tmedida || "",
+          stations: [createDefaultStation(state?.order, item)]
+        })) || [];
+      updateState("configAvanzadaData", maderaElements);
+    }
+  }, [orderXml]);
+
   return (
     <div className="actionBody">
       <div className="montaje">
         {orderXml?.actividad?.id !== "MADERA" ? (
           <div className="switches">
-            {/* <div className="switchGroup">
-              <Switch
-                className="kioskSwitch"
-                checked={isActive.freecut || false}
-                onChange={e => {
-                  if (isActive.montaje) {
-                    setIsActive(prev => ({
-                      ...prev,
-                      freecut: e.target.checked
-                    }));
-
-                    setIsOpen((prev) => ({
-                      ...prev,
-                      freecut: true
-                    }));
-                  } else {
-                    notify("warning", "Activa el montaje para usar esta opción");
-                  }
-                }}
-              />
-              <p>Freecut</p>
-            </div> */}
             <div className="switchGroup">
               <Switch
                 className="kioskSwitch"
@@ -274,10 +295,8 @@ function MontajeComponent({ orderXml, montajeData, configAvanzadaData, updateSta
             )
           })
         )}
-        {orderXml?.numero?.cliente_codigo && Object.values(globalKioskVariables).some(arr => arr.includes(orderXml.numero.cliente_codigo)) && (
-          <>
-            <KioscoPersoMontaje orderXml={orderXml} kioscoPersoData={kioscoPersoData} updateState={updateState} colores={colores} configAvanzadaData={configAvanzadaData} />
-          </>
+        {(orderXml?.numero?.cliente_codigo && Object.values(globalKioskVariables).some(arr => arr.includes(orderXml.numero.cliente_codigo)) || orderXml?.actividad?.id === "CARTON") && (
+          <KioscoPersoMontaje orderXml={orderXml} kioscoPersoData={kioscoPersoData} updateState={updateState} colores={colores} configAvanzadaData={configAvanzadaData} />
         )}
       </div>
     </div>

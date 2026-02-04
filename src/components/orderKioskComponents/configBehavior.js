@@ -1,4 +1,4 @@
-export function kioskConfigAuto({ orderXml, actividad, setIsActive, setOtraDocumentacion, orderColorsObjects }) {
+export function kioskConfigAuto({ orderXml, actividad, setIsActive, setIsOpen, setOtraDocumentacion, orderColorsObjects }) {
     const { numero, tecnicos } = orderXml;
     const { cliente_codigo, cliche } = numero;
     const isCliche = cliche === "-1" ? true : false;
@@ -9,6 +9,17 @@ export function kioskConfigAuto({ orderXml, actividad, setIsActive, setOtraDocum
             ...prev,
             bocetos: true
         }));
+
+        if (cliente_codigo === "0159") {
+            setIsActive(prev => ({
+                ...prev,
+                salidaColores: true
+            }));
+            setIsOpen(prev => ({
+                ...prev,
+                salidaColores: true
+            }));
+        }
     }
 
     // Fichas
@@ -36,6 +47,17 @@ export function kioskConfigAuto({ orderXml, actividad, setIsActive, setOtraDocum
                 etiquetasPlotter: true
             }));
         }
+
+        if (cliente_codigo === "0159") {
+            setIsActive(prev => ({
+                ...prev,
+                salidaColores: true
+            }));
+            setIsOpen(prev => ({
+                ...prev,
+                salidaColores: true
+            }));
+        }
     }
 
     // Otra documentacion
@@ -53,7 +75,7 @@ export function kioskConfigAuto({ orderXml, actividad, setIsActive, setOtraDocum
         }));
     }
 
-    if (orderColorsObjects.length > 0 && orderColorsObjects.some(color => typeof color.planchaArchivo === 'string' && color.planchaArchivo.toUpperCase().includes('FAST'))) {
+    if (orderColorsObjects.length > 0 && orderColorsObjects.some(color => typeof color.process === 'string' && color.process.toUpperCase().includes('FAST'))) {
         setIsActive(prev => ({
             ...prev,
             otraDocumentacion: true
@@ -136,32 +158,45 @@ export function kioskConfigPerso() {
 
 }
 
-export function handleExceptions({ module, isActive, setIsActive, actividad, cliente, setOtraDocumentacion }) {
+export function handleExceptions({ module, state, updateState }) {
+    const { isActive, actividad, cliente } = state;
+
     if (module === "montaje" && !isActive.montaje && (actividad === "MADERA" || actividad === "ETIQUETAS")) {
-        setIsActive((prev) => ({
+        updateState("isActive", (prev) => ({
             ...prev,
             fichas: true
         }));
     }
 
     if (module === "montaje" && !isActive.montaje && cliente.code === "0159") {
-        setOtraDocumentacion((prev) => ({
+        updateState("otraDocumentacion", (prev) => ({
             ...prev,
             unitarioPng: true
         }));
     }
 
     if (module === "plotter" && !isActive.plotter && actividad === "CARTON") {
-        setOtraDocumentacion((prev) => ({
+        updateState("otraDocumentacion", (prev) => ({
             ...prev,
             etiquetasPlotter: true
         }));
     }
 
     if (module === "montaje" && !isActive.montaje && (actividad === "MADERA" || actividad === "CARTON")) {
-        setOtraDocumentacion((prev) => ({
+        updateState("otraDocumentacion", (prev) => ({
             ...prev,
             etiquetasMontaje: true
+        }));
+    }
+
+    if (((module === "bocetos" && !isActive.bocetos) || (module === "plotter" && !isActive.plotter)) && cliente.code === "0159") {
+        updateState("isActive", (prev) => ({
+            ...prev,
+            salidaColores: true
+        }));
+        updateState("isOpen", (prev) => ({
+            ...prev,
+            salidaColores: true
         }));
     }
 }

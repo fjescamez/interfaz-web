@@ -23,14 +23,20 @@ function GeneralForm({
     submitText,
     extras,
     noSubmit,
-    afterSubmit
+    afterSubmit,
+    clickableSections,
+    onClickSection
 }) {
     const { headerIcon, headerTitle, editTitle, formFields, clientsMap, codesMap } = formData;
     const [errorMessage, setErrorMessage] = useState(false);
     const [executing, setExecuting] = useState(false);
     const [error, setError] = useState("");
     const [inputData, setInputData] = useState(itemsData || {});
-    addKeyListener(setModal);
+
+    useEffect(() => {
+        const cleanup = addKeyListener(setModal);
+        return cleanup;
+    }, []);
 
     const requiredFields = formFields.reduce((acc, field) => {
         if (field.required) acc[field.inputName] = !field.required;
@@ -216,7 +222,7 @@ function GeneralForm({
                             <div className="formSections">
                                 {extras && extras}
                                 {formData.formSections.map((section, index) => (
-                                    <div key={index} className="formSection">
+                                    <div key={index} className={`formSection ${clickableSections && clickableSections.includes(section) ? "clickable" : ""}`} onClick={() => onClickSection && clickableSections.includes(section) ? onClickSection(section) : null}>
                                         <FormSection
                                             fieldErrors={fieldErrors}
                                             sectionData={section}

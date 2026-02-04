@@ -1161,9 +1161,13 @@ export const observacionesTecnicasFormData = {
 }
 
 export const strategyFormData = {
+    headerIcon: <TbColorSwatch className="stroke" />,
+    headerTitle: "NUEVA ESTRATEGIA",
     formSections: [
         {
             title: "Cliente",
+            key: "cliente",
+            disableIfFilter: true,
             rows: [
                 {
                     groups: ["cliente_nombre", "cliente_codigo"],
@@ -1173,6 +1177,8 @@ export const strategyFormData = {
         },
         {
             title: "Material",
+            key: "material",
+            disableIfFilter: true,
             rows: [
                 {
                     groups: ["material_nombre", "material_codigo"],
@@ -1182,6 +1188,8 @@ export const strategyFormData = {
         },
         {
             title: "Plancha",
+            key: "plancha",
+            disableIfFilter: true,
             rows: [
                 {
                     groups: ["plancha_fabricante", "plancha_espesor", "plancha_referencia"]
@@ -1190,6 +1198,8 @@ export const strategyFormData = {
         },
         {
             title: "Perfil de Color",
+            key: "perfilColor",
+            disableIfFilter: true,
             rows: [
                 {
                     groups: ["perfil_nombre", "perfil_formato"],
@@ -1202,6 +1212,8 @@ export const strategyFormData = {
         },
         {
             title: "Curva de Plotter",
+            key: "curvaPlotter",
+            disableIfFilter: true,
             rows: [
                 {
                     groups: ["curva_plotter_nombre", "curva_plotter_formato"],
@@ -1211,6 +1223,8 @@ export const strategyFormData = {
         },
         {
             title: "Curva de Clichés",
+            key: "curvaCliches",
+            disableIfFilter: true,
             rows: [
                 {
                     groups: ["estrategia_nombre", "tramado"],
@@ -1230,8 +1244,7 @@ export const strategyFormData = {
             labelTitle: "Nombre",
             inputType: "text",
             inputId: "cliente_nombre",
-            inputName: "cliente_nombre",
-            disableField: true
+            inputName: "cliente_nombre"
         },
         {
             htmlFor: "cliente_codigo",
@@ -1239,8 +1252,7 @@ export const strategyFormData = {
             labelTitle: "Código",
             inputType: "text",
             inputId: "cliente_codigo",
-            inputName: "cliente_codigo",
-            disableField: true
+            inputName: "cliente_codigo"
         },
         {
             htmlFor: "material_nombre",

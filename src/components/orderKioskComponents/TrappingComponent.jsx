@@ -7,11 +7,51 @@ import { notify } from '../../helpers/notify';
 import { useLocation } from "react-router-dom";
 import { useEffect } from 'react';
 import SubmitButton from '../buttons/SubmitButton';
+import FormGroup from '../formComponents/FormGroup';
 
-function TrappingComponent({ id_pedido, trappingData, updateState, workableId, nodeId, loadingTrapping, isTrappingDone, isTrappingWaiting, isTrappingCanceled }) {
+function TrappingComponent({ state, id_pedido, trappingData, updateState, workableId, nodeId, loadingTrapping, isTrappingDone, isTrappingWaiting, isTrappingCanceled }) {
     const { postDataContext, updateTabState } = useTabState();
     const location = useLocation();
     const key = location.pathname;
+
+    useEffect(() => {
+        // Mensajes de error
+        if (state.trappingData.manual) {
+            updateState("orderReport", (prevOrderReport) => prevOrderReport.filter(item => !item?.type?.includes("trapping") && item?.status !== "warning"));
+        } else {
+            const error1 = {
+                status: "warning",
+                message: "No hay distancia de trapping ni remetido",
+                type: ["trapping"]
+            };
+            const error2 = {
+                status: "warning",
+                message: "Se ha indicado remetido pero no se ha indicado distancia de remetido",
+                type: ["trapping"]
+            };
+
+            updateState("orderReport", (prevOrderReport) => {
+                let next = prevOrderReport;
+                // Añadir error1 si corresponde
+                if ((state.trappingData.distancia_trapping === "0" || state.trappingData.distancia_trapping === "") && state.trappingData.remetido === "No") {
+                    const exists = prevOrderReport.some(item => item.message === error1.message && JSON.stringify(item.type) === JSON.stringify(error1.type));
+                    if (!exists) next = [...next, error1];
+                } else {
+                    // Eliminar error1 si ya no corresponde
+                    next = next.filter(item => !(item.message === error1.message && JSON.stringify(item.type) === JSON.stringify(error1.type)));
+                }
+                // Añadir error2 si corresponde
+                if (state.trappingData.remetido !== "No" && (state.trappingData.distancia_remetido === "0" || state.trappingData.distancia_remetido === "")) {
+                    const exists = next.some(item => item.message === error2.message && JSON.stringify(item.type) === JSON.stringify(error2.type));
+                    if (!exists) next = [...next, error2];
+                } else {
+                    // Eliminar error2 si ya no corresponde
+                    next = next.filter(item => !(item.message === error2.message && JSON.stringify(item.type) === JSON.stringify(error2.type)));
+                }
+                return next;
+            });
+        }
+    }, [state.trappingData]);
 
     const handleForm = (e) => {
         const { name, type, value, checked } = e.target;
@@ -78,11 +118,6 @@ function TrappingComponent({ id_pedido, trappingData, updateState, workableId, n
         setLoadingTrappingTabState(false);
     }
 
-    useEffect(() => {
-        console.log(isTrappingWaiting);
-    }, []);
-
-
     return (
         <div className="actionBody">
             <div className="trappingKiosk">
@@ -104,15 +139,13 @@ function TrappingComponent({ id_pedido, trappingData, updateState, workableId, n
                     </div>
                 )}
                 {!trappingData.manual && (
-                    <div className="formSections">
-                        {trappingFormData.formSections.map((section, index) => (
-                            <div className="formSection" key={index}>
-                                <FormSection
-                                    sectionData={section}
-                                    formFields={trappingFormData.formFields}
-                                    inputData={trappingData}
+                    <div className="kioskFormRow">
+                        {trappingFormData.formFields.map((field) => (
+                            <div className="formGroup">
+                                <FormGroup
+                                    value={trappingData ? trappingData[field.htmlFor] ?? "" : ""}
                                     handleForm={handleForm}
-                                    disable={loadingTrapping}
+                                    field={field}
                                 />
                             </div>
                         ))}

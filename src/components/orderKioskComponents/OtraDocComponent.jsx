@@ -1,7 +1,8 @@
 import Switch from '@mui/material/Switch';
 import { useEffect } from 'react';
 
-function OtraDocComponent({ otraDocumentacion, setOtraDocumentacion, setCountOtraDoc }) {  return (
+function OtraDocComponent({ state, updateState }) {
+  return (
     <div className="actionBody">
       <div className="otraDoc">
         <section className="otraDocSection">
@@ -10,9 +11,9 @@ function OtraDocComponent({ otraDocumentacion, setOtraDocumentacion, setCountOtr
             <div className="switchGroup">
               <Switch
                 className="kioskSwitch"
-                checked={otraDocumentacion.certificadoControl || false}
+                checked={state.otraDocumentacion.certificadoControl || false}
                 onChange={(e) => {
-                  setOtraDocumentacion((prev) => ({
+                  updateState("otraDocumentacion", (prev) => ({
                     ...prev,
                     certificadoControl: e.target.checked
                   }));
@@ -23,9 +24,9 @@ function OtraDocComponent({ otraDocumentacion, setOtraDocumentacion, setCountOtr
             <div className="switchGroup">
               <Switch
                 className="kioskSwitch"
-                checked={otraDocumentacion.certificadoContinuos || false}
+                checked={state.otraDocumentacion.certificadoContinuos || false}
                 onChange={(e) => {
-                  setOtraDocumentacion((prev) => ({
+                  updateState("otraDocumentacion", (prev) => ({
                     ...prev,
                     certificadoContinuos: e.target.checked
                   }));
@@ -36,9 +37,9 @@ function OtraDocComponent({ otraDocumentacion, setOtraDocumentacion, setCountOtr
             <div className="switchGroup">
               <Switch
                 className="kioskSwitch"
-                checked={otraDocumentacion.certificadoCodigos || false}
+                checked={state.otraDocumentacion.certificadoCodigos || false}
                 onChange={(e) => {
-                  setOtraDocumentacion((prev) => ({
+                  updateState("otraDocumentacion", (prev) => ({
                     ...prev,
                     certificadoCodigos: e.target.checked
                   }));
@@ -49,9 +50,9 @@ function OtraDocComponent({ otraDocumentacion, setOtraDocumentacion, setCountOtr
             <div className="switchGroup">
               <Switch
                 className="kioskSwitch"
-                checked={otraDocumentacion.unitarioPng || false}
+                checked={state.otraDocumentacion.unitarioPng || false}
                 onChange={(e) => {
-                  setOtraDocumentacion((prev) => ({
+                  updateState("otraDocumentacion", (prev) => ({
                     ...prev,
                     unitarioPng: e.target.checked
                   }));
@@ -67,9 +68,9 @@ function OtraDocComponent({ otraDocumentacion, setOtraDocumentacion, setCountOtr
             <div className="switchGroup">
               <Switch
                 className="kioskSwitch"
-                checked={otraDocumentacion.etiquetasMontaje || false}
+                checked={state.otraDocumentacion.etiquetasMontaje || false}
                 onChange={(e) => {
-                  setOtraDocumentacion((prev) => ({
+                  updateState("otraDocumentacion", (prev) => ({
                     ...prev,
                     etiquetasMontaje: e.target.checked
                   }));
@@ -80,9 +81,9 @@ function OtraDocComponent({ otraDocumentacion, setOtraDocumentacion, setCountOtr
             <div className="switchGroup">
               <Switch
                 className="kioskSwitch"
-                checked={otraDocumentacion.etiquetasPlotter || false}
+                checked={state.otraDocumentacion.etiquetasPlotter || false}
                 onChange={(e) => {
-                  setOtraDocumentacion((prev) => ({
+                  updateState("otraDocumentacion", (prev) => ({
                     ...prev,
                     etiquetasPlotter: e.target.checked
                   }));
@@ -93,9 +94,9 @@ function OtraDocComponent({ otraDocumentacion, setOtraDocumentacion, setCountOtr
             <div className="switchGroup">
               <Switch
                 className="kioskSwitch"
-                checked={otraDocumentacion.etiquetasPrueba || false}
+                checked={state.otraDocumentacion.etiquetasPrueba || false}
                 onChange={(e) => {
-                  setOtraDocumentacion((prev) => ({
+                  updateState("otraDocumentacion", (prev) => ({
                     ...prev,
                     etiquetasPrueba: e.target.checked
                   }));
@@ -111,9 +112,9 @@ function OtraDocComponent({ otraDocumentacion, setOtraDocumentacion, setCountOtr
             <div className="switchGroup">
               <Switch
                 className="kioskSwitch"
-                checked={otraDocumentacion?.separaciones?.hacer || false}
+                checked={state.otraDocumentacion?.separaciones?.hacer || false}
                 onChange={(e) => {
-                  setOtraDocumentacion((prev) => ({
+                  updateState("otraDocumentacion", (prev) => ({
                     ...prev,
                     separaciones: {
                       ...prev.separaciones,

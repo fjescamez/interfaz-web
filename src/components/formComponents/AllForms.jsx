@@ -7,6 +7,7 @@ import RefContinuoForm from "./RefContinuoForm";
 import CategoriaStockForm from "./CategoriaStockForm";
 import ProductoStockForm from "./ProductoStockForm";
 import OrdenCompraForm from "./OrdenCompraForm";
+import StrategyForm from "./StrategyForm";
 
 const formMap = {
     ContactForm,
@@ -16,7 +17,8 @@ const formMap = {
     RefPlanchaForm,
     RefContinuoForm,
     CategoriaStockForm,
-    ProductoStockForm
+    ProductoStockForm,
+    StrategyForm
 }
 
 function AllForms({ tableForm, ...props }) {
