@@ -23,7 +23,7 @@ export function kioskConfigAuto({ orderXml, actividad, setIsActive, setIsOpen, s
     }
 
     // Fichas
-    if ((actividad === "CARTON" && (tecnicos.ficha_impresa === "-1" || tecnicos.ficha_por_email === "X")) || (actividad === "FLEXIBLE" && (cliente_codigo === "0055" || cliente_codigo === "0282"))) {
+    if ((actividad === "CARTON" && isCliche && (tecnicos.ficha_impresa === "-1" || tecnicos.ficha_por_email === "X")) || (actividad === "FLEXIBLE" && (cliente_codigo === "0055" || cliente_codigo === "0282"))) {
         setIsActive(prev => ({
             ...prev,
             fichas: true
