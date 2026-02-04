@@ -820,10 +820,10 @@ function OrderKiosk({ configMode }) {
 
                     {state.isOpen[openKey] && (
                       <MontajeAvanzadoComponent
+                        state={state}
+                        updateState={updateState}
                         configAvanzadaData={elementArray}
                         setConfigAvanzadaData={(value) => setConfigAvanzadaDataForElementId(key, value)}
-                        actividad={state.actividad}
-                        orderXml={state.orderXml}
                       />
                     )}
                   </div>
