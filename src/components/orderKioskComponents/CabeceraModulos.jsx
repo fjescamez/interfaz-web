@@ -104,7 +104,8 @@ function CabeceraModulos({ state, updateState, option, components, configMode, h
                                             "unitario": true
                                         },
                                         orderReport: prev.orderReport.filter(item => (item.type && item.type.includes("trapping"))),
-                                        fileReport: []
+                                        fileReport: [],
+                                        hideSubmitButton: false
                                     }));
                                 } else if (option.id === "reportePrevio" && !state.hideSubmitButton) {
                                     updateState("isOpen", (prevIsOpen) => ({
