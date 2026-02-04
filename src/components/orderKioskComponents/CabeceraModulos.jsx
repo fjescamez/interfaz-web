@@ -121,7 +121,7 @@ function CabeceraModulos({ state, updateState, option, components, configMode, h
                         {((state.loadingOrderReport || state.loadingFileReport) && option.id === "reportePrevio") ? (
                             <OrbitProgress variant="dotted" color={"var(--highlight)"} size="small" />
                         ) : (
-                            <HiOutlineRefresh className="refreshIcon" />
+                            !state.hideSubmitButton && <HiOutlineRefresh className="refreshIcon" />
                         )}
                     </div>
                 ) : (

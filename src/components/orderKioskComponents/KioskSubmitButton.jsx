@@ -45,7 +45,7 @@ function KioskSubmitButton({ state, updateState, buttonAction, buttonText, compo
         }
 
         if (action === "submit") {
-            /* if (state.isActive.trapping && !state.isTrappingDone) {
+            if (state.isActive.trapping && !state.isTrappingDone) {
                 updateState("loadingTrapping", true);
                 dataToSend.holdInKiosk = true;
             } else {
@@ -66,7 +66,7 @@ function KioskSubmitButton({ state, updateState, buttonAction, buttonText, compo
                 notify("success", result.title, result.message);
             } else {
                 notify("error", result.title, result.message);
-            } */
+            }
             console.log(dataToSend);
         } else if (action === "saveConfig") {
             const activosDefault = Object.keys(state.isActive).filter(key => state.isActive[key]);
