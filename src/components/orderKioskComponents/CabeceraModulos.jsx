@@ -123,7 +123,8 @@ function CabeceraModulos({ state, openKey, originalState, updateState, option, c
                                         unitarioData: prev.unitarioData,
                                         order: prev.order,
                                         orderXml: prev.orderXml,
-                                        client: prev.client
+                                        client: prev.client,
+                                        hideSubmitButton: false
                                     }));
                                 } else if (option.id === "reportePrevio" && !state.hideSubmitButton) {
                                     updateState("isOpen", (prevIsOpen) => ({
