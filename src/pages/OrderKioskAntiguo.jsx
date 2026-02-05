@@ -195,7 +195,11 @@ function OrderKioskAntiguo({ configMode }) {
     StaggerDirection: "none",
     StaggerOffset: 0,
     RestartAfter: 0,
-    HeadTurn: "none",
+    HeadTurn: {
+      _id: "none",
+      headTurn: "none",
+      textoOpcion: "Ninguno"
+    },
     BleedLimitLeft: 0,
     BleedLimitRight: 0,
     BleedLimitTop: 0,
@@ -279,7 +283,11 @@ function OrderKioskAntiguo({ configMode }) {
           StaggerDirection: "none",
           StaggerOffset: 0,
           RestartAfter: 0,
-          HeadTurn: "none",
+          HeadTurn: {
+            _id: "none",
+            headTurn: "none",
+            textoOpcion: "Ninguno"
+          },
           BleedLimitLeft: 0,
           BleedLimitRight: 0,
           BleedLimitTop: 0,

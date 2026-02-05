@@ -74,7 +74,7 @@ function StrategyDetails() {
         setItemsData({
           cliente_nombre,
           cliente_codigo,
-          material_nombre: material,
+          material: material,
           material_codigo,
           plancha_fabricante,
           plancha_espesor,

@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import GeneralPopUp from "../GeneralPopUp";
 import ListWithSearch from "../ListWithSearch";
 import ExecutingComponent from "../ExecutingComponent";
-import { fetchDataNoLimits } from "../../helpers/fetchData";
+import { fetchDataNoLimits, postData } from "../../helpers/fetchData";
+import FormGroup from "./FormGroup";
+import SubmitButton from "../buttons/SubmitButton";
 
 function StrategyForm({ setModal, mode, itemsData, clienteDato }) {
     const clickableSections = strategyFormData.formSections.filter(section => section.key !== "cliente");
@@ -16,18 +18,38 @@ function StrategyForm({ setModal, mode, itemsData, clienteDato }) {
 
     const handleSectionClick = async (section) => {
         setStrategyPopUp(true);
-        setPopUpTitle(section.title);
-        if (section.key !== clickedSection) {
+        setPopUpTitle(section.title.toUpperCase());
+        if (section.title.toUpperCase() !== popUpTitle) {
+            setPopUpList([]);
             const result = await fetchDataNoLimits(`strategies/${section.key}`);
             setPopUpList(result);
         }
-        setClickedSection(section.key);
+        if (section.key !== "estrategiasPCW") {
+            setClickedSection(section.key);
+        }
     };
 
     const handleListClick = (item) => {
-        console.log(item);
-        console.log(clickedSection);
+        if (popUpTitle === "ESTRATEGIAS PCW") {
+            postData("strategies/readJson", { filePath: item.filePath });
+        } else {
+            const formFields = strategyFormData.formSections.find(section => section.key === clickedSection).rows.flatMap(row => row.groups);
+
+            formFields.forEach(field => {
+                if (field !== "perfil_tipo") {
+                    setStrategyData(prevData => ({
+                        ...prevData,
+                        [field]: item[field]
+                    }));
+                }
+            });
+            setStrategyPopUp(false);
+        }
     };
+
+    useEffect(() => {
+        console.log(strategyData);
+    }, [strategyData]);
 
     useEffect(() => {
         if (itemsData) {
@@ -35,7 +57,8 @@ function StrategyForm({ setModal, mode, itemsData, clienteDato }) {
         } else {
             setStrategyData({
                 cliente_nombre: clienteDato ? clienteDato.name : "",
-                cliente_codigo: clienteDato ? clienteDato.code : ""
+                cliente_codigo: clienteDato ? clienteDato.code : "",
+                perfil_tipo: "Tramado - Papel Semi mate"
             });
         }
     }, []);
@@ -60,6 +83,44 @@ function StrategyForm({ setModal, mode, itemsData, clienteDato }) {
                     headerTitle={popUpTitle}
                     headerIcon={strategyFormData.headerIcon}
                 >
+                    {clickedSection === "perfilColor" && (
+                        <div className="formGroup">
+                            <FormGroup
+                                handleForm={(e) => setStrategyData(prevData => ({
+                                    ...prevData,
+                                    perfil_tipo: e.target.value
+                                }))}
+                                value={strategyData.perfil_tipo || ""}
+                                field={{
+                                    htmlFor: "perfil_tipo",
+                                    labelId: "perfil_tipoLabel",
+                                    labelTitle: "Tipo Perfil",
+                                    select: "simple",
+                                    options: [
+                                        "Tramado - Papel Semi mate",
+                                        "Tramado - Papel Premium",
+                                        "Continuo - Papel Semi mate",
+                                        "Continuo Certificado - Papel Semi mate",
+                                        "Continuo - Papel Premium",
+                                        "Continuo Certificado - Papel Premium",
+                                    ],
+                                    inputId: "perfil_tipo",
+                                    inputName: "perfil_tipo"
+                                }}
+                            />
+                        </div>
+                    )}
+                    {clickedSection === "curvaCliches" && (
+                        <SubmitButton
+                            onClick={() => {
+                                handleSectionClick({
+                                    key: popUpTitle === "CURVA DE CLICHÉS" ? "estrategiasPCW" : "curvaCliches",
+                                    title: popUpTitle === "CURVA DE CLICHÉS" ? "Estrategias PCW" : "Curva de Clichés"
+                                })
+                            }}
+                            text={popUpTitle === "CURVA DE CLICHÉS" ? "Estrategias PCW" : "Curva de Clichés"}
+                        />
+                    )}
                     <ListWithSearch list={popUpList} onClickItem={handleListClick} />
                 </GeneralPopUp>
             ) : (

@@ -1,4 +1,4 @@
-export function kioskConfigAuto({ orderXml, actividad, setIsActive, setIsOpen, setOtraDocumentacion, orderColorsObjects }) {
+export function kioskConfigAuto({ orderXml, actividad, fileReport, setIsActive, setIsOpen, setOtraDocumentacion, orderColorsObjects }) {
     const { numero, tecnicos } = orderXml;
     const { cliente_codigo, cliche } = numero;
     const isCliche = cliche === "-1" ? true : false;
@@ -86,7 +86,7 @@ export function kioskConfigAuto({ orderXml, actividad, setIsActive, setIsOpen, s
         }));
     }
 
-    if (cliente_codigo === "0022") {
+    if (cliente_codigo === "0022" && fileReport && fileReport.some(report => report.message === "Códigos de barras detectados")) {
         setIsActive(prev => ({
             ...prev,
             otraDocumentacion: true

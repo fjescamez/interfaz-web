@@ -310,19 +310,53 @@ export const avanzadoFormData = {
             options: [
                 {
                     _id: "none",
-                    textoOpcion: "No"
+                    headTurn: "none",
+                    textoOpcion: "Ninguno"
                 },
                 {
                     _id: "column",
+                    headTurn: "column",
                     textoOpcion: "Cada columna"
                 },
                 {
                     _id: "row",
+                    headTurn: "row",
                     textoOpcion: "Cada fila"
                 },
                 {
                     _id: "rowandcolumn",
+                    headTurn: "rowandcolumn",
                     textoOpcion: "Cada fila y columna"
+                }
+            ],
+            inputId: "HeadTurn",
+            inputName: "HeadTurn"
+        },
+        {
+            htmlFor: "HeadTurnMadera",
+            labelId: "HeadTurnLabel",
+            labelTitle: "Invertir Cabeza",
+            select: "simple",
+            options: [
+                {
+                    _id: "none",
+                    headTurn: "none",
+                    textoOpcion: "Ninguno"
+                },
+                {
+                    _id: "column",
+                    headTurn: "column",
+                    textoOpcion: "Cada columna (por los culos)"
+                },
+                {
+                    _id: "row",
+                    headTurn: "row",
+                    textoOpcion: "Cada fila (por las asas)"
+                },
+                {
+                    _id: "rowandcolumn",
+                    headTurn: "rowandcolumn",
+                    textoOpcion: "Fila y columna (asas y culos)"
                 }
             ],
             inputId: "HeadTurn",

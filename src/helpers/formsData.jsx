@@ -1181,7 +1181,7 @@ export const strategyFormData = {
             disableIfFilter: true,
             rows: [
                 {
-                    groups: ["material_nombre", "material_codigo"],
+                    groups: ["material", "material_codigo"],
                     rowDisplay: "display8020"
                 }
             ]
@@ -1255,12 +1255,12 @@ export const strategyFormData = {
             inputName: "cliente_codigo"
         },
         {
-            htmlFor: "material_nombre",
-            labelId: "material_nombreLabel",
+            htmlFor: "material",
+            labelId: "materialLabel",
             labelTitle: "Nombre",
             inputType: "text",
-            inputId: "material_nombre",
-            inputName: "material_nombre"
+            inputId: "material",
+            inputName: "material"
         },
         {
             htmlFor: "material_codigo",
@@ -1345,7 +1345,7 @@ export const strategyFormData = {
         {
             htmlFor: "estrategia_nombre",
             labelId: "estrategia_nombreLabel",
-            labelTitle: "Nombre Estrategia PWC",
+            labelTitle: "Nombre Estrategia PCW",
             inputType: "text",
             inputId: "estrategia_nombre",
             inputName: "estrategia_nombre"

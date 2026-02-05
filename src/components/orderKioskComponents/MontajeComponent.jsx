@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 import { notify } from '../../helpers/notify';
 import KioscoPersoMontaje from './KioscoPersoMontaje';
 import { globalKioskVariables } from './kioscoPersoConfig';
+import FormGroup from '../formComponents/FormGroup';
+import { avanzadoFormData } from '../../helpers/orderKioskActions';
 
 function MontajeComponent({ state, orderXml, montajeData, configAvanzadaData, updateState, kioscoPersoData, colores, isActive }) {
   useEffect(() => {
@@ -23,7 +25,21 @@ function MontajeComponent({ state, orderXml, montajeData, configAvanzadaData, up
 
         next[key] = {
           ...prevEntry,
-          isActive: true
+          isActive: true,
+          Orientation: {
+            _id: "left",
+            orientation: "left",
+            textoOpcion: "Rotada -90º"
+          },
+          HeadTurn: item.madera_capituladas === "-1" ? {
+            _id: "column",
+            headTurn: "column",
+            textoOpcion: "Cada columna (por los culos)"
+          } : {
+            _id: "none",
+            headTurn: "none",
+            textoOpcion: "Ninguno"
+          }
         };
         changed = true;
       });
@@ -38,11 +54,7 @@ function MontajeComponent({ state, orderXml, montajeData, configAvanzadaData, up
     const items = orderXml?.actividad?.madera?.madera_premontaje || [];
     if (items.length === 0) return;
 
-    const itemsToConfigure = items.filter((item) => (
-      item.madera_capituladas === "-1"
-      || item.madera_montaje_esp === "-1"
-      || item.madera_tablero_rotado === "-1"
-    ));
+    const itemsToConfigure = items.filter((item) => (item.madera_montaje_esp === "-1"));
 
     if (itemsToConfigure.length === 0) return;
 
@@ -109,14 +121,18 @@ function MontajeComponent({ state, orderXml, montajeData, configAvanzadaData, up
         if (!item) return data;
 
         if (item.madera_capituladas === "-1") {
-          if (data.stations?.[0]?.HeadTurn === "column") return data;
+          if (data.stations?.[0]?.HeadTurn.headTurn === "column") return data;
           changed = true;
           return {
             ...data,
             stations: [
               {
                 ...data.stations[0],
-                HeadTurn: "column"
+                HeadTurn: {
+                  _id: "column",
+                  headTurn: "column",
+                  textoOpcion: "Cada columna"
+                },
               },
               ...data.stations.slice(1)
             ]
@@ -124,14 +140,18 @@ function MontajeComponent({ state, orderXml, montajeData, configAvanzadaData, up
         }
 
         if (item.madera_tablero_rotado === "-1") {
-          if (data.stations?.[0]?.Orientation === "up") return data;
+          if (data.stations?.[0]?.Orientation.orientation === "up") return data;
           changed = true;
           return {
             ...data,
             stations: [
               {
                 ...data.stations[0],
-                Orientation: "up"
+                Orientation: {
+                  _id: "up",
+                  orientation: "up",
+                  textoOpcion: "Original"
+                }
               },
               ...data.stations.slice(1)
             ]
@@ -143,7 +163,7 @@ function MontajeComponent({ state, orderXml, montajeData, configAvanzadaData, up
 
       return changed ? next : prev;
     });
-  }, [orderXml?.actividad?.id, orderXml?.actividad?.madera?.madera_premontaje, isActive.montaje, updateState]);
+  }, [orderXml?.actividad?.id, orderXml?.actividad?.madera?.madera_premontaje, isActive.montaje]);
 
   const createDefaultStation = (orderBase, item) => ({
     _id: orderBase?._id || "",
@@ -160,14 +180,18 @@ function MontajeComponent({ state, orderXml, montajeData, configAvanzadaData, up
     StartNewLane: true,
     HCount: item.madera_mvto_ancho || 1,
     HOffset: 0,
-    HGap: item.madera_sepa_ancho ? item.madera_sepa_ancho : 0,
+    HGap: item.madera_sepa_ancho ? item.madera_sepa_ancho.replace(",", ".") : 0,
     VCount: item.madera_mvto_desarrollo || 1,
     VOffset: 0,
-    VGap: item.madera_sepa_avance ? item.madera_sepa_avance : 0,
+    VGap: item.madera_sepa_avance ? item.madera_sepa_avance.replace(",", ".") : 0,
     StaggerDirection: "none",
     StaggerOffset: 0,
     RestartAfter: 0,
-    HeadTurn: "none",
+    HeadTurn: {
+      _id: "none",
+      headTurn: "none",
+      textoOpcion: "Ninguno"
+    },
     BleedLimitLeft: 0,
     BleedLimitRight: 0,
     BleedLimitTop: 0,
@@ -187,6 +211,10 @@ function MontajeComponent({ state, orderXml, montajeData, configAvanzadaData, up
       updateState("configAvanzadaData", maderaElements);
     }
   }, [orderXml]);
+
+  useEffect(() => {
+    console.log(montajeData);
+  }, [montajeData, configAvanzadaData]);
 
   return (
     <div className="actionBody">
@@ -267,6 +295,32 @@ function MontajeComponent({ state, orderXml, montajeData, configAvanzadaData, up
                   />
                   <p>{item.madera_tmedida}</p>
                 </div>
+                <div className="formGroup">
+                  <FormGroup
+                    handleForm={(e) => updateState("montajeData", prev => ({
+                      ...prev,
+                      [item.madera_tmedida]: {
+                        ...prev[item.madera_tmedida],
+                        Orientation: e.target.value
+                      }
+                    }))}
+                    value={montajeData[item.madera_tmedida]?.Orientation || ""}
+                    field={avanzadoFormData.formFields.find(field => field.htmlFor === "Orientation") || {}}
+                  />
+                </div>
+                <div className="formGroup">
+                  <FormGroup
+                    handleForm={(e) => updateState("montajeData", prev => ({
+                      ...prev,
+                      [item.madera_tmedida]: {
+                        ...prev[item.madera_tmedida],
+                        HeadTurn: e.target.value
+                      }
+                    }))}
+                    value={montajeData[item.madera_tmedida]?.HeadTurn || ""}
+                    field={avanzadoFormData.formFields.find(field => field.htmlFor === "HeadTurnMadera") || {}}
+                  />
+                </div>
                 <div className="switchGroup">
                   <Switch
                     className="kioskSwitch"
@@ -295,7 +349,7 @@ function MontajeComponent({ state, orderXml, montajeData, configAvanzadaData, up
             )
           })
         )}
-        {(orderXml?.numero?.cliente_codigo && Object.values(globalKioskVariables).some(arr => arr.includes(orderXml.numero.cliente_codigo)) || orderXml?.actividad?.id === "CARTON") && (
+        {(orderXml?.numero?.cliente_codigo && Object.values(globalKioskVariables).some(arr => arr.includes(orderXml.numero.cliente_codigo)) || (orderXml?.actividad?.id === "CARTON" && orderXml?.actividad?.carton?.carton_tcaja !== "TROQUELADA PLATO")) && (
           <KioscoPersoMontaje orderXml={orderXml} kioscoPersoData={kioscoPersoData} updateState={updateState} colores={colores} configAvanzadaData={configAvanzadaData} />
         )}
       </div>

@@ -12,7 +12,13 @@ function ListWithSearch({ list, onClickItem }) {
     useEffect(() => {
         if (searchValue !== "") {
             setFilteredList(
-                list.filter(item => item.toLowerCase().includes(searchValue.toLowerCase()))
+                list.filter(item => {
+                    if (typeof item === "string") {
+                        item.toLowerCase().includes(searchValue.toLowerCase())
+                    } else {
+                        return item.textoListado.toLowerCase().includes(searchValue.toLowerCase())
+                    }
+                })
             );
         } else {
             setFilteredList(list);

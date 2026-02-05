@@ -103,7 +103,11 @@ function MontajeAvanzadoComponent({ state, updateState, configAvanzadaData, setC
       StaggerDirection: "none",
       StaggerOffset: 0,
       RestartAfter: 0,
-      HeadTurn: "none",
+      HeadTurn: {
+        _id: "none",
+        headTurn: "none",
+        textoOpcion: "Ninguno"
+      },
       BleedLimitLeft: 0,
       BleedLimitRight: 0,
       BleedLimitTop: 0,
@@ -194,9 +198,11 @@ function MontajeAvanzadoComponent({ state, updateState, configAvanzadaData, setC
   useEffect(() => {
     if (state.order && state.unitarioMetadata && state.unitarioMetadata.number_of_pages && state.orderXml?.actividad?.id !== "MADERA") {
       let HCount, HGap, VCount, VGap;
+      let StartNewLane = true;
       const datosCarton = state.orderXml?.actividad?.carton;
       const datosFlexible = state.orderXml?.actividad?.flexible;
       const datosEtiquetas = state.orderXml?.actividad?.adhesivo;
+      const numberOfPages = state.unitarioMetadata.number_of_pages;
 
       switch (state.actividad) {
         case "CARTON":
@@ -205,20 +211,20 @@ function MontajeAvanzadoComponent({ state, updateState, configAvanzadaData, setC
           break;
         case "FLEXIBLE":
           VCount = datosFlexible?.flexible_motivos || 1;
-          HCount = datosFlexible?.flexible_caidas || 1;
+          HCount = datosFlexible.flexible_caidas ? parseInt(datosFlexible?.flexible_caidas / numberOfPages) : 1; // dividir
           break;
         case "ETIQUETAS":
+          StartNewLane = false;
           HCount = datosEtiquetas?.adhesivo_mvto_avance || 1;
-          HGap = datosEtiquetas?.adhesivo_sepa_avance || 0;
-          VCount = datosEtiquetas?.adhesivo_mvto_ancho || 1;
-          VGap = datosEtiquetas?.adhesivo_sepa_ancho || 0;
+          HGap = datosEtiquetas?.adhesivo_sepa_avance.replace(",", ".") || 0;
+          VCount = datosEtiquetas?.adhesivo_mvto_ancho ? parseInt(datosEtiquetas?.adhesivo_mvto_ancho / numberOfPages) : 1; // dividir
+          VGap = datosEtiquetas?.adhesivo_sepa_ancho.replace(",", ".") || 0;
           break;
 
         default:
           break;
       }
 
-      const numberOfPages = state.unitarioMetadata.number_of_pages;
       const stations = Array.from({ length: numberOfPages }, (_, index) => {
         const pageIndex = index + 1;
         return {
@@ -233,7 +239,7 @@ function MontajeAvanzadoComponent({ state, updateState, configAvanzadaData, setC
             orientation: "up",
             textoOpcion: "Original"
           },
-          StartNewLane: true,
+          StartNewLane,
           HCount,
           HOffset: 0,
           HGap: HGap || 0,
@@ -243,7 +249,11 @@ function MontajeAvanzadoComponent({ state, updateState, configAvanzadaData, setC
           StaggerDirection: "none",
           StaggerOffset: 0,
           RestartAfter: 0,
-          HeadTurn: "none",
+          HeadTurn: {
+            _id: "none",
+            headTurn: "none",
+            textoOpcion: "Ninguno"
+          },
           BleedLimitLeft: 0,
           BleedLimitRight: 0,
           BleedLimitTop: 0,

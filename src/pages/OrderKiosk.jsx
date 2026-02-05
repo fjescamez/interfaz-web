@@ -107,6 +107,69 @@ function OrderKiosk({ configMode }) {
     actividad: "",
   });
 
+  const originalState = {
+    kioskName: "",
+    createKiosk: false,
+    kioskOptions: ["Automática", "Manual"],
+    chosenKiosk: {},
+    defaultKiosk: {},
+    step: 1,
+    loadingOrderReport: false,
+    loadingFileReport: false,
+    loadingTrapping: false,
+    workableId: null,
+    nodeId: null,
+    orderReport: [],
+    fileReport: [],
+    reportModification: null,
+    reportWarnings: 0,
+    reportErrors: 0,
+    reportFixes: 0,
+    infoPopUp: false,
+    infoContent: "",
+    loading: false,
+    order: null,
+    orderXml: null,
+    cliente: null,
+    unitarioMetadata: {},
+    isOpen: { unitario: true, reportePrevio: true },
+    isActive: { unitario: true, reportePrevio: true },
+    orderColors: [],
+    orderColorsObjects: [],
+    unitarios: [],
+    unitarioData: {
+      archivo: null
+    },
+    trappingData: {
+      distancia_trapping: "0",
+      intensidad: 100,
+      remetido: "No",
+      distancia_remetido: "0",
+    },
+    isTrappingWaiting: false,
+    isTrappingDone: false,
+    isTrappingCanceled: false,
+    bocetos: [{ id: 0, rasterizado: false, lpi: "300", formato: "Pdf", tipo: "Compuesto" }],
+    fichas: [{ id: 0, rasterizado: false, lpi: "300", formato: "Pdf", tipo: "Compuesto" }],
+    posMacula: "",
+    freecutData: {
+      posiCortes: "Izquierda"
+    },
+    freeCutColors: [],
+    montajeData: [],
+    kioscoPersoData: {},
+    otraDocumentacion: {},
+    countOtraDoc: {},
+    salidaColores: [],
+    listDigimark: [],
+    coloresForm: undefined,
+    coloresInputData: {},
+    coloresDigimarkForm: undefined,
+    digimarkInputData: {},
+    configAvanzadaData: [],
+    actividad: "",
+  };
+
   const tabExists = useMemo(
     () => tabs.some((tab) => tab.path === tabKey),
     [tabs, tabKey]
@@ -278,6 +341,7 @@ function OrderKiosk({ configMode }) {
           kioskConfigAuto({
             orderXml: state.orderXml,
             actividad: state.actividad,
+            fileReport: state.fileReport,
             setIsActive: (updater) => updateState("isActive", updater),
             setIsOpen: (updater) => updateState("isOpen", updater),
             setOtraDocumentacion: (updater) => updateState("otraDocumentacion", updater),
@@ -574,6 +638,11 @@ function OrderKiosk({ configMode }) {
     }
   }, [state.isActive]);
 
+  useEffect(() => {
+    console.log(state.isOpen);
+
+  }, [state.isOpen]);
+
   const components = {
     "unitario": {
       title: `${state.unitarioData?.archivo?.name || ""} - ${state.unitarioData?.archivo?.type || ""}`,
@@ -773,6 +842,7 @@ function OrderKiosk({ configMode }) {
                     <div className="kioskAction" key={option.id}>
                       <CabeceraModulos
                         state={state}
+                        originalState={originalState}
                         updateState={updateState}
                         option={option}
                         components={components}
@@ -793,7 +863,7 @@ function OrderKiosk({ configMode }) {
 
                 return (
                   <div className="kioskAction" key={openKey}>
-                    <div className={`actionHeader ${state.isOpen[openKey] ? "open" : ""}`}>
+                    {/* <div className={`actionHeader ${state.isOpen[openKey] ? "open" : ""}`}>
                       <Switch className="kioskSwitch" checked={true} disabled />
                       <p>{key}</p>
                       <div></div>
@@ -816,7 +886,17 @@ function OrderKiosk({ configMode }) {
                           />
                         )}
                       </div>
-                    </div>
+                    </div> */}
+                    <CabeceraModulos
+                      state={state}
+                      openKey={openKey}
+                      originalState={originalState}
+                      updateState={updateState}
+                      option={element}
+                      components={components}
+                      configMode={configMode}
+                      handleReport={handleReport}
+                    />
 
                     {state.isOpen[openKey] && (
                       <MontajeAvanzadoComponent

@@ -6,7 +6,7 @@
 }
 
 .actionBody {
-    padding: 2rem 7rem;
+    padding: 2rem;
     align-items: center;
     background: white;
     background: linear-gradient(0deg, rgb(255, 255, 255) 60%, rgb(184, 190, 195) 100%);
@@ -223,10 +223,31 @@
     }
 }
 
+.switches {
+    display: flex;
+    column-gap: 2rem;
+
+    .switchGroup {
+        display: flex;
+        align-items: center;
+        column-gap: 1rem;
+        font-size: 3rem;
+    }
+}
+
 .montaje {
     display: flex;
     flex-direction: column;
     row-gap: 2.50rem;
+
+    .switches {
+        display: grid;
+        grid-template-columns: 18rem 1fr 1fr auto;
+
+        .chosen-container {
+            width: 100% !important;
+        }
+    }
 
     .kioscoPerso {
         display: flex;
@@ -255,18 +276,6 @@
             font-size: 3rem;
             text-align: center;
         }
-    }
-}
-
-.switches {
-    display: flex;
-    column-gap: 3rem;
-
-    .switchGroup {
-        display: flex;
-        align-items: center;
-        column-gap: 1rem;
-        font-size: 3rem;
     }
 }
 

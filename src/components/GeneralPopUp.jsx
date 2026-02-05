@@ -23,7 +23,7 @@ function GeneralPopUp({ setPopUp, headerIcon, headerTitle, children, onClose }) 
                     <p>{headerTitle}</p>
                     <IoMdCloseCircleOutline className="close" onClick={() => setPopUp(false)} />
                 </div>
-                <div className="body">{children}</div>
+                <div className="generalPopUpBody">{children}</div>
             </div>
         </>
     )
