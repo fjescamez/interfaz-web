@@ -135,7 +135,11 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
                 break;
             case "openFolder":
                 const openFolder = () => {
-                    window.location.href = `smb://CLOUDFLOW2023/Archivo%20Disengraf/TRABAJOS/${folderUrl}`;
+                    if (session.username === "a.artacho" || session.username === "n.morante") {
+                        window.location.href = `smb://192.4.26.120/Archivo%20Disengraf/TRABAJOS/${folderUrl}`;
+                    } else {
+                        window.location.href = `smb://CLOUDFLOW2023/Archivo%20Disengraf/TRABAJOS/${folderUrl}`;
+                    }
                 }
                 openFolder();
                 break;
