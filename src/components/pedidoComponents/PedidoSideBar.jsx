@@ -6,7 +6,6 @@ import { Tooltip as ReactTooltip } from "react-tooltip";
 import { useTabs } from "../../context/TabsContext";
 import { fetchData, postData } from "../../helpers/fetchData";
 import { notify } from "../../helpers/notify";
-
 import NoteTable from "../tableComponents/NoteTable";
 import VersionTable from "../tableComponents/VersionTable";
 import OrderLenTable from "../tableComponents/OrderLenTable";
@@ -24,7 +23,6 @@ import OrderInfoPopUp from "./OrderInfoPopUp";
 import TraceTextPopUp from "./TraceTextPopUp";
 import { useSession } from "../../context/SessionContext";
 import SignJobForm from "../formComponents/SignJobForm";
-import { PiStorefrontLight } from "react-icons/pi"
 import { orderTableInfo } from "../../helpers/tablesInfo";
 import DeleteForm from "../formComponents/DeleteForm";
 
@@ -135,7 +133,7 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
                 break;
             case "openFolder":
                 const openFolder = () => {
-                    if (session.username === "a.artacho" || session.username === "n.morante") {
+                    if (session.username === "a.artacho") {
                         window.location.href = `smb://192.4.26.120/Archivo%20Disengraf/TRABAJOS/${folderUrl}`;
                     } else {
                         window.location.href = `smb://CLOUDFLOW2023/Archivo%20Disengraf/TRABAJOS/${folderUrl}`;
