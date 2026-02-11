@@ -64,10 +64,14 @@
         .displayAuto {
             display: flex;
             gap: 1rem 2rem;
-            align-items: flex-end;
+            align-items: center;
 
             * {
                 flex: 1;
+            }
+
+            .formGroupRow {
+                max-width: fit-content !important;
             }
         }
     }

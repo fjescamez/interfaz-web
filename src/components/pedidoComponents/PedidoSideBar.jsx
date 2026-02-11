@@ -133,7 +133,7 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
                 break;
             case "openFolder":
                 const openFolder = () => {
-                    if (session.username === "a.artacho") {
+                    if (session.teleWork) {
                         window.location.href = `smb://192.4.26.120/Archivo%20Disengraf/TRABAJOS/${folderUrl}`;
                     } else {
                         window.location.href = `smb://CLOUDFLOW2023/Archivo%20Disengraf/TRABAJOS/${folderUrl}`;

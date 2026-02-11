@@ -1244,7 +1244,8 @@ export const strategyFormData = {
             labelTitle: "Nombre",
             inputType: "text",
             inputId: "cliente_nombre",
-            inputName: "cliente_nombre"
+            inputName: "cliente_nombre",
+            required: true
         },
         {
             htmlFor: "cliente_codigo",
@@ -1252,7 +1253,8 @@ export const strategyFormData = {
             labelTitle: "Código",
             inputType: "text",
             inputId: "cliente_codigo",
-            inputName: "cliente_codigo"
+            inputName: "cliente_codigo",
+            required: true
         },
         {
             htmlFor: "material",
@@ -2165,7 +2167,8 @@ export const userFormData = {
                     groups: [
                         "username",
                         "email",
-                        "password"
+                        "password",
+                        "teleWork"
                     ]
                 },
             ]
@@ -2266,6 +2269,14 @@ export const userFormData = {
             inputName: "password",
             required: true,
             minLength: 4
+        },
+        {
+            htmlFor: "teleWork",
+            labelId: "teleWorkLabel",
+            labelTitle: "Teletrabajo",
+            inputType: "checkbox",
+            inputId: "teleWork",
+            inputName: "teleWork"
         }
     ]
 };
