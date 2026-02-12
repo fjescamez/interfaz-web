@@ -45,7 +45,7 @@ function SideBarComponent({ isActive, setIsActive }) {
                 <div className={`icons ${isActive.pedidos ? "activeStroke" : ""}`} onClick={() => handleClick("pedidos", "PEDIDOS")} data-tooltip-id="my-tooltip" data-tooltip-content={"PEDIDOS"} >
                     <IoDocumentTextOutline style={{ color: "var(--pantone431c" }} />
                 </div>
-                {(isAdmin || session.teleWork) && (
+                {(isAdmin || session?.teleWork) && (
                     <>
                         <div className="border"></div>
                         <div className={`icons ${isActive.bandeja ? "active" : ""}`} onClick={() => handleClick("bandeja", "BANDEJA")} data-tooltip-id="my-tooltip" data-tooltip-content={"BANDEJA"} >

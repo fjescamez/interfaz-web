@@ -16,7 +16,7 @@ export function TabsProvider(props) {
         return path !== "/" ? [{ path, title }] : [];
     });
 
-    const createTab = (path, title, open = true) => {
+    const createTab = (path, title, navigateToTab = true) => {
         setTabs((prev) => {
             if (prev.some((tab) => tab.path === path)) {
                 return prev;
@@ -24,7 +24,7 @@ export function TabsProvider(props) {
             return [...prev, { path, title }];
         });
 
-        if (open) {
+        if (navigateToTab) {
             navigate(path);
         }
     };
