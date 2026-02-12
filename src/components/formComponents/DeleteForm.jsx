@@ -5,6 +5,7 @@ import { notify } from "../../helpers/notify";
 import { useTabs } from "../../context/TabsContext";
 import { useLocation } from "react-router-dom";
 import { useSession } from "../../context/SessionContext";
+import { addKeyListener } from "../../helpers/toggleModal";
 
 function DeleteForm({
     setModal,
@@ -28,6 +29,7 @@ function DeleteForm({
     const { closeTab } = useTabs();
     const location = useLocation();
     const { setSession } = useSession();
+    addKeyListener(setModal);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

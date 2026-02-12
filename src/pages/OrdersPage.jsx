@@ -17,7 +17,6 @@ function OrdersPage({ filter, filterBandeja }) {
     const [asignarPopUp, setAsignarPopUp] = useState(false);
     const { session } = useSession();
     let isManager = false;
-    let isTeletrabajo = false;
     let role;
     let username;
     if (session) {

@@ -2,8 +2,16 @@ import { notify } from '../../helpers/notify';
 import { postData } from '../../helpers/fetchData';
 import SubmitButton from '../buttons/SubmitButton';
 import PlayButton from '../buttons/PlayButton';
+import { useTabState } from '../../context/TabStateContext';
+import { useLocation } from "react-router-dom";
+import { useSession } from '../../context/SessionContext';
 
 function KioskSubmitButton({ state, updateState, buttonAction, buttonText, components }) {
+    const { postDataContext, updateTabState } = useTabState();
+    const location = useLocation();
+    const tabKey = location.pathname;
+    const { session } = useSession();
+
     const handleSubmit = async (action) => {
         updateState("hideSubmitButton", true);
         let dataToSend = {
@@ -45,28 +53,57 @@ function KioskSubmitButton({ state, updateState, buttonAction, buttonText, compo
         }
 
         if (action === "submit") {
+            dataToSend.tabKey = tabKey;
+            dataToSend.username = session?.username;
             if (state.isActive.trapping && !state.isTrappingDone) {
                 updateState("loadingTrapping", true);
+                updateTabState(tabKey, (prevState) => ({
+                    ...prevState,
+                    loadingTrapping: true
+                }));
                 dataToSend.holdInKiosk = true;
             } else {
-                updateState("loading", true);
+                /* updateState("loading", true);
+                updateTabState(tabKey, (prevState) => ({
+                    ...prevState,
+                    loading: true
+                })); */
             }
 
-            const result = await postData("orderKiosks/kioscoPedidoAuto", dataToSend);
-            if (result.status === "success") {
-                if (result.workable_id && result.node_id) {
-                    updateState("workableId", result.workable_id);
-                    updateState("nodeId", result.node_id);
-                    updateState("isTrappingWaiting", true);
-                    updateState("isOpen", (prevIsOpen) => ({
-                        ...prevIsOpen,
-                        trapping: true
-                    }));
+            await postDataContext(
+                "orderKiosks/kioscoPedidoAuto",
+                dataToSend,
+                (result) => {
+                    if (result.status === "success") {
+                        /* if (result.workable_id && result.node_id) {
+                            updateState("workableId", result.workable_id);
+                            updateState("nodeId", result.node_id);
+                            updateState("isTrappingWaiting", true);
+                            updateState("isOpen", (prevIsOpen) => ({
+                                ...prevIsOpen,
+                                trapping: true
+                            }));
+                            updateTabState(tabKey, (prevState) => ({
+                                ...prevState,
+                                isOpen: {
+                                    ...prevState.isOpen,
+                                    trapping: true
+                                },
+                                isTrappingWaiting: true,
+                                workableId: result.workable_id,
+                                nodeId: result.node_id,
+                                loadingTrapping: false
+                            }));
+                        } */
+                        /* notify("success", result.title, result.message); */
+                    } else {
+                        notify("error", result.title, result.message);
+                    }
+                },
+                (error) => {
+                    notify("error", "Error", "Ha ocurrido un error en el envío.");
                 }
-                notify("success", result.title, result.message);
-            } else {
-                notify("error", result.title, result.message);
-            }
+            );
             console.log(dataToSend);
         } else if (action === "saveConfig") {
             const activosDefault = Object.keys(state.isActive).filter(key => state.isActive[key]);

@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import FormSection from '../formComponents/FormSection'
+import { useEffect } from 'react'
 import FormGroup from '../formComponents/FormGroup';
 
 function ColoresComponent({ state, updateState, formData, colores, setColoresList, inputData, setInputData }) {

@@ -19,6 +19,15 @@ export const kioskActions = [
         steps: [3]
     },
     {
+        title: "AJUSTAR TINTAS",
+        id: "listTintasAjustar",
+        openOnActive: true,
+        onlyShowIfActive: true,
+        disableSwitch: true,
+        hideWhenConfig: true,
+        steps: [3]
+    },
+    {
         title: "CAMBIAN COLORES",
         id: "salidaColores",
         openOnActive: true,
@@ -67,16 +76,16 @@ export const kioskActions = [
         steps: [3]
     },
     {
-        title: "FREECUT",
-        id: "freecut",
-        openOnActive: true,
-        steps: [3]
-    },
-    {
         title: "CONFIG. AVANZADA MONTAJE",
         id: "configAvanzadaMontaje",
         openOnActive: true,
         onlyShowIfActive: true,
+        steps: [3]
+    },
+    {
+        title: "FREECUT",
+        id: "freecut",
+        openOnActive: true,
         steps: [3]
     },
     {
@@ -264,6 +273,36 @@ export const avanzadoFormData = {
             ],
             inputId: "Orientation",
             inputName: "Orientation"
+        },
+        {
+            htmlFor: "OrientationMadera",
+            labelId: "OrientationMaderaLabel",
+            labelTitle: "Orientación",
+            select: "simple",
+            options: [
+                {
+                    _id: "up",
+                    orientation: "up",
+                    textoOpcion: "Original"
+                },
+                {
+                    _id: "down",
+                    orientation: "down",
+                    textoOpcion: "Rotada 180º"
+                },
+                {
+                    _id: "right",
+                    orientation: "right",
+                    textoOpcion: "Rotada 90º"
+                },
+                {
+                    _id: "left",
+                    orientation: "left",
+                    textoOpcion: "Rotada -90º"
+                }
+            ],
+            inputId: "OrientationMadera",
+            inputName: "OrientationMadera"
         },
         {
             htmlFor: "StaggerDirection",

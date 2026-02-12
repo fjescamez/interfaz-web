@@ -3,7 +3,7 @@ import { userFormData } from "../../helpers/formsData";
 
 function UserForm({ setModal, mode, setTableData, setTotal, user, setUser }) {
     let userData = {};
-    let { username, name, lastname, role, departments, responsibleDepartments, email, _id } = user || {};
+    let { username, name, lastname, role, departments, responsibleDepartments, email, teleWork, _id } = user || {};
 
     if (mode && mode === "edit") {
         userData = {
@@ -13,7 +13,8 @@ function UserForm({ setModal, mode, setTableData, setTotal, user, setUser }) {
             role,
             departments,
             responsibleDepartments,
-            email
+            email,
+            teleWork
         }
     }
 

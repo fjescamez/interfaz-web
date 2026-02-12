@@ -1571,5 +1571,15 @@ export const strategyTableInfo = {
             active: false,
             key: "tipoTramado"
         }
+    ],
+    actions: [
+        {
+            title: "Duplicar",
+            action: "duplicar"
+        },
+        {
+            title: "Eliminar",
+            action: "eliminar"
+        }
     ]
 };

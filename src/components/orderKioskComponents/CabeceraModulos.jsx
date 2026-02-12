@@ -10,47 +10,37 @@ import ErrorSvg from '../../assets/svg/ErrorSvg';
 import Switch from "@mui/material/Switch";
 import WarningSvg from '../../assets/svg/WarningSvg';
 
-function CabeceraModulos({ state, openKey, originalState, updateState, option, components, configMode, handleReport }) {
+function CabeceraModulos({ state, originalState, updateState, option, components, configMode, handleReport }) {
     return (
-        <div className={`actionHeader ${(openKey && state.isOpen[openKey]) || state.isOpen[option.id] ? "open" : ""}`}>
+        <div className={`actionHeader ${state.isOpen[option.id] ? "open" : ""}`}>
             <Switch
                 className="kioskSwitch"
-                checked={openKey ? true : state.isActive[option.id] || false}
+                checked={state.isActive[option.id] || false}
                 disabled={option.disableSwitch || false}
                 onClick={() => {
                     if ((option.id === "salidaColores" || option.id === "listDigimark") && state.orderColors.length === 0) {
                         notify("warning", "Sin colores", "Este pedido no tiene colores");
                     } else {
-                        if (state.isActive[option.id] && ((openKey && state.isOpen[openKey]) || state.isOpen[option.id])) {
-                            if (openKey) {
-                                return;
-                            } else {
-                                updateState("isOpen", (prevIsOpen) => ({
-                                    ...prevIsOpen,
-                                    [option.id]: false
-                                }));
-                            }
-                        }
-
-                        if ((!state.isActive[option.id] || !state.isActive[openKey]) && option.openOnActive) {
-                            if (openKey) {
-                                return;
-                            } else {
-                                updateState("isOpen", (prevIsOpen) => ({
-                                    ...prevIsOpen,
-                                    [option.id]: true
-                                }));
-                            }
-                        }
-
-                        if (openKey) {
-                            return;
-                        } else {
-                            updateState("isActive", (prevIsActive) => ({
-                                ...prevIsActive,
-                                [option.id]: !prevIsActive[option.id]
+                        if (state.isActive[option.id] && (state.isOpen[option.id])) {
+                            updateState("isOpen", (prevIsOpen) => ({
+                                ...prevIsOpen,
+                                [option.id]: false
                             }));
+                        }
 
+                        if (!state.isActive[option.id] && option.openOnActive) {
+                            updateState("isOpen", (prevIsOpen) => ({
+                                ...prevIsOpen,
+                                [option.id]: true
+                            }));
+                        }
+
+                        updateState("isActive", (prevIsActive) => ({
+                            ...prevIsActive,
+                            [option.id]: !prevIsActive[option.id]
+                        }));
+
+                        if (state.chosenKiosk === "Automática") {
                             handleExceptions({
                                 module: option.id,
                                 state,
@@ -62,17 +52,10 @@ function CabeceraModulos({ state, openKey, originalState, updateState, option, c
             />
             <p onClick={() => {
                 if (!(option.id === "unitario" && state.step > 1) && !option.disableOpen) {
-                    if (openKey) {
-                        updateState("isOpen", (prevIsOpen) => ({
-                            ...prevIsOpen,
-                            [openKey]: !prevIsOpen[openKey]
-                        }))
-                    } else {
-                        updateState("isOpen", (prevIsOpen) => ({
-                            ...prevIsOpen,
-                            [option.id]: !prevIsOpen[option.id]
-                        }))
-                    }
+                    updateState("isOpen", (prevIsOpen) => ({
+                        ...prevIsOpen,
+                        [option.id]: !prevIsOpen[option.id]
+                    }))
                 }
             }} className="kioskModuleTitle">{option.title || option.elementId} <span>{state.isActive[option.id] && components[option.id]?.title || ""}</span></p>
             {!configMode && (state.orderReport.some(item => item.type && item.type.includes(option.id)) || state.fileReport.some(item => item.type && item.type.includes(option.id))) ? (
@@ -118,12 +101,7 @@ function CabeceraModulos({ state, openKey, originalState, updateState, option, c
                                 if (option.id === "unitario") {
                                     updateState((prev) => ({
                                         ...originalState,
-                                        unitarioMetadata: prev.unitarioMetadata,
-                                        unitarios: prev.unitarios,
-                                        unitarioData: prev.unitarioData,
-                                        order: prev.order,
-                                        orderXml: prev.orderXml,
-                                        client: prev.client,
+                                        chosenKiosk: prev.chosenKiosk,
                                         hideSubmitButton: false
                                     }));
                                 } else if (option.id === "reportePrevio" && !state.hideSubmitButton) {
@@ -141,7 +119,7 @@ function CabeceraModulos({ state, openKey, originalState, updateState, option, c
                         {((state.loadingOrderReport || state.loadingFileReport) && option.id === "reportePrevio") ? (
                             <OrbitProgress variant="dotted" color={"var(--highlight)"} size="small" />
                         ) : (
-                            (option.id === "reportePrevio" && state.hideSubmitButton) ? null : <HiOutlineRefresh className="refreshIcon" />
+                            (option.id === "reportePrevio" && state.hideSubmitButton) ? null : state.step > 2 && <HiOutlineRefresh className="refreshIcon" />
                         )}
                     </div>
                 ) : (
@@ -155,38 +133,24 @@ function CabeceraModulos({ state, openKey, originalState, updateState, option, c
             )
             }
             <div className="openArrow">
-                {(openKey && state.isOpen[openKey]) || state.isOpen[option.id] ?
+                {state.isOpen[option.id] ?
                     <MdKeyboardArrowDown
                         className="openArrowIcon"
                         onClick={() => {
-                            if (openKey) {
-                                updateState("isOpen", (prevIsOpen) => ({
-                                    ...prevIsOpen,
-                                    [openKey]: !prevIsOpen[openKey]
-                                }))
-                            } else {
-                                updateState("isOpen", (prevIsOpen) => ({
-                                    ...prevIsOpen,
-                                    [option.id]: !prevIsOpen[option.id]
-                                }))
-                            }
+                            updateState("isOpen", (prevIsOpen) => ({
+                                ...prevIsOpen,
+                                [option.id]: !prevIsOpen[option.id]
+                            }))
                         }} />
                     :
                     <MdKeyboardArrowRight
                         className="openArrowIcon"
                         onClick={() => {
                             if (!(option.id === "unitario" && state.step > 1) && !option.disableOpen) {
-                                if (openKey) {
-                                    updateState("isOpen", (prevIsOpen) => ({
-                                        ...prevIsOpen,
-                                        [openKey]: !prevIsOpen[openKey]
-                                    }))
-                                } else {
-                                    updateState("isOpen", (prevIsOpen) => ({
-                                        ...prevIsOpen,
-                                        [option.id]: !prevIsOpen[option.id]
-                                    }))
-                                }
+                                updateState("isOpen", (prevIsOpen) => ({
+                                    ...prevIsOpen,
+                                    [option.id]: !prevIsOpen[option.id]
+                                }))
                             }
                         }} />}
             </div>

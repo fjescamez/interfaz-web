@@ -212,10 +212,6 @@ function MontajeComponent({ state, orderXml, montajeData, configAvanzadaData, up
     }
   }, [orderXml]);
 
-  useEffect(() => {
-    console.log(montajeData);
-  }, [montajeData, configAvanzadaData]);
-
   return (
     <div className="actionBody">
       <div className="montaje">
@@ -295,7 +291,7 @@ function MontajeComponent({ state, orderXml, montajeData, configAvanzadaData, up
                   />
                   <p>{item.madera_tmedida}</p>
                 </div>
-                <div className="formGroup">
+                <div className={`formGroup ${montajeData[item.madera_tmedida]?.isConfigAvanzadaActive ? "hidden" : ""}`}>
                   <FormGroup
                     handleForm={(e) => updateState("montajeData", prev => ({
                       ...prev,
@@ -305,10 +301,10 @@ function MontajeComponent({ state, orderXml, montajeData, configAvanzadaData, up
                       }
                     }))}
                     value={montajeData[item.madera_tmedida]?.Orientation || ""}
-                    field={avanzadoFormData.formFields.find(field => field.htmlFor === "Orientation") || {}}
+                    field={avanzadoFormData.formFields.find(field => field.htmlFor === "OrientationMadera") || {}}
                   />
                 </div>
-                <div className="formGroup">
+                <div className={`formGroup ${montajeData[item.madera_tmedida]?.isConfigAvanzadaActive ? "hidden" : ""}`}>
                   <FormGroup
                     handleForm={(e) => updateState("montajeData", prev => ({
                       ...prev,
@@ -341,6 +337,17 @@ function MontajeComponent({ state, orderXml, montajeData, configAvanzadaData, up
                         ...prev,
                         [`configAvanzada${item.madera_tmedida}`]: true
                       }));
+
+                      updateState("configAvanzadaData", (prev) => {
+                        return prev.map(config => config.elementId === item.madera_tmedida ? {
+                          ...config,
+                          stations: [{
+                            ...config.stations[0],
+                            Orientation: montajeData[item.madera_tmedida]?.Orientation,
+                            HeadTurn: montajeData[item.madera_tmedida]?.HeadTurn
+                          }]
+                        } : config);
+                      });
                     }}
                   />
                   <p>Config. Avanzada</p>

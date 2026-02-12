@@ -1,9 +1,7 @@
 import Switch from '@mui/material/Switch';
 import { trappingFormData } from '../../helpers/orderKioskActions'
-import FormSection from '../formComponents/FormSection'
 import { useTabState } from '../../context/TabStateContext';
 import { notify } from '../../helpers/notify';
-
 import { useLocation } from "react-router-dom";
 import { useEffect } from 'react';
 import SubmitButton from '../buttons/SubmitButton';
@@ -95,19 +93,29 @@ function TrappingComponent({ state, id_pedido, trappingData, updateState, workab
             to_connector,
             id_pedido
         }, (res) => {
-            notify("success", res.title);
-            updateState("loadingTrapping", false);
-            updateTabState(key, applyTrappingConfirmation);
-            console.log(res);
+            if (action !== "modificar") {
+                updateState("loadingTrapping", false);
+                updateTabState(key, applyTrappingConfirmation);
+            }
 
             if (res.isTrappingCanceled) {
                 updateState("isTrappingCanceled", true);
                 updateState("isTrappingWaiting", false);
+                updateTabState(key, (prevState) => ({
+                    ...prevState,
+                    isTrappingCanceled: true,
+                    isTrappingWaiting: false
+                }));
             }
 
             if (action === "aceptar") {
                 updateState("isTrappingDone", true);
                 updateState("isTrappingWaiting", false);
+                updateTabState(key, (prevState) => ({
+                    ...prevState,
+                    isTrappingDone: true,
+                    isTrappingWaiting: false
+                }));
             }
         }, (err) => {
             notify("error", err.title);
@@ -115,7 +123,7 @@ function TrappingComponent({ state, id_pedido, trappingData, updateState, workab
             updateTabState(key, applyTrappingConfirmation);
         });
 
-        setLoadingTrappingTabState(false);
+        // setLoadingTrappingTabState(false);
     }
 
     return (

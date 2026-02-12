@@ -1,11 +1,16 @@
-import { createContext, useContext, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { postData } from "../helpers/fetchData";
+import useSocket from "../helpers/useSocket";
+import { notify } from "../helpers/notify";
+import { useSession } from "./SessionContext";
 
 const TabStateContext = createContext();
 
 export function TabStateProvider({ children }) {
     const [tabStates, setTabStates] = useState({});
     const closedTabKeysRef = useRef(new Set());
+    const socket = useSocket();
+    const { session } = useSession();
 
     // Guardar el estado
     const saveTabState = (key, state) => {
@@ -53,6 +58,28 @@ export function TabStateProvider({ children }) {
             }
         });
     };
+
+    useEffect(() => {
+        if (!socket) return;
+
+        socket.on("updateTabState", ({ key, newState, username, notification }) => {
+            if (username === session?.username) {
+                updateTabState(key, (prevState) => ({
+                    ...prevState,
+                    ...newState,
+                    isOpen: {
+                        ...prevState.isOpen,
+                        ...newState.isOpen
+                    }
+                }));
+                if (notification) notify(notification.type, notification.title, notification.message, notification.autoClose);
+            }
+        });
+
+        return () => {
+            socket.off("updateTabState");
+        };
+    }, [socket]);
 
     return (
         <TabStateContext.Provider value={{ tabStates, saveTabState, getTabState, removeTabState, updateTabState, postDataContext }}>

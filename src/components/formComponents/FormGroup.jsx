@@ -106,7 +106,7 @@ const FormGroup = React.memo(function FormGroup({
                             htmlFor={htmlFor}
                             id={labelId}
                             className={error ? "errorLabel" : "" + inputType === "checkbox" ? "fullLabel" : ""}
-                            onClick={() =>
+                            onClick={disable || disableField ? null : () =>
                                 handleForm({ target: { name: inputName, value: !value } })
                             }
                         >

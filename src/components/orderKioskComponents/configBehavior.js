@@ -30,6 +30,14 @@ export function kioskConfigAuto({ orderXml, actividad, fileReport, setIsActive, 
         }));
     }
 
+    // Montaje
+    if (isCliche) {
+        setIsActive(prev => ({
+            ...prev,
+            montaje: true
+        }));
+    }
+
     // Plotter
     if (tecnicos.plotter === "-1" || tecnicos.plotter === "X") {
         setIsActive(prev => ({

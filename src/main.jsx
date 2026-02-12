@@ -13,17 +13,17 @@ import { TabStateProvider } from './context/TabStateContext'
 createRoot(document.getElementById('root')).render(
   //<StrictMode>
   <ClienteFilterProvider>
-    <HashRouter>
-      <TabStateProvider>
-        <TabsProvider>
-          <SessionProvider>
+    <SessionProvider>
+      <HashRouter>
+        <TabStateProvider>
+          <TabsProvider>
             <InputPistolaProvider>
               <App />
             </InputPistolaProvider>
-          </SessionProvider>
-        </TabsProvider>
-      </TabStateProvider>
-    </HashRouter>
+          </TabsProvider>
+        </TabStateProvider>
+      </HashRouter>
+    </SessionProvider>
   </ClienteFilterProvider>
   //</StrictMode>,
 )

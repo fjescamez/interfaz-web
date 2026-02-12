@@ -170,6 +170,9 @@ function GeneralForm({
             setTableData(result.allItems);
         } else if (result.newItem) {
             setTableData(prev => [result.newItem, ...prev]);
+            if (setTotal) {
+                setTotal(prev => prev + 1);
+            }
         } else if (result.updatedItem) {
             if (setTableData) {
                 setTableData(prev =>

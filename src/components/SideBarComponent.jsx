@@ -15,8 +15,8 @@ import { FaScrewdriverWrench } from "react-icons/fa6";
 function SideBarComponent({ isActive, setIsActive }) {
     const { createTab } = useTabs();
     const { session } = useSession();
-    const teletabajo = ["n.morante", "a.artacho"];
-    const isTeletrabajo = teletabajo.includes(session?.username);
+    /* const teletabajo = ["n.morante", "a.artacho"];
+    const isTeletrabajo = teletabajo.includes(session?.username); */
     const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
     const isProduccion = session?.departments?.includes("Solido") || session?.departments?.includes("Liquido");
     const isOficina = session?.departments?.includes("Oficina");
@@ -45,7 +45,7 @@ function SideBarComponent({ isActive, setIsActive }) {
                 <div className={`icons ${isActive.pedidos ? "activeStroke" : ""}`} onClick={() => handleClick("pedidos", "PEDIDOS")} data-tooltip-id="my-tooltip" data-tooltip-content={"PEDIDOS"} >
                     <IoDocumentTextOutline style={{ color: "var(--pantone431c" }} />
                 </div>
-                {(isAdmin || isTeletrabajo) && (
+                {(isAdmin || session.teleWork) && (
                     <>
                         <div className="border"></div>
                         <div className={`icons ${isActive.bandeja ? "active" : ""}`} onClick={() => handleClick("bandeja", "BANDEJA")} data-tooltip-id="my-tooltip" data-tooltip-content={"BANDEJA"} >

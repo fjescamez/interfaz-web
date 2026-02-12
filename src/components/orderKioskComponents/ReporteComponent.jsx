@@ -5,7 +5,7 @@ import ErrorSvg from "../../assets/svg/ErrorSvg";
 import { TiInfoLarge } from 'react-icons/ti';
 import "./KioskComponents.css";
 
-function ReporteComponent({ loadingOrderReport, loadingFileReport, orderReport, fileReport, reportModification, setInfoPopUp, setInfoContent }) {
+function ReporteComponent({ loadingOrderReport, loadingFileReport, orderReport, fileReport, setInfoPopUp, setInfoContent }) {
     return (
         <div className="actionBody">
             <div className="reportePrevio">

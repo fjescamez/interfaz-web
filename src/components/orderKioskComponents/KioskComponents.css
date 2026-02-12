@@ -6,7 +6,7 @@
 }
 
 .actionBody {
-    padding: 2rem;
+    padding: 2rem 5rem;
     align-items: center;
     background: white;
     background: linear-gradient(0deg, rgb(255, 255, 255) 60%, rgb(184, 190, 195) 100%);
@@ -424,6 +424,56 @@
 
         h2 {
             font-size: 2.5rem;
+        }
+    }
+}
+
+.carruselTintas {
+    display: flex;
+    flex-direction: column;
+    row-gap: 3rem;
+
+    .ajustarTintas {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .ajustarTinta {
+            display: flex;
+            flex-direction: column;
+            row-gap: 2.5rem;
+            min-width: 30rem;
+
+            .tintaTitle {
+                font-size: 3rem;
+                text-align: center;
+            }
+
+            .listadoColores {
+                display: flex;
+                flex-direction: column;
+                row-gap: 1.5rem;
+            }
+        }
+    }
+
+    .indexes {
+        display: flex;
+        justify-content: center;
+        column-gap: 1.5rem;
+        max-width: 100%;
+        overflow-x: auto;
+
+        .index {
+            min-width: 1rem;
+            min-height: 1rem;
+            border-radius: 50%;
+            background-color: var(--pantone431c);
+            cursor: pointer;
+
+            &.active {
+                background-color: var(--highlight);
+            }
         }
     }
 }

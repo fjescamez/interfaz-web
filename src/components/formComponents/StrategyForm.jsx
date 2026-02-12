@@ -7,8 +7,9 @@ import ExecutingComponent from "../ExecutingComponent";
 import { fetchDataNoLimits, postData } from "../../helpers/fetchData";
 import FormGroup from "./FormGroup";
 import SubmitButton from "../buttons/SubmitButton";
+import { notify } from "../../helpers/notify";
 
-function StrategyForm({ setModal, mode, itemsData, clienteDato }) {
+function StrategyForm({ setModal, mode, itemsData, clienteDato, setTableData, setTotal }) {
     const clickableSections = strategyFormData.formSections.filter(section => section.key !== "cliente");
     const [strategyData, setStrategyData] = useState({});
     const [strategyPopUp, setStrategyPopUp] = useState(false);
@@ -29,11 +30,25 @@ function StrategyForm({ setModal, mode, itemsData, clienteDato }) {
         }
     };
 
-    const handleListClick = (item) => {
+    const handleListClick = async (item) => {
         if (popUpTitle === "ESTRATEGIAS PCW") {
-            postData("strategies/readJson", { filePath: item.filePath });
+            const formFields = strategyFormData.formSections.find(section => section.key === clickedSection).rows.flatMap(row => row.groups);
+            const estrategia = await postData("strategies/readJson", { filePath: item.filePath, fileName: item.textoListado });
+
+            formFields.forEach(field => {
+                if (field !== "perfil_tipo") {
+                    setStrategyData(prevData => ({
+                        ...prevData,
+                        [field]: estrategia[field]
+                    }));
+                }
+            });
+            setStrategyPopUp(false);
         } else {
             const formFields = strategyFormData.formSections.find(section => section.key === clickedSection).rows.flatMap(row => row.groups);
+            if (clickedSection === "perfilColor" && !strategyData.perfil_tipo) {
+                return notify('warning', 'Selecciona primero un tipo de perfil');
+            }
 
             formFields.forEach(field => {
                 if (field !== "perfil_tipo") {
@@ -57,8 +72,7 @@ function StrategyForm({ setModal, mode, itemsData, clienteDato }) {
         } else {
             setStrategyData({
                 cliente_nombre: clienteDato ? clienteDato.name : "",
-                cliente_codigo: clienteDato ? clienteDato.code : "",
-                perfil_tipo: "Tramado - Papel Semi mate"
+                cliente_codigo: clienteDato ? clienteDato.code : ""
             });
         }
     }, []);
@@ -74,6 +88,8 @@ function StrategyForm({ setModal, mode, itemsData, clienteDato }) {
                 mode={mode}
                 clickableSections={clickableSections}
                 onClickSection={handleSectionClick}
+                setTableData={setTableData}
+                setTotal={setTotal}
             />
         ) : (
             popUpList.length > 0 ? (
@@ -97,6 +113,7 @@ function StrategyForm({ setModal, mode, itemsData, clienteDato }) {
                                     labelTitle: "Tipo Perfil",
                                     select: "simple",
                                     options: [
+                                        "",
                                         "Tramado - Papel Semi mate",
                                         "Tramado - Papel Premium",
                                         "Continuo - Papel Semi mate",

@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import NotifyComponent from "../components/NotifyComponent";
 
-export function notify(type, title, body = "") {
+export function notify(type, title, body = "", autoClose = 750) {
     let toastMethod = "";
 
     if (type === "success") {
@@ -18,6 +18,6 @@ export function notify(type, title, body = "") {
         icon: false,
         className: 'toast',
         closeOnClick: true,
-        autoClose: 750
+        autoClose: autoClose
     });
 }
