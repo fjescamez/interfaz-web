@@ -207,4 +207,9 @@ export function handleExceptions({ module, state, updateState }) {
             salidaColores: true
         }));
     }
+
+    if (module === "otraDocumentacion" && isActive.otraDocumentacion) {
+        updateState("otraDocumentacion", {});
+        updateState("countOtraDoc", {});
+    }
 }
