@@ -2,9 +2,12 @@ import { useState } from "react";
 import Table from "../components/Table.jsx";
 import { strategyTableInfo } from "../helpers/tablesInfo.jsx";
 import { postData } from "../helpers/fetchData.jsx";
+import { useSession } from "../context/SessionContext.jsx";
 
 function StrategyPage({ filter }) {
     const [checkedRows, setCheckedRows] = useState([]);
+    const { session } = useSession();
+    const isTecnico = session.departments.includes("Tecnico");
 
     const strategyActions = async (variables) => {
         const { action, data, setTableData } = variables;
@@ -30,6 +33,7 @@ function StrategyPage({ filter }) {
             checkedRows={checkedRows}
             setCheckedRows={setCheckedRows}
             actions={strategyActions}
+            publicForm={isTecnico}
         />
     )
 }

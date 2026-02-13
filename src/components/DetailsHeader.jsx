@@ -54,7 +54,7 @@ function DetailsHeader({
                                 <img src={`${urlApi}/uploads/avatars/${avatar}`} alt="" onClick={isAdmin ? (() => { if (toggleKiosk) toggleKiosk(endPoint, id, kioskData) }) : undefined} />
                             </div>
                         }
-                        {!hideDeleteIcon && <BsTrash3Fill className="delete" onClick={isAdmin ? (() => setDeletePopup(true)) : undefined} />}
+                        {(!hideDeleteIcon && isAdmin) && <BsTrash3Fill className="delete" onClick={isAdmin ? (() => setDeletePopup(true)) : undefined} />}
                     </div>
                 ) : (
                     <div className="insteadOfActions">

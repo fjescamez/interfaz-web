@@ -20,8 +20,6 @@ import { normalizeData } from "../helpers/normalizeData";
 import { fetchData } from "../helpers/fetchData";
 import { ThreeDot } from "react-loading-indicators";
 import { notify } from "../helpers/notify";
-
-import { MdLockOpen, MdLockOutline } from "react-icons/md";
 import { BsTrash3Fill } from "react-icons/bs";
 import useSocket from "../helpers/useSocket";
 import { addKeyListener } from "../helpers/toggleModal";
