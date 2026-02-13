@@ -3,9 +3,9 @@ import { RiProhibited2Line } from "react-icons/ri";
 import { FaPause, FaPlay, FaFlag } from "react-icons/fa";
 import TrappingComponent from "./orderKioskComponents/TrappingComponent";
 import { useEffect, useState } from "react";
-import ExecutingComponent from "./ExecutingComponent";
 import useSocket from "../helpers/useSocket";
 import { useSession } from "../context/SessionContext";
+import { RxCross2 } from "react-icons/rx";
 
 function WorkableComponent({ workable, id_pedido, trappingData }) {
     const { workable_name, start_whitepaper_name, start_node_name, whitepaper_name, log: nodeHistory, workable_state, workable_aborted, workable_done, workable_hold_in_kiosk } = workable;
@@ -48,7 +48,7 @@ function WorkableComponent({ workable, id_pedido, trappingData }) {
             <div className="workableItem">
                 <div className="workableHeader">
                     <div className="icon">{
-                        workable_aborted ? <RiProhibited2Line color="red" /> : workable_done ? <FaFlag color="green" /> : workable_hold_in_kiosk ? <FaPause /> : <FaPlay color="green" />
+                        workable_state === "error" ? <RxCross2 color="red" /> : workable_aborted ? <RiProhibited2Line color="red" /> : workable_done ? <FaFlag color="yellowgreen" /> : workable_hold_in_kiosk ? <FaPause /> : <FaPlay color="green" />
                     }</div>
                     <p>{workable_name}</p>
                 </div>

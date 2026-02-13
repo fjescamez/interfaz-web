@@ -1,9 +1,10 @@
 import "./JacketComponent.css";
 import { RiProhibited2Line } from "react-icons/ri";
 import { FaPause, FaPlay, FaFlag } from "react-icons/fa";
+import { RxCross2 } from "react-icons/rx";
 
 function JacketComponent({ jacket, selectedJacket, setSelectedJacket }) {
-    const { birth, aborted, done, hold_in_kiosk, name } = jacket;
+    const { birth, aborted, done, hold_in_kiosk, name, log: workables } = jacket;
 
     const formattedDate = new Date(birth).toLocaleString("es-ES", {
         day: "2-digit",
@@ -18,7 +19,7 @@ function JacketComponent({ jacket, selectedJacket, setSelectedJacket }) {
         <div className={`jacketItem ${selectedJacket?._id === jacket._id ? "selected" : ""}`} onClick={() => setSelectedJacket(jacket)}>
             <div className="left">
                 <div className="icon">{
-                    aborted ? <RiProhibited2Line color="red" /> : done ? <FaFlag color="green" /> : hold_in_kiosk ? <FaPause /> : <FaPlay color="green" />
+                    workables.some(w => w.workable_state === "error") ? <RxCross2 color="red" /> : aborted ? <RiProhibited2Line color="red" /> : done ? <FaFlag color="green" /> : hold_in_kiosk ? <FaPause /> : <FaPlay color="green" />
                 }</div>
                 <p className="title">{name}</p>
             </div>
