@@ -57,7 +57,7 @@ function ClientDetails({ toggleKiosk }) {
             <div className="detailsContainer">
                 <DetailsHeader
                     title={client.name}
-                    subtitle={client.code}
+                    subtitle={`(${client.code})`}
                     avatar={client.avatar}
                     endPoint={"clients"}
                     id={id}

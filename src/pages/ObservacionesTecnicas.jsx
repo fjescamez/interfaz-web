@@ -66,7 +66,7 @@ function ObservacionesTecnicas() {
             <div className="detailsContainer">
                 <DetailsHeader
                     title={"Observaciones Técnicas"}
-                    subtitle={"Pedido " + orderData?.id_pedido}
+                    subtitle={`Pedido (${orderData?.id_pedido})`}
                     /* toggleKiosk={toggleKiosk}
                     kioskData={client}
                     setEditPopup={setEditPopup}

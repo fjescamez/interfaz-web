@@ -29,8 +29,8 @@ export function TabsProvider(props) {
         }
     };
 
-    const closeTab = (path) => {
-        if (location.pathname === path) {
+    const closeTab = (path, moveToNext = true) => {
+        if (moveToNext && location.pathname === path) {
             const idx = tabs.findIndex(tab => tab.path === path);
             const nextTab = tabs[idx - 1]?.path || tabs[idx + 1]?.path;
             if (nextTab) {
@@ -56,7 +56,7 @@ export function TabsProvider(props) {
 
     useEffect(() => {
         const handleKeyUp = (e) => {
-            if (e.key === "ArrowLeft" && e.altKey && e.ctrlKey) {                
+            if (e.key === "ArrowLeft" && e.altKey && e.ctrlKey) {
                 const currentIndex = filteredTabs.findIndex(tab => tab.path === location.pathname);
                 if (currentIndex > 0) {
                     navigate(filteredTabs[currentIndex - 1].path);

@@ -11,12 +11,11 @@ import { BsFillInboxFill } from "react-icons/bs";
 import { useSession } from "../context/SessionContext";
 import { MdBarcodeReader } from "react-icons/md";
 import { FaScrewdriverWrench } from "react-icons/fa6";
+import { PiStorefrontLight } from "react-icons/pi"
 
 function SideBarComponent({ isActive, setIsActive }) {
     const { createTab } = useTabs();
     const { session } = useSession();
-    /* const teletabajo = ["n.morante", "a.artacho"];
-    const isTeletrabajo = teletabajo.includes(session?.username); */
     const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
     const isProduccion = session?.departments?.includes("Solido") || session?.departments?.includes("Liquido");
     const isOficina = session?.departments?.includes("Oficina");
@@ -44,6 +43,10 @@ function SideBarComponent({ isActive, setIsActive }) {
                 <div className="border"></div>
                 <div className={`icons ${isActive.pedidos ? "activeStroke" : ""}`} onClick={() => handleClick("pedidos", "PEDIDOS")} data-tooltip-id="my-tooltip" data-tooltip-content={"PEDIDOS"} >
                     <IoDocumentTextOutline style={{ color: "var(--pantone431c" }} />
+                </div>
+                <div className="border"></div>
+                <div className={`icons ${isActive.kiosco ? "active" : ""}`} onClick={() => handleClick("kiosco", "KIOSCO GENERAL")} data-tooltip-id="my-tooltip" data-tooltip-content={"KIOSCO GENERAL"} >
+                    <PiStorefrontLight />
                 </div>
                 {(isAdmin || session?.teleWork) && (
                     <>

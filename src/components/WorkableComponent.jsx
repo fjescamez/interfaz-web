@@ -1,0 +1,80 @@
+import "./WorkableComponent.css";
+import { RiProhibited2Line } from "react-icons/ri";
+import { FaPause, FaPlay, FaFlag } from "react-icons/fa";
+import TrappingComponent from "./orderKioskComponents/TrappingComponent";
+import { useEffect, useState } from "react";
+import ExecutingComponent from "./ExecutingComponent";
+import useSocket from "../helpers/useSocket";
+import { useSession } from "../context/SessionContext";
+
+function WorkableComponent({ workable, id_pedido, trappingData }) {
+    const { workable_name, start_whitepaper_name, start_node_name, whitepaper_name, log: nodeHistory, workable_state, workable_aborted, workable_done, workable_hold_in_kiosk } = workable;
+    const socket = useSocket();
+    const { session } = useSession();
+
+    const [state, setState] = useState({
+        id_pedido,
+        trappingData: trappingData,
+        loadingTrapping: false,
+        isTrappingCanceled: false,
+        isTrappingDone: false,
+        isTrappingWaiting: true
+    });
+
+    const updateState = (key, value) => {
+        setState(prev => ({
+            ...prev,
+            [key]: typeof value === "function" ? value(prev[key]) : value
+        }));
+    };
+
+    useEffect(() => {
+        if (!socket) return;
+
+        socket.on("updateKiosk", ({ username, isTrappingWaiting, id_pedido }) => {
+            if (username === session?.username && isTrappingWaiting && state.id_pedido === id_pedido) {
+                updateState("isTrappingWaiting", true);
+                updateState("loadingTrapping", false);
+            }
+        });
+
+        return () => {
+            socket.off("updateKiosk");
+        };
+    }, [socket]);
+
+    return (
+        <>
+            <div className="workableItem">
+                <div className="workableHeader">
+                    <div className="icon">{
+                        workable_aborted ? <RiProhibited2Line color="red" /> : workable_done ? <FaFlag color="green" /> : workable_hold_in_kiosk ? <FaPause /> : <FaPlay color="green" />
+                    }</div>
+                    <p>{workable_name}</p>
+                </div>
+                <div className="workableBody">
+                    <div className="workableInfo">
+                        <p><span className="bold">Inicio</span> {start_whitepaper_name} - {start_node_name}</p>
+                        <p><span className="bold">Actual</span> {whitepaper_name} - {nodeHistory[nodeHistory.length - 1]?.node_name}</p>
+                        <p><span className="bold">Estado</span> {workable_state} {workable_aborted && "(cancelado)"}</p>
+                        <p><span className="bold">Finalizado</span> {workable_done ? "Sí" : "No"}</p>
+                    </div>
+                    {(whitepaper_name === "Iniciar Tarea_2020" && workable_hold_in_kiosk && nodeHistory[nodeHistory.length - 1]?.node_name === "Aprobación") && (
+                        <div className="trappingComponent">
+                            <TrappingComponent
+                                state={state}
+                                updateState={updateState}
+                                id_pedido={state.id_pedido}
+                                workableId={workable.workable}
+                                nodeId={nodeHistory[nodeHistory.length - 1]?.waiting_room?.node}
+                                fromWorkable={true}
+                            />
+                        </div>
+                    )}
+                </div>
+            </div>
+        </>
+    )
+}
+
+export default WorkableComponent

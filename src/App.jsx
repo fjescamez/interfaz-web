@@ -51,6 +51,7 @@ import NotificacionesStockPage from "./pages/NotificacionesStockPage";
 import OrdenesCompraPage from "./pages/OrdenesCompraPage";
 import AddStockOrderPage from "./pages/AddStockOrderPage";
 import Soporte from "./pages/Soporte";
+import KioscoPage from "./pages/KioscoPage";
 
 function OrderKioskRouted({ configMode }) {
   const { id } = useParams();
@@ -63,7 +64,7 @@ function OrderKioskRouted({ configMode }) {
 }
 
 function App() {
-  const icons = ["home", "pedidos", "bandeja", "len", "clientes", "produccion", "pistola", "stock", "usuarios", "soporte"];
+  const icons = ["home", "pedidos", "kiosco", "bandeja", "len", "clientes", "produccion", "pistola", "stock", "usuarios", "soporte"];
   const location = useLocation();
   const { session } = useSession();
   const navigate = useNavigate();
@@ -79,6 +80,7 @@ function App() {
   const getActiveFromPath = (pathname) => {
     if (pathname.startsWith("/home")) return "home";
     if (pathname.startsWith("/pedidos")) return "pedidos";
+    if (pathname.startsWith("/kiosco")) return "kiosco";
     if (pathname.startsWith("/bandeja")) return "bandeja";
     if (pathname.startsWith("/len")) return "len";
     if (pathname.startsWith("/clientes")) return "clientes";
@@ -209,7 +211,7 @@ function App() {
           <Route path="/pedidos" element={<OrdersPage />} />
           <Route path="/pedidos/:id" element={<OrderDetails />} />
           <Route path="/pedidos/:id/kiosco" element={<OrderKioskRouted />} />
-          <Route path="/cliente/:id/kioscoConfig" element={<OrderKioskRouted configMode={true} />} />
+          <Route path="/kiosco" element={<KioscoPage />} />
           <Route path="/bandeja" element={<OrdersPage filterBandeja={true} />} />
           <Route path="/bandeja/:id" element={<OrderDetails />} />
           <Route path="/infoEmail/:id_pedido/:id" element={<EmailDetails />} />
@@ -222,6 +224,7 @@ function App() {
           <Route path="/clientes/:id/grupos" element={<GroupsPage filter={true} />} />
           <Route path="/clientes/:id/estrategias" element={<StrategyPage filter={true} />} />
           <Route path="/clientes/:id/configuracion" element={<ClientConfig toggleKiosk={toggleKiosk} />} />
+          <Route path="/cliente/:id/kioscoConfig" element={<OrderKioskRouted configMode={true} />} />
           <Route path="/estrategias" element={<StrategyPage />} />
           <Route path="/estrategias/:id" element={<StrategyDetails />} />
           <Route path="/contactos" element={<ContactsPage />} />

@@ -120,7 +120,7 @@ function ClientConfig({ toggleKiosk }) {
             <div className="detailsContainer">
                 <DetailsHeader
                     title={client.name}
-                    subtitle={"Configuración"}
+                    subtitle={"(Configuración)"}
                     avatar={client.avatar}
                     endPoint={"clients"}
                     id={id}

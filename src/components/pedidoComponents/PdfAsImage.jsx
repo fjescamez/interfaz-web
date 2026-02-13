@@ -15,11 +15,17 @@ function PdfAsImage({ url, className, noOpen }) {
         if (!url) return;
 
         setImgSrc(null);
+        let pdfDoc = null;
+        let cancelled = false;
 
         const renderPdf = async () => {
             try {
-                const pdf = await pdfjsLib.getDocument(`${urlApi}/pdf/${url}`).promise;
-                const page = await pdf.getPage(1); // primera página
+                pdfDoc = await pdfjsLib.getDocument(`${urlApi}/pdf/${url}`).promise;
+                if (cancelled) {
+                    await pdfDoc.destroy();
+                    return;
+                }
+                const page = await pdfDoc.getPage(1); // primera página
 
                 const scale = 0.5; // resolución
                 const viewport = page.getViewport({ scale });
@@ -34,7 +40,7 @@ function PdfAsImage({ url, className, noOpen }) {
                 // Guardamos el PNG como dataURL
                 setImgSrc(canvas.toDataURL("image/png"));
             } catch (err) {
-                console.error("Error al renderizar PDF:", err);
+                if (!cancelled) console.error("Error al renderizar PDF:", err);
             }
         };
 
@@ -42,7 +48,12 @@ function PdfAsImage({ url, className, noOpen }) {
             setImgSrc("/assets/img/sinUnitario.png");
         } else {
             renderPdf();
-        }        
+        }
+
+        return () => {
+            cancelled = true;
+            if (pdfDoc) pdfDoc.destroy();
+        };
     }, [url]);
 
     return (

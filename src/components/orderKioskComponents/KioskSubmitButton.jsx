@@ -5,14 +5,23 @@ import PlayButton from '../buttons/PlayButton';
 import { useTabState } from '../../context/TabStateContext';
 import { useLocation } from "react-router-dom";
 import { useSession } from '../../context/SessionContext';
+import { useTabs } from '../../context/TabsContext';
 
 function KioskSubmitButton({ state, updateState, buttonAction, buttonText, components }) {
-    const { postDataContext, updateTabState } = useTabState();
+    const { postDataContext, updateTabState, removeTabState } = useTabState();
+    const { createTab } = useTabs();
     const location = useLocation();
     const tabKey = location.pathname;
     const { session } = useSession();
 
     const handleSubmit = async (action) => {
+        if (
+            state.orderReport.some(item =>
+                item.type &&
+                Object.keys(state.isActive).some(key => state.isActive[key] && item.type.includes(key))
+            )
+        ) return notify("warning", "Error de kiosco", "Alguno de los módulos a ejecutar tiene errores.", 1500);
+
         updateState("hideSubmitButton", true);
         let dataToSend = {
             _id: state.order?._id || "",
@@ -70,12 +79,12 @@ function KioskSubmitButton({ state, updateState, buttonAction, buttonText, compo
                 })); */
             }
 
-            await postDataContext(
+            /* postDataContext(
                 "orderKiosks/kioscoPedidoAuto",
                 dataToSend,
                 (result) => {
                     if (result.status === "success") {
-                        /* if (result.workable_id && result.node_id) {
+                        if (result.workable_id && result.node_id) {
                             updateState("workableId", result.workable_id);
                             updateState("nodeId", result.node_id);
                             updateState("isTrappingWaiting", true);
@@ -94,8 +103,8 @@ function KioskSubmitButton({ state, updateState, buttonAction, buttonText, compo
                                 nodeId: result.node_id,
                                 loadingTrapping: false
                             }));
-                        } */
-                        /* notify("success", result.title, result.message); */
+                        }
+                        notify("success", result.title, result.message);
                     } else {
                         notify("error", result.title, result.message);
                     }
@@ -103,8 +112,10 @@ function KioskSubmitButton({ state, updateState, buttonAction, buttonText, compo
                 (error) => {
                     notify("error", "Error", "Ha ocurrido un error en el envío.");
                 }
-            );
-            console.log(dataToSend);
+            ); */
+            postData("orderKiosks/kioscoPedidoAuto", dataToSend);
+            createTab("/kiosco", "KIOSCO GENERAL");
+            removeTabState(tabKey);
         } else if (action === "saveConfig") {
             const activosDefault = Object.keys(state.isActive).filter(key => state.isActive[key]);
             const abiertosDefault = Object.keys(state.isOpen).filter(key => state.isOpen[key]);

@@ -1,0 +1,21 @@
+.kioskContainer {
+    padding: 0 10rem;
+    display: flex;
+    column-gap: 2rem;
+    
+    .jacketList {
+        min-width: 50%;
+        max-width: 50%;
+        display: flex;
+        flex-direction: column;
+        row-gap: 0.5rem;
+    }
+
+    .workableList {
+        min-width: 50%;
+        max-width: 50%;
+        display: flex;
+        flex-direction: column;
+        row-gap: 0.5rem;
+    }
+}

@@ -100,7 +100,7 @@ function StrategyDetails() {
       <div className="detailsContainer">
         <DetailsHeader
           title={`Estrategia ${strategy?.codigo_estrategia || ""}`}
-          subtitle={strategy?.cliente_codigo}
+          subtitle={`(${strategy?.cliente_codigo})`}
           endPoint={"strategies"}
           setEditPopup={setEditPopup}
           setDeletePopup={setDeletePopup}

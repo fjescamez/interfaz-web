@@ -38,7 +38,7 @@ import useSocket from "../helpers/useSocket";
 
 function OrderKiosk({ configMode }) {
   const { id } = useParams();
-  const { tabs } = useTabs();
+  const { tabs, closeTab } = useTabs();
   const { saveTabState, getTabState, updateTabState, postDataContext } = useTabState();
   const location = useLocation();
   const tabKey = location.pathname;
@@ -158,6 +158,18 @@ function OrderKiosk({ configMode }) {
     return () => {
       socket.off('kioskTest'); // limpiar listener
     };
+  }, [socket]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on('closeTab', () => {
+      closeTab(tabKey, false);
+    });
+
+    return () => {
+      socket.off('closeTab');
+    }
   }, [socket]);
 
   useEffect(() => {
@@ -680,10 +692,10 @@ function OrderKiosk({ configMode }) {
       noSave: true
     },
     "trapping": {
-      title: state.trappingData.manual ? "Manual" : `
-      ${state.trappingData.distancia_trapping} mm,
-      ${state.trappingData.intensidad}%,
-      ${state.trappingData.remetido}${state.trappingData.remetido !== "No" ? `, ${state.trappingData.distancia_remetido} mm` : ""}
+      title: state?.trappingData?.manual ? "Manual" : `
+      ${state.trappingData?.distancia_trapping} mm,
+      ${state.trappingData?.intensidad}%,
+      ${state.trappingData?.remetido}${state.trappingData.remetido !== "No" ? `, ${state.trappingData.distancia_remetido} mm` : ""}
       `,
       component: <TrappingComponent state={state} id_pedido={state.order?.id_pedido} trappingData={state.trappingData} updateState={updateState} workableId={state.workableId} nodeId={state.nodeId} loadingTrapping={state.loadingTrapping} isTrappingDone={state.isTrappingDone} isTrappingWaiting={state.isTrappingWaiting} isTrappingCanceled={state.isTrappingCanceled} />,
       data: state.trappingData
@@ -784,7 +796,7 @@ function OrderKiosk({ configMode }) {
                   : `Kiosco ${state.order?.id_pedido || ""}`
               }
               subtitle={
-                configMode ? "" : state.orderXml?.numero?.cliente_nombre || ""
+                configMode ? "" : `(${state.orderXml?.numero?.cliente_nombre || ""})`
               }
               insteadOfActions={
                 <div className="formGroup">

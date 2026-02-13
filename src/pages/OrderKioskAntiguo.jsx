@@ -1057,7 +1057,7 @@ function OrderKioskAntiguo({ configMode }) {
                   : `Kiosco ${state.order?.id_pedido || ""}`
               }
               subtitle={
-                configMode ? "" : state.orderXml?.numero?.cliente_nombre || ""
+                configMode ? "" : `(${state.orderXml?.numero?.cliente_nombre || ""})`
               }
               insteadOfActions={
                 <div className="formGroup">

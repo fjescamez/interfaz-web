@@ -130,9 +130,9 @@ function OrderDetails() {
     }
   }, [fullOrder]);
 
-  const fechaHora = orderXml.actividad?.revisiones.revision[0].revision_fechahora;
+  const fechaHora = orderXml?.actividad?.revisiones?.revision[0]?.revision_fechahora;
   const fechaRevision = fechaHora?.split(" ");
-  const filePath = fullOrder.unitario?.includes("sinUnitario.png") ? "" : fullOrder.unitario?.replace("cloudflow://", "").replace("PEDIDOS_", "Pedidos ");
+  const filePath = fullOrder?.unitario?.includes("sinUnitario.png") ? "" : fullOrder?.unitario?.replace("cloudflow://", "").replace("PEDIDOS_", "Pedidos ");
 
   return (
     fullOrder._id ? (

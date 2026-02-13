@@ -6,11 +6,13 @@ import { useLocation } from "react-router-dom";
 import { useEffect } from 'react';
 import SubmitButton from '../buttons/SubmitButton';
 import FormGroup from '../formComponents/FormGroup';
+import { useSession } from '../../context/SessionContext';
 
-function TrappingComponent({ state, id_pedido, trappingData, updateState, workableId, nodeId, loadingTrapping, isTrappingDone, isTrappingWaiting, isTrappingCanceled }) {
+function TrappingComponent({ state, updateState, id_pedido, workableId, nodeId, fromWorkable, loadingTrapping, isTrappingDone, isTrappingWaiting, isTrappingCanceled, trappingData }) {
     const { postDataContext, updateTabState } = useTabState();
     const location = useLocation();
     const key = location.pathname;
+    const { session } = useSession();
 
     useEffect(() => {
         // Mensajes de error
@@ -28,26 +30,28 @@ function TrappingComponent({ state, id_pedido, trappingData, updateState, workab
                 type: ["trapping"]
             };
 
-            updateState("orderReport", (prevOrderReport) => {
-                let next = prevOrderReport;
-                // Añadir error1 si corresponde
-                if ((state.trappingData.distancia_trapping === "0" || state.trappingData.distancia_trapping === "") && state.trappingData.remetido === "No") {
-                    const exists = prevOrderReport.some(item => item.message === error1.message && JSON.stringify(item.type) === JSON.stringify(error1.type));
-                    if (!exists) next = [...next, error1];
-                } else {
-                    // Eliminar error1 si ya no corresponde
-                    next = next.filter(item => !(item.message === error1.message && JSON.stringify(item.type) === JSON.stringify(error1.type)));
-                }
-                // Añadir error2 si corresponde
-                if (state.trappingData.remetido !== "No" && (state.trappingData.distancia_remetido === "0" || state.trappingData.distancia_remetido === "")) {
-                    const exists = next.some(item => item.message === error2.message && JSON.stringify(item.type) === JSON.stringify(error2.type));
-                    if (!exists) next = [...next, error2];
-                } else {
-                    // Eliminar error2 si ya no corresponde
-                    next = next.filter(item => !(item.message === error2.message && JSON.stringify(item.type) === JSON.stringify(error2.type)));
-                }
-                return next;
-            });
+            if (state.orderReport) {
+                updateState("orderReport", (prevOrderReport) => {
+                    let next = prevOrderReport;
+                    // Añadir error1 si corresponde
+                    if ((state.trappingData.distancia_trapping === "0" || state.trappingData.distancia_trapping === "") && state.trappingData.remetido === "No") {
+                        const exists = prevOrderReport.some(item => item.message === error1.message && JSON.stringify(item.type) === JSON.stringify(error1.type));
+                        if (!exists) next = [...next, error1];
+                    } else {
+                        // Eliminar error1 si ya no corresponde
+                        next = next.filter(item => !(item.message === error1.message && JSON.stringify(item.type) === JSON.stringify(error1.type)));
+                    }
+                    // Añadir error2 si corresponde
+                    if (state.trappingData.remetido !== "No" && (state.trappingData.distancia_remetido === "0" || state.trappingData.distancia_remetido === "")) {
+                        const exists = next.some(item => item.message === error2.message && JSON.stringify(item.type) === JSON.stringify(error2.type));
+                        if (!exists) next = [...next, error2];
+                    } else {
+                        // Eliminar error2 si ya no corresponde
+                        next = next.filter(item => !(item.message === error2.message && JSON.stringify(item.type) === JSON.stringify(error2.type)));
+                    }
+                    return next;
+                });
+            }
         }
     }, [state.trappingData]);
 
@@ -75,6 +79,7 @@ function TrappingComponent({ state, id_pedido, trappingData, updateState, workab
 
     const handleTrappingConfirmation = async (action) => {
         updateState("loadingTrapping", true);
+
         setLoadingTrappingTabState(true);
         let to_connector = "";
 
@@ -87,11 +92,12 @@ function TrappingComponent({ state, id_pedido, trappingData, updateState, workab
         }
 
         await postDataContext("orderKiosks/confirmTrapping", {
-            trappingData,
+            trappingData: state.trappingData,
             workable_id: workableId,
             node_id: nodeId,
             to_connector,
-            id_pedido
+            id_pedido,
+            username: session?.username
         }, (res) => {
             if (action !== "modificar") {
                 updateState("loadingTrapping", false);
@@ -100,7 +106,7 @@ function TrappingComponent({ state, id_pedido, trappingData, updateState, workab
 
             if (res.isTrappingCanceled) {
                 updateState("isTrappingCanceled", true);
-                updateState("isTrappingWaiting", false);
+                if (!fromWorkable) updateState("isTrappingWaiting", false);
                 updateTabState(key, (prevState) => ({
                     ...prevState,
                     isTrappingCanceled: true,
@@ -110,7 +116,7 @@ function TrappingComponent({ state, id_pedido, trappingData, updateState, workab
 
             if (action === "aceptar") {
                 updateState("isTrappingDone", true);
-                updateState("isTrappingWaiting", false);
+                if (!fromWorkable) updateState("isTrappingWaiting", false);
                 updateTabState(key, (prevState) => ({
                     ...prevState,
                     isTrappingDone: true,
@@ -127,14 +133,14 @@ function TrappingComponent({ state, id_pedido, trappingData, updateState, workab
     }
 
     return (
-        <div className="actionBody">
+        <div className={`actionBody`}>
             <div className="trappingKiosk">
-                {(!isTrappingDone && !isTrappingWaiting && !isTrappingCanceled) && (
+                {(!state?.isTrappingDone && !state?.isTrappingWaiting && !state?.isTrappingCanceled && !fromWorkable) && (
                     <div className="switches">
                         <div className="switchGroup">
                             <Switch
                                 className="kioskSwitch"
-                                checked={trappingData.manual || false}
+                                checked={state?.trappingData?.manual || false}
                                 onChange={e => {
                                     updateState("trappingData", (prev) => ({
                                         ...prev,
@@ -146,12 +152,12 @@ function TrappingComponent({ state, id_pedido, trappingData, updateState, workab
                         </div>
                     </div>
                 )}
-                {!trappingData.manual && (
+                {!state?.trappingData.manual && (
                     <div className="kioskFormRow">
                         {trappingFormData.formFields.map((field) => (
                             <div className="formGroup">
                                 <FormGroup
-                                    value={trappingData ? trappingData[field.htmlFor] ?? "" : ""}
+                                    value={state?.trappingData ? state.trappingData[field.htmlFor] ?? "" : ""}
                                     handleForm={handleForm}
                                     field={field}
                                 />
@@ -159,7 +165,7 @@ function TrappingComponent({ state, id_pedido, trappingData, updateState, workab
                         ))}
                     </div>
                 )}
-                {isTrappingWaiting && !loadingTrapping && (
+                {state?.isTrappingWaiting && !state?.loadingTrapping && (
                     <div className="buttons">
                         <SubmitButton onClick={() => handleTrappingConfirmation("aceptar")} text="Aceptar" />
                         <SubmitButton onClick={() => handleTrappingConfirmation("modificar")} text="Modificar valor" />
