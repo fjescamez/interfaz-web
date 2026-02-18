@@ -103,7 +103,9 @@ function Table({
 
     useEffect(() => {
         setCheckedIndexes([]);
-        setCheckedRows([]);
+        if (setCheckedRows) {
+            setCheckedRows([]);
+        }
     }, [tableData]);
 
     useEffect(() => {
