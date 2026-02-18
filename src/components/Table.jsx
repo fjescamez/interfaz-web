@@ -103,6 +103,7 @@ function Table({
 
     useEffect(() => {
         setCheckedIndexes([]);
+        setCheckedRows([]);
     }, [tableData]);
 
     useEffect(() => {
