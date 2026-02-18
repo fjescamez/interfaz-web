@@ -170,14 +170,12 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder, multiRip }) {
                             />
                         </div>
                         :
-                        <div className="popUpTable">
-                            <MetodosImpresion
-                                setPlanchasModal={setPlanchasModal}
-                                id_pedido={fullOrder.id_pedido}
-                                file={montaje}
-                                tintas={tintas}
-                            />
-                        </div>
+                        <MetodosImpresion
+                            setPlanchasModal={setPlanchasModal}
+                            id_pedido={fullOrder.id_pedido}
+                            file={montaje}
+                            tintas={tintas}
+                        />
                     )
                     :
                     !multiRip && <ExecutingComponent />
