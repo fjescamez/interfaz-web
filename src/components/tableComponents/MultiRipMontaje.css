@@ -1,0 +1,59 @@
+.multiRipMontaje {
+    z-index: 100;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 135rem !important;
+    background-color: var(--details);
+    border: 3px solid var(--pantone431c);
+    border-radius: 3.5rem;
+
+    .executingContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10rem;
+    }
+
+    .tableContainer {
+        margin: 0 !important;
+        width: 100%;
+    }
+
+    .carruselMultiRip {
+        display: flex;
+        column-gap: 3rem;
+        padding: 1.5rem 3.5rem;
+
+        .leftButton,
+        .rightButton {
+            width: 100%;
+        }
+
+        .leftButton {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .indexes {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            column-gap: 1.5rem;
+            max-width: 100%;
+
+            .index {
+                min-width: 1rem;
+                min-height: 1rem;
+                border-radius: 50%;
+                background-color: var(--pantone431c);
+                cursor: pointer;
+
+                &.active {
+                    background-color: var(--highlight);
+                }
+            }
+        }
+    }
+}

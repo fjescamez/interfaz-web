@@ -264,97 +264,99 @@ function MontajeComponent({ state, orderXml, montajeData, configAvanzadaData, up
           </div>
         ) : (
           // PARA MADERA
-          orderXml?.actividad?.madera?.madera_premontaje.map((item, index) => {
-            return (
-              <div className="switches" key={index}>
-                <div className="switchGroup">
-                  <Switch
-                    className="kioskSwitch"
-                    checked={montajeData[item.madera_tmedida]?.isActive || false}
-                    onChange={e => {
-                      const isActive = e.target.checked;
-                      updateState("montajeData", prev => ({
+          <div className="montajeMadera">
+            {orderXml?.actividad?.madera?.madera_premontaje.map((item, index) => {
+              return (
+                <div className="switches" key={index}>
+                  <div className="switchGroup">
+                    <Switch
+                      className="kioskSwitch"
+                      checked={montajeData[item.madera_tmedida]?.isActive || false}
+                      onChange={e => {
+                        const isActive = e.target.checked;
+                        updateState("montajeData", prev => ({
+                          ...prev,
+                          [item.madera_tmedida]: {
+                            ...prev[item.madera_tmedida],
+                            manualOverride: true,
+                            isActive,
+                            isConfigAvanzadaActive: isActive ? prev[item.madera_tmedida]?.isConfigAvanzadaActive || false : false
+                          }
+                        }));
+
+                        updateState("isOpen", (prev) => ({
+                          ...prev,
+                          [item.madera_tmedida]: true
+                        }));
+                      }}
+                    />
+                    <p>{item.madera_tmedida}</p>
+                  </div>
+                  <div className={`formGroup ${montajeData[item.madera_tmedida]?.isConfigAvanzadaActive ? "hidden" : ""}`}>
+                    <FormGroup
+                      handleForm={(e) => updateState("montajeData", prev => ({
                         ...prev,
                         [item.madera_tmedida]: {
                           ...prev[item.madera_tmedida],
-                          manualOverride: true,
-                          isActive,
-                          isConfigAvanzadaActive: isActive ? prev[item.madera_tmedida]?.isConfigAvanzadaActive || false : false
+                          Orientation: e.target.value
                         }
-                      }));
-
-                      updateState("isOpen", (prev) => ({
-                        ...prev,
-                        [item.madera_tmedida]: true
-                      }));
-                    }}
-                  />
-                  <p>{item.madera_tmedida}</p>
-                </div>
-                <div className={`formGroup ${montajeData[item.madera_tmedida]?.isConfigAvanzadaActive ? "hidden" : ""}`}>
-                  <FormGroup
-                    handleForm={(e) => updateState("montajeData", prev => ({
-                      ...prev,
-                      [item.madera_tmedida]: {
-                        ...prev[item.madera_tmedida],
-                        Orientation: e.target.value
-                      }
-                    }))}
-                    value={montajeData[item.madera_tmedida]?.Orientation || ""}
-                    field={avanzadoFormData.formFields.find(field => field.htmlFor === "OrientationMadera") || {}}
-                  />
-                </div>
-                <div className={`formGroup ${montajeData[item.madera_tmedida]?.isConfigAvanzadaActive ? "hidden" : ""}`}>
-                  <FormGroup
-                    handleForm={(e) => updateState("montajeData", prev => ({
-                      ...prev,
-                      [item.madera_tmedida]: {
-                        ...prev[item.madera_tmedida],
-                        HeadTurn: e.target.value
-                      }
-                    }))}
-                    value={montajeData[item.madera_tmedida]?.HeadTurn || ""}
-                    field={avanzadoFormData.formFields.find(field => field.htmlFor === "HeadTurnMadera") || {}}
-                  />
-                </div>
-                <div className="switchGroup">
-                  <Switch
-                    className="kioskSwitch"
-                    checked={montajeData[item.madera_tmedida]?.isConfigAvanzadaActive || false}
-                    onChange={e => {
-                      const isConfigAvanzadaActive = e.target.checked;
-                      updateState("montajeData", prev => ({
+                      }))}
+                      value={montajeData[item.madera_tmedida]?.Orientation || ""}
+                      field={avanzadoFormData.formFields.find(field => field.htmlFor === "OrientationMadera") || {}}
+                    />
+                  </div>
+                  <div className={`formGroup ${montajeData[item.madera_tmedida]?.isConfigAvanzadaActive ? "hidden" : ""}`}>
+                    <FormGroup
+                      handleForm={(e) => updateState("montajeData", prev => ({
                         ...prev,
                         [item.madera_tmedida]: {
                           ...prev[item.madera_tmedida],
-                          manualOverride: true,
-                          isConfigAvanzadaActive,
-                          isActive: isConfigAvanzadaActive ? true : prev[item.madera_tmedida]?.isActive || false
+                          HeadTurn: e.target.value
                         }
-                      }));
+                      }))}
+                      value={montajeData[item.madera_tmedida]?.HeadTurn || ""}
+                      field={avanzadoFormData.formFields.find(field => field.htmlFor === "HeadTurnMadera") || {}}
+                    />
+                  </div>
+                  <div className="switchGroup">
+                    <Switch
+                      className="kioskSwitch"
+                      checked={montajeData[item.madera_tmedida]?.isConfigAvanzadaActive || false}
+                      onChange={e => {
+                        const isConfigAvanzadaActive = e.target.checked;
+                        updateState("montajeData", prev => ({
+                          ...prev,
+                          [item.madera_tmedida]: {
+                            ...prev[item.madera_tmedida],
+                            manualOverride: true,
+                            isConfigAvanzadaActive,
+                            isActive: isConfigAvanzadaActive ? true : prev[item.madera_tmedida]?.isActive || false
+                          }
+                        }));
 
-                      updateState("isOpen", (prev) => ({
-                        ...prev,
-                        [`configAvanzada${item.madera_tmedida}`]: true
-                      }));
+                        updateState("isOpen", (prev) => ({
+                          ...prev,
+                          [`configAvanzada${item.madera_tmedida}`]: true
+                        }));
 
-                      updateState("configAvanzadaData", (prev) => {
-                        return prev.map(config => config.elementId === item.madera_tmedida ? {
-                          ...config,
-                          stations: [{
-                            ...config.stations[0],
-                            Orientation: montajeData[item.madera_tmedida]?.Orientation,
-                            HeadTurn: montajeData[item.madera_tmedida]?.HeadTurn
-                          }]
-                        } : config);
-                      });
-                    }}
-                  />
-                  <p>Config. Avanzada</p>
+                        updateState("configAvanzadaData", (prev) => {
+                          return prev.map(config => config.elementId === item.madera_tmedida ? {
+                            ...config,
+                            stations: [{
+                              ...config.stations[0],
+                              Orientation: montajeData[item.madera_tmedida]?.Orientation,
+                              HeadTurn: montajeData[item.madera_tmedida]?.HeadTurn
+                            }]
+                          } : config);
+                        });
+                      }}
+                    />
+                    <p>Config. Avanzada</p>
+                  </div>
                 </div>
-              </div>
-            )
-          })
+              )
+            })}
+          </div>
         )}
         {(orderXml?.numero?.cliente_codigo && Object.values(globalKioskVariables).some(arr => arr.includes(orderXml.numero.cliente_codigo)) || (orderXml?.actividad?.id === "CARTON" && orderXml?.actividad?.carton?.carton_tcaja !== "TROQUELADA PLATO")) && (
           <KioscoPersoMontaje orderXml={orderXml} kioscoPersoData={kioscoPersoData} updateState={updateState} colores={colores} configAvanzadaData={configAvanzadaData} />

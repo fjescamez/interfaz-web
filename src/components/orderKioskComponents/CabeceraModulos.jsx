@@ -5,12 +5,27 @@ import { IoWarningOutline } from "react-icons/io5";
 import { HiOutlineRefresh } from "react-icons/hi";
 import { MdKeyboardArrowDown, MdKeyboardArrowRight } from "react-icons/md";
 import { FaPause } from "react-icons/fa";
+import { TiInfoLarge } from 'react-icons/ti';
 import CheckSvg from '../../assets/svg/CheckSvg';
 import ErrorSvg from '../../assets/svg/ErrorSvg';
 import Switch from "@mui/material/Switch";
 import WarningSvg from '../../assets/svg/WarningSvg';
+import { useEffect, useState } from 'react';
+import { infoMessages } from './infoMessages';
 
-function CabeceraModulos({ state, originalState, updateState, option, components, configMode, handleReport }) {
+function CabeceraModulos({ state, originalState, updateState, option, components, configMode, handleReport }) {    
+    const [infoContent, setInfoContent] = useState([]);
+
+    useEffect(() => {
+        infoMessages.forEach(info => {
+            if (option.id === info.id && ((info.actividad && info.actividad === state.actividad) || (info.clientes && state.cliente.code && info.clientes.includes(state.cliente.code)) || (!info.actividad && !info.clientes))) {
+                setInfoContent((prev) => {
+                    return [...prev, ...(info.info || [])];
+                })
+            }
+        });
+    }, [option.id]);
+
     return (
         <div className={`actionHeader ${state.isOpen[option.id] ? "open" : ""}`}>
             <Switch
@@ -50,14 +65,18 @@ function CabeceraModulos({ state, originalState, updateState, option, components
                     }
                 }}
             />
-            <p onClick={() => {
-                if (!(option.id === "unitario" && state.step > 1) && !option.disableOpen) {
-                    updateState("isOpen", (prevIsOpen) => ({
-                        ...prevIsOpen,
-                        [option.id]: !prevIsOpen[option.id]
-                    }))
-                }
-            }} className="kioskModuleTitle">{option.title || option.elementId} <span>{state.isActive[option.id] && components[option.id]?.title || ""}</span></p>
+            <p
+                onClick={() => {
+                    if (!(option.id === "unitario" && state.step > 1) && !option.disableOpen) {
+                        updateState("isOpen", (prevIsOpen) => ({
+                            ...prevIsOpen,
+                            [option.id]: !prevIsOpen[option.id]
+                        }))
+                    }
+                }}
+                className="kioskModuleTitle">
+                {option.title || option.elementId} <span>{state.isActive[option.id] && components[option.id]?.title || ""}</span>
+            </p>
             {!configMode && (state.orderReport.some(item => item.type && item.type.includes(option.id)) || state.fileReport.some(item => item.type && item.type.includes(option.id))) ? (
                 <div
                     className="warning"
@@ -123,15 +142,27 @@ function CabeceraModulos({ state, originalState, updateState, option, components
                         )}
                     </div>
                 ) : (
-                    <div>
+                    <div className="statusIcons">
                         {state.loadingTrapping && option.id === "trapping" && <OrbitProgress variant="dotted" color={"var(--highlight)"} size="small" />}
                         {state.isTrappingWaiting && !state.loadingTrapping && option.id === "trapping" && <FaPause color={"var(--highlight)"} />}
                         {state.isTrappingDone && !state.loadingTrapping && option.id === "trapping" && <CheckSvg />}
                         {state.isTrappingCanceled && !state.loadingTrapping && option.id === "trapping" && <ErrorSvg />}
+                        {(infoContent.length > 0 && infoMessages.some(info => info.id === option.id)) && (
+                            <div
+                                className="infoButton"
+                                onClick={() => {
+                                    updateState("infoPopUp", true);
+                                    updateState("infoContent", infoContent);
+                                }}
+                            >
+                                <TiInfoLarge color="white" />
+                            </div>
+                        )}
                     </div>
                 )
             )
             }
+            { }
             <div className="openArrow">
                 {state.isOpen[option.id] ?
                     <MdKeyboardArrowDown

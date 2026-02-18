@@ -28,6 +28,10 @@ function KioscoPage() {
 
     useEffect(() => {
         listJackets();
+        const interval = setInterval(() => {
+            listJackets();
+        }, 5000);
+        return () => clearInterval(interval);
     }, [])
 
     useEffect(() => {
@@ -67,6 +71,7 @@ function KioscoPage() {
                             {selectedJacket && selectedJacket.log.map(workable => (
                                 <WorkableComponent
                                     key={workable.workable}
+                                    jacketId={selectedJacket._id}
                                     workable={workable}
                                     id_pedido={selectedJacket?.variables?.id_pedido || null}
                                     trappingData={selectedJacket?.variables?.trapping || null}

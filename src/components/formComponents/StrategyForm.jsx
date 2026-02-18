@@ -9,7 +9,7 @@ import FormGroup from "./FormGroup";
 import SubmitButton from "../buttons/SubmitButton";
 import { notify } from "../../helpers/notify";
 
-function StrategyForm({ setModal, mode, itemsData, clienteDato, setTableData, setTotal }) {
+function StrategyForm({ setModal, mode, itemsData, clienteDato, setTableData, setTotal, setStrategy }) {
     const clickableSections = strategyFormData.formSections.filter(section => section.key !== "cliente");
     const [strategyData, setStrategyData] = useState({});
     const [strategyPopUp, setStrategyPopUp] = useState(false);
@@ -63,12 +63,40 @@ function StrategyForm({ setModal, mode, itemsData, clienteDato, setTableData, se
     };
 
     useEffect(() => {
-        console.log(strategyData);
-    }, [strategyData]);
-
-    useEffect(() => {
         if (itemsData) {
-            setStrategyData(itemsData);
+            const {
+                perfil_nombre,
+                curvaP,
+                curvaC,
+                nombrePCW,
+                tipoTramado
+            } = itemsData;
+
+            const perfil = perfil_nombre.split(".");
+            const nombrePerfil = perfil[0] || "";
+            const formatoPerfil = perfil[1] || "";
+
+            const curvaPlotter = curvaP.split(".");
+            const nombreCurvaPlotter = curvaPlotter[0] || "";
+            const formatoCurvaPlotter = curvaPlotter[1] || "";
+
+            const curvaCliche = curvaC.split(".");
+            const nombreCurvaCliche = curvaCliche[0] || "";
+            const formatoCurvaCliche = curvaCliche[1] || "";
+
+            setStrategyData({
+                ...itemsData,
+                cliente_nombre: clienteDato ? clienteDato.name : "",
+                cliente_codigo: clienteDato ? clienteDato.code : "",
+                perfil_nombre: nombrePerfil,
+                perfil_formato: formatoPerfil,
+                curva_plotter_nombre: nombreCurvaPlotter,
+                curva_plotter_formato: formatoCurvaPlotter,
+                curva_cliches_nombre: nombreCurvaCliche,
+                curva_cliches_formato: formatoCurvaCliche,
+                estrategia_nombre: nombrePCW,
+                tramado: tipoTramado,
+            });
         } else {
             setStrategyData({
                 cliente_nombre: clienteDato ? clienteDato.name : "",
@@ -86,10 +114,12 @@ function StrategyForm({ setModal, mode, itemsData, clienteDato, setTableData, se
                 endpoint={"strategies"}
                 clienteDato={clienteDato}
                 mode={mode}
+                _id={itemsData?._id || ""}
                 clickableSections={clickableSections}
                 onClickSection={handleSectionClick}
                 setTableData={setTableData}
                 setTotal={setTotal}
+                setData={setStrategy}
             />
         ) : (
             popUpList.length > 0 ? (

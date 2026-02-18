@@ -5,6 +5,7 @@ import { postData, updateData } from "../../helpers/fetchData";
 import FormSection from "./FormSection";
 import ExecutingComponent from "../ExecutingComponent";
 import { addKeyListener } from "../../helpers/toggleModal";
+import { useSession } from "../../context/SessionContext";
 
 function GeneralForm({
     setModal,
@@ -32,6 +33,7 @@ function GeneralForm({
     const [executing, setExecuting] = useState(false);
     const [error, setError] = useState("");
     const [inputData, setInputData] = useState(itemsData || {});
+    const { session, setSession } = useSession();
 
     useEffect(() => {
         const cleanup = addKeyListener(setModal);
@@ -151,6 +153,11 @@ function GeneralForm({
 
         if (mode === "edit") {
             result = await updateData(endpoint, dataToSend, _id);
+
+            if (endpoint === "users" && result.updatedItem?.username && result.updatedItem.username === session.username) {
+                const { password, ...rest } = result.updatedItem;
+                setSession(prev => ({ ...prev, ...rest }));
+            }
         } else {
             result = await postData(endpoint, dataToSend);
         }
@@ -183,6 +190,7 @@ function GeneralForm({
                     )
                 );
             }
+
             if (setData) {
                 setData(prev => (
                     { ...prev, ...inputData, _id: result.updatedItem._id }

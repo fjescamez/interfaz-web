@@ -59,28 +59,6 @@ export function TabStateProvider({ children }) {
         });
     };
 
-    useEffect(() => {
-        if (!socket) return;
-
-        socket.on("updateTabState", ({ key, newState, username, notification }) => {
-            if (username === session?.username) {
-                updateTabState(key, (prevState) => ({
-                    ...prevState,
-                    ...newState,
-                    isOpen: {
-                        ...prevState.isOpen,
-                        ...newState.isOpen
-                    }
-                }));
-                if (notification) notify(notification.type, notification.title, notification.message, notification.autoClose);
-            }
-        });
-
-        return () => {
-            socket.off("updateTabState");
-        };
-    }, [socket]);
-
     return (
         <TabStateContext.Provider value={{ tabStates, saveTabState, getTabState, removeTabState, updateTabState, postDataContext }}>
             {children}

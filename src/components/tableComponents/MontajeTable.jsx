@@ -5,6 +5,7 @@ import { postData } from '../../helpers/fetchData';
 import RipPopUp from '../pedidoComponents/RipPopUp';
 import { notify } from '../../helpers/notify';
 import CompareMontajes from '../pedidoComponents/CompareMontajes';
+import MultiRipMontaje from './MultiRipMontaje';
 
 function MontajeTable({ setMontajeModal, fullOrder }) {
     const urlApi = import.meta.env.VITE_API_URL;
@@ -15,6 +16,8 @@ function MontajeTable({ setMontajeModal, fullOrder }) {
     const [montajeToCompare, setMontajeToCompare] = useState(undefined);
     const [tableInfo, setTableInfo] = useState(montajeTableInfo);
     const [montajeView, setMontajeView] = useState("");
+    const [multiRipPopup, setMultiRipPopup] = useState(false);
+    const [listMontajes, setListMontajes] = useState([]);
 
     const solicitarVista = async () => {
         const url = `${urlApi}/montajes/solicitarVista`;
@@ -79,21 +82,25 @@ function MontajeTable({ setMontajeModal, fullOrder }) {
         } else if (action === "visualizarMontaje") {
             window.open(montajeView, "_blank");
             return { status: "success" };
+        } else if (action === "menuRip") {
+            setListMontajes(data);
+            setMultiRipPopup(true);
+            return { status: "success" };
         } else {
-            const data = {
+            const sendData = {
                 ids: montajeIds,
                 action
             };
 
             setMontajeIds([]);
-            return postData(`montajes/${action}`, data);
+            return postData(`montajes/${action}`, sendData);
         }
     };
 
     return (
         <>
-            <div className="overlay"></div>
-            {(!ripPopup && !comparePopup) &&
+            {!multiRipPopup && <div className="overlay"></div>}
+            {(!ripPopup && !comparePopup && !multiRipPopup) &&
                 <div className="popUpTable">
                     <Table
                         actions={montajeActions}
@@ -118,6 +125,13 @@ function MontajeTable({ setMontajeModal, fullOrder }) {
                 <CompareMontajes
                     setModal={setComparePopup}
                     montaje={montajeToCompare}
+                />
+            }
+            {multiRipPopup &&
+                <MultiRipMontaje
+                    setModal={setMultiRipPopup}
+                    listMontajes={listMontajes}
+                    fullOrder={fullOrder}
                 />
             }
         </>

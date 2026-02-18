@@ -120,13 +120,13 @@ function OrderKiosk({ configMode }) {
     stateRef.current = state;
   }, [state]);
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (!socket) return;
 
     // Escuchar nuevos registros
     socket.on('kioskTest', (kioskTest) => {
       if (kioskTest.id_pedido === stateRef.current.order?.id_pedido) {
-        /* notify(kioskTest.status, "Mensaje desde el servidor", kioskTest.message); */
+        notify(kioskTest.status, "Mensaje desde el servidor", kioskTest.message);
         if (kioskTest.workableEnded) {
           updateState("loading", false);
         }
@@ -158,19 +158,7 @@ function OrderKiosk({ configMode }) {
     return () => {
       socket.off('kioskTest'); // limpiar listener
     };
-  }, [socket]);
-
-  useEffect(() => {
-    if (!socket) return;
-
-    socket.on('closeTab', () => {
-      closeTab(tabKey, false);
-    });
-
-    return () => {
-      socket.off('closeTab');
-    }
-  }, [socket]);
+  }, [socket]); */  
 
   useEffect(() => {
     if (getTabState(tabKey) && (getTabState(tabKey).loadingOrderReport !== state.loadingOrderReport || getTabState(tabKey).loadingFileReport !== state.loadingFileReport || getTabState(tabKey).loadingTrapping !== state.loadingTrapping)) {
@@ -963,7 +951,7 @@ function OrderKiosk({ configMode }) {
             <h1>Cargando</h1>
           </div>
         )}
-        {state.infoPopUp && <InfoPopUp setInfoPopUp={(value) => updateState("infoPopUp", value)} infoContent={state.infoContent} />}
+        {state.infoPopUp && <InfoPopUp setInfoPopUp={(value) => updateState("infoPopUp", value)} infoContent={state.infoContent} setInfoContent={(value) => updateState("infoContent", value)} />}
       </div>
     )
   )

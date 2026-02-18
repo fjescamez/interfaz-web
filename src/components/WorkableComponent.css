@@ -32,17 +32,24 @@
             flex-direction: column;
             row-gap: 0.5rem;
 
-            .bold {
-                font-size: 1.7rem;
-                line-height: 1.7rem;
-                min-width: 10rem;
-            }
-
             p {
                 display: flex;
                 column-gap: 1rem;
-                font-size: 1.7rem;
-                line-height: 1.7rem;
+
+                span {
+                    font-size: 1.7rem;
+                    line-height: 1.7rem;
+                }
+
+                .bold {
+                    min-width: 10rem;
+                    font-family: 'Museo Sans 900 Italic';
+                }
+
+                .hover:hover {
+                    cursor: pointer;
+                    text-decoration: underline;
+                }
             }
         }
 

@@ -7,10 +7,12 @@ import useSocket from "../helpers/useSocket";
 import { useSession } from "../context/SessionContext";
 import { RxCross2 } from "react-icons/rx";
 
-function WorkableComponent({ workable, id_pedido, trappingData }) {
+function WorkableComponent({ jacketId, workable, id_pedido, trappingData }) {
+    const whitepaperUrl = `http://192.4.26.120:9090/portal.cgi?quantum&jacketId=${jacketId}&workableId=${workable.workable}`;    
     const { workable_name, start_whitepaper_name, start_node_name, whitepaper_name, log: nodeHistory, workable_state, workable_aborted, workable_done, workable_hold_in_kiosk } = workable;
     const socket = useSocket();
     const { session } = useSession();
+    const isTecnico = session?.departments?.includes("Tecnico");
 
     const [state, setState] = useState({
         id_pedido,
@@ -28,21 +30,6 @@ function WorkableComponent({ workable, id_pedido, trappingData }) {
         }));
     };
 
-    useEffect(() => {
-        if (!socket) return;
-
-        socket.on("updateKiosk", ({ username, isTrappingWaiting, id_pedido }) => {
-            if (username === session?.username && isTrappingWaiting && state.id_pedido === id_pedido) {
-                updateState("isTrappingWaiting", true);
-                updateState("loadingTrapping", false);
-            }
-        });
-
-        return () => {
-            socket.off("updateKiosk");
-        };
-    }, [socket]);
-
     return (
         <>
             <div className="workableItem">
@@ -54,12 +41,12 @@ function WorkableComponent({ workable, id_pedido, trappingData }) {
                 </div>
                 <div className="workableBody">
                     <div className="workableInfo">
-                        <p><span className="bold">Inicio</span> {start_whitepaper_name} - {start_node_name}</p>
-                        <p><span className="bold">Actual</span> {whitepaper_name} - {nodeHistory[nodeHistory.length - 1]?.node_name}</p>
-                        <p><span className="bold">Estado</span> {workable_state} {workable_aborted && "(cancelado)"}</p>
-                        <p><span className="bold">Finalizado</span> {workable_done ? "Sí" : "No"}</p>
+                        <p><span className="bold">Inicio</span> <span>{start_whitepaper_name} - {start_node_name}</span></p>
+                        <p><span className="bold">Actual</span> <span className={isTecnico ? "hover" : ""} onClick={() => isTecnico && window.open(whitepaperUrl, "_blank")}>{whitepaper_name} - {nodeHistory[nodeHistory.length - 1]?.node_name}</span></p>
+                        <p><span className="bold">Estado</span> <span>{workable_state} {workable_aborted && "(cancelado)"}</span></p>
+                        <p><span className="bold">Finalizado</span> <span>{workable_done ? "Sí" : "No"}</span></p>
                     </div>
-                    {(whitepaper_name === "Iniciar Tarea_2020" && workable_hold_in_kiosk && nodeHistory[nodeHistory.length - 1]?.node_name === "Aprobación") && (
+                    {(whitepaper_name === "Iniciar Tarea_2020" && workable_hold_in_kiosk && nodeHistory[nodeHistory.length - 1]?.node_name === "Aprobación" && !workable_aborted) && (
                         <div className="trappingComponent">
                             <TrappingComponent
                                 state={state}

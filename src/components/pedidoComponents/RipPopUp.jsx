@@ -8,14 +8,19 @@ import MetodosImpresion from "./MetodosImpresion";
 import FreecutPopUp from "../tableComponents/FreecutPopUp";
 import { addKeyListener } from "../../helpers/toggleModal";
 
-function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
+function RipPopUp({ setRipModal, idMontaje, fullOrder, multiRip }) {
     const [colorIds, setColorIds] = useState([]);
     const [montaje, setMontaje] = useState(undefined);
     const [id_archivo, setId_archivo] = useState("");
     const [tableInfo, setTableInfo] = useState(ripTableInfo);
     const [planchasModal, setPlanchasModal] = useState(false);
     const [freecutPopup, setFreecutPopup] = useState(false);
-    addKeyListener(setRipModal);
+
+    useEffect(() => {
+        if (setRipModal) {
+            addKeyListener(setRipModal);
+        }
+    }, []);
 
     const [tintas, setTintas] = useState([]);
 
@@ -30,11 +35,12 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
 
     useEffect(() => {
         getMontaje();
-    }, []);
+        setColorIds([]);
+    }, [idMontaje]);
 
     useEffect(() => {
         if (montaje !== undefined) {
-            if (fullOrder.xml.actividad.id === "MADERA") {
+            if (fullOrder.xml.actividad.id === "MADERA" && !multiRip) {
                 setTableInfo(prev => ({
                     ...prev,
                     actions: prev.actions.map((action) => {
@@ -48,11 +54,26 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
                     })
                 }));
             }
+
+            if (multiRip) {
+                setTableInfo(prev => ({
+                    ...prev,
+                    actions: prev.actions.map((action) => {
+                        if (action.action === "configPlancha" || action.action === "freecutManual") {
+                            return {
+                                ...action,
+                                hidden: true
+                            };
+                        }
+                        return action;
+                    })
+                }));
+            }
         }
     }, [montaje]);
 
     const ripActions = async (variables) => {
-        const { action, title, data } = variables;
+        const { action, title, data, setCheckedIndexes } = variables;
         const ripTypes = ["ripAuto", "ripInterior", "ripExterior", "ripPixel"];
 
         if (ripTypes.includes(action)) {
@@ -78,7 +99,9 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
                 notify(response.status, response.title, response.message);
             }
 
-            setRipModal(false);
+            if (!multiRip) {
+                setRipModal(false);
+            }
 
             return { status: response.status };
         } else if (action === "arrastradores") {
@@ -118,21 +141,6 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
 
             return { status: response.status };
         } else if (action === "freecutManual") {
-            /* const data = {
-                extraInputs: {
-                    file: montaje,
-                    id_pedido: fullOrder.id_pedido
-                }
-            };
-
-            const response = await postData("montajes/rip/freecutManual", data);
-
-            if (response.status === "success") {
-                notify(response.status, response.title, response.message);
-                window.open('http://192.4.26.120:9090/portal.cgi?hub&topbar=true', '_blank');
-            } else {
-                notify(response.status, response.title, response.message);
-            } */
             setTintas(data);
             setFreecutPopup(true);
 
@@ -149,7 +157,7 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
             {!freecutPopup ? (
                 montaje ?
                     (!planchasModal ?
-                        <div className="popUpTable">
+                        <div className={!multiRip ? "popUpTable" : ""}>
                             <Table
                                 actions={ripActions}
                                 checkedRows={colorIds}
@@ -162,16 +170,17 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder }) {
                             />
                         </div>
                         :
-                        <MetodosImpresion
-                            setPlanchasModal={setPlanchasModal}
-                            id_pedido={fullOrder.id_pedido}
-                            file={montaje}
-                            tintas={tintas}
-                        />
-
+                        <div className="popUpTable">
+                            <MetodosImpresion
+                                setPlanchasModal={setPlanchasModal}
+                                id_pedido={fullOrder.id_pedido}
+                                file={montaje}
+                                tintas={tintas}
+                            />
+                        </div>
                     )
                     :
-                    <ExecutingComponent />
+                    !multiRip && <ExecutingComponent />
             ) : (
                 <FreecutPopUp setFreecutModal={setFreecutPopup} colores={tintas} id_pedido={fullOrder.id_pedido} montaje={montaje} />
             )}

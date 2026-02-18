@@ -53,8 +53,8 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
     const sideBarRef = useRef(null);
     const { createTab } = useTabs();
     const folderUrl = fullOrder.rutaTrabajo?.replace("cloudflow://", "").replace("PEDIDOS_", "Pedidos ");
-    const isAdmin = session.role === "Administrador" || session.role === "Soporte";
-    const isTecnico = session.departments.includes("Tecnico");
+    const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
+    const isTecnico = session?.departments.includes("Tecnico");
 
     const updateOrder = async () => {
         setExecuting(true);

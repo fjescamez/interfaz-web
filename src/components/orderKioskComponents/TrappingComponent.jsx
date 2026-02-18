@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import SubmitButton from '../buttons/SubmitButton';
 import FormGroup from '../formComponents/FormGroup';
 import { useSession } from '../../context/SessionContext';
+import { postData } from '../../helpers/fetchData';
 
 function TrappingComponent({ state, updateState, id_pedido, workableId, nodeId, fromWorkable, loadingTrapping, isTrappingDone, isTrappingWaiting, isTrappingCanceled, trappingData }) {
     const { postDataContext, updateTabState } = useTabState();
@@ -91,7 +92,7 @@ function TrappingComponent({ state, updateState, id_pedido, workableId, nodeId, 
             to_connector = "decision.74";
         }
 
-        await postDataContext("orderKiosks/confirmTrapping", {
+        /* await postDataContext("orderKiosks/confirmTrapping", {
             trappingData: state.trappingData,
             workable_id: workableId,
             node_id: nodeId,
@@ -127,6 +128,14 @@ function TrappingComponent({ state, updateState, id_pedido, workableId, nodeId, 
             notify("error", err.title);
             updateState("loadingTrapping", false);
             updateTabState(key, applyTrappingConfirmation);
+        }); */
+        postData("orderKiosks/confirmTrapping", {
+            trappingData: state.trappingData,
+            workable_id: workableId,
+            node_id: nodeId,
+            to_connector,
+            id_pedido,
+            username: session?.username
         });
 
         // setLoadingTrappingTabState(false);

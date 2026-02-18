@@ -26,7 +26,7 @@ function UserDetails({ toggleKiosk }) {
     const { session } = useSession();
     const [showInfo, setShowInfo] = useState(true);
     const { grid } = usersDetails;
-    const isAdmin = session.role === "Administrador" || session.role === "Soporte";
+    const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
     const location = useLocation();
 
     useEffect(() => {

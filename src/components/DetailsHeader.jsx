@@ -27,7 +27,7 @@ function DetailsHeader({
 }) {
     const urlApi = import.meta.env.VITE_API_URL;
     const { session } = useSession();
-    const isAdmin = session.role === "Administrador" || session.role === "Soporte";
+    const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
 
     const toggleInfo = () => {
         setShowInfo(prev => !prev);

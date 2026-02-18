@@ -385,17 +385,17 @@ export const avanzadoFormData = {
                 {
                     _id: "column",
                     headTurn: "column",
-                    textoOpcion: "Cada columna (por los culos)"
+                    textoOpcion: "Cada columna"
                 },
                 {
                     _id: "row",
                     headTurn: "row",
-                    textoOpcion: "Cada fila (por las asas)"
+                    textoOpcion: "Cada fila"
                 },
                 {
                     _id: "rowandcolumn",
                     headTurn: "rowandcolumn",
-                    textoOpcion: "Fila y columna (asas y culos)"
+                    textoOpcion: "Fila y columna"
                 }
             ],
             inputId: "HeadTurn",

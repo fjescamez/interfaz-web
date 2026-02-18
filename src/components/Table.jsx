@@ -102,6 +102,10 @@ function Table({
     }
 
     useEffect(() => {
+        setCheckedIndexes([]);
+    }, [tableData]);
+
+    useEffect(() => {
         if (!session) {
             navigate("/login");
             return;
@@ -430,6 +434,7 @@ function Table({
 
     useEffect(() => {
         if (orderFilter) {
+            setTableData([]);
             setSearch(orderFilter ? orderFilter : "");
         }
     }, [orderFilter])
@@ -737,7 +742,8 @@ function Table({
                                                                 data: tableData,
                                                                 setCheckedIndexes,
                                                                 setActionEnded,
-                                                                setTableData
+                                                                setTableData,
+                                                                setTotal
                                                             });
                                                             if (actionResult && actionResult.status) {
                                                                 if (actionResult.status !== "waiting") {

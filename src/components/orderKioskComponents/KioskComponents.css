@@ -238,7 +238,7 @@
 .montaje {
     display: flex;
     flex-direction: column;
-    row-gap: 2.50rem;
+    row-gap: 2.5rem;
 
     .switches {
         display: grid;
@@ -247,6 +247,12 @@
         .chosen-container {
             width: 100% !important;
         }
+    }
+
+    .montajeMadera {
+        display: flex;
+        flex-direction: column;
+        row-gap: 2rem;
     }
 
     .kioscoPerso {

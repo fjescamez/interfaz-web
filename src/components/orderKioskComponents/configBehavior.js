@@ -36,6 +36,17 @@ export function kioskConfigAuto({ orderXml, actividad, fileReport, setIsActive, 
             ...prev,
             montaje: true
         }));
+
+        if (actividad === "MADERA") {
+            setIsActive(prev => ({
+                ...prev,
+                otraDocumentacion: true
+            }));
+            setOtraDocumentacion(prev => ({
+                ...prev,
+                etiquetasMontaje: true
+            }));
+        }
     }
 
     // Plotter

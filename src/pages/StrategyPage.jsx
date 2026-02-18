@@ -3,38 +3,63 @@ import Table from "../components/Table.jsx";
 import { strategyTableInfo } from "../helpers/tablesInfo.jsx";
 import { postData } from "../helpers/fetchData.jsx";
 import { useSession } from "../context/SessionContext.jsx";
+import StrategyForm from "../components/formComponents/StrategyForm.jsx";
+import { useClienteFilter } from "../context/ClientFilterContext.jsx";
+import { useLocation } from "react-router-dom";
+import { notify } from "../helpers/notify.jsx";
 
 function StrategyPage({ filter }) {
+    const location = useLocation();
     const [checkedRows, setCheckedRows] = useState([]);
+    const [duplicatePopUp, setDuplicatePopUp] = useState(false);
+    const [checkedStrategy, setCheckedStrategy] = useState(null);
+    const [dataSetter, setDataSetter] = useState(null);
+    const [totalSetter, setTotalSetter] = useState(null);
     const { session } = useSession();
-    const isTecnico = session.departments.includes("Tecnico");
+    const { clienteDatos } = useClienteFilter();
+    const clienteDato = clienteDatos[location.pathname] || null;
+    const isTecnico = session?.departments.includes("Tecnico");
 
     const strategyActions = async (variables) => {
-        const { action, data, setTableData } = variables;
-        const estrategia = data.find(item => item.id === checkedRows[0]);
+        const { action, data, setTableData, setTotal } = variables;
+        const estrategia = data.find(item => item._id === checkedRows[0]);
+        if (checkedRows.length > 1) {
+            notify('warning', 'Selecciona solo una estrategia para duplicar');
+            return { status: 'error' };
+        }
 
         switch (action) {
             case "duplicar":
-                const duplicated = await postData('strategies/duplicar', estrategia);
-
-                if (duplicated.status === 'success') {
-                    setTableData(prev => [duplicated.newItem, ...prev]);
-                }
+                setDuplicatePopUp(true);
+                setCheckedStrategy(estrategia);
+                setDataSetter(() => setTableData);
+                setTotalSetter(() => setTotal);
                 return { status: 'success' };
         }
     };
 
     return (
-        <Table
-            clientFilter={filter}
-            dinamicTableInfo={strategyTableInfo}
-            tabTitleTemplate={"ESTRATEGIA {codigo_estrategia}"}
-            specificPath={`/${strategyTableInfo.tableName}`}
-            checkedRows={checkedRows}
-            setCheckedRows={setCheckedRows}
-            actions={strategyActions}
-            publicForm={isTecnico}
-        />
+        <>
+            <Table
+                clientFilter={filter}
+                dinamicTableInfo={strategyTableInfo}
+                tabTitleTemplate={"ESTRATEGIA {codigo_estrategia}"}
+                specificPath={`/${strategyTableInfo.tableName}`}
+                checkedRows={checkedRows}
+                setCheckedRows={setCheckedRows}
+                actions={strategyActions}
+                publicForm={isTecnico}
+            />
+            {duplicatePopUp && (
+                <StrategyForm
+                    setModal={setDuplicatePopUp}
+                    itemsData={checkedStrategy}
+                    clienteDato={clienteDato}
+                    setTableData={dataSetter}
+                    setTotal={totalSetter}
+                />
+            )}
+        </>
     )
 }
 

@@ -881,6 +881,11 @@ export const montajeTableInfo = {
             hidden: true,
             noCheck: true
         },
+        {
+            title: "Menú Rip",
+            action: "menuRip",
+            noCheck: true
+        }
     ],
 };
 

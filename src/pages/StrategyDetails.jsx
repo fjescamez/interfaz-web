@@ -10,6 +10,7 @@ import StrategyForm from '../components/formComponents/StrategyForm';
 import DeleteForm from '../components/formComponents/DeleteForm';
 import { strategyTableInfo } from '../helpers/tablesInfo';
 import { useLocation } from "react-router-dom";
+import { BlinkBlur } from "react-loading-indicators";
 
 function StrategyDetails() {
   const [strategy, setStrategy] = useState(undefined);
@@ -20,7 +21,7 @@ function StrategyDetails() {
   const [deletePopup, setDeletePopup] = useState(false);
   const [itemsData, setItemsData] = useState({});
   const { session } = useSession();
-  const isAdmin = session.role === "Administrador";
+  const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
   const location = useLocation();
 
   useEffect(() => {
@@ -53,7 +54,8 @@ function StrategyDetails() {
           nombrePCW,
           tipoTramado,
           curvaP,
-          curvaC
+          curvaC,
+          codigo_estrategia
         } = strategy;
 
         const cliente = await fetchData("clients", cliente_codigo);
@@ -88,7 +90,9 @@ function StrategyDetails() {
           estrategia_nombre: nombrePCW,
           tramado: tipoTramado,
           curva_cliches_nombre: nombreCurvaCliche,
-          curva_cliches_formato: formatoCurvaCliche
+          curva_cliches_formato: formatoCurvaCliche,
+          codigo_estrategia,
+          _id: id
         })
       }
     }
@@ -106,8 +110,6 @@ function StrategyDetails() {
           setDeletePopup={setDeletePopup}
           hideInfoIcon={true}
           hideAvatar={true}
-          hideDeleteIcon={true}
-          hideEditIcon={true}
           grid={true}
         />
         {editPopup && (
@@ -115,6 +117,8 @@ function StrategyDetails() {
             setModal={setEditPopup}
             mode={"edit"}
             itemsData={itemsData}
+            clienteDato={{ name: itemsData.cliente_nombre, code: itemsData.cliente_codigo }}
+            setStrategy={setStrategy}
           />
         )}
         {(deletePopup && isAdmin) && (
@@ -125,18 +129,25 @@ function StrategyDetails() {
           />
         )}
         <div className="detailsScroll">
-          <div className="formSections">
-            {strategyFormData.formSections.map((section) => (
-              <div key={section.title} className="formSection">
-                <FormSection
-                  sectionData={section}
-                  formFields={strategyFormData.formFields}
-                  inputData={itemsData}
-                  disable={true}
-                />
-              </div>
-            ))}
-          </div>
+          {strategy ? (
+            <div className="formSections">
+              {strategyFormData.formSections.map((section) => (
+                <div key={section.title} className="formSection">
+                  <FormSection
+                    sectionData={section}
+                    formFields={strategyFormData.formFields}
+                    inputData={itemsData}
+                    disable={true}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="executingContainer">
+              <BlinkBlur variant="dotted" color="var(--highlight)" size="large" speedPlus="0" />
+              <h1>Cargando</h1>
+            </div>
+          )}
         </div>
       </div>
     </>

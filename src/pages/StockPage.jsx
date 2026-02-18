@@ -14,8 +14,8 @@ function StockPage() {
     const { createTab } = useTabs();
     const { session } = useSession();
     const userFilter = session ? session?.departments : "";
-    const isAdmin = session.role === "Administrador" || session.role === "Soporte";
-    const isJefeDepartamento = session.responsibleDepartments && session.responsibleDepartments.length > 0;
+    const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
+    const isJefeDepartamento = session?.responsibleDepartments && session?.responsibleDepartments.length > 0;
 
     const stockGridClick = (key, title) => {
         const path = '/stock/' + key;

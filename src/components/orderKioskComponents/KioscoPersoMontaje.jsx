@@ -4,12 +4,12 @@ import FormGroup from '../formComponents/FormGroup';
 import Switch from "@mui/material/Switch";
 
 function KioscoPersoMontaje({ orderXml, kioscoPersoData, updateState, colores, configAvanzadaData }) {
-    const [clientFormFields, setClientFormFields] = useState(Object.keys(globalKioskVariables).filter(key =>
+    const clientFormFields = Object.keys(globalKioskVariables).filter(key =>
         globalKioskVariables[key].includes(orderXml.numero.cliente_codigo)
-    ));
-    const [actividadFormFields, setActividadFormFields] = useState(Object.keys(globalKioskVariables).filter(key =>
+    );
+    const actividadFormFields = Object.keys(globalKioskVariables).filter(key =>
         globalKioskVariables[key].includes(orderXml?.actividad?.id)
-    ));
+    );
 
     useEffect(() => {
         updateState("isActive", prev => ({
@@ -70,37 +70,55 @@ function KioscoPersoMontaje({ orderXml, kioscoPersoData, updateState, colores, c
         }
     }, [orderXml]);
 
+    const calculateAlturaMicropuntos = () => {
+        let alturaMicropuntos = 0;
+        let orientacionMontaje = (configAvanzadaData && configAvanzadaData.length > 0) ? configAvanzadaData[0].stations[0].Orientation?.orientation : "up";
+        const { flexible_motivos, flexible_ancho_caida, flexible_desamvto } = orderXml?.actividad?.flexible;
+
+        const motivos = parseInt(flexible_motivos);
+
+        if (motivos != 1 && motivos % 2 !== 0) {
+            const numero = parseFloat(flexible_ancho_caida);
+            const mitad = Math.floor(numero * 100) / 2 / 100; // Corta a 2 decimales
+            alturaMicropuntos = -mitad;
+
+            if (orientacionMontaje === "up") {
+                const numero = parseFloat(flexible_desamvto);
+                const mitad = Math.floor(numero * 100) / 2 / 100; // Corta a 2 decimales
+                alturaMicropuntos = -mitad;
+            }
+        }
+
+        return alturaMicropuntos;
+    };
+
     useEffect(() => {
         if (orderXml?.numero?.cliente_codigo) {
             const cliente_codigo = orderXml.numero.cliente_codigo;
             if (cliente_codigo === "0101") {
-                let alturaMicropuntos = 0;
-                let orientacionMontaje = (configAvanzadaData && configAvanzadaData.length > 0) ? configAvanzadaData[0].stations[0].Orientation?.orientation : "up";
-                const { flexible_motivos, flexible_ancho_caida, flexible_desamvto } = orderXml?.actividad?.flexible;
-
-                const motivos = parseInt(flexible_motivos);
-
-                if (motivos != 1 && motivos % 2 !== 0) {
-                    const numero = parseFloat(flexible_ancho_caida);
-                    const mitad = Math.floor(numero * 100) / 2 / 100; // Corta a 2 decimales
-                    alturaMicropuntos = -mitad;
-
-                    if (orientacionMontaje === "up") {
-                        const numero = parseFloat(flexible_desamvto);
-                        const mitad = Math.floor(numero * 100) / 2 / 100; // Corta a 2 decimales
-                        alturaMicropuntos = -mitad;
-                    }
-                }
-
                 updateState("kioscoPersoData", prevData => ({
                     ...prevData,
-                    alturaMicropuntos,
-                    microIzquierda: -1,
-                    microDerecha: 0
+                    alturaMicropuntos: calculateAlturaMicropuntos()
                 }));
+
             }
         }
-    }, [orderXml, configAvanzadaData]);
+    }, [configAvanzadaData]);
+
+    useEffect(() => {
+        if (orderXml?.numero?.cliente_codigo) {
+            const cliente_codigo = orderXml.numero.cliente_codigo;
+            if (cliente_codigo === "0101") {
+                updateState("kioscoPersoData", prevData => ({
+                    ...prevData,
+                    alturaMicropuntos: calculateAlturaMicropuntos(),
+                    microIzquierda: "-1",
+                    microDerecha: "0"
+                }));
+
+            }
+        }
+    }, [orderXml]);
 
     const handleForm = (e) => {
         const { name, value } = e.target;
@@ -121,7 +139,7 @@ function KioscoPersoMontaje({ orderXml, kioscoPersoData, updateState, colores, c
                             <div className={`formGroup ${(field.inputType === "checkbox" || field.inputType === "radioGroup") ? "formGroupRow" : ""}`} key={index}>
                                 <FormGroup
                                     handleForm={handleForm}
-                                    value={kioscoPersoData[field.inputName] || 0}
+                                    value={kioscoPersoData[field.inputName] || ""}
                                     field={field}
                                 />
                             </div>
@@ -137,7 +155,7 @@ function KioscoPersoMontaje({ orderXml, kioscoPersoData, updateState, colores, c
                             <div className={`formGroup ${(field.inputType === "checkbox" || field.inputType === "radioGroup") ? "formGroupRow" : ""}`} key={index}>
                                 <FormGroup
                                     handleForm={handleForm}
-                                    value={kioscoPersoData[field.inputName] || 0}
+                                    value={kioscoPersoData[field.inputName] || ""}
                                     field={field}
                                 />
                             </div>

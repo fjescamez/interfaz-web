@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { addKeyListener } from "../helpers/toggleModal"
 import { IoMdCloseCircleOutline } from 'react-icons/io';
 
-function GeneralPopUp({ setPopUp, headerIcon, headerTitle, children, onClose }) {
+function GeneralPopUp({ setPopUp, headerIcon, headerTitle, className, children, onClose }) {
     useEffect(() => {
         const cleanup = () => {
             addKeyListener(setPopUp);
@@ -17,7 +17,7 @@ function GeneralPopUp({ setPopUp, headerIcon, headerTitle, children, onClose }) 
     return (
         <>
             <div className="overlay"></div>
-            <div className="ripPopUp popUpTable">
+            <div className={`ripPopUp popUpTable ${className ? className : ""}`}>
                 <div className="header">
                     {headerIcon}
                     <p>{headerTitle}</p>
