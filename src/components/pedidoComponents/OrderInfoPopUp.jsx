@@ -51,7 +51,6 @@ function OrderInfoPopUp({ setInfoModal, _id }) {
                             actions={infoActions}
                             setPopUpTable={setInfoModal}
                             dinamicTableInfo={emailInfoTableInfo}
-                            orderFilter={order?.id_pedido}
                             initialData={normalizedData}
                             openRows={true}
                             customTable={true}

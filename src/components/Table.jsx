@@ -48,7 +48,7 @@ function Table({
     noRefreshTable,
     extraLogic,
     extraStyles
-}) {
+}) {    
     const urlApi = import.meta.env.VITE_API_URL;
     const location = useLocation();
     const socket = useSocket();
@@ -215,15 +215,15 @@ function Table({
     }, [search, advancedQuery]);
 
     useEffect(() => {
-        setPage(1);
-
-        if (actualTab && actualTab.advancedQuery) {
-            const searchParams = new URLSearchParams(actualTab.advancedQuery).toString();
-            getData(1, searchParams, clienteCodigo || clientFilter);
-        } else if (actualTab && actualTab.search) {
-            getData(1, actualTab.search, clienteCodigo || clientFilter);
-        } else {
-            if (!initialData) {
+        if (!initialData) {
+        
+            setPage(1);
+            if (actualTab && actualTab.advancedQuery) {
+                const searchParams = new URLSearchParams(actualTab.advancedQuery).toString();
+                getData(1, searchParams, clienteCodigo || clientFilter);
+            } else if (actualTab && actualTab.search) {
+                getData(1, actualTab.search, clienteCodigo || clientFilter);
+            } else {
                 getData(1, search, clienteCodigo || clientFilter);
             }
         }
@@ -436,7 +436,7 @@ function Table({
     }, [orderBy]);
 
     useEffect(() => {
-        if (orderFilter) {
+        if (orderFilter && !initialData) {
             setTableData([]);
             setSearch(orderFilter ? orderFilter : "");
         }
@@ -791,8 +791,8 @@ function Table({
                                             data-key={column.key}
                                             className="thClickable"
                                             onClick={() => changeOrderBy(column.key)}
-                                            /* draggable="true"
-                                            onDragStart={dragStart} */
+                                        /* draggable="true"
+                                        onDragStart={dragStart} */
                                         >
                                             <div className="thContent">
                                                 <p>{column.header != "Avatar" && column.header}</p>
