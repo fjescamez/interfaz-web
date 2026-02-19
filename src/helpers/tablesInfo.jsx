@@ -380,6 +380,11 @@ export const trabajosExternosTableInfo = {
             active: true,
             key: "fecha"
         },
+        {
+            header: "Estado",
+            active: true,
+            key: "state"
+        }
     ],
     actions: [
         {

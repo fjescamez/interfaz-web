@@ -88,6 +88,22 @@ export const produccionTrabajosDetails = {
     ]
 }
 
+export const produccionOficinaDetails = {
+    title: "",
+    grid: [
+        {
+            icon: <IoDocumentTextOutline />,
+            title: "Ref. Continuos",
+            key: "refContinuos"
+        },
+        {
+            icon: <IoDocumentTextOutline />,
+            title: "Pendientes",
+            key: "externosPendientes"
+        }
+    ]
+}
+
 export const usersDetails = {
     grid: [
 

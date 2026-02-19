@@ -36,6 +36,10 @@ export function kioskConfigAuto({ orderXml, actividad, fileReport, setIsActive, 
             ...prev,
             montaje: true
         }));
+        setIsOpen(prev => ({
+            ...prev,
+            montaje: true
+        }));
 
         if (actividad === "MADERA") {
             setIsActive(prev => ({

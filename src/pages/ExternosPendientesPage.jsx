@@ -27,10 +27,11 @@ function ExternosPendientesPage() {
                 notify('success', response.title);
                 setTableData(prev => prev.filter(item => !response.updatedData.some(updatedItem => updatedItem._id === item._id)));
                 setExternosChecked([]);
+                return { status: "success" };
             } else {
                 notify('error', response.title);
+                return { status: "success" };
             }
-            return { status: "success" };
         } else if (action === "restaurar") {
             const response = await postData('externalJobs/restaurar', { trabajos: trabajosCompletos });
             setExternosChecked([]);

@@ -1,16 +1,17 @@
-import DetailsHeader from '../components/DetailsHeader';
-import GridComponent from '../components/GridComponent';
-import { produccionPlanchasDetails, produccionReferenciasDetails, produccionTrabajosDetails } from '../helpers/detailsGrid';
+import { useNavigate } from "react-router-dom";
+import DetailsHeader from '../components/DetailsHeader'
+import GridComponent from '../components/GridComponent'
+import { IoDocumentTextOutline } from "react-icons/io5";
+import { produccionOficinaDetails, produccionPlanchasDetails, produccionReferenciasDetails, produccionTrabajosDetails } from '../helpers/detailsGrid';
 import { useTabs } from "../context/TabsContext";
 import { fetchData } from "../helpers/fetchData";
 import { useEffect, useState } from "react";
 import { useSession } from "../context/SessionContext";
-import { PiOven } from "react-icons/pi";
 
 function ProduccionPage() {
     const { session } = useSession();
-    const isOficina = session?.departments?.includes("Oficina");
-    const [produccionReferencias, setProduccionReferencias] = useState(produccionReferenciasDetails);
+    const isProduccion = session?.departments?.includes("Solido") || session?.departments?.includes("Liquido");
+    const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
     const [produccionPlanchas, setProduccionPlanchas] = useState(produccionPlanchasDetails);
     const [produccionExternos, setProduccionExternos] = useState(produccionTrabajosDetails);
     const [totales, setTotales] = useState({
@@ -22,14 +23,21 @@ function ProduccionPage() {
         externos_finalizados: 0,
         externos_anulados: 0
     });
-    const { createTab } = useTabs();
+    const navigate = useNavigate();
+    const { tabs, setTabs } = useTabs();
 
     const referenciasGridClick = async (key, title) => {
         const path = `/produccion/${key}`;
 
         const tabTitle = key === "refPlanchas" ? "REF. PLANCHAS" : "REF. CONTINUOS";
 
-        createTab(path, tabTitle);
+        if (!tabs.some(tab => tab.path === path)) {
+            setTabs(prev => {
+                if (prev.some(tab => tab.path === path)) return prev;
+                return [...prev, { path, title: tabTitle }];
+            });
+        }
+        navigate(path);
     };
 
     const planchasGridClick = async (key, title) => {
@@ -37,7 +45,13 @@ function ProduccionPage() {
 
         const tabTitle = key === "trabajosPlanchas" ? "TRABAJOS PLANCHAS" : (key !== "planchas" ? `PLANCHAS ${title.toUpperCase()}` : title.toUpperCase());
 
-        createTab(path, tabTitle);
+        if (!tabs.some(tab => tab.path === path)) {
+            setTabs(prev => {
+                if (prev.some(tab => tab.path === path)) return prev;
+                return [...prev, { path, title: tabTitle }];
+            });
+        }
+        navigate(path);
     };
 
     const externosGridClick = async (key, title) => {
@@ -45,7 +59,13 @@ function ProduccionPage() {
 
         const tabTitle = `EXTERNOS ${title.toUpperCase()}`;
 
-        createTab(path, tabTitle);
+        if (!tabs.some(tab => tab.path === path)) {
+            setTabs(prev => {
+                if (prev.some(tab => tab.path === path)) return prev;
+                return [...prev, { path, title: tabTitle }];
+            });
+        }
+        navigate(path);
     };
 
     const getPlanchasCount = async () => {
@@ -74,7 +94,7 @@ function ProduccionPage() {
                 grid: [
                     firstElement,
                     ...clientes.map(cliente => ({
-                        icon: <PiOven />,
+                        icon: <IoDocumentTextOutline />,
                         title: cliente.username,
                         key: cliente.username,
                         body: cliente.total
@@ -134,13 +154,13 @@ function ProduccionPage() {
                 hideDeleteIcon={true}
             />
             <div className="detailsScroll">
-                <GridComponent
-                    title={produccionReferencias.title}
-                    grid={produccionReferencias.grid}
-                    gridClick={referenciasGridClick}
-                />
-                {!isOficina && (
+                {isProduccion || isAdmin ? (
                     <>
+                        <GridComponent
+                            title={produccionReferenciasDetails.title}
+                            grid={produccionReferenciasDetails.grid}
+                            gridClick={referenciasGridClick}
+                        />
                         <GridComponent
                             title={produccionPlanchas.title}
                             grid={produccionPlanchas.grid}
@@ -152,6 +172,12 @@ function ProduccionPage() {
                             gridClick={externosGridClick}
                         />
                     </>
+                ) : (
+                    <GridComponent
+                        title={produccionOficinaDetails.title}
+                        grid={produccionOficinaDetails.grid}
+                        gridClick={externosGridClick}
+                    />
                 )}
             </div>
         </div>
