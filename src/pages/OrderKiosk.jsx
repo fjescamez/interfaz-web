@@ -748,7 +748,7 @@ function OrderKiosk({ configMode }) {
       title: state.freeCutColors.filter(color => color.check).length > 0 ?
         `${state.freeCutColors.filter(color => color.check).map(color => color.color).join(", ")}` :
         "",
-      component: <FreecutComponent freecutData={state.freecutData} setFreecutData={(value) => updateState("freecutData", value)} colores={state.orderColors} freeCutColors={state.freeCutColors} setFreeCutColors={(value) => updateState("freeCutColors", value)} />,
+      component: <FreecutComponent state={state} updateState={updateState} freecutData={state.freecutData} setFreecutData={(value) => updateState("freecutData", value)} colores={state.orderColors} freeCutColors={state.freeCutColors} setFreeCutColors={(value) => updateState("freeCutColors", value)} />,
       data: state.freecutData,
       noSave: true
     },

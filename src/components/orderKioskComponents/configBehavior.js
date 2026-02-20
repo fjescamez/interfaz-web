@@ -41,7 +41,14 @@ export function kioskConfigAuto({ orderXml, actividad, fileReport, setIsActive, 
             montaje: true
         }));
 
-        if (actividad === "MADERA") {
+        if (actividad === "MADERA" || actividad === "ETIQUETAS") {
+            setIsActive(prev => ({
+                ...prev,
+                fichas: true
+            }));
+        }
+
+        if (actividad === "MADERA" || actividad === "CARTON") {
             setIsActive(prev => ({
                 ...prev,
                 otraDocumentacion: true
@@ -49,6 +56,13 @@ export function kioskConfigAuto({ orderXml, actividad, fileReport, setIsActive, 
             setOtraDocumentacion(prev => ({
                 ...prev,
                 etiquetasMontaje: true
+            }));
+        }
+
+        if (cliente_codigo === "0159") {
+            setOtraDocumentacion(prev => ({
+                ...prev,
+                unitarioPng: true
             }));
         }
     }
@@ -191,6 +205,13 @@ export function handleExceptions({ module, state, updateState }) {
         }));
     }
 
+    if (module === "montaje" && !isActive.montaje && (actividad === "MADERA" || actividad === "CARTON")) {
+        updateState("otraDocumentacion", (prev) => ({
+            ...prev,
+            etiquetasMontaje: true
+        }));
+    }
+
     if (module === "montaje" && !isActive.montaje && cliente.code === "0159") {
         updateState("otraDocumentacion", (prev) => ({
             ...prev,
@@ -198,17 +219,10 @@ export function handleExceptions({ module, state, updateState }) {
         }));
     }
 
-    if (module === "plotter" && !isActive.plotter && actividad === "CARTON") {
+    if (module === "plotter" && !isActive.plotter && cliente.code === "0022") {
         updateState("otraDocumentacion", (prev) => ({
             ...prev,
             etiquetasPlotter: true
-        }));
-    }
-
-    if (module === "montaje" && !isActive.montaje && (actividad === "MADERA" || actividad === "CARTON")) {
-        updateState("otraDocumentacion", (prev) => ({
-            ...prev,
-            etiquetasMontaje: true
         }));
     }
 

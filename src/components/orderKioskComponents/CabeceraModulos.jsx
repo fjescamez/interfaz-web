@@ -13,12 +13,12 @@ import WarningSvg from '../../assets/svg/WarningSvg';
 import { useEffect, useState } from 'react';
 import { infoMessages } from './infoMessages';
 
-function CabeceraModulos({ state, originalState, updateState, option, components, configMode, handleReport }) {    
+function CabeceraModulos({ state, originalState, updateState, option, components, configMode, handleReport }) {
     const [infoContent, setInfoContent] = useState([]);
 
     useEffect(() => {
         infoMessages.forEach(info => {
-            if (option.id === info.id && ((info.actividad && info.actividad === state.actividad) || (info.clientes && state.cliente.code && info.clientes.includes(state.cliente.code)) || (!info.actividad && !info.clientes))) {
+            if (option.id === info.id && ((info.actividades && info.actividades.includes(state.actividad)) || (info.clientes && state.cliente.code && info.clientes.includes(state.cliente.code)) || (!info.actividades && !info.clientes))) {
                 setInfoContent((prev) => {
                     return [...prev, ...(info.info || [])];
                 })

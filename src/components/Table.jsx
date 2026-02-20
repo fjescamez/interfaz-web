@@ -48,7 +48,7 @@ function Table({
     noRefreshTable,
     extraLogic,
     extraStyles
-}) {    
+}) {
     const urlApi = import.meta.env.VITE_API_URL;
     const location = useLocation();
     const socket = useSocket();
@@ -216,7 +216,6 @@ function Table({
 
     useEffect(() => {
         if (!initialData) {
-        
             setPage(1);
             if (actualTab && actualTab.advancedQuery) {
                 const searchParams = new URLSearchParams(actualTab.advancedQuery).toString();

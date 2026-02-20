@@ -13,7 +13,8 @@ export const globalKioskVariables = {
     checkRegistron: ["0022"],
     despRegistron: ["0022"],
     mastercut: ["0022"],
-    tomaPinza: ["0022"]
+    tomaPinza: ["0022"],
+    reservaCaidas: ["0160"]
 };
 
 export const globalKioskForm = [
@@ -148,5 +149,13 @@ export const globalKioskForm = [
         ],
         inputId: "tomaPinza",
         inputName: "tomaPinza"
+    },
+    {
+        htmlFor: "reservaCaidas",
+        labelId: "reservaCaidasLabel",
+        labelTitle: "Reserva caídas",
+        inputType: "checkbox",
+        inputId: "reservaCaidas",
+        inputName: "reservaCaidas"
     }
 ]

@@ -1,7 +1,7 @@
 export const infoMessages = [
     {
         id: "montaje",
-        actividad: "MADERA",
+        actividades: ["MADERA"],
         info: [
             "- Montaje sin capiculado: Invertir Cabeza => Ninguno",
             "- Capiculado por los culos: Orientación => Rotada -90º || Invertir Cabeza => Cada columna",
@@ -13,6 +13,13 @@ export const infoMessages = [
         clientes: ["0077"],
         info: [
             "- Montaje especial VALERO: Orientación => Rotada -90º || Invertir Cabeza => Cada fila"
+        ]
+    },
+    {
+        id: "montaje",
+        clientes: ["0160"],
+        info: [
+            "- Reserva caídas: Marcar cuando se quiera una reserva de impresión entre caídas."
         ]
     }
 ];

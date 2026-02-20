@@ -14,9 +14,11 @@ function HeaderComponent({ toggleUserDropdown, isOnline, setIsOnline }) {
     const { tabs, createTab, closeTab, closeAllTabs } = useTabs();
     const { accionPistola } = useInputPistola();
     const location = useLocation();
-    const { avatar } = useSession();
+    const { avatar, session } = useSession();
     const navigate = useNavigate();
     const simpleBarRef = useRef();
+    const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
+    const isProduccion = session?.departments?.includes("Solido") || session?.departments?.includes("Liquido");
 
     useEffect(() => {
         const el = simpleBarRef.current?.getScrollElement?.() || simpleBarRef.current;
@@ -83,8 +85,8 @@ function HeaderComponent({ toggleUserDropdown, isOnline, setIsOnline }) {
                                             closeTab(tab.path);
                                         }
                                     }}
-                                    /* draggable="true"
-                                    onDragStart={dragStart} */
+                                /* draggable="true"
+                                onDragStart={dragStart} */
                                 >
                                     {tab.title}
                                     <span>
@@ -107,7 +109,7 @@ function HeaderComponent({ toggleUserDropdown, isOnline, setIsOnline }) {
                 </div>
                 {tabs.length > 2 && <div className="closeAll" onClick={closeAllTabs}><IoMdCloseCircleOutline className="close" /></div>}
             </div>
-            <h1 className="accionPistola"><span><MdBarcodeReader />:</span> {accionPistola || "Sin definir"}</h1>
+            {(isAdmin || isProduccion) && <h1 className="accionPistola"><span><MdBarcodeReader />:</span> {accionPistola || "Sin definir"}</h1>}
             <div className="userIconSvg">
                 <img className="avatar" src={avatar} alt="" onClick={toggleUserDropdown} />
                 <div className="onlineContainer" onClick={() => setIsOnline(!isOnline)}>

@@ -9,7 +9,7 @@ function InfoPopUp({ setInfoPopUp, infoContent, setInfoContent }) {
 
     useEffect(() => {
         return () => {
-            if (setInfoContent) setInfoContent("");
+            if (setInfoContent) setInfoContent([]);
         }
     }, []);
 

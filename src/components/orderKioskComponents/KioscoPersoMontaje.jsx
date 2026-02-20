@@ -30,9 +30,9 @@ function KioscoPersoMontaje({ orderXml, kioscoPersoData, updateState, colores, c
             } else if (cliente_codigo === "0160" || cliente_codigo === "0156" || cliente_codigo === "0038") {
                 updateState("kioscoPersoData", prevData => ({
                     ...prevData,
-                    alturaMicropuntos: 0,
-                    microIzquierda: 5,
-                    microDerecha: -5
+                    alturaMicropuntos: "0",
+                    microIzquierda: "5",
+                    microDerecha: "-5"
                 }));
 
                 if (cliente_codigo === "0038") {
@@ -45,7 +45,21 @@ function KioscoPersoMontaje({ orderXml, kioscoPersoData, updateState, colores, c
                             }
                         }));
                     });
+                } else if (cliente_codigo === "0160") {
+                    updateState("kioscoPersoData", prevData => ({
+                        ...prevData,
+                        reservaCaidas: false
+                    }));
                 }
+            } else {
+                updateState("kioscoPersoData", prevData => ({
+                    ...prevData,
+                    caidas_cortadas: false,
+                    alturaMicropuntos: "0",
+                    posicionCortesCaida: "Izquierda",
+                    microIzquierda: "0",
+                    microDerecha: "0"
+                }));
             }
 
             if (orderXml.actividad.id === "CARTON" && !kioscoPersoData.poscicionPestana) {

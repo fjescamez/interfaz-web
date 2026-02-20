@@ -7,25 +7,39 @@ function FreecutComponent({ state, updateState, freecutData, setFreecutData, col
     const colorsWithFreecut = ["FREECUT", ...(colores || [])];
 
     useEffect(() => {
-    if (state && state.orderColorsObjects.length > 0) {
-      updateState("freeCutColors", state.orderColorsObjects.map(color => ({
-        check: false,
-        color: color.color,
-        distancia: "0",
-        caidas: "CORTADAS",
-        plancha: color.planchaArchivo || ""
-      })));
-    }
-  }, [state?.orderColorsObjects]);
+        if (state && state.orderColorsObjects.length > 0) {
+            updateState("freeCutColors", [
+                {
+                    check: false,
+                    color: "FREECUT",
+                    distancia: "0",
+                    caidas: "CORTADAS",
+                    plancha: "MIXTO"
+                },
+                ...state.orderColorsObjects.map(color => ({
+                    check: false,
+                    color: color.name,
+                    distancia: "0",
+                    caidas: "CORTADAS",
+                    plancha: color.process.replace("custom_", "") || ""
+                }))
+            ]);
+        }
+    }, [state?.orderColorsObjects]);
 
-    useEffect(() => {
+    /* useEffect(() => {        
         if (!colores || colores.length === 0) return;
-        const safeColors = Array.isArray(freeCutColors) ? freeCutColors : [];
+        const safeColors = Array.isArray(freeCutColors) ? freeCutColors : [];  
+        
         const colorMap = new Map(
             safeColors
                 .filter((color) => color && (color.color || color.name))
                 .map((color) => [color.color || color.name, color])
         );
+
+        colorsWithFreecut.forEach(color => {
+            console.log(colorMap.get(color));
+        });
 
         const normalized = colorsWithFreecut.map((color) => (
             colorMap.get(color) || {
@@ -43,7 +57,7 @@ function FreecutComponent({ state, updateState, freecutData, setFreecutData, col
         if (!hasSameLength || !hasSameOrder) {
             setFreeCutColors(normalized);
         }
-    }, [colores, freeCutColors, setFreeCutColors, colorsWithFreecut]);
+    }, [colores, freeCutColors, colorsWithFreecut]); */
 
     const handleChange = (fieldName, value) => {
         setFreecutData((prev) => ({
