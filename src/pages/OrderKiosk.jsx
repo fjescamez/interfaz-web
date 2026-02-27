@@ -688,40 +688,34 @@ function OrderKiosk({ configMode }) {
       component: <TrappingComponent state={state} id_pedido={state.order?.id_pedido} trappingData={state.trappingData} updateState={updateState} workableId={state.workableId} nodeId={state.nodeId} loadingTrapping={state.loadingTrapping} isTrappingDone={state.isTrappingDone} isTrappingWaiting={state.isTrappingWaiting} isTrappingCanceled={state.isTrappingCanceled} />,
       data: state.trappingData
     },
-    "listTintasAjustar": {
-      title: "",
-      component: <AjustarTintas state={state} updateState={updateState} />,
-      data: state.listTintasAjustar,
-      noSave: true
-    },
     "salidaColores": {
       title: state.salidaColores.length > 0 ?
-        `${state.salidaColores.map(color => color).join(", ")}` :
-        "",
+      `${state.salidaColores.map(color => color).join(", ")}` :
+      "",
       component: <ColoresComponent state={state} updateState={updateState} formData={state.coloresForm} colores={state.orderColors} setColoresList={(value) => updateState("salidaColores", value)} inputData={state.coloresInputData} setInputData={(value) => updateState("coloresInputData", value)} />,
       data: state.salidaColores,
       noSave: true
     },
     "listDigimark": {
       title: state.listDigimark.length > 0 ?
-        `${state.listDigimark.map(color => color).join(", ")}` :
-        "",
+      `${state.listDigimark.map(color => color).join(", ")}` :
+      "",
       component: <ColoresComponent state={state} updateState={updateState} formData={state.coloresDigimarkForm} colores={state.orderColors} setColoresList={(value) => updateState("listDigimark", value)} inputData={state.digimarkInputData} setInputData={(value) => updateState("digimarkInputData", value)} />,
       data: state.listDigimark,
       noSave: true
     },
     "bocetos": {
       /*  title: state.bocetos.length === 1 ?
-         `1 Boceto: ${state.bocetos[0].rasterizado ? `${state.bocetos[0].lpi} lpi, ` : ""}${state.bocetos[0].formato}, ${state.bocetos[0].tipo}` :
-         state.bocetos.length > 1 ? `${state.bocetos.length} bocetos (Desplegar para ver más)` : "", */
+      `1 Boceto: ${state.bocetos[0].rasterizado ? `${state.bocetos[0].lpi} lpi, ` : ""}${state.bocetos[0].formato}, ${state.bocetos[0].tipo}` :
+      state.bocetos.length > 1 ? `${state.bocetos.length} bocetos (Desplegar para ver más)` : "", */
       title: `Rasterizado: ${state.bocetos.some(boceto => boceto.rasterizado) ? 'Sí' : 'No'}`,
       component: <BocetoComponent opciones={state.bocetos} setOpciones={(value) => updateState("bocetos", value)} />,
       data: state.bocetos
     },
     "fichas": {
       /*  title: state.fichas.length === 1 ?
-         `1 Ficha: ${state.fichas[0].rasterizado ? `${state.fichas[0].lpi} lpi, ` : ""}${state.fichas[0].formato}, ${state.fichas[0].tipo}` :
-         state.fichas.length > 1 ? `${state.fichas.length} fichas (Desplegar para ver más)` : "", */
+      `1 Ficha: ${state.fichas[0].rasterizado ? `${state.fichas[0].lpi} lpi, ` : ""}${state.fichas[0].formato}, ${state.fichas[0].tipo}` :
+      state.fichas.length > 1 ? `${state.fichas.length} fichas (Desplegar para ver más)` : "", */
       title: `Rasterizado: ${state.fichas.some(ficha => ficha.rasterizado) ? 'Sí' : 'No'}`,
       component: <BocetoComponent opciones={state.fichas} setOpciones={(value) => updateState("fichas", value)} />,
       data: state.fichas
@@ -739,6 +733,12 @@ function OrderKiosk({ configMode }) {
       title: "",
       component: <MontajeComponent state={state} orderXml={state.orderXml} montajeData={state.montajeData} configAvanzadaData={state.configAvanzadaData} kioscoPersoData={state.kioscoPersoData} colores={state.orderColors} isActive={state.isActive} updateState={updateState} /* setMontajeData={(value) => updateState("montajeData", value)} setConfigAvanzadaData={(value) => updateState("configAvanzadaData", value)} setIsActive={(value) => updateState("isActive", value)} setIsOpen={(value) => updateState("isOpen", value)} */ />,
       data: state.montajeData,
+      noSave: true
+    },
+    "listTintasAjustar": {
+      title: "",
+      component: <AjustarTintas state={state} updateState={updateState} />,
+      data: state.tintasAjuste,
       noSave: true
     },
     "kioscoPerso": {
