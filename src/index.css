@@ -184,7 +184,7 @@ svg {
     justify-content: center;
     align-items: center;
 
-    .executingContainer {
+    .executingOverlayContainer {
         background-color: var(--details);
         display: flex;
         flex-direction: column;
@@ -195,6 +195,7 @@ svg {
         padding-top: 5rem;
         border-radius: 1rem;
         border: 2px solid var(--pantone431c);
+        height: fit-content;
 
         h1 {
             font-size: 3rem;
@@ -262,6 +263,14 @@ svg {
 
     .formBody {
         height: 100%;
+    }
+
+    .formBody.bigForm {
+        min-height: 45rem;
+    }
+
+    form.bigForm {
+        min-height: 45rem;
     }
 
     form {
@@ -523,6 +532,21 @@ svg {
         border: 2px solid var(--header);
         border-radius: 0 0 1.5rem 1.5rem;
         padding: 0.80rem;
+    }
+
+    .chosen-choices {
+        max-height: 15rem;
+        overflow-y: auto;
+    }
+
+    &.noLabel {
+
+        input,
+        select,
+        textarea,
+        .chosen-container {
+            border-radius: 1.5rem;
+        }
     }
 
     .chosen-single,

@@ -25,7 +25,8 @@ function AjustarTintas({ state, updateState }) {
             const updatedTintasAjuste = [...state.tintasAjuste];
             updatedTintasAjuste[tintaIndex] = {
                 ...updatedTintasAjuste[tintaIndex],
-                colors: updatedColors
+                colors: updatedColors,
+                allColorsSelected: false
             };
             updateState("tintasAjuste", updatedTintasAjuste);
         } else {
@@ -33,7 +34,8 @@ function AjustarTintas({ state, updateState }) {
             const updatedTintasAjuste = [...state.tintasAjuste];
             updatedTintasAjuste[tintaIndex] = {
                 ...updatedTintasAjuste[tintaIndex],
-                colors: [...updatedTintasAjuste[tintaIndex].colors, color]
+                colors: [...updatedTintasAjuste[tintaIndex].colors, color],
+                allColorsSelected: [...updatedTintasAjuste[tintaIndex].colors, color].length === state.orderColors.length
             };
             updateState("tintasAjuste", updatedTintasAjuste);
         }
@@ -43,7 +45,8 @@ function AjustarTintas({ state, updateState }) {
         const tintasAjusteData = state.listTintasAjustar.map(tinta => {
             return {
                 name: tinta,
-                colors: state.orderColors
+                colors: state.orderColors,
+                allColorsSelected: true
             }
         });
         updateState("tintasAjuste", tintasAjusteData);
@@ -65,7 +68,8 @@ function AjustarTintas({ state, updateState }) {
                                     const updatedTintasAjuste = [...state.tintasAjuste];
                                     updatedTintasAjuste[state.indexTintasAjustar] = {
                                         ...updatedTintasAjuste[state.indexTintasAjustar],
-                                        colors: []
+                                        colors: [],
+                                        allColorsSelected: false
                                     };
                                     updateState("tintasAjuste", updatedTintasAjuste);
                                 } else {
@@ -73,7 +77,8 @@ function AjustarTintas({ state, updateState }) {
                                     const updatedTintasAjuste = [...state.tintasAjuste];
                                     updatedTintasAjuste[state.indexTintasAjustar] = {
                                         ...updatedTintasAjuste[state.indexTintasAjustar],
-                                        colors: state.orderColors
+                                        colors: state.orderColors,
+                                        allColorsSelected: true
                                     };
                                     updateState("tintasAjuste", updatedTintasAjuste);
                                 }

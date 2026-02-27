@@ -1,21 +1,79 @@
+.detailsContainer.kioskPage {
+    height: auto;
+    min-height: 100% !important;
+    max-height: 100% !important;
+}
+
 .kioskContainer {
     padding: 0 10rem;
     display: flex;
-    column-gap: 2rem;
-    
-    .jacketList {
-        min-width: 50%;
-        max-width: 50%;
+    flex-direction: column;
+    row-gap: 2rem;
+    min-height: 100%;
+    max-height: 100%;
+
+    .filterButtons {
         display: flex;
-        flex-direction: column;
-        row-gap: 0.5rem;
+        column-gap: 1.3rem;
+        justify-content: center;
+
+        .filtersButton {
+            cursor: pointer;
+            display: flex;
+            column-gap: 0.5rem;
+            align-items: center;
+            font-size: 1.8rem;
+            padding: 0.5rem 1.5rem;
+            border: 2px solid var(--pantone431c);
+            border-radius: 1.5rem;
+            background-color: white;
+            min-height: 100%;
+
+            svg {
+                width: 2rem;
+                height: 2rem;
+            }
+
+            &:hover {
+                background: var(--hover);
+            }
+        }
+
+        .clicked {
+            background: var(--orange-gradient);
+
+            &:hover {
+                background: var(--orange-gradient);
+            }
+        }
     }
 
-    .workableList {
-        min-width: 50%;
-        max-width: 50%;
+    .executingContainer {
+        margin-top: 25rem;
+    }
+
+    .kioskColumns {
         display: flex;
-        flex-direction: column;
-        row-gap: 0.5rem;
+        column-gap: 2rem;
+        min-height: 100%;
+        max-height: 100%;
+
+        .jacketList {
+            min-width: 50%;
+            max-width: 50%;
+            display: flex;
+            flex-direction: column;
+            row-gap: 0.5rem;
+            overflow-y: auto;
+            max-height: 100%;
+        }
+
+        .workableList {
+            min-width: 50%;
+            max-width: 50%;
+            display: flex;
+            flex-direction: column;
+            row-gap: 0.5rem;
+        }
     }
 }

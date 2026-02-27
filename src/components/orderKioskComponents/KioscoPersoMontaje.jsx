@@ -3,7 +3,7 @@ import { globalKioskForm, globalKioskVariables } from './kioscoPersoConfig'
 import FormGroup from '../formComponents/FormGroup';
 import Switch from "@mui/material/Switch";
 
-function KioscoPersoMontaje({ orderXml, kioscoPersoData, updateState, colores, configAvanzadaData }) {
+function KioscoPersoMontaje({ orderXml, kioscoPersoData, updateState, colores, configAvanzadaData, state }) {
     const clientFormFields = Object.keys(globalKioskVariables).filter(key =>
         globalKioskVariables[key].includes(orderXml.numero.cliente_codigo)
     );
@@ -24,7 +24,7 @@ function KioscoPersoMontaje({ orderXml, kioscoPersoData, updateState, colores, c
                 updateState("kioscoPersoData", prevData => ({
                     ...prevData,
                     caidas_cortadas: true,
-                    alturaMicropuntos: -1,
+                    alturaMicropuntos: "-1",
                     posicionCortesCaida: "Izquierda"
                 }));
             } else if (cliente_codigo === "0160" || cliente_codigo === "0156" || cliente_codigo === "0038") {
@@ -51,6 +51,13 @@ function KioscoPersoMontaje({ orderXml, kioscoPersoData, updateState, colores, c
                         reservaCaidas: false
                     }));
                 }
+            } else if (cliente_codigo === "0101") {
+                updateState("kioscoPersoData", prevData => ({
+                    ...prevData,
+                    alturaMicropuntos: "0",
+                    archivo_pagina: false,
+                    filas: "1"
+                }));
             } else {
                 updateState("kioscoPersoData", prevData => ({
                     ...prevData,
@@ -65,7 +72,7 @@ function KioscoPersoMontaje({ orderXml, kioscoPersoData, updateState, colores, c
             if (orderXml.actividad.id === "CARTON" && !kioscoPersoData.poscicionPestana) {
                 updateState("kioscoPersoData", prevData => ({
                     ...prevData,
-                    pestana: 0,
+                    pestana: "0",
                     poscicionPestana: "CENTRADO",
                     posVarilla: "ARRIBA"
                 }));
@@ -74,7 +81,7 @@ function KioscoPersoMontaje({ orderXml, kioscoPersoData, updateState, colores, c
                     updateState("kioscoPersoData", prevData => ({
                         ...prevData,
                         checkRegistron: false,
-                        despRegistron: 0,
+                        despRegistron: "0",
                         mastercut: false,
                         tomaPinza: "15"
                     }));
@@ -101,9 +108,9 @@ function KioscoPersoMontaje({ orderXml, kioscoPersoData, updateState, colores, c
                 const mitad = Math.floor(numero * 100) / 2 / 100; // Corta a 2 decimales
                 alturaMicropuntos = -mitad;
             }
-        }
+        }        
 
-        return alturaMicropuntos;
+        return alturaMicropuntos.toString();
     };
 
     useEffect(() => {
@@ -143,13 +150,18 @@ function KioscoPersoMontaje({ orderXml, kioscoPersoData, updateState, colores, c
         }));
     };
 
+    const filterFields = (fields) =>
+        fields.filter(field =>
+            !field.showIf || field.showIf({ state })
+        );
+
     return (
         <div className="kioscoPerso">
             {actividadFormFields.length > 0 && (
                 <>
                     <hr className="separator" />
                     <div className="kioscoPersoForm">
-                        {globalKioskForm.filter(field => actividadFormFields.includes(field.inputName)).map((field, index) => (
+                        {filterFields(globalKioskForm.filter(field => actividadFormFields.includes(field.inputName))).map((field, index) => (
                             <div className={`formGroup ${(field.inputType === "checkbox" || field.inputType === "radioGroup") ? "formGroupRow" : ""}`} key={index}>
                                 <FormGroup
                                     handleForm={handleForm}
@@ -165,7 +177,7 @@ function KioscoPersoMontaje({ orderXml, kioscoPersoData, updateState, colores, c
                 <>
                     <hr className="separator" />
                     <div className="kioscoPersoForm">
-                        {clientFormFields.length > 0 && globalKioskForm.filter(field => clientFormFields.includes(field.inputName)).map((field, index) => (
+                        {clientFormFields.length > 0 && filterFields(globalKioskForm.filter(field => clientFormFields.includes(field.inputName))).map((field, index) => (
                             <div className={`formGroup ${(field.inputType === "checkbox" || field.inputType === "radioGroup") ? "formGroupRow" : ""}`} key={index}>
                                 <FormGroup
                                     handleForm={handleForm}

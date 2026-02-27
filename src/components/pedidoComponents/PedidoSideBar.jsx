@@ -25,6 +25,7 @@ import { useSession } from "../../context/SessionContext";
 import SignJobForm from "../formComponents/SignJobForm";
 import { orderTableInfo } from "../../helpers/tablesInfo";
 import DeleteForm from "../formComponents/DeleteForm";
+import TraceTextForm from "../formComponents/TraceTextForm";
 
 function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
     const { session } = useSession();
@@ -247,7 +248,8 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
             {compareModal && <ComparePopUp setCompareModal={setCompareModal} rutaTrabajo={fullOrder.rutaTrabajo} />}
             {lenModal && <OrderLenTable setLenModal={setLenModal} orderId={fullOrder.id_pedido} />}
             {filesModal && <FileTable setFilesModal={setFilesModal} orderId={fullOrder.id_pedido} filePath={filePath} />}
-            {traceModal && <TraceTextPopUp setTraceModal={setTraceModal} rutaTrabajo={fullOrder.rutaTrabajo} unitario={fullOrder.unitario} />}
+            {/* {traceModal && <TraceTextPopUp setTraceModal={setTraceModal} rutaTrabajo={fullOrder.rutaTrabajo} unitario={fullOrder.unitario} />} */}
+            {traceModal && <TraceTextForm setModal={setTraceModal} rutaInfo={fullOrder.info || `${fullOrder.rutaTrabajo}INFO%20CLIENTE/`} />}
             {signJobModal && <SignJobForm setSignJobModal={setSignJobModal} fullOrder={fullOrder} />}
             {deletePopUp && <DeleteForm setModal={setDeletePopUp} id={fullOrder._id} tableInfo={orderTableInfo} />}
             {montajeModal && <MontajeTable setMontajeModal={setMontajeModal} fullOrder={fullOrder} filePath={filePath} />}

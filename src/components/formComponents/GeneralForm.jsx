@@ -26,7 +26,8 @@ function GeneralForm({
     noSubmit,
     afterSubmit,
     clickableSections,
-    onClickSection
+    onClickSection,
+    bigForm
 }) {
     const { headerIcon, headerTitle, editTitle, formFields, clientsMap, codesMap } = formData;
     const [errorMessage, setErrorMessage] = useState(false);
@@ -205,7 +206,7 @@ function GeneralForm({
             });
         }
 
-        if (result.total) {
+        if (setTotal && result.total) {
             setTotal(result.total);
         }
     };
@@ -228,8 +229,8 @@ function GeneralForm({
                             </button>
                         </div>
                     </div>
-                    <div className="formBody">
-                        <form onSubmit={handleSubmit}>
+                    <div className={`formBody ${bigForm ? "bigForm" : ""}`}>
+                        <form className={bigForm ? "bigForm" : ""} onSubmit={handleSubmit}>
                             <div className="formSections">
                                 {extras && extras}
                                 {formData.formSections.map((section, index) => (

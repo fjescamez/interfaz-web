@@ -63,6 +63,8 @@ function OrderDetails() {
   }
 
   const getStrategyDetails = async () => {
+    setCodigoEstrategia("");
+    setEstrategiaId("");
     let estrategia;
     let codigo;
 
@@ -110,9 +112,12 @@ function OrderDetails() {
   }
 
   const getUnitarioView = async () => {
+    setUnitarioView("");
     if (!fullOrder.unitario.includes("sinUnitario.png")) {
       const response = await postData("orders/getUnitarioView", { orderId: fullOrder.id_pedido, action: "solicitarVista" });
-      setUnitarioView(response);
+      if (typeof response === "string") {
+        setUnitarioView(response);
+      }
     }
   }
 

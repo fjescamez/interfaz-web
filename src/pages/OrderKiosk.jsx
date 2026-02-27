@@ -158,7 +158,7 @@ function OrderKiosk({ configMode }) {
     return () => {
       socket.off('kioskTest'); // limpiar listener
     };
-  }, [socket]); */  
+  }, [socket]); */
 
   useEffect(() => {
     if (getTabState(tabKey) && (getTabState(tabKey).loadingOrderReport !== state.loadingOrderReport || getTabState(tabKey).loadingFileReport !== state.loadingFileReport || getTabState(tabKey).loadingTrapping !== state.loadingTrapping)) {
@@ -181,7 +181,7 @@ function OrderKiosk({ configMode }) {
   }, [tabKey, state, tabExists]);
 
   useEffect(() => {
-    if (state.listTintasAjustar.length > 0) {
+    if (state.listTintasAjustar.length > 0 && state.isActive.montaje) {
       updateState("isActive", (prev) => ({
         ...prev,
         listTintasAjustar: true
@@ -190,8 +190,13 @@ function OrderKiosk({ configMode }) {
         ...prev,
         listTintasAjustar: true
       }));
+    } else {
+      updateState("isActive", (prev) => ({
+        ...prev,
+        listTintasAjustar: false
+      }));
     }
-  }, [state.listTintasAjustar]);
+  }, [state.listTintasAjustar, state.isActive.montaje]);
 
   useEffect(() => {
     if (!tabKey || lastTabKeyRef.current === tabKey) return;
@@ -690,16 +695,16 @@ function OrderKiosk({ configMode }) {
     },
     "salidaColores": {
       title: state.salidaColores.length > 0 ?
-      `${state.salidaColores.map(color => color).join(", ")}` :
-      "",
+        `${state.salidaColores.map(color => color).join(", ")}` :
+        "",
       component: <ColoresComponent state={state} updateState={updateState} formData={state.coloresForm} colores={state.orderColors} setColoresList={(value) => updateState("salidaColores", value)} inputData={state.coloresInputData} setInputData={(value) => updateState("coloresInputData", value)} />,
       data: state.salidaColores,
       noSave: true
     },
     "listDigimark": {
       title: state.listDigimark.length > 0 ?
-      `${state.listDigimark.map(color => color).join(", ")}` :
-      "",
+        `${state.listDigimark.map(color => color).join(", ")}` :
+        "",
       component: <ColoresComponent state={state} updateState={updateState} formData={state.coloresDigimarkForm} colores={state.orderColors} setColoresList={(value) => updateState("listDigimark", value)} inputData={state.digimarkInputData} setInputData={(value) => updateState("digimarkInputData", value)} />,
       data: state.listDigimark,
       noSave: true

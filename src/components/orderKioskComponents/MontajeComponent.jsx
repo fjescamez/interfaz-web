@@ -217,28 +217,30 @@ function MontajeComponent({ state, orderXml, montajeData, configAvanzadaData, up
       <div className="montaje">
         {orderXml?.actividad?.id !== "MADERA" ? (
           <div className="switches">
-            <div className="switchGroup">
-              <Switch
-                className="kioskSwitch"
-                checked={isActive.especial || false}
-                onChange={e => {
-                  if (isActive.montaje) {
-                    updateState("isActive", prev => ({
-                      ...prev,
-                      especial: e.target.checked
-                    }));
+            {orderXml?.actividad?.id !== "FLEXIBLE" && (
+              <div className="switchGroup">
+                <Switch
+                  className="kioskSwitch"
+                  checked={isActive.especial || false}
+                  onChange={e => {
+                    if (isActive.montaje) {
+                      updateState("isActive", prev => ({
+                        ...prev,
+                        especial: e.target.checked
+                      }));
 
-                    updateState("isOpen", (prev) => ({
-                      ...prev,
-                      especial: true
-                    }));
-                  } else {
-                    notify("warning", "Activa el montaje para usar esta opción");
-                  }
-                }}
-              />
-              <p>Especial</p>
-            </div>
+                      updateState("isOpen", (prev) => ({
+                        ...prev,
+                        especial: true
+                      }));
+                    } else {
+                      notify("warning", "Activa el montaje para usar esta opción");
+                    }
+                  }}
+                />
+                <p>Especial</p>
+              </div>
+            )}
             <div className="switchGroup">
               <Switch
                 className="kioskSwitch"
@@ -359,7 +361,7 @@ function MontajeComponent({ state, orderXml, montajeData, configAvanzadaData, up
           </div>
         )}
         {(orderXml?.numero?.cliente_codigo && Object.values(globalKioskVariables).some(arr => arr.includes(orderXml.numero.cliente_codigo)) || (orderXml?.actividad?.id === "CARTON" && orderXml?.actividad?.carton?.carton_tcaja !== "TROQUELADA PLATO")) && (
-          <KioscoPersoMontaje orderXml={orderXml} kioscoPersoData={kioscoPersoData} updateState={updateState} colores={colores} configAvanzadaData={configAvanzadaData} />
+          <KioscoPersoMontaje orderXml={orderXml} kioscoPersoData={kioscoPersoData} updateState={updateState} colores={colores} configAvanzadaData={configAvanzadaData} state={state} />
         )}
       </div>
     </div>

@@ -7,9 +7,36 @@ import { PiGear } from "react-icons/pi";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { TbColorSwatch } from "react-icons/tb";
 import { AiOutlineSignature } from "react-icons/ai";
+import { RiText } from "react-icons/ri";
 import GroupsSvg from "../assets/svg/GroupsSvg";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
+
+export const traceTextForm = {
+    headerIcon: <RiText />,
+    headerTitle: "TRAZAR TEXTO",
+    formSections: [
+        {
+            rows: [
+                {
+                    groups: ["traceTextFiles"]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "traceTextFiles",
+            labelId: "traceTextFilesLabel",
+            labelTitle: "Seleccione los archivos a trazar",
+            select: "multiple",
+            options: [],
+            inputId: "traceTextFiles",
+            inputName: "traceTextFiles",
+            required: true
+        }
+    ]
+}
 
 export const incidenciaProductoFormData = {
     headerIcon: <FaBoxOpen />,

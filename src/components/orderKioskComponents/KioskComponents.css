@@ -241,9 +241,6 @@
     row-gap: 2.5rem;
 
     .switches {
-        display: grid;
-        grid-template-columns: 18rem 1fr 1fr auto;
-
         .chosen-container {
             width: 100% !important;
         }
@@ -253,6 +250,11 @@
         display: flex;
         flex-direction: column;
         row-gap: 2rem;
+
+        .switches {
+            display: grid;
+            grid-template-columns: 18rem 1fr 1fr auto;
+        }
     }
 
     .kioscoPerso {

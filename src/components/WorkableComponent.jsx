@@ -42,7 +42,7 @@ function WorkableComponent({ jacketId, workable, id_pedido, trappingData }) {
                 <div className="workableBody">
                     <div className="workableInfo">
                         <p><span className="bold">Inicio</span> <span>{start_whitepaper_name} - {start_node_name}</span></p>
-                        <p><span className="bold">Actual</span> <span className={isTecnico ? "hover" : ""} onClick={() => isTecnico && window.open(whitepaperUrl, "_blank")}>{whitepaper_name} - {nodeHistory[nodeHistory.length - 1]?.node_name}</span></p>
+                        <p><span className="bold">Actual</span> <span><span className={isTecnico ? "hover" : ""} onClick={() => isTecnico && window.open(whitepaperUrl, "_blank")}>{whitepaper_name}</span><span> - {nodeHistory[nodeHistory.length - 1]?.node_name}</span></span></p>
                         <p><span className="bold">Estado</span> <span>{workable_state} {workable_aborted && "(cancelado)"}</span></p>
                         <p><span className="bold">Finalizado</span> <span>{workable_done ? "Sí" : "No"}</span></p>
                     </div>

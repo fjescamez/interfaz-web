@@ -19,15 +19,6 @@ export const kioskActions = [
         steps: [3]
     },
     {
-        title: "AJUSTAR TINTAS",
-        id: "listTintasAjustar",
-        openOnActive: true,
-        onlyShowIfActive: true,
-        disableSwitch: true,
-        hideWhenConfig: true,
-        steps: [3]
-    },
-    {
         title: "CAMBIAN COLORES",
         id: "salidaColores",
         openOnActive: true,
@@ -72,6 +63,15 @@ export const kioskActions = [
         title: "MONTAJE",
         id: "montaje",
         openOnActive: true,
+        hideWhenConfig: true,
+        steps: [3]
+    },
+    {
+        title: "AJUSTAR TINTAS",
+        id: "listTintasAjustar",
+        openOnActive: true,
+        onlyShowIfActive: true,
+        disableSwitch: true,
         hideWhenConfig: true,
         steps: [3]
     },

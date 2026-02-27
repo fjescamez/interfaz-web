@@ -16,7 +16,12 @@ export const paginaSoporteDetails = {
             icon: <HiOutlineRefresh />,
             title: "Sincronizar Clientes BBDD",
             key: "sincronizarClientes"
-        }
+        },
+        {
+            icon: <HiOutlineRefresh />,
+            title: "Pruebas",
+            key: "pruebas"
+        },
     ]
 }
 
