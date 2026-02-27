@@ -13,6 +13,20 @@ import { FaPause, FaPlay, FaFlag } from "react-icons/fa";
 import FormGroup from '../components/formComponents/FormGroup';
 import { BlinkBlur } from "react-loading-indicators";
 
+const areJacketsEqual = (oldJackets = [], newJackets = []) => {
+    if (oldJackets.length !== newJackets.length) return false;
+
+    const oldById = new Map(oldJackets.map(j => [j._id, j]));
+
+    return newJackets.every(j => {
+        const old = oldById.get(j._id);
+        if (!old) return false; // no existe ese _id en los antiguos
+
+        // comparación sencilla profunda usando JSON
+        return JSON.stringify(old) === JSON.stringify(j);
+    });
+};
+
 function KioscoPage() {
     const socket = useSocket();
     const { closeTab } = useTabs();
@@ -27,13 +41,16 @@ function KioscoPage() {
     const [loading, setLoading] = useState(true);
 
     const listJackets = async () => {
-        const result = await postData("orderKiosks/getFilteredJackets", { username: session.username, filters: filtersRef.current, limit: limitRef.current });
-        // Solo setear si hay algún jacket nuevo
-        const hasNewJacket = result?.jackets?.some(
-            newJacket => !jacketsRef?.current?.some(existing => existing._id === newJacket._id)
-        );
-        if (hasNewJacket || result?.jackets?.length !== jacketsRef?.current?.length) {
-            setUserJackets(result?.jackets || []);
+        const result = await postData("orderKiosks/getFilteredJackets", {
+            username: session.username,
+            filters: filtersRef.current,
+            limit: limitRef.current
+        });
+
+        const newJackets = result?.jackets || [];
+
+        if (!areJacketsEqual(jacketsRef.current, newJackets)) {
+            setUserJackets(newJackets);
         }
     }
 
