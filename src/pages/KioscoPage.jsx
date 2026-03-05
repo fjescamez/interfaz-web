@@ -1,7 +1,7 @@
 import { use, useEffect, useRef, useState } from 'react';
 import DetailsHeader from '../components/DetailsHeader';
 import { useSession } from '../context/SessionContext';
-import { postData } from '../helpers/fetchData';
+import { postData, updateData } from '../helpers/fetchData';
 import JacketComponent from '../components/JacketComponent';
 import "./KioscoPage.css";
 import WorkableComponent from '../components/WorkableComponent';
@@ -12,6 +12,8 @@ import { RxCross2 } from "react-icons/rx";
 import { FaPause, FaPlay, FaFlag } from "react-icons/fa";
 import FormGroup from '../components/formComponents/FormGroup';
 import { BlinkBlur } from "react-loading-indicators";
+import { useTabState } from '../context/TabStateContext';
+import { useLocation } from "react-router-dom";
 
 const areJacketsEqual = (oldJackets = [], newJackets = []) => {
     if (oldJackets.length !== newJackets.length) return false;
@@ -29,16 +31,19 @@ const areJacketsEqual = (oldJackets = [], newJackets = []) => {
 
 function KioscoPage() {
     const socket = useSocket();
+    const location = useLocation();
+    const tabKey = location.pathname;
     const { closeTab } = useTabs();
-    const { session } = useSession();
+    const { session, setSession } = useSession();
     const [userJackets, setUserJackets] = useState([]);
     const jacketsRef = useRef(userJackets);
     const [selectedJacket, setSelectedJacket] = useState(null);
-    const [filters, setFilters] = useState({});
-    const filtersRef = useRef(filters);
-    const [limit, setLimit] = useState(15);
-    const limitRef = useRef(limit);
     const [loading, setLoading] = useState(true);
+    const { saveTabState, getTabState } = useTabState();
+    const [filters, setFilters] = useState(session?.kioskFilters?.filters || getTabState(tabKey)?.filters || {});
+    const [limit, setLimit] = useState(session?.kioskFilters?.limit || getTabState(tabKey)?.limit || 15);
+    const filtersRef = useRef(filters);
+    const limitRef = useRef(limit);
 
     const listJackets = async () => {
         const result = await postData("orderKiosks/getFilteredJackets", {
@@ -77,7 +82,23 @@ function KioscoPage() {
     useEffect(() => {
         filtersRef.current = filters;
         limitRef.current = limit;
+        saveTabState(tabKey, { filters: filtersRef.current, limit: limitRef.current });
         listJackets();
+
+        updateData("userPreferences", {
+            kioskFilters: {
+                filters,
+                limit
+            }
+        }, session.username);
+        
+        setSession(prev => ({
+            ...prev,
+            kioskFilters: {
+                filters,
+                limit
+            }
+        }));
     }, [filters, limit])
 
     useEffect(() => {

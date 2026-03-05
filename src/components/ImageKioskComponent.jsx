@@ -7,14 +7,16 @@ import { IoMdCloseCircleOutline } from "react-icons/io";
 import DeleteForm from "./formComponents/DeleteForm";
 import { FaUserCircle } from "react-icons/fa";
 import { SlBriefcase } from "react-icons/sl";
+import { addKeyListener } from "../helpers/toggleModal";
 
-function ImageKioskComponent({ toggleKiosk, endpoint, id, client }) {
+function ImageKioskComponent({ toggleKiosk, endpoint, id, client, setIsKioskActive }) {
     const urlApi = import.meta.env.VITE_API_URL;
     const inputRef = useRef(null);
     const [image, setImage] = useState(null);
     const { session, setSession } = useSession();
     const [toggleDelete, setToggleDelete] = useState(false);
     const icon = endpoint === "users" ? <FaUserCircle /> : <SlBriefcase />;
+    addKeyListener(setIsKioskActive);
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];

@@ -16,19 +16,22 @@ function FormSection({
             {sectionData.rows
                 .filter(row => row.groups.some(group => formFields.some(field => field.htmlFor === group)))
                 .map((row, index) => (
-                    <div key={index} className={row.rowDisplay || "displayAuto"}>
-                        {formFields.filter(field => row.groups.includes(field.htmlFor)).map((field) => (
-                            <div key={field.htmlFor} className={`formGroup ${(field.inputType === "checkbox" || field.inputType === "radioGroup") ? "formGroupRow" : ""}`}>
-                                <FormGroup
-                                    error={fieldErrors ? fieldErrors[field.inputName] : ""}
-                                    value={inputData ? inputData[field.inputName] ?? "" : fieldsData}
-                                    handleForm={handleForm}
-                                    field={field}
-                                    disable={disable}
-                                />
-                            </div>
-                        ))}
-                    </div>
+                    <>
+                        {row.title && <div className="rowTitle" key={index}><p>{row.title}</p></div>}
+                        <div key={index} className={row.rowDisplay || "displayAuto"}>
+                            {formFields.filter(field => row.groups.includes(field.htmlFor)).map((field) => (
+                                <div key={field.htmlFor} className={`formGroup ${(field.inputType === "checkbox" || field.inputType === "radioGroup") ? "formGroupRow" : ""}`}>
+                                    <FormGroup
+                                        error={fieldErrors ? fieldErrors[field.inputName] : ""}
+                                        value={inputData ? inputData[field.inputName] ?? "" : fieldsData}
+                                        handleForm={handleForm}
+                                        field={field}
+                                        disable={disable}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </>
                 ))}
         </>
     )

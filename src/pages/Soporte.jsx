@@ -12,7 +12,7 @@ function Soporte() {
     if (key === "sincronizarClientes") {
       await fetchDataNoLimits("clients/sync/cloudflow");
     } else if (key === "pruebas") {
-      const result = await postData("tasks/getTraceTextList", { });
+      const result = await postData("orderKiosks/testJackets", {});
     }
   }
 

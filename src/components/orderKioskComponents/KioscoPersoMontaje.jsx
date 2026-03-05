@@ -4,13 +4,13 @@ import FormGroup from '../formComponents/FormGroup';
 import Switch from "@mui/material/Switch";
 
 function KioscoPersoMontaje({ orderXml, kioscoPersoData, updateState, colores, configAvanzadaData, state }) {
-    const clientFormFields = Object.keys(globalKioskVariables).filter(key =>
-        globalKioskVariables[key].includes(orderXml.numero.cliente_codigo)
-    );
     const actividadFormFields = Object.keys(globalKioskVariables).filter(key =>
         globalKioskVariables[key].includes(orderXml?.actividad?.id)
     );
-
+    const clientFormFields = Object.keys(globalKioskVariables).filter(key =>
+        globalKioskVariables[key].includes(orderXml.numero.cliente_codigo)
+    );
+    
     useEffect(() => {
         updateState("isActive", prev => ({
             ...prev,
@@ -108,7 +108,7 @@ function KioscoPersoMontaje({ orderXml, kioscoPersoData, updateState, colores, c
                 const mitad = Math.floor(numero * 100) / 2 / 100; // Corta a 2 decimales
                 alturaMicropuntos = -mitad;
             }
-        }        
+        }
 
         return alturaMicropuntos.toString();
     };
@@ -157,7 +157,7 @@ function KioscoPersoMontaje({ orderXml, kioscoPersoData, updateState, colores, c
 
     return (
         <div className="kioscoPerso">
-            {actividadFormFields.length > 0 && (
+            {actividadFormFields.length > 0 && filterFields(globalKioskForm.filter(field => actividadFormFields.includes(field.inputName))).length > 0 && (
                 <>
                     <hr className="separator" />
                     <div className="kioscoPersoForm">

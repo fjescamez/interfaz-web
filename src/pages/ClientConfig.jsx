@@ -48,7 +48,7 @@ function ClientConfig({ toggleKiosk }) {
             return;
         }
 
-        const options = [{ _id: "1", textoOpcion: "Por defecto" }];
+        const options = [{ _id: "Por defecto", textoOpcion: "Por defecto" }];
 
         contacts.map(contact => {
             const nuevoContacto = { ...contact, textoOpcion: `${contact.contacto} (${contact.email})` };
@@ -107,12 +107,17 @@ function ClientConfig({ toggleKiosk }) {
     }, [clientConfig, contactos]);
 
     useEffect(() => {
-        if (clientConfig.configuraciones?.email?.contactoDefault) {
-            setItemsData(prev => ({
-                ...prev,
-                contactoDefault: clientConfig.configuraciones.email.contactoDefault
-            }));
-        }
+        setItemsData(prev => ({
+            ...prev,
+            contactoDefault: clientConfig.configuraciones?.email?.contactoDefault || contactos[0],
+            compensacionCorte: clientConfig.configuraciones?.montaje?.compensacionCorte || 0,
+            marcaMontaje: clientConfig.configuraciones?.montaje?.marcaMontaje || "",
+            caidasFreecut: clientConfig.configuraciones?.montaje?.caidasFreecut || "COMPLETO",
+            certificadoControl: clientConfig.configuraciones?.documentacion?.certificadoControl || false,
+            certificadoContinuos: clientConfig.configuraciones?.documentacion?.certificadoContinuos || false,
+            certificadoCodigos: clientConfig.configuraciones?.documentacion?.certificadoCodigos || false,
+            unitarioPng: clientConfig.configuraciones?.documentacion?.unitarioPng || false,
+        }));
     }, [clientConfig]);
 
     return (
@@ -129,7 +134,6 @@ function ClientConfig({ toggleKiosk }) {
                     hideDeleteIcon={true}
                     setEditPopup={setEditPopup}
                 />
-                {editPopup && <ClientConfigForm setModal={setEditPopup} client={client} itemsData={itemsData} setItemsData={setItemsData} formData={formData} />}
                 <div className="detailsScroll">
                     <div className="formSections">
                         {formData.formSections.map((section) => (
@@ -144,6 +148,7 @@ function ClientConfig({ toggleKiosk }) {
                         ))}
                     </div>
                 </div>
+                {editPopup && <ClientConfigForm setModal={setEditPopup} client={client} itemsData={itemsData} setItemsData={setItemsData} formData={formData} />}
             </div>
         </>
     )

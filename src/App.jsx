@@ -198,7 +198,7 @@ function App() {
         />
         {location.pathname !== "/login" && <InputPistola />}
         {(isDropdownActive) && <UserDropdownComponent toggleUserDropdown={toggleUserDropdown} toggleKiosk={toggleKiosk} />}
-        {isKioskActive && <ImageKioskComponent toggleKiosk={toggleKiosk} endpoint={kioskData.endpoint} id={kioskData.id} client={kioskData.client} />}
+        {isKioskActive && <ImageKioskComponent toggleKiosk={toggleKiosk} endpoint={kioskData.endpoint} id={kioskData.id} client={kioskData.client} setIsKioskActive={setIsKioskActive} />}
         {location.pathname !== "/login" && <SideBarComponent isActive={isActive} setIsActive={setIsActive} />}
         <div className={`scrollTopArrow ${isArrowActive ? "arrowVisible" : ""}`} onClick={scrollTop}><FaArrowCircleUp /></div>
         <Routes>
@@ -224,7 +224,7 @@ function App() {
           <Route path="/clientes/:id/grupos" element={<GroupsPage filter={true} />} />
           <Route path="/clientes/:id/estrategias" element={<StrategyPage filter={true} />} />
           <Route path="/clientes/:id/configuracion" element={<ClientConfig toggleKiosk={toggleKiosk} />} />
-          <Route path="/cliente/:id/kioscoConfig" element={<OrderKioskRouted configMode={true} />} />
+          <Route path="/clientes/:id/kioscoConfig" element={<OrderKioskRouted configMode={true} />} />
           <Route path="/estrategias" element={<StrategyPage />} />
           <Route path="/estrategias/:id" element={<StrategyDetails />} />
           <Route path="/contactos" element={<ContactsPage />} />

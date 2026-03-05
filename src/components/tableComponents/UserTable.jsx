@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+/* import { useEffect, useState } from "react";
 import "../TableComponent.css"
 import Table from "../Table.jsx";
 import UserForm from "../formComponents/UserForm.jsx";
@@ -55,4 +55,4 @@ function UserTable() {
     )
 }
 
-export default UserTable
+export default UserTable */

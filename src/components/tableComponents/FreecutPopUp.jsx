@@ -22,7 +22,7 @@ function FreecutPopUp({ setFreecutModal, colores, id_pedido, montaje }) {
         check: false,
         color: color.color,
         distancia: "0",
-        caidas: "CORTADAS",
+        caidas: "COMPLETO",
         plancha: color.planchaArchivo || ""
     })));
 

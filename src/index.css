@@ -464,7 +464,10 @@ svg {
         padding: 0.25rem 1rem;
         font-size: 2rem;
         /* max-width: fit-content; */
-        cursor: pointer;
+        
+        &.clickable {
+            cursor: pointer;
+        }
     }
 
     .fullLabel {
@@ -474,16 +477,19 @@ svg {
         padding: 0.5rem 1rem;
         border: 2px solid var(--pantone431c);
         border-radius: 1.5rem;
-        cursor: pointer;
         min-width: fit-content;
         align-self: center;
+        
+        &.clickable {
+            cursor: pointer;
 
-        &:active {
-            transform: scale(0.99);
-        }
+            &:active {
+                transform: scale(0.99);
+            }
 
-        &:hover {
-            box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.3);
+            &:hover {
+                box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.3);
+            }
         }
     }
 

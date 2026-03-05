@@ -16,7 +16,8 @@ export const globalKioskVariables = {
     tomaPinza: ["0022"],
     reservaCaidas: ["0160"],
     archivo_pagina: ["0101"],
-    filas: ["0101"]
+    filas: ["0101"],
+    anchoRound: ["CARTON", "MADERA", "FLEXIBLE", "ETIQUETAS"]
 };
 
 export const globalKioskForm = [
@@ -177,5 +178,14 @@ export const globalKioskForm = [
         inputId: "filas",
         inputName: "filas",
         showIf: ({state}) => state?.unitarioMetadata?.number_of_pages > 1
+    },
+    {
+        htmlFor: "anchoRound",
+        labelId: "anchoRoundLabel",
+        labelTitle: "Ancho de Camisa",
+        inputType: "number",
+        inputId: "anchoRound",
+        inputName: "anchoRound",
+        showIf: ({state}) => state?.orderColorsObjects?.some(colorObj => typeof colorObj.process === 'string' && colorObj.process.toUpperCase().includes('FAST'))
     }
 ]

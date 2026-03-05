@@ -2,62 +2,31 @@ import { useEffect } from "react";
 import FormGroup from "../formComponents/FormGroup";
 import Switch from '@mui/material/Switch';
 import ChosenSelect from "../formComponents/ChosenSelect";
+import { caidasFreecutOptions } from "../../helpers/constants";
 
 function FreecutComponent({ state, updateState, freecutData, setFreecutData, colores, freeCutColors, setFreeCutColors }) {
     const colorsWithFreecut = ["FREECUT", ...(colores || [])];
 
     useEffect(() => {
-        if (state && state.orderColorsObjects.length > 0) {
+        if (state && state.orderColorsObjects.length > 0) {            
             updateState("freeCutColors", [
                 {
                     check: false,
                     color: "FREECUT",
                     distancia: "0",
-                    caidas: "CORTADAS",
+                    caidas: state.clientConfig?.configuraciones?.montaje?.caidasFreecut || "COMPLETO",
                     plancha: "MIXTO"
                 },
                 ...state.orderColorsObjects.map(color => ({
                     check: false,
                     color: color.name,
                     distancia: "0",
-                    caidas: "CORTADAS",
-                    plancha: color.process.replace("custom_", "") || ""
+                    caidas: state.clientConfig?.configuraciones?.montaje?.caidasFreecut || "COMPLETO",
+                    plancha: color.process?.replace("custom_", "") || ""
                 }))
             ]);
         }
     }, [state?.orderColorsObjects]);
-
-    /* useEffect(() => {        
-        if (!colores || colores.length === 0) return;
-        const safeColors = Array.isArray(freeCutColors) ? freeCutColors : [];  
-        
-        const colorMap = new Map(
-            safeColors
-                .filter((color) => color && (color.color || color.name))
-                .map((color) => [color.color || color.name, color])
-        );
-
-        colorsWithFreecut.forEach(color => {
-            console.log(colorMap.get(color));
-        });
-
-        const normalized = colorsWithFreecut.map((color) => (
-            colorMap.get(color) || {
-                check: false,
-                color,
-                distancia: "0",
-                caidas: "CORTADAS",
-                plancha: "MIXTO"
-            }
-        ));
-
-        const hasSameLength = safeColors.length === normalized.length;
-        const hasSameOrder = hasSameLength && normalized.every((item, index) => safeColors[index]?.color === item.color);
-
-        if (!hasSameLength || !hasSameOrder) {
-            setFreeCutColors(normalized);
-        }
-    }, [colores, freeCutColors, colorsWithFreecut]); */
 
     const handleChange = (fieldName, value) => {
         setFreecutData((prev) => ({
@@ -132,8 +101,8 @@ function FreecutComponent({ state, updateState, freecutData, setFreecutData, col
                         <input type="text" onChange={(e) => handleColors(null, "distancia", e.target.value)} />
                         <ChosenSelect
                             name={""}
-                            value={freecutData.caidasAll || ""}
-                            options={["CORTADAS", "COMPLETO", "IZQUIERDA", "DERECHA"]}
+                            value={freecutData.caidasAll || state.clientConfig?.configuraciones?.montaje?.caidasFreecut || ""}
+                            options={caidasFreecutOptions}
                             onChange={e => handleColors(null, "caidas", e.target.value)}
                         />
                     </div>
@@ -151,7 +120,7 @@ function FreecutComponent({ state, updateState, freecutData, setFreecutData, col
                                 <input type="text" name={`colorFreecut-${index}`} id={`colorFreecut-${index}`} value={freeCutColors[index]?.distancia || ""} onChange={e => handleColors(index, "distancia", e.target.value)} />
                                 <ChosenSelect
                                     name={index}
-                                    options={["CORTADAS", "COMPLETO", "IZQUIERDA", "DERECHA"]}
+                                    options={caidasFreecutOptions}
                                     value={freeCutColors[index]?.caidas || ""}
                                     onChange={e => handleColors(index, "caidas", e.target.value)}
                                 />

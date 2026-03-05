@@ -35,7 +35,7 @@ const FormGroup = React.memo(function FormGroup({
                         <label
                             htmlFor={htmlFor}
                             id={labelId}
-                            className={error ? "errorLabel" : "" + inputType === "radioGroup" ? "fullLabel" : ""}
+                            className={error ? "errorLabel" : "" + inputType === "radioGroup" ? "fullLabel" : "" + (!disable && !disableField) ? "clickable" : ""}
                         >
                             {`${labelTitle}:`}
                         </label>
@@ -71,7 +71,7 @@ const FormGroup = React.memo(function FormGroup({
                                     />
                                     <label
                                         htmlFor={radioButton.inputId}
-                                        className="noStyleLabel"
+                                        className={`noStyleLabel ${(!disable && !disableField) ? "clickable" : ""}`}
                                     >
                                         {radioButton.labelTitle}
                                     </label>
@@ -105,7 +105,13 @@ const FormGroup = React.memo(function FormGroup({
                         <label
                             htmlFor={htmlFor}
                             id={labelId}
-                            className={error ? "errorLabel" : "" + inputType === "checkbox" ? "fullLabel" : ""}
+                            className={[
+                                error && "errorLabel",
+                                inputType === "checkbox" && "fullLabel",
+                                !disable && !disableField && "clickable",
+                            ]
+                                .filter(Boolean)
+                                .join(" ")}
                             onClick={disable || disableField ? null : () =>
                                 handleForm({ target: { name: inputName, value: !value } })
                             }

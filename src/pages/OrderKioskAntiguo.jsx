@@ -1019,7 +1019,7 @@ function OrderKioskAntiguo({ configMode }) {
   };
 
   const navigateToConfig = () => {
-    const path = `/cliente/${state.cliente._id}/kioscoConfig`;
+    const path = `/clientes/${state.cliente._id}/kioscoConfig`;
 
     createTab(path, `CONFIG. KIOSCO ${state.cliente?.name || ""}`);
   }

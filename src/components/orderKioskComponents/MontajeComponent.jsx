@@ -360,7 +360,7 @@ function MontajeComponent({ state, orderXml, montajeData, configAvanzadaData, up
             })}
           </div>
         )}
-        {(orderXml?.numero?.cliente_codigo && Object.values(globalKioskVariables).some(arr => arr.includes(orderXml.numero.cliente_codigo)) || (orderXml?.actividad?.id === "CARTON" && orderXml?.actividad?.carton?.carton_tcaja !== "TROQUELADA PLATO")) && (
+        {(orderXml?.numero?.cliente_codigo && Object.values(globalKioskVariables).some(arr => arr.includes(orderXml.numero.cliente_codigo)) || (state.actividad && Object.values(globalKioskVariables).some(arr => arr.includes(state.actividad))) || (orderXml?.actividad?.id === "CARTON" && orderXml?.actividad?.carton?.carton_tcaja !== "TROQUELADA PLATO")) && (
           <KioscoPersoMontaje orderXml={orderXml} kioscoPersoData={kioscoPersoData} updateState={updateState} colores={colores} configAvanzadaData={configAvanzadaData} state={state} />
         )}
       </div>

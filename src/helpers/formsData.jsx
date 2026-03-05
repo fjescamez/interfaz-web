@@ -11,6 +11,7 @@ import { RiText } from "react-icons/ri";
 import GroupsSvg from "../assets/svg/GroupsSvg";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
+import { caidasFreecutOptions } from "./constants";
 
 export const traceTextForm = {
     headerIcon: <RiText />,
@@ -2081,6 +2082,32 @@ export const clientConfigFormData = {
                     ]
                 }
             ]
+        },
+        {
+            title: "Montaje",
+            rows: [
+                {
+                    groups: [
+                        "compensacionCorte",
+                        "marcaMontaje",
+                        "caidasFreecut"
+                    ]
+                }
+            ]
+        },
+        {
+            title: "Documentación",
+            rows: [
+                {
+                    title: "Certificados",
+                    groups: [
+                        "certificadoControl",
+                        "certificadoContinuos",
+                        "certificadoCodigos",
+                        "unitarioPng"
+                    ]
+                }
+            ]
         }
     ],
     formFields: [
@@ -2092,6 +2119,86 @@ export const clientConfigFormData = {
             options: [],
             inputId: "contactoDefault",
             inputName: "contactoDefault"
+        },
+        {
+            htmlFor: "compensacionCorte",
+            labelId: "compensacionCorteLabel",
+            labelTitle: "Compensación de corte",
+            inputType: "number",
+            inputId: "compensacionCorte",
+            inputName: "compensacionCorte"
+        },
+        {
+            htmlFor: "marcaMontaje",
+            labelId: "marcaMontajeLabel",
+            labelTitle: "Marca de montaje",
+            select: "simple",
+            options: [
+                {},
+                {
+                    _id: "personalizada",
+                    textoOpcion: "Personalizada"
+                },
+                {
+                    _id: "centrosConref",
+                    textoOpcion: "Centros con referencia"
+                },
+                {
+                    _id: "centrosSinRef",
+                    textoOpcion: "Centros sin referencia"
+                },
+                {
+                    _id: "puntosConRef",
+                    textoOpcion: "Puntos con referencia"
+                },
+                {
+                    _id: "puntosSinRef",
+                    textoOpcion: "Puntos sin referencia"
+                }
+            ],
+            inputId: "marcaMontaje",
+            inputName: "marcaMontaje"
+        },
+        {
+            htmlFor: "certificadoControl",
+            labelId: "certificadoControlLabel",
+            labelTitle: "Control",
+            inputType: "checkbox",
+            inputId: "certificadoControl",
+            inputName: "certificadoControl"
+        },
+        {
+            htmlFor: "certificadoContinuos",
+            labelId: "certificadoContinuosLabel",
+            labelTitle: "Continuos",
+            inputType: "checkbox",
+            inputId: "certificadoContinuos",
+            inputName: "certificadoContinuos"
+        },
+        {
+            htmlFor: "certificadoCodigos",
+            labelId: "certificadoCodigosLabel",
+            labelTitle: "Códigos",
+            inputType: "checkbox",
+            inputId: "certificadoCodigos",
+            inputName: "certificadoCodigos"
+        },
+        {
+            htmlFor: "unitarioPng",
+            labelId: "unitarioPngLabel",
+            labelTitle: "Unitario PNG",
+            inputType: "checkbox",
+            inputId: "unitarioPng",
+            inputName: "unitarioPng"
+        },
+        {
+            htmlFor: "caidasFreecut",
+            labelId: "caidasFreecutLabel",
+            labelTitle: "Caídas Freecut",
+            select: "simple",
+            options: caidasFreecutOptions,
+            inputId: "caidasFreecut",
+            inputName: "caidasFreecut"
         }
     ]
 }

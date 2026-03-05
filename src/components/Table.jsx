@@ -51,7 +51,6 @@ function Table({
 }) {
     const urlApi = import.meta.env.VITE_API_URL;
     const location = useLocation();
-    const socket = useSocket();
     const [checkedIndexes, setCheckedIndexes] = useState([]);
     const [orderBy, setOrderBy] = useState("");
     const [tableData, setTableData] = useState(initialData || []);
@@ -114,13 +113,13 @@ function Table({
             return;
         }
 
-        if (actualTab && actualTab.advancedQuery) {
+        /* if (actualTab && actualTab.advancedQuery) {
             setAdvancedFilters(true);
             setAdvancedQuery(actualTab.advancedQuery);
         } else if (actualTab && actualTab.search) {
             setDebouncedSearch(actualTab.search);
             setSearch(actualTab.search);
-        }
+        } */
 
         extraLogic && extraLogic();
     }, []);
@@ -218,9 +217,13 @@ function Table({
         if (!initialData) {
             setPage(1);
             if (actualTab && actualTab.advancedQuery) {
-                const searchParams = new URLSearchParams(actualTab.advancedQuery).toString();
+                setAdvancedFilters(true);
+                setAdvancedQuery(actualTab.advancedQuery);
+                const searchParams = new URLSearchParams(actualTab.advancedQuery)?.toString();
                 getData(1, searchParams, clienteCodigo || clientFilter);
             } else if (actualTab && actualTab.search) {
+                setSearch(actualTab.search);
+                setDebouncedSearch(actualTab.search);
                 getData(1, actualTab.search, clienteCodigo || clientFilter);
             } else {
                 getData(1, search, clienteCodigo || clientFilter);
@@ -234,20 +237,24 @@ function Table({
         }
     }, [clientFilter]);
 
-    useEffect(() => {
-        if (!socket) return;
+    if (tableName === "pistola") {
+        const socket = useSocket();
 
-        // Escuchar nuevos registros
-        socket.on('nuevo_registro', (nuevo_registro) => {
-            if (nuevo_registro.tableName.includes(tableName)) {
-                setTableData(prev => [nuevo_registro, ...prev]);
-            }
-        });
+        useEffect(() => {
+            if (!socket) return;
 
-        return () => {
-            socket.off('nuevo_registro'); // limpiar listener
-        };
-    }, [socket]);
+            // Escuchar nuevos registros
+            socket.on('nuevo_registro', (nuevo_registro) => {
+                if (nuevo_registro.tableName.includes(tableName)) {
+                    setTableData(prev => [nuevo_registro, ...prev]);
+                }
+            });
+
+            return () => {
+                socket.off('nuevo_registro'); // limpiar listener
+            };
+        }, [socket]);
+    }
 
     useEffect(() => {
         if (
@@ -282,7 +289,7 @@ function Table({
 
     useEffect(() => {
         if (advancedQuery !== null) {
-            const searchParams = new URLSearchParams(advancedQuery).toString();
+            const searchParams = new URLSearchParams(advancedQuery)?.toString();
 
             if (searchParams !== "") {
                 getData(page, searchParams, clienteCodigo || clientFilter);
@@ -315,7 +322,7 @@ function Table({
 
     useEffect(() => {
         let searchParams = search;
-        const advancedFilters = new URLSearchParams(advancedQuery).toString();
+        const advancedFilters = new URLSearchParams(advancedQuery)?.toString();
 
         if (advancedFilters !== "") {
             searchParams = advancedFilters;
@@ -415,7 +422,7 @@ function Table({
         } else {
             if (!initialData) {
                 let searchParams = search;
-                const advancedFilters = new URLSearchParams(advancedQuery).toString();
+                const advancedFilters = new URLSearchParams(advancedQuery)?.toString();
 
                 if (advancedFilters !== "") {
                     searchParams = advancedFilters;
@@ -479,7 +486,7 @@ function Table({
         setCheckedIndexes([]);
         setPage(1);
         let searchParams = search;
-        const advancedFilters = new URLSearchParams(advancedQuery).toString();
+        const advancedFilters = new URLSearchParams(advancedQuery)?.toString();
 
         if (advancedFilters !== "") {
             searchParams = advancedFilters;
@@ -814,7 +821,7 @@ function Table({
                                                 <input
                                                     type="text"
                                                     name={column.key}
-                                                    value={advancedQuery[column.key] || ""}
+                                                    value={advancedQuery ? advancedQuery[column.key] || "" : ""}
                                                     onChange={handleFilters}
                                                 />
                                             </td>

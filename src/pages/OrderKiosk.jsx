@@ -38,7 +38,7 @@ import useSocket from "../helpers/useSocket";
 
 function OrderKiosk({ configMode }) {
   const { id } = useParams();
-  const { tabs, closeTab } = useTabs();
+  const { tabs } = useTabs();
   const { saveTabState, getTabState, updateTabState, postDataContext } = useTabState();
   const location = useLocation();
   const tabKey = location.pathname;
@@ -48,7 +48,7 @@ function OrderKiosk({ configMode }) {
   const [originalState, setOriginalState] = useState(getTabState(tabKey)?.originalState || null);
 
   const [state, setState] = useState(() => getTabState(tabKey) || {
-    tabKey: tabKey,
+    tabKey,
     kioskName: "",
     createKiosk: false,
     kioskOptions: ["Automática", "Manual"],
@@ -119,46 +119,6 @@ function OrderKiosk({ configMode }) {
   useEffect(() => {
     stateRef.current = state;
   }, [state]);
-
-  /* useEffect(() => {
-    if (!socket) return;
-
-    // Escuchar nuevos registros
-    socket.on('kioskTest', (kioskTest) => {
-      if (kioskTest.id_pedido === stateRef.current.order?.id_pedido) {
-        notify(kioskTest.status, "Mensaje desde el servidor", kioskTest.message);
-        if (kioskTest.workableEnded) {
-          updateState("loading", false);
-        }
-
-        if (kioskTest.isTrappingWaiting) {
-          updateState("isTrappingWaiting", true);
-          updateState("loadingTrapping", false);
-          updateState("workableId", kioskTest.workable_id);
-          updateState("nodeId", kioskTest.node_id);
-          updateState("isOpen", (prevIsOpen) => ({
-            ...prevIsOpen,
-            trapping: true
-          }));
-          updateTabState(tabKey, (prevState) => ({
-            ...prevState,
-            isTrappingWaiting: true,
-            loadingTrapping: false,
-            nodeId: kioskTest.nodeId,
-            workableId: kioskTest.workableId,
-            isOpen: {
-              ...prevState.isOpen,
-              trapping: true
-            }
-          }));
-        }
-      }
-    });
-
-    return () => {
-      socket.off('kioskTest'); // limpiar listener
-    };
-  }, [socket]); */
 
   useEffect(() => {
     if (getTabState(tabKey) && (getTabState(tabKey).loadingOrderReport !== state.loadingOrderReport || getTabState(tabKey).loadingFileReport !== state.loadingFileReport || getTabState(tabKey).loadingTrapping !== state.loadingTrapping)) {
@@ -283,6 +243,8 @@ function OrderKiosk({ configMode }) {
       if (cliente_id !== "") {
         const clientConfig = await fetchData("clientConfig", cliente_id);
 
+        updateState("clientConfig", clientConfig);
+
         if (clientConfig && clientConfig?.configuraciones?.kioscos.length > 0) {
           const kioscoDefault = clientConfig.configuraciones.kioscos.find(kiosk => kiosk.kioscoDefault === true) || clientConfig.configuraciones.kioscos[0];
 
@@ -295,6 +257,13 @@ function OrderKiosk({ configMode }) {
           ]);
           updateState("defaultKiosk", kioscoDefault);
           updateState("chosenKiosk", kioscoDefault);
+        } else if (clientConfig && clientConfig?.configuraciones?.documentacion) {
+          updateState("otraDocumentacion", {
+            certificadoControl: clientConfig.configuraciones.documentacion.certificadoControl || false,
+            certificadoContinuos: clientConfig.configuraciones.documentacion.certificadoContinuos || false,
+            certificadoCodigos: clientConfig.configuraciones.documentacion.certificadoCodigos || false,
+            unitarioPng: clientConfig.configuraciones.documentacion.unitarioPng || false,
+          });
         } else {
           updateState("defaultKiosk", state.kioskOptions[0]);
           updateState("chosenKiosk", state.kioskOptions[0]);
@@ -842,17 +811,6 @@ function OrderKiosk({ configMode }) {
                     </>
                   )
                 )}
-                {/* {!createKiosk && (
-                  <div className="formGroup">
-                    <label>Configuración de Kiosco:</label>
-                    <ChosenSelect
-                      options={kioskOptions || []}
-                      name="kioskSelect"
-                      onChange={(e) => { setChosenKiosk(e.target.value) }}
-                      value={chosenKiosk}
-                    />
-                  </div>
-                )} */}
               </div>
               {kioskActions
                 .filter(option => {
