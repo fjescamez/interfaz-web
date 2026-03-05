@@ -41,11 +41,11 @@ function ChosenSelect({ options, name, onChange, multiple, value, disabled, clas
             }
         });
 
-        return () => {
+        /* return () => {
             if (selectRef.current && typeof $(selectRef.current).chosen === "function") {
                 $(selectRef.current).off("change").chosen("destroy");
             }
-        };
+        }; */
     }, [onChange, name, multiple, placeholderMultiple, placeholderSimple]);
 
     useEffect(() => {
