@@ -5,39 +5,39 @@ import "./KioskComponents.css";
 import { notify } from "../../helpers/notify";
 import { formatosBoceto, tiposBoceto } from '../../helpers/constants';
 
-const agregarBoceto = () => {
-    setOpciones(prev => [...prev, { id: opciones.at(-1).id + 1, rasterizado: false, lpi: "300", formato: "Pdf", tipo: "Compuesto" }]);
-}
-
-const eliminarBoceto = (id) => {
-    setOpciones(prev => prev.filter(obj => obj.id !== id));
-}
-
-const checkActive = (id) => {
-    setOpciones(prev => (
-        prev.map(obj =>
-            obj.id === id
-                ? {
-                    ...obj,
-                    rasterizado: !obj.rasterizado
-                }
-                :
-                obj
-        )
-    )
-    );
-}
-
-const handleChange = (id, fieldName, value) => {
-    setOpciones(prev => (
-        prev.map(obj =>
-            obj.id === id ? { ...obj, [fieldName]: value } : obj
-        )
-    )
-    );
-}
-
 function BocetoComponent({ opciones, setOpciones }) {
+
+    const agregarBoceto = () => {
+        setOpciones(prev => [...prev, { id: opciones.at(-1).id + 1, rasterizado: false, lpi: "300", formato: "Pdf", tipo: "Compuesto" }]);
+    }
+
+    const eliminarBoceto = (id) => {
+        setOpciones(prev => prev.filter(obj => obj.id !== id));
+    }
+
+    const checkActive = (id) => {
+        setOpciones(prev => (
+            prev.map(obj =>
+                obj.id === id
+                    ? {
+                        ...obj,
+                        rasterizado: !obj.rasterizado
+                    }
+                    :
+                    obj
+            )
+        )
+        );
+    }
+
+    const handleChange = (id, fieldName, value) => {
+        setOpciones(prev => (
+            prev.map(obj =>
+                obj.id === id ? { ...obj, [fieldName]: value } : obj
+            )
+        )
+        );
+    }
 
     return (
         <div className="actionBody">
