@@ -10,6 +10,7 @@ import { BsInfoLg } from "react-icons/bs";
 import { FaTasks } from "react-icons/fa";
 import { RiText } from "react-icons/ri";
 import { AiOutlineSignature } from "react-icons/ai";
+import { TbSquareLetterKFilled } from "react-icons/tb";
 import LenFile from "../assets/svg/LenFile";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
@@ -131,10 +132,25 @@ export const orderSidebarIcons = [
         tooltip: "COMPARAR"
     },
     {
+        icon: <LenFile />,
+        action: "lenFiles",
+        tooltip: "FICHEROS LEN"
+    },
+    /* {
+        icon: <PiStorefrontLight />,
+        action: "kiosk",
+        tooltip: "KIOSKO"
+    }, */
+    {
+        icon: <PiImagesLight />,
+        action: "files",
+        tooltip: "FICHAS"
+    },
+    /* {
         icon: <RiPaintFill />,
         action: "tintas",
         tooltip: "TINTAS"
-    },
+    }, */
     {
         icon: <BsInfoLg />,
         action: "info",
