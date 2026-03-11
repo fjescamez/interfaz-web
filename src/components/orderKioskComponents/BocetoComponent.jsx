@@ -3,26 +3,15 @@ import { PiMinusCircle, PiPlusCircle } from "react-icons/pi";
 import ChosenSelect from "../formComponents/ChosenSelect";
 import "./KioskComponents.css";
 import { notify } from "../../helpers/notify";
-import { toast } from "react-toastify";
+import { formatosBoceto, tiposBoceto } from '../../helpers/constants';
 
 function BocetoComponent({ opciones, setOpciones }) {
-    const options1 = [
-        "Pdf",
-        "Png",
-        "Jpg"
-    ];
 
-    const options = [
-        "Compuesto",
-        "CMYK",
-        "RGB"
-    ];
-
-    const agregarRasterizado = () => {
+    const agregarBoceto = () => {
         setOpciones(prev => [...prev, { id: opciones.at(-1).id + 1, rasterizado: false, lpi: "300", formato: "Pdf", tipo: "Compuesto" }]);
     }
 
-    const eliminarRasterizado = (id) => {
+    const eliminarBoceto = (id) => {
         setOpciones(prev => prev.filter(obj => obj.id !== id));
     }
 
@@ -50,54 +39,48 @@ function BocetoComponent({ opciones, setOpciones }) {
         );
     }
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        alert(JSON.stringify(opciones));
-        /* Si algún rasterizado marcado como activo no tiene LPI */
-        if (opciones.some(obj => obj.rasterizado === true && obj.lpi === "")) {
-            return notify(toast.error, "error", "Error en el boceto", "Uno de los rasterizados no tiene lpi");
-        }
-    }
-
     return (
         <div className="actionBody">
-            <form onSubmit={handleSubmit}>
-                {opciones.map((opcion) => (
+            <form>
+                {opciones.map((opcion, index) => (
                     <div className="boceto" key={opcion.id}>
-                        {opciones.indexOf(opcion) !== 0 && <div className="separator" />}
+                        {index !== 0 && <div className="separator" />}
                         <div className="row">
+                            {/* <p><strong>{index + 1}</strong></p> */}
                             <div className="firstGroup">
+                                <p><strong>¿Rasterizar?</strong></p>
                                 <Switch className="kioskSwitch" onClick={() => checkActive(opcion.id)} checked={opcion.rasterizado} />
-                                <p><strong>Rasterizado</strong></p>
-                                <div className="lpiGroup">
-                                    <input
-                                        type="text"
-                                        value={opcion.lpi}
-                                        onChange={e => handleChange(opcion.id, "lpi", e.target.value)}
-                                    />
-                                    <div className="lpi">
-                                        <p>lpi</p>
+                                {/* {opcion.rasterizado && (
+                                    <div className="lpiGroup">
+                                        <input
+                                            type="text"
+                                            value={opcion.lpi}
+                                            onChange={e => handleChange(opcion.id, "lpi", e.target.value)}
+                                            id="lpiInput"
+                                        />
+                                        <div className="lpi">
+                                            <p>lpi</p>
+                                        </div>
                                     </div>
-                                </div>
+                                )} */}
                             </div>
-                            <ChosenSelect
-                                name={opcion.id}
-                                options={options1}
+                            {/* <ChosenSelect
+                                name={`formato-${index}`}
+                                options={formatosBoceto}
                                 value={opcion.formato}
                                 onChange={e => handleChange(opcion.id, "formato", e.target.value)}
                             />
                             <ChosenSelect
-                                name={opcion.id}
-                                options={options}
+                                name={`tipo-${index}`}
+                                options={tiposBoceto}
                                 value={opcion.tipo}
                                 onChange={e => handleChange(opcion.id, "tipo", e.target.value)}
                             />
-                            {opciones.indexOf(opcion) === 0 && <PiPlusCircle onClick={agregarRasterizado} />}
-                            {opciones.indexOf(opcion) !== 0 && <PiMinusCircle onClick={() => eliminarRasterizado(opcion.id)} />}
+                            {opciones.indexOf(opcion) === 0 && <PiPlusCircle onClick={agregarBoceto} />}
+                            {opciones.indexOf(opcion) !== 0 && <PiMinusCircle onClick={() => eliminarBoceto(opcion.id)} />} */}
                         </div>
                     </div>
                 ))}
-                <button type="submit"><h1>Hola</h1></button>
             </form>
         </div>
     )

@@ -1,6 +1,44 @@
+import { useEffect, useState } from "react";
+
 function PedidoCarton({ orderXml }) {
   const carton = orderXml.actividad?.carton;
-  const carton_premontaje = orderXml.actividad?.carton.carton_premontaje;
+  const carton_premontaje = orderXml.actividad?.carton_premontaje ? (Array.isArray(orderXml.actividad?.carton?.carton_premontaje) ? orderXml.actividad?.carton?.carton_premontaje : [orderXml.actividad?.carton?.carton_premontaje]) : [];
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (carton) {
+      Object.keys(carton).forEach((key) => {
+        if (
+          carton[key] &&
+          typeof carton[key] === "object" &&
+          Object.keys(carton[key]).length === 0
+        ) {
+          carton[key] = "";
+        }
+      });
+    }
+
+    carton_premontaje.forEach((item) => {
+      if (typeof item === "object") {
+        Object.keys(item).forEach((key) => {
+          if (
+            item[key] &&
+            typeof item[key] === "object" &&
+            Object.keys(item[key]).length === 0
+          ) {
+            item[key] = "";
+          }
+        });
+      }
+    });
+
+    setLoading(false); // Mark as complete
+  }, [carton, carton_premontaje]);
+
+  if (loading) {
+    return null; // Render nothing while loading
+  }
 
   return (
     <div className="carton">
@@ -13,15 +51,15 @@ function PedidoCarton({ orderXml }) {
             <tbody>
               <tr>
                 <td className="highlight">TIPO CAJA:</td>
-                <td>{carton.carton_tcaja}</td>
+                <td>{typeof carton.carton_tcaja !== "object" ? carton.carton_tcaja : ""}</td>
                 <td className="highlight">Nº MOTIVOS:</td>
-                <td><span className="invis">i</span>{carton.carton_motivos}</td>
+                <td><span className="invis">i</span>{typeof carton.carton_motivos !== "object" ? carton.carton_motivos : ""}</td>
               </tr>
               <tr>
                 <td className="highlight">Nº TROQUEL:</td>
-                <td>{carton.carton_troquel}</td>
+                <td>{typeof carton.carton_troquel !== "object" ? carton.carton_troquel : ""}</td>
                 <td className="highlight">Nº CAIDAS:</td>
-                <td><span className="invis">i</span>{carton.carton_caidas}</td>
+                <td><span className="invis">i</span>{typeof carton.carton_caidas !== "object" ? carton.carton_caidas : ""}</td>
               </tr>
               <tr>
                 <td className="highlight">MEDIDA CAJA:</td>
@@ -55,7 +93,7 @@ function PedidoCarton({ orderXml }) {
               {carton_premontaje?.map((carton) => (
                 <tr key={carton.carton_premontaje_id}>
                   <td>{carton.carton_premontaje_ancho}</td>
-                  <td>{carton.carton_premontaje_largo}</td>
+                  <td>{typeof carton.carton_premontaje_largo !== "object" && carton.carton_premontaje_largo}</td>
                   <td>{carton.carton_premontaje_gramaje}</td>
                   <td>{carton.carton_premontaje_cantidad}</td>
                 </tr>

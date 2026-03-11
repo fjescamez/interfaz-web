@@ -5,6 +5,7 @@ import { postData } from '../../helpers/fetchData';
 import { BiFolder } from 'react-icons/bi';
 import { IoDocumentTextOutline } from 'react-icons/io5';
 import { ThreeDot } from 'react-loading-indicators';
+import { addKeyListener } from '../../helpers/toggleModal';
 
 function ComparePopUp({ setCompareModal, rutaTrabajo }) {
   const [indexacion, setIndexacion] = useState([]);
@@ -14,6 +15,7 @@ function ComparePopUp({ setCompareModal, rutaTrabajo }) {
   const [lastClickedFile, setLastClickedFile] = useState(null);
   const [comparar, setComparar] = useState("");
   const [compareLink, setCompareLink] = useState("");
+  addKeyListener(setCompareModal);
 
   const post = {
     extraInputs: {
@@ -137,14 +139,17 @@ function ComparePopUp({ setCompareModal, rutaTrabajo }) {
           {loading ? (
             <p className='loading'>Cargando <ThreeDot color="black" size="small" speedPlus={2} /></p>
           ) :
-            (<ul className="comparatorList">
-              {indexacion.map((file, index) => (
-                <li key={index} onDoubleClick={() => handleClick(file)}>
-                  {file.type === "folder" ? <BiFolder /> : <IoDocumentTextOutline />}
-                  {file.name}
-                </li>
-              ))}
-            </ul>)}
+            (
+              <ul className="comparatorList">
+                {indexacion.map((file, index) => (
+                  <li key={index} onDoubleClick={() => handleClick(file)}>
+                    {file.type === "folder" ? <BiFolder /> : <IoDocumentTextOutline />}
+                    {file.name}
+                  </li>
+                ))}
+              </ul>
+            )
+          }
         </div>
       </div>
     </>

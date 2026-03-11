@@ -4,7 +4,6 @@ import GeneralForm from '../formComponents/GeneralForm';
 import { emailFormData } from '../../helpers/formsData';
 import ExecutingComponent from '../ExecutingComponent';
 import { notify } from '../../helpers/notify';
-import { toast } from 'react-toastify';
 
 function EmailPopUp({ setEmailModal, fullOrder }) {
     const { id_pedido, xml } = fullOrder;
@@ -12,10 +11,25 @@ function EmailPopUp({ setEmailModal, fullOrder }) {
     const [formData, setFormData] = useState(emailFormData);
     const [para, setPara] = useState(false);
     const [adjuntos, setAdjuntos] = useState(false);
+    const [adjuntosList, setAdjuntosList] = useState([]);
     const [isExecuting, setIsExecuting] = useState(false);
     const [itemsData, setItemsData] = useState({
         id_pedido
     });
+
+    const adjuntarTodo = () => {
+        setItemsData(prev => ({
+            ...prev,
+            adjuntos: adjuntosList
+        }))
+    }
+
+    const desadjuntarTodo = () => {
+        setItemsData(prev => ({
+            ...prev,
+            adjuntos: []
+        }))
+    }
 
     const getTemplate = async () => {
         const data = {
@@ -35,17 +49,21 @@ function EmailPopUp({ setEmailModal, fullOrder }) {
     const getPara = async () => {
         const contacts = await fetchData("contacts", "", 1, null, null, cliente_codigo);
         const groups = await fetchData("groups", "", 1, null, null, cliente_codigo);
+        const cliente = await fetchData("clients", cliente_codigo);
+        const clientConfig = await fetchData("clientConfig", cliente[0]._id);
 
         if ((contacts.length + groups.length) < 1) {
             setIsExecuting(false);
             setEmailModal(false);
-            return notify(toast.error, 'error', 'Error', 'Este cliente no tiene contactos');
+            return notify('error', 'Error', 'Este cliente no tiene contactos');
         }
 
-        const options = [];
+        const totalContacts = contacts.length + groups.length;
+
+        const options = totalContacts > 1 ? [{ contacto: "" }] : [];
 
         contacts.map(contact => {
-            const nuevoContacto = { ...contact, textoOpcion: contact.contacto };
+            const nuevoContacto = { ...contact, textoOpcion: `${contact.contacto} (${contact.email})` };
             options.push(nuevoContacto);
         })
 
@@ -56,7 +74,7 @@ function EmailPopUp({ setEmailModal, fullOrder }) {
 
         setItemsData(prev => ({
             ...prev,
-            contacto: options[0]
+            contacto: clientConfig?.configuraciones?.email?.contactoDefault ? clientConfig?.configuraciones?.email?.contactoDefault : (totalContacts === 1 ? options[0] : "")
         }))
 
         setFormData(prev => ({
@@ -98,6 +116,7 @@ function EmailPopUp({ setEmailModal, fullOrder }) {
             })
         }));
         setAdjuntos(true);
+        setAdjuntosList(adjuntos);
     }
 
     useEffect(() => {
@@ -116,6 +135,13 @@ function EmailPopUp({ setEmailModal, fullOrder }) {
                     itemsData={itemsData}
                     endpoint={"email/sendEmail"}
                     submitText={"Enviar"}
+                    extras={
+                        itemsData.adjuntos && itemsData.adjuntos.length === adjuntosList.length ? (
+                            <button type="button" onClick={desadjuntarTodo}>Desadjuntar todo</button>
+                        ) : (
+                            <button type="button" onClick={adjuntarTodo}>Adjuntar todo</button>
+                        )
+                    }
                 />
                 :
                 isExecuting && <ExecutingComponent message={"Cargando plantilla"} />

@@ -1,20 +1,22 @@
 import { useRef, useState } from "react";
 import { notify } from "../helpers/notify";
-import { toast } from "react-toastify";
+
 import TabsCrossSvg from "../assets/svg/TabsCrossSvg";
 import { useSession } from "../context/SessionContext";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import DeleteForm from "./formComponents/DeleteForm";
 import { FaUserCircle } from "react-icons/fa";
 import { SlBriefcase } from "react-icons/sl";
-import { postData } from "../helpers/fetchData";
+import { addKeyListener } from "../helpers/toggleModal";
 
-function ImageKioskComponent({ toggleKiosk, endpoint, id, client }) {
+function ImageKioskComponent({ toggleKiosk, endpoint, id, client, setIsKioskActive }) {
+    const urlApi = import.meta.env.VITE_API_URL;
     const inputRef = useRef(null);
     const [image, setImage] = useState(null);
     const { session, setSession } = useSession();
     const [toggleDelete, setToggleDelete] = useState(false);
     const icon = endpoint === "users" ? <FaUserCircle /> : <SlBriefcase />;
+    addKeyListener(setIsKioskActive);
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -33,7 +35,7 @@ function ImageKioskComponent({ toggleKiosk, endpoint, id, client }) {
             const formData = new FormData();
             formData.append("avatar", image);
 
-            let url = `http://192.4.26.112:3000/${endpoint}/avatar/${id}`;
+            let url = `${urlApi}/${endpoint}/avatar/${id}`;
             const session = JSON.parse(localStorage.getItem('session'));
 
             const response = await fetch(url, {
@@ -52,7 +54,7 @@ function ImageKioskComponent({ toggleKiosk, endpoint, id, client }) {
                     body: endpoint === "users" ? "Su avatar de usuario ha sido actualizado correctamente" : "El logo de cliente ha sido actualizado correctamente."
                 };
 
-                notify(toast.success, notification.type, notification.title, notification.body);
+                notify(notification.type, notification.title, notification.body);
 
                 setImage(null);
 
@@ -67,7 +69,7 @@ function ImageKioskComponent({ toggleKiosk, endpoint, id, client }) {
                 title: "Error al actualizar el avatar",
                 body: `No se ha podido actualizar el avatar. Error: ${error.message}`
             };
-            notify(toast.error, notification.type, notification.title, notification.body);
+            notify(notification.type, notification.title, notification.body);
             return;
         }
 

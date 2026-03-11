@@ -1,19 +1,26 @@
-import { useState } from "react";
 import DetailsHeader from "../components/DetailsHeader";
 import { useSession } from "../context/SessionContext";
 import GridComponent from "../components/GridComponent";
 import { FaGear } from 'react-icons/fa6';
 import "./HomePage.css";
 
-import { clientsDetails, stockDetails } from "../helpers/detailsGrid";
+import { clientsDetails, stockDetails, produccionPlanchasDetails } from "../helpers/detailsGrid";
+import { useTabs } from "../context/TabsContext";
 
 function HomePage({ toggleKiosk }) {
-  const [showInfo, setShowInfo] = useState(false);
+  const generalGrid = [clientsDetails, produccionPlanchasDetails];
   const { session } = useSession();
   const user = session;
+  const { createTab } = useTabs();
+  const hideKeys = ["configuracion"];
 
-  const clientGrid = clientsDetails.grid;
-  const stockGrid = stockDetails.grid;
+  const homeClick = async (key, title) => {
+    const path = `/${key}`;
+
+    const tabTitle = `${user?.name} | ${title.toUpperCase()}`;
+
+    createTab(path, tabTitle);
+  };
 
   return (
     <>
@@ -31,20 +38,19 @@ function HomePage({ toggleKiosk }) {
               hideDeleteIcon={true}
               hideEditIcon={true}
             />
-            {/* <div className="configButton"><FaGear /></div>
-            <div className="detailsScroll">
-              <GridComponent
-                title={clientsDetails.title}
-                grid={clientsDetails.grid}
-                object={user}
-              />
-              {user.role === "Administrador" &&
-                <GridComponent
-                  title={stockDetails.title}
-                  grid={stockDetails.grid}
-                  object={user}
-                />}
-            </div> */}
+            <div className="configButton"><FaGear /></div>
+            <div className="detailsScroll homeGrid">
+              {generalGrid.map((grid, index) => (
+                <div key={index}>
+                  <GridComponent
+                    title={grid.title}
+                    grid={grid.grid}
+                    gridClick={homeClick}
+                    hideKeys={hideKeys}
+                  />
+                </div>
+              ))}
+            </div>
           </>
         )}
       </div>

@@ -1,12 +1,16 @@
 import React from "react";
 import ChosenSelect from "./ChosenSelect"
+import Switch from "@mui/material/Switch";
+import { sessionInfo } from "../../helpers/roleChecker";
 
 const FormGroup = React.memo(function FormGroup({
     handleForm,
     value,
     error,
     field,
-    disable
+    disable,
+    showIfCondition,
+    inputData
 }) {
     const { htmlFor,
         labelId,
@@ -20,18 +24,25 @@ const FormGroup = React.memo(function FormGroup({
         inputName,
         minLength,
         disableField,
-        hideField
+        hideField,
+        minNumber,
+        maxNumber,
+        noDecimals,
+        visibleFor,
+        showIf
     } = field;
+
+    const roleDptUser = sessionInfo();
 
     return (
         <>
-            {!hideField &&
+            {(!hideField && (!visibleFor || roleDptUser.some(item => visibleFor.includes(item))) && (!showIf || showIf({ showIfCondition, inputData }))) &&
                 <>
                     {(labelId && (!inputType || (inputType && inputType !== "checkbox"))) &&
                         <label
                             htmlFor={htmlFor}
                             id={labelId}
-                            className={error ? "errorLabel" : "" + inputType === "radioGroup" ? "fullLabel" : ""}
+                            className={error ? "errorLabel" : "" + inputType === "radioGroup" ? "fullLabel" : "" + (!disable && !disableField) ? "clickable" : ""}
                         >
                             {`${labelTitle}:`}
                         </label>
@@ -46,6 +57,9 @@ const FormGroup = React.memo(function FormGroup({
                             value={value}
                             className={error ? "error" : "" + inputType === "checkbox" ? "checkInput" : ""}
                             autoComplete="on"
+                            min={minNumber}
+                            max={maxNumber}
+                            step={(inputType === "number" && !noDecimals) ? "0.01" : undefined}
                             disabled={disable || disableField}
                         />
                     }
@@ -64,7 +78,7 @@ const FormGroup = React.memo(function FormGroup({
                                     />
                                     <label
                                         htmlFor={radioButton.inputId}
-                                        className="noStyleLabel"
+                                        className={`noStyleLabel ${(!disable && !disableField) ? "clickable" : ""}`}
                                     >
                                         {radioButton.labelTitle}
                                     </label>
@@ -73,22 +87,41 @@ const FormGroup = React.memo(function FormGroup({
                         </div>
                     }
                     {(inputType && inputType === "checkbox") &&
-                        <input
-                            type="checkbox"
-                            id={inputId}
-                            name={inputName}
-                            checked={!!value}
-                            onChange={(e) =>
-                                handleForm({ target: { name: inputName, value: e.target.checked } })
-                            }
-                            readOnly={disable || disableField}
-                        />
+                        <>
+                            {/* <input
+                                type="checkbox"
+                                id={inputId}
+                                name={inputName}
+                                checked={!!value}
+                                onChange={(e) =>
+                                    handleForm({ target: { name: inputName, value: e.target.checked } })
+                                }
+                                readOnly={disable || disableField}
+                            /> */}
+                            <Switch className="formSwitch"
+                                checked={value}
+                                onClick={handleForm ? () =>
+                                    handleForm({ target: { name: inputName, value: !value } })
+                                    : undefined
+                                }
+                                readOnly={disable || disableField}
+                            />
+                        </>
                     }
                     {(labelId && inputType && inputType === "checkbox") &&
                         <label
                             htmlFor={htmlFor}
                             id={labelId}
-                            className={error ? "errorLabel" : "" + inputType === "checkbox" ? "fullLabel" : ""}
+                            className={[
+                                error && "errorLabel",
+                                inputType === "checkbox" && "fullLabel",
+                                !disable && !disableField && "clickable",
+                            ]
+                                .filter(Boolean)
+                                .join(" ")}
+                            onClick={disable || disableField ? null : () =>
+                                handleForm({ target: { name: inputName, value: !value } })
+                            }
                         >
                             {labelTitle}
                         </label>

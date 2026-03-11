@@ -1,4 +1,5 @@
 export const validRoutes = [
+  "/test",
   "/home",
   "/home/:id",
   "/pedidos",
@@ -15,16 +16,27 @@ export const validRoutes = [
   "/clientes/:id/grupos/:id",
   "/clientes/:id/estrategias",
   "/clientes/:id/estrategias/:id",
+  "/clientes/:id/configuracion",
   "/estrategias",
   "/estrategias/:id",
   "/stock",
+  "/produccion",
+  "/produccion/planchas",
+  "/produccion/planchas/:id",
+  "/produccion/planchasPreproduccion",
+  "/produccion/planchasProduccion",
+  "/produccion/planchasFinalizadas",
+  "/produccion/trabajosPlanchas",
+  "/produccion/externosPendientes",
+  "/produccion/externosFinalizados",
+  "/produccion/externosAnulados",
   "/usuarios",
   "/usuarios/:id",
   "/grupos",
   "/grupos/:id",
   "/contactos",
-  "/contactos/:id"
-  
+  "/contactos/:id",
+  "/infoEmail/:id_pedido/:id"
 ];
 
 export function isValidRoute(path) {

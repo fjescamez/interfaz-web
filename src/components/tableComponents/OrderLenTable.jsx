@@ -9,6 +9,7 @@ function OrderLenTable({ setLenModal, orderId }) {
                 orderId={orderId}
                 lenTableInfo={orderLenTableInfo}
                 popup={true}
+                customTable={true}
             />
         </>
     )

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
 import { fetchOneItem } from '../helpers/fetchData'
 import { notify } from '../helpers/notify'
-import { toast } from 'react-toastify'
 import DetailsHeader from '../components/DetailsHeader'
 import { observacionesTecnicasFormData } from '../helpers/formsData'
 import FormSection from '../components/formComponents/FormSection'
@@ -24,11 +23,11 @@ function ObservacionesTecnicas() {
                     if (data) {
                         setOrderData(data);
                     } else {
-                        notify(toast.error, "error", "Error", "No se pudo cargar la información de las observaciones técnicas");
+                        notify("error", "Error", "No se pudo cargar la información de las observaciones técnicas");
                     }
                 }
             } catch (error) {
-                notify(toast.error, "error", "Error", "Ha ocurrido un error al cargar los datos")
+                notify("error", "Error", "Ha ocurrido un error al cargar los datos")
             }
         }
         loadOrderData()
@@ -67,12 +66,7 @@ function ObservacionesTecnicas() {
             <div className="detailsContainer">
                 <DetailsHeader
                     title={"Observaciones Técnicas"}
-                    subtitle={"Pedido " + orderData?.id_pedido}
-                    /* toggleKiosk={toggleKiosk}
-                    kioskData={client}
-                    setEditPopup={setEditPopup}
-                    showInfo={showInfo}
-                    setShowInfo={setShowInfo} */
+                    subtitle={`Pedido (${orderData?.id_pedido})`}
                     hideEditIcon={true}
                     hideAvatar={true}
                     hideDeleteIcon={true}
@@ -80,14 +74,12 @@ function ObservacionesTecnicas() {
                 <div className="detailsScroll">
                     <div className="formSections">
                         {observacionesTecnicasFormData.formSections.map((section) => (
-                            <div key={section.title} className="formSection">
-                                <FormSection
-                                    sectionData={section}
-                                    formFields={observacionesTecnicasFormData.formFields}
-                                    inputData={itemsData}
-                                    disable={true}
-                                />
-                            </div>
+                            <FormSection
+                                sectionData={section}
+                                formFields={observacionesTecnicasFormData.formFields}
+                                inputData={itemsData}
+                                disable={true}
+                            />
                         ))}
                     </div>
                 </div>

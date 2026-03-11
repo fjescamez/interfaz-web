@@ -7,7 +7,7 @@ import EditPencilSvg from "../assets/svg/EditPencilSvg";
 
 function UserDropdownComponent({ toggleUserDropdown, toggleKiosk }) {
     const navigate = useNavigate();
-    const { setTabs } = useTabs();
+    const { setTabs, createTab } = useTabs();
     const { session, setSession, avatar } = useSession();
 
     const handleClick = () => {
@@ -28,7 +28,7 @@ function UserDropdownComponent({ toggleUserDropdown, toggleKiosk }) {
                         <EditPencilSvg className="edit" />
                     </div>
                 </div>
-                <p>{session.name} {session.lastname}</p>
+                <p className="userFullName" onClick={() => { createTab(`/usuarios/${session._id}`, session.username.toUpperCase()); toggleUserDropdown(); }}>{session.name} {session.lastname}</p>
                 <span>{session.departments.join(" - ")}</span>
             </div>
             <div className="border"></div>

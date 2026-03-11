@@ -1,18 +1,21 @@
 import "./SideBarComponent.css"
 import HomeSvg from "../assets/svg/HomeSvg"
-import { useNavigate } from "react-router-dom";
 import { FaBoxOpen, FaUserCircle } from "react-icons/fa";
 import { useTabs } from "../context/TabsContext";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import LenFile from "../assets/svg/LenFile";
 import { SlBriefcase } from "react-icons/sl";
-import { useSession } from "../context/SessionContext";
+import { PiOven } from "react-icons/pi";
+import { BsFillInboxFill } from "react-icons/bs";
+import { MdBarcodeReader } from "react-icons/md";
+import { FaScrewdriverWrench } from "react-icons/fa6";
+import { PiStorefrontLight } from "react-icons/pi"
+import { checkRole } from "../helpers/roleChecker";
 
 function SideBarComponent({ isActive, setIsActive }) {
-    const navigate = useNavigate();
-    const { setTabs } = useTabs();
-    const { session } = useSession();
+    const { createTab } = useTabs();
+    const { isAdmin, isProduccion, isOficina, isSoporte, isJefeDepartamento, isTeleWork } = checkRole();
 
     const handleClick = (icon, name) => {
         setIsActive(prev => {
@@ -24,13 +27,7 @@ function SideBarComponent({ isActive, setIsActive }) {
             return { ...allFalse, [icon]: true };
         });
 
-        setTabs(prev => {
-            if (prev.some(tab => tab.path === `/${icon}`)) return prev;
-            return [...prev, { path: `/${icon}`, title: name }];
-        });
-
-        // Navega según el icono
-        navigate(`/${icon}`);
+        createTab(`/${icon}`, name);
     }
 
     return (
@@ -44,6 +41,18 @@ function SideBarComponent({ isActive, setIsActive }) {
                     <IoDocumentTextOutline style={{ color: "var(--pantone431c" }} />
                 </div>
                 <div className="border"></div>
+                <div className={`icons ${isActive.kiosco ? "active" : ""}`} onClick={() => handleClick("kiosco", "KIOSCO GENERAL")} data-tooltip-id="my-tooltip" data-tooltip-content={"KIOSCO GENERAL"} >
+                    <PiStorefrontLight />
+                </div>
+                {(isAdmin || isTeleWork) && (
+                    <>
+                        <div className="border"></div>
+                        <div className={`icons ${isActive.bandeja ? "active" : ""}`} onClick={() => handleClick("bandeja", "BANDEJA")} data-tooltip-id="my-tooltip" data-tooltip-content={"BANDEJA"} >
+                            <BsFillInboxFill />
+                        </div>
+                    </>
+                )}
+                <div className="border"></div>
                 <div className={`icons ${isActive.len ? "active" : ""}`} onClick={() => handleClick("len", "LEN")} data-tooltip-id="my-tooltip" data-tooltip-content={"FICHEROS LEN"} >
                     <LenFile />
                 </div>
@@ -51,18 +60,43 @@ function SideBarComponent({ isActive, setIsActive }) {
                 <div className={`icons ${isActive.clientes ? "active" : ""}`} onClick={() => handleClick("clientes", "CLIENTES")} data-tooltip-id="my-tooltip" data-tooltip-content={"CLIENTES"} >
                     <SlBriefcase />
                 </div>
-                {(session?.role === "Administrador") && (
+                {(isAdmin || isProduccion || isOficina || isJefeDepartamento) && (
+                    <>
+                        <div className="border"></div>
+                        <div className={`icons ${isActive.produccion ? "active" : ""}`} onClick={() => handleClick("produccion", "PRODUCCIÓN")} data-tooltip-id="my-tooltip" data-tooltip-content={"PRODUCCIÓN"} >
+                            <PiOven />
+                        </div>
+
+                    </>
+                )}
+                {(isAdmin || isProduccion) && (
+                    <>
+                        <div className="border"></div>
+                        <div className={`icons ${isActive.pistola ? "active" : ""}`} onClick={() => handleClick("pistola", "PISTOLA")} data-tooltip-id="my-tooltip" data-tooltip-content={"PISTOLA"} >
+                            <MdBarcodeReader />
+                        </div>
+                    </>
+                )}
+                {isAdmin && (
                     <>
                         <div className="border"></div>
                         <div className={`icons ${isActive.stock ? "active" : ""}`} onClick={() => handleClick("stock", "STOCK")} data-tooltip-id="my-tooltip" data-tooltip-content={"STOCK"} >
                             <FaBoxOpen />
                         </div>
                         <div className="border"></div>
-                    </>)
-                }
-                {(session?.role === "Administrador") && <div className={`icons ${isActive.usuarios ? "active" : ""}`} onClick={() => handleClick("usuarios", "USUARIOS")} data-tooltip-id="my-tooltip" data-tooltip-content={"USUARIOS"} >
-                    <FaUserCircle />
-                </div>}
+                        <div className={`icons ${isActive.usuarios ? "active" : ""}`} onClick={() => handleClick("usuarios", "USUARIOS")} data-tooltip-id="my-tooltip" data-tooltip-content={"USUARIOS"} >
+                            <FaUserCircle />
+                        </div>
+                    </>
+                )}
+                {isSoporte && (
+                    <>
+                        <div className="border"></div>
+                        <div className={`icons ${isActive.soporte ? "active" : ""}`} onClick={() => handleClick("soporte", "SOPORTE")} data-tooltip-id="my-tooltip" data-tooltip-content={"SOPORTE"} >
+                            <FaScrewdriverWrench />
+                        </div>
+                    </>
+                )}
             </div>
             <ReactTooltip id="my-tooltip" delayShow={500} />
         </>

@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import { toast } from 'react-toastify';
 import { notify } from "../../helpers/notify";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import { postData, updateData } from "../../helpers/fetchData";
 import FormSection from "./FormSection";
 import ExecutingComponent from "../ExecutingComponent";
+import { addKeyListener } from "../../helpers/toggleModal";
+import { useSession } from "../../context/SessionContext";
 
 function GeneralForm({
     setModal,
@@ -23,13 +24,23 @@ function GeneralForm({
     submitText,
     extras,
     noSubmit,
-    afterSubmit
-}) {    
+    afterSubmit,
+    clickableSections,
+    onClickSection,
+    bigForm,
+    showIfCondition
+}) {
     const { headerIcon, headerTitle, editTitle, formFields, clientsMap, codesMap } = formData;
     const [errorMessage, setErrorMessage] = useState(false);
     const [executing, setExecuting] = useState(false);
     const [error, setError] = useState("");
     const [inputData, setInputData] = useState(itemsData || {});
+    const { session, setSession } = useSession();
+
+    useEffect(() => {
+        const cleanup = addKeyListener(setModal);
+        return cleanup;
+    }, []);
 
     const requiredFields = formFields.reduce((acc, field) => {
         if (field.required) acc[field.inputName] = !field.required;
@@ -72,6 +83,7 @@ function GeneralForm({
         } else {
             setInputData(prev => {
                 const updated = { ...prev, [name]: newValue };
+
                 if (onInputChange) {
                     onInputChange(updated);
                 }
@@ -91,10 +103,10 @@ function GeneralForm({
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        {afterSubmit && afterSubmit()}
+        { afterSubmit && afterSubmit() }
 
         if (tableSelection && tableSelection.length < 1) {
-            notify(toast.error, 'error', 'Error', 'Debe seleccionar algún elemento de la tabla.');
+            notify('error', 'Error', 'Debe seleccionar algún elemento de la tabla.');
             return;
         }
 
@@ -143,43 +155,59 @@ function GeneralForm({
 
         if (mode === "edit") {
             result = await updateData(endpoint, dataToSend, _id);
+
+            if (endpoint === "users" && result.updatedItem?.username && result.updatedItem.username === session.username) {
+                const { password, ...rest } = result.updatedItem;
+                setSession(prev => ({ ...prev, ...rest }));
+            }
         } else {
             result = await postData(endpoint, dataToSend);
         }
 
         if (result && result.status === "success") {
             setExecuting(false);
-            notify(toast.success, result.status, result.title, result.message);
+            notify(result.status, result.title, result.message);
             setModal(false);
             setError("");
             if (setMode) setMode("");
         } else {
             setExecuting(false);
-            notify(toast.error, result.status, result.title, result.message);
+            notify(result.status, result.title, result.message);
         }
 
         if (result.allItems) {
             setTableData(result.allItems);
         } else if (result.newItem) {
             setTableData(prev => [result.newItem, ...prev]);
+            if (setTotal) {
+                setTotal(prev => prev + 1);
+            }
         } else if (result.updatedItem) {
             if (setTableData) {
                 setTableData(prev =>
                     prev.map(obj =>
-                        obj._id === result.updatedItem._id
+                        (obj._id === result.updatedItem._id || obj.id === result.updatedItem.id)
                             ? { ...obj, ...inputData, _id: result.updatedItem._id }
                             : obj
                     )
                 );
             }
+
             if (setData) {
                 setData(prev => (
                     { ...prev, ...inputData, _id: result.updatedItem._id }
                 ))
             }
+        } else if (result.updatedItems) {
+            setTableData(prev => {
+                return prev.map(item => {
+                    const updatedItem = result.updatedItems.find(updated => updated._id === item._id);
+                    return updatedItem ? { ...updatedItem } : item;
+                });
+            });
         }
 
-        if (result.total) {
+        if (setTotal && result.total) {
             setTotal(result.total);
         }
     };
@@ -202,12 +230,12 @@ function GeneralForm({
                             </button>
                         </div>
                     </div>
-                    <div className="formBody">
-                        <form onSubmit={handleSubmit}>
+                    <div className={`formBody ${bigForm ? "bigForm" : ""}`}>
+                        <form className={bigForm ? "bigForm" : ""} onSubmit={handleSubmit}>
                             <div className="formSections">
                                 {extras && extras}
                                 {formData.formSections.map((section, index) => (
-                                    <div key={index} className="formSection">
+                                    <div key={index} className={clickableSections && clickableSections.includes(section) ? "clickable" : ""} onClick={() => onClickSection && clickableSections.includes(section) ? onClickSection(section) : null}>
                                         <FormSection
                                             fieldErrors={fieldErrors}
                                             sectionData={section}
@@ -216,6 +244,7 @@ function GeneralForm({
                                             handleForm={handleForm}
                                             inputData={inputData}
                                             disable={!!clienteDato && !!section.disableIfFilter}
+                                            showIfCondition={showIfCondition}
                                         />
                                     </div>
                                 ))}

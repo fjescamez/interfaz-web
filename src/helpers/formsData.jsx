@@ -1,15 +1,1005 @@
-import { FaUserCircle } from "react-icons/fa";
+import { FaUserCircle, FaBoxOpen } from "react-icons/fa";
 import { TiContacts } from "react-icons/ti";
 import { PiEnvelopeLight, PiNoteLight } from "react-icons/pi";
 import { BsFiletypeDoc, BsFiletypeXml } from "react-icons/bs";
 import { SlBriefcase } from "react-icons/sl";
+import { PiGear } from "react-icons/pi";
+import { IoDocumentTextOutline } from "react-icons/io5";
 import { TbColorSwatch } from "react-icons/tb";
+import { AiOutlineSignature } from "react-icons/ai";
+import { RiText } from "react-icons/ri";
 import GroupsSvg from "../assets/svg/GroupsSvg";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
+import { caidasFreecutOptions, cajaReferenciaOptions, plantillasDocumentos } from "./constants";
+
+export const traceTextForm = {
+    headerIcon: <RiText />,
+    headerTitle: "TRAZAR TEXTO",
+    formSections: [
+        {
+            rows: [
+                {
+                    groups: ["traceTextFiles"]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "traceTextFiles",
+            labelId: "traceTextFilesLabel",
+            labelTitle: "Seleccione los archivos a trazar",
+            select: "multiple",
+            options: [],
+            inputId: "traceTextFiles",
+            inputName: "traceTextFiles",
+            required: true
+        }
+    ]
+}
+
+export const incidenciaProductoFormData = {
+    headerIcon: <FaBoxOpen />,
+    headerTitle: "NUEVA INCIDENCIA DE PRODUCTO",
+    formSections: [
+        {
+            rows: [
+                {
+                    groups: ["solicitante"]
+                },
+                {
+                    groups: ["producto", "estado"]
+                },
+                {
+                    groups: ["descripcion"]
+                },
+                {
+                    groups: ["observaciones"]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "solicitante",
+            labelId: "solicitanteLabel",
+            labelTitle: "Solicitante",
+            inputType: "text",
+            inputId: "solicitante",
+            inputName: "solicitante",
+            disableField: true
+        },
+        {
+            htmlFor: "producto",
+            labelId: "productoLabel",
+            labelTitle: "Producto",
+            inputType: "text",
+            inputId: "producto",
+            inputName: "producto",
+            disableField: true
+        },
+        {
+            htmlFor: "estado",
+            labelId: "estadoLabel",
+            labelTitle: "Estado",
+            select: "simple",
+            options: [],
+            inputId: "estado",
+            inputName: "estado",
+            required: true
+        },
+        {
+            htmlFor: "descripcion",
+            labelId: "descripcionLabel",
+            labelTitle: "Descripción",
+            inputType: "text",
+            inputId: "descripcion",
+            inputName: "descripcion",
+            required: true
+        },
+        {
+            htmlFor: "observaciones",
+            labelId: "observacionesLabel",
+            labelTitle: "Observaciones",
+            textarea: true,
+            inputId: "observaciones",
+            inputName: "observaciones",
+            required: true
+        }
+    ]
+}
+
+export const descontarProductoFormData = {
+    headerIcon: <FaBoxOpen />,
+    headerTitle: "DESCONTAR STOCK",
+    formSections: [
+        {
+            rows: [
+                {
+                    groups: ["producto"]
+                },
+                {
+                    groups: ["estado_nombre", "departamento_nombre"]
+                },
+                {
+                    groups: ["stock_min", "cantidad"]
+                },
+                {
+                    groups: ["descontar"]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "producto",
+            labelId: "productoLabel",
+            labelTitle: "Producto",
+            inputType: "text",
+            inputId: "producto",
+            inputName: "producto",
+            required: true,
+            disableField: true
+        },
+        {
+            htmlFor: "estado_nombre",
+            labelId: "estado_nombreLabel",
+            labelTitle: "Estado",
+            inputType: "text",
+            inputId: "estado_nombre",
+            inputName: "estado_nombre",
+            required: true,
+            disableField: true
+        },
+        {
+            htmlFor: "departamento_nombre",
+            labelId: "departamento_nombreLabel",
+            labelTitle: "Departamento",
+            select: "simple",
+            options: [],
+            inputId: "departamento_nombre",
+            inputName: "departamento_nombre",
+            required: true,
+            disableField: true
+        },
+        {
+            htmlFor: "stock_min",
+            labelId: "stock_minLabel",
+            labelTitle: "Stock Mínimo",
+            inputType: "number",
+            inputId: "stock_min",
+            inputName: "stock_min",
+            disableField: true
+        },
+        {
+            htmlFor: "cantidad",
+            labelId: "cantidadLabel",
+            labelTitle: "Stock Actual",
+            inputType: "number",
+            inputId: "cantidad",
+            inputName: "cantidad",
+            required: true,
+            disableField: true
+        },
+        {
+            htmlFor: "descontar",
+            labelId: "descontarLabel",
+            labelTitle: "Descontar",
+            inputType: "number",
+            minNumber: 0,
+            inputId: "descontar",
+            inputName: "descontar",
+            required: true
+        },
+    ]
+};
+
+export const ordenesFormData = {
+    headerIcon: <FaBoxOpen />,
+    headerTitle: "NUEVA ORDEN DE COMPRA",
+    formSections: [
+        {
+            rows: [
+                {
+                    groups: ["solicitante", "departamento"]
+                },
+                {
+                    groups: ["producto"]
+                },
+                {
+                    groups: ["cantidad_solicitada"]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "solicitante",
+            labelId: "solicitanteLabel",
+            labelTitle: "Solicitante",
+            inputType: "text",
+            inputId: "solicitante",
+            inputName: "solicitante",
+            required: true,
+            disableField: true
+        },
+        {
+            htmlFor: "departamento",
+            labelId: "departamentoLabel",
+            labelTitle: "Departamento",
+            inputType: "text",
+            inputId: "departamento",
+            inputName: "departamento",
+            required: true,
+            disableField: true
+        },
+        {
+            htmlFor: "producto",
+            labelId: "productoLabel",
+            labelTitle: "Producto",
+            inputType: "text",
+            inputId: "producto",
+            inputName: "producto",
+            required: true,
+            disableField: true
+        },
+        {
+            htmlFor: "cantidad_solicitada",
+            labelId: "cantidad_solicitadaLabel",
+            labelTitle: "Cantidad",
+            inputType: "number",
+            minNumber: 0,
+            noDecimals: true,
+            inputId: "cantidad_solicitada",
+            inputName: "cantidad_solicitada",
+            required: true
+        },
+    ]
+}
+
+export const productosStockFormData = {
+    headerIcon: <FaBoxOpen />,
+    headerTitle: "AÑADIR PRODUCTO DE STOCK",
+    editTitle: "EDITAR PRODUCTO DE STOCK",
+    formSections: [
+        {
+            rows: [
+                {
+                    groups: ["nombre"]
+                },
+                {
+                    groups: ["categoria"]
+                },
+                {
+                    groups: ["departamento"]
+                },
+                {
+                    groups: ["stock_min", "cantidad"]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "nombre",
+            labelId: "nombreLabel",
+            labelTitle: "Nombre",
+            inputType: "text",
+            inputId: "nombre",
+            inputName: "nombre",
+            required: true
+        },
+        {
+            htmlFor: "categoria",
+            labelId: "categoriaLabel",
+            labelTitle: "Categoría",
+            select: "simple",
+            options: [],
+            inputId: "categoria",
+            inputName: "categoria",
+            required: true
+        },
+        {
+            htmlFor: "departamento",
+            labelId: "departamentoLabel",
+            labelTitle: "Departamento",
+            select: "simple",
+            options: [],
+            inputId: "departamento",
+            inputName: "departamento",
+            required: true
+        },
+        {
+            htmlFor: "stock_min",
+            labelId: "stock_minLabel",
+            labelTitle: "Stock Min",
+            inputType: "number",
+            minNumber: 0,
+            inputId: "stock_min",
+            inputName: "stock_min",
+            required: true
+        },
+        {
+            htmlFor: "cantidad",
+            labelId: "cantidadLabel",
+            labelTitle: "Cantidad",
+            inputType: "number",
+            minNumber: 0,
+            inputId: "cantidad",
+            inputName: "cantidad",
+            required: true
+        },
+    ]
+}
+
+export const categoriasStockFormData = {
+    headerIcon: <FaBoxOpen />,
+    headerTitle: "AÑADIR CATEGORÍA DE PRODUCTO",
+    editTitle: "EDITAR CATEGORÍA DE PRODUCTO",
+    formSections: [
+        {
+            rows: [
+                {
+                    groups: ["nombre"]
+                },
+                {
+                    groups: ["descripcion"]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "nombre",
+            labelId: "nombreLabel",
+            labelTitle: "Nombre",
+            inputType: "text",
+            inputId: "nombre",
+            inputName: "nombre",
+            required: true
+        },
+        {
+            htmlFor: "descripcion",
+            labelId: "descripcionLabel",
+            labelTitle: "Descripción",
+            textarea: true,
+            inputId: "descripcion",
+            inputName: "descripcion",
+            required: true
+        }
+    ]
+}
+
+export const refContinuosFormData = {
+    headerIcon: <IoDocumentTextOutline />,
+    headerTitle: "AÑADIR REF. CONTINUO",
+    editTitle: "EDITAR REF. CONTINUO",
+    formSections: [
+        {
+            rows: [
+                {
+                    groups: ["propietario", "tipo"]
+                },
+                {
+                    groups: ["desarrollo", "ancho", "nucleo"]
+                },
+                {
+                    groups: ["stock", "adaptador"]
+                },
+                {
+                    groups: ["observaciones"]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "propietario",
+            labelId: "propietarioLabel",
+            labelTitle: "Propietario",
+            select: "simple",
+            options: [
+                "",
+                "0000 - Disengraf",
+                "0019 - Bottaro",
+                "0191 - Troflex"
+            ],
+            inputId: "propietario",
+            inputName: "propietario",
+            required: true
+        },
+        {
+            htmlFor: "tipo",
+            labelId: "tipoLabel",
+            labelTitle: "Tipo",
+            select: "simple",
+            options: [
+                "",
+                "Classic",
+                "Thin",
+                "Classic Variable",
+                "Thin Variable"
+            ],
+            inputId: "tipo",
+            inputName: "tipo",
+            required: true
+        },
+        {
+            htmlFor: "desarrollo",
+            labelId: "desarrolloLabel",
+            labelTitle: "Desarrollo",
+            inputType: "number",
+            inputId: "desarrollo",
+            inputName: "desarrollo"
+        },
+        {
+            htmlFor: "ancho",
+            labelId: "anchoLabel",
+            labelTitle: "Ancho",
+            inputType: "number",
+            inputId: "ancho",
+            inputName: "ancho"
+        },
+        {
+            htmlFor: "nucleo",
+            labelId: "nucleoLabel",
+            labelTitle: "Núcleo",
+            inputType: "number",
+            inputId: "nucleo",
+            inputName: "nucleo"
+        },
+        {
+            htmlFor: "stock",
+            labelId: "stockLabel",
+            labelTitle: "Stock",
+            inputType: "number",
+            inputId: "stock",
+            inputName: "stock"
+        },
+        {
+            htmlFor: "adaptador",
+            labelId: "adaptadorLabel",
+            labelTitle: "Adaptador",
+            inputType: "checkbox",
+            inputId: "adaptador",
+            inputName: "adaptador"
+        },
+        {
+            htmlFor: "observaciones",
+            labelId: "observacionesLabel",
+            labelTitle: "Observaciones",
+            textarea: true,
+            inputId: "observaciones",
+            inputName: "observaciones"
+        },
+    ]
+}
+
+export const refPlanchaFormData = {
+    headerIcon: <IoDocumentTextOutline />,
+    headerTitle: "AÑADIR REF. PLANCHA",
+    formSections: [
+        {
+            title: "Plancha",
+            rows: [
+                {
+                    groups: ["fabricante", "espesor", "referencia"]
+                },
+                {
+                    groups: ["base", "relieveMin", "relieveMax", "dureza"]
+                }
+            ]
+        },
+        {
+            title: "Exposición C-3000",
+            rows: [
+                {
+                    groups: ["dorsal", "principal", "pixel"]
+                }
+            ]
+        },
+        {
+            title: "Exposición XPS",
+            rows: [
+                {
+                    groups: ["tamano1", "potencia", "exposicion"]
+                },
+                {
+                    groups: ["tamano2", "potencia", "exposicion"]
+                },
+                {
+                    groups: ["tamano3", "potencia", "exposicion"]
+                }
+            ]
+        },
+        {
+            title: "Procesado",
+            rows: [
+                {
+                    groups: ["tiempoProcesado", "tiempoSecado"]
+                }
+            ]
+        },
+        {
+            title: "Post Procesado",
+            rows: [
+                {
+                    groups: ["tiempoUva", "tiempoUvc"]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "fabricante",
+            labelId: "fabricanteLabel",
+            labelTitle: "Fabricante",
+            select: "simple",
+            options: [
+                "",
+                "DUPONT",
+                "KODAK",
+                "XSYS",
+                "LIQUIDO"
+            ],
+            inputId: "fabricante",
+            inputName: "fabricante"
+        },
+        {
+            htmlFor: "espesor",
+            labelId: "espesorLabel",
+            labelTitle: "Espesor",
+            select: "simple",
+            options: [
+                "",
+                "1,14",
+                "1,70",
+                "2,54",
+                "2,84",
+                "3,18",
+                "3,94",
+                "4,32",
+                "6,00"
+            ],
+            inputId: "espesor",
+            inputName: "espesor"
+        },
+        {
+            htmlFor: "referencia",
+            labelId: "referenciaLabel",
+            labelTitle: "Referencia",
+            inputType: "text",
+            inputId: "referencia",
+            inputName: "referencia"
+        },
+        {
+            htmlFor: "base",
+            labelId: "baseLabel",
+            labelTitle: "Base",
+            inputType: "text",
+            inputId: "base",
+            inputName: "base"
+        },
+        {
+            htmlFor: "relieveMin",
+            labelId: "relieveMinLabel",
+            labelTitle: "Relieve min",
+            inputType: "text",
+            inputId: "relieveMin",
+            inputName: "relieveMin"
+        },
+        {
+            htmlFor: "relieveMax",
+            labelId: "relieveMaxLabel",
+            labelTitle: "Relieve max",
+            inputType: "text",
+            inputId: "relieveMax",
+            inputName: "relieveMax"
+        },
+        {
+            htmlFor: "dureza",
+            labelId: "durezaLabel",
+            labelTitle: "Dureza",
+            inputType: "text",
+            inputId: "dureza",
+            inputName: "dureza"
+        },
+        {
+            htmlFor: "dorsal",
+            labelId: "dorsalLabel",
+            labelTitle: "Dorsal",
+            inputType: "text",
+            inputId: "dorsal",
+            inputName: "dorsal"
+        },
+        {
+            htmlFor: "principal",
+            labelId: "principalLabel",
+            labelTitle: "Principal",
+            inputType: "text",
+            inputId: "principal",
+            inputName: "principal"
+        },
+        {
+            htmlFor: "pixel",
+            labelId: "pixelLabel",
+            labelTitle: "Pixel",
+            inputType: "text",
+            inputId: "pixel",
+            inputName: "pixel"
+        },
+        {
+            htmlFor: "tamano1",
+            labelId: "tamano1Label",
+            labelTitle: "Tamaño",
+            inputType: "text",
+            inputId: "tamano1",
+            inputName: "tamano1"
+        },
+        {
+            htmlFor: "tamano2",
+            labelId: "tamano2Label",
+            labelTitle: "Tamaño",
+            inputType: "text",
+            inputId: "tamano2",
+            inputName: "tamano2"
+        },
+        {
+            htmlFor: "tamano3",
+            labelId: "tamano3Label",
+            labelTitle: "Tamaño",
+            inputType: "text",
+            inputId: "tamano3",
+            inputName: "tamano3"
+        },
+        {
+            htmlFor: "potencia",
+            labelId: "potenciaLabel",
+            labelTitle: "Potencia",
+            inputType: "text",
+            inputId: "potencia",
+            inputName: "potencia"
+        },
+        {
+            htmlFor: "exposicion",
+            labelId: "exposicionLabel",
+            labelTitle: "Exposición",
+            inputType: "text",
+            inputId: "exposicion",
+            inputName: "exposicion"
+        },
+        {
+            htmlFor: "tiempoProcesado",
+            labelId: "tiempoProcesadoLabel",
+            labelTitle: "Tiempo de Procesado",
+            inputType: "text",
+            inputId: "tiempoProcesado",
+            inputName: "tiempoProcesado"
+        },
+        {
+            htmlFor: "tiempoSecado",
+            labelId: "tiempoSecadoLabel",
+            labelTitle: "Tiempo de Secado",
+            inputType: "text",
+            inputId: "tiempoSecado",
+            inputName: "tiempoSecado"
+        },
+        {
+            htmlFor: "tiempoUva",
+            labelId: "tiempoUvaLabel",
+            labelTitle: "Tiempo UVA",
+            inputType: "text",
+            inputId: "tiempoUva",
+            inputName: "tiempoUva"
+        },
+        {
+            htmlFor: "tiempoUvc",
+            labelId: "tiempoUvcLabel",
+            labelTitle: "Tiempo UVC",
+            inputType: "text",
+            inputId: "tiempoUvc",
+            inputName: "tiempoUvc"
+        },
+    ]
+}
+
+export const incidenciaFormData = {
+    headerIcon: <PiNoteLight />,
+    headerTitle: "GENERAR INCIDENCIA",
+    formSections: [
+        {
+            rows: [
+                {
+                    groups: ["incidencia"]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "incidencia",
+            labelId: "incidenciaLabel",
+            labelTitle: "Incidencia",
+            textarea: true,
+            inputId: "incidencia",
+            inputName: "incidencia"
+        }
+    ]
+}
+
+export const desasignarPedidoFormData = {
+    headerIcon: <AiOutlineSignature />,
+    headerTitle: "DESASIGNAR PEDIDO",
+    formSections: [],
+    formFields: []
+}
+
+export const asignarPedidoFormData = {
+    headerIcon: <IoDocumentTextOutline />,
+    headerTitle: "ASIGNAR PEDIDO",
+    formSections: [
+        {
+            rows: [
+                {
+                    groups: ["dibujante"]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "dibujante",
+            labelId: "dibujanteLabel",
+            labelTitle: "Dibujante",
+            select: "simple",
+            options: [],
+            inputId: "dibujante",
+            inputName: "dibujante",
+            required: true
+        },
+    ]
+}
+
+export const externosFormData = {
+    formSections: [
+        {
+            rows: [
+                {
+                    groups: ["username", "documentName"]
+                },
+                {
+                    groups: ["refPlancha", "insoladora", "resolucion", "clichesColor", "numero_colores"]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "username",
+            labelId: "usernameLabel",
+            labelTitle: "Cliente",
+            inputType: "text",
+            inputId: "username",
+            inputName: "username"
+        },
+        {
+            htmlFor: "documentName",
+            labelId: "documentNameLabel",
+            labelTitle: "Nombre",
+            inputType: "text",
+            inputId: "documentName",
+            inputName: "documentName"
+        },
+        {
+            htmlFor: "refPlancha",
+            labelId: "refPlanchaLabel",
+            labelTitle: "Plancha",
+            inputType: "text",
+            inputId: "refPlancha",
+            inputName: "refPlancha"
+        },
+        {
+            htmlFor: "insoladora",
+            labelId: "insoladoraLabel",
+            labelTitle: "Insoladora",
+            inputType: "text",
+            inputId: "insoladora",
+            inputName: "insoladora"
+        },
+        {
+            htmlFor: "resolucion",
+            labelId: "resolucionLabel",
+            labelTitle: "Resolución",
+            inputType: "text",
+            inputId: "resolucion",
+            inputName: "resolucion"
+        },
+        {
+            htmlFor: "clichesColor",
+            labelId: "clichesColorLabel",
+            labelTitle: "Clichés",
+            inputType: "text",
+            inputId: "clichesColor",
+            inputName: "clichesColor"
+        },
+        {
+            htmlFor: "numero_colores",
+            labelId: "numero_coloresLabel",
+            labelTitle: "Colores",
+            inputType: "text",
+            inputId: "numero_colores",
+            inputName: "numero_colores"
+        },
+    ]
+}
+
+export const planchasFormData = {
+    formSections: [
+        {
+            title: "Datos Generales",
+            rows: [
+                {
+                    groups: ["nombre_plancha", "ref_plancha", "cdi"]
+                },
+                {
+                    groups: ["nombre_estado", "fecha", "nombre_estado_albaran"]
+                }
+            ]
+        },
+        {
+            title: "Control",
+            rows: [
+                {
+                    groups: ["usuario_dfs", "usuario_produccion", "usuario_finalizada"]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "nombre_plancha",
+            labelId: "nombre_planchaLabel",
+            labelTitle: "Nombre",
+            inputType: "text",
+            inputId: "nombre_plancha",
+            inputName: "nombre_plancha"
+        },
+        {
+            htmlFor: "ref_plancha",
+            labelId: "ref_planchaLabel",
+            labelTitle: "Referencia",
+            inputType: "text",
+            inputId: "ref_plancha",
+            inputName: "ref_plancha"
+        },
+        {
+            htmlFor: "cdi",
+            labelId: "cdiLabel",
+            labelTitle: "CDI",
+            inputType: "text",
+            inputId: "cdi",
+            inputName: "cdi"
+        },
+        {
+            htmlFor: "nombre_estado",
+            labelId: "nombre_estadoLabel",
+            labelTitle: "Estado",
+            inputType: "text",
+            inputId: "nombre_estado",
+            inputName: "nombre_estado"
+        },
+        {
+            htmlFor: "fecha",
+            labelId: "fechaLabel",
+            labelTitle: "Fecha",
+            inputType: "text",
+            inputId: "fecha",
+            inputName: "fecha"
+        },
+        {
+            htmlFor: "nombre_estado_albaran",
+            labelId: "nombre_estado_albaranLabel",
+            labelTitle: "Albarán",
+            inputType: "text",
+            inputId: "nombre_estado_albaran",
+            inputName: "nombre_estado_albaran"
+        },
+        {
+            htmlFor: "usuario_dfs",
+            labelId: "usuario_dfsLabel",
+            labelTitle: "Preproducción",
+            inputType: "text",
+            inputId: "usuario_dfs",
+            inputName: "usuario_dfs"
+        },
+        {
+            htmlFor: "usuario_produccion",
+            labelId: "usuario_produccionLabel",
+            labelTitle: "Producción",
+            inputType: "text",
+            inputId: "usuario_produccion",
+            inputName: "usuario_produccion"
+        },
+        {
+            htmlFor: "usuario_finalizada",
+            labelId: "usuario_finalizadaLabel",
+            labelTitle: "Finalizada",
+            inputType: "text",
+            inputId: "usuario_finalizada",
+            inputName: "usuario_finalizada"
+        },
+    ]
+};
+
+export const emailInfoFormData = {
+    formSections: [
+        {
+            title: "Cabecera",
+            rows: [
+                {
+                    groups: ["usuario", "para", "fecha"],
+                },
+                {
+                    groups: ["asunto"]
+                }
+            ]
+        },
+        {
+            title: "Cuerpo",
+            rows: [
+                {
+                    groups: ["respuesta"]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "usuario",
+            labelId: "usuarioLabel",
+            labelTitle: "De",
+            inputType: "text",
+            inputId: "usuario",
+            inputName: "usuario"
+        },
+        {
+            htmlFor: "para",
+            labelId: "paraLabel",
+            labelTitle: "Para",
+            inputType: "text",
+            inputId: "para",
+            inputName: "para"
+        },
+        {
+            htmlFor: "fecha",
+            labelId: "fechaLabel",
+            labelTitle: "Fecha",
+            inputType: "text",
+            inputId: "fecha",
+            inputName: "fecha"
+        },
+        {
+            htmlFor: "asunto",
+            labelId: "asuntoLabel",
+            labelTitle: "Asunto",
+            inputType: "text",
+            inputId: "asunto",
+            inputName: "asunto"
+        },
+        {
+            htmlFor: "respuesta",
+            labelId: "respuestaLabel",
+            labelTitle: "Respuesta",
+            textarea: true,
+            inputId: "respuesta",
+            inputName: "respuesta"
+        },
+    ]
+}
 
 export const observacionesTecnicasFormData = {
-    formSections:[
+    formSections: [
         {
             title: "Dpto. Dibujo",
             rows: [
@@ -199,9 +1189,13 @@ export const observacionesTecnicasFormData = {
 }
 
 export const strategyFormData = {
+    headerIcon: <TbColorSwatch className="stroke" />,
+    headerTitle: "NUEVA ESTRATEGIA",
     formSections: [
         {
             title: "Cliente",
+            key: "cliente",
+            disableIfFilter: true,
             rows: [
                 {
                     groups: ["cliente_nombre", "cliente_codigo"],
@@ -211,15 +1205,19 @@ export const strategyFormData = {
         },
         {
             title: "Material",
+            key: "material",
+            disableIfFilter: true,
             rows: [
                 {
-                    groups: ["material_nombre", "material_codigo"],
+                    groups: ["material", "material_codigo"],
                     rowDisplay: "display8020"
                 }
             ]
         },
         {
             title: "Plancha",
+            key: "plancha",
+            disableIfFilter: true,
             rows: [
                 {
                     groups: ["plancha_fabricante", "plancha_espesor", "plancha_referencia"]
@@ -228,6 +1226,8 @@ export const strategyFormData = {
         },
         {
             title: "Perfil de Color",
+            key: "perfilColor",
+            disableIfFilter: true,
             rows: [
                 {
                     groups: ["perfil_nombre", "perfil_formato"],
@@ -240,6 +1240,8 @@ export const strategyFormData = {
         },
         {
             title: "Curva de Plotter",
+            key: "curvaPlotter",
+            disableIfFilter: true,
             rows: [
                 {
                     groups: ["curva_plotter_nombre", "curva_plotter_formato"],
@@ -249,6 +1251,8 @@ export const strategyFormData = {
         },
         {
             title: "Curva de Clichés",
+            key: "curvaCliches",
+            disableIfFilter: true,
             rows: [
                 {
                     groups: ["estrategia_nombre", "tramado"],
@@ -269,7 +1273,7 @@ export const strategyFormData = {
             inputType: "text",
             inputId: "cliente_nombre",
             inputName: "cliente_nombre",
-            disableField: true
+            required: true
         },
         {
             htmlFor: "cliente_codigo",
@@ -278,15 +1282,15 @@ export const strategyFormData = {
             inputType: "text",
             inputId: "cliente_codigo",
             inputName: "cliente_codigo",
-            disableField: true
+            required: true
         },
         {
-            htmlFor: "material_nombre",
-            labelId: "material_nombreLabel",
+            htmlFor: "material",
+            labelId: "materialLabel",
             labelTitle: "Nombre",
             inputType: "text",
-            inputId: "material_nombre",
-            inputName: "material_nombre"
+            inputId: "material",
+            inputName: "material"
         },
         {
             htmlFor: "material_codigo",
@@ -371,7 +1375,7 @@ export const strategyFormData = {
         {
             htmlFor: "estrategia_nombre",
             labelId: "estrategia_nombreLabel",
-            labelTitle: "Nombre Estrategia PWC",
+            labelTitle: "Nombre Estrategia PCW",
             inputType: "text",
             inputId: "estrategia_nombre",
             inputName: "estrategia_nombre"
@@ -432,6 +1436,18 @@ export const xmlFormData = {
                 },
                 {
                     groups: [
+                        "distancia_trapping",
+                        "intensidad"
+                    ]
+                },
+                {
+                    groups: [
+                        "remetido",
+                        "distancia_remetido"
+                    ]
+                },
+                {
+                    groups: [
                         "hacerSeparaciones"
                     ]
                 },
@@ -457,7 +1473,8 @@ export const xmlFormData = {
                 },
                 {
                     groups: [
-                        "paradaFreecut"
+                        "paradaFreecut",
+                        "test"
                     ]
                 },
             ]
@@ -653,7 +1670,7 @@ export const xmlFormData = {
             inputType: "checkbox",
             inputId: "paradaFreecut",
             inputName: "paradaFreecut"
-        },
+        }
     ]
 }
 
@@ -1052,6 +2069,306 @@ export const noteFormData = {
     ]
 }
 
+export const clientConfigFormData = {
+    headerIcon: <PiGear />,
+    headerTitle: "CONFIGURACIÓN CLIENTE",
+    formSections: [
+        {
+            title: "E-mail",
+            rows: [
+                {
+                    groups: [
+                        "contactoDefault"
+                    ]
+                }
+            ]
+        },
+        {
+            title: "Boceto",
+            rows: [
+                {
+                    groups: [
+                        "bocetoRasterizado",
+                        "plantillaBoceto"
+                    ]
+                },
+                {
+                    groups: [
+                        "nombrePlantillaBoceto"
+                    ]
+                },
+                {
+                    groups: [
+                        "anchoPlantillaBoceto",
+                        "altoPlantillaBoceto",
+                        "cajaReferenciaBoceto"
+                    ]
+                }
+            ]
+        },
+        {
+            title: "Ficha",
+            rows: [
+                {
+                    groups: [
+                        "fichaRasterizada",
+                        "plantillaFicha"
+                    ]
+                },
+                {
+                    groups: [
+                        "nombrePlantillaFicha"
+                    ]
+                },
+                {
+                    groups: [
+                        "anchoPlantillaFicha",
+                        "altoPlantillaFicha",
+                        "cajaReferenciaFicha"
+                    ]
+                }
+            ]
+        },
+        {
+            title: "Montaje",
+            rows: [
+                {
+                    groups: [
+                        "compensacionCorte",
+                        "marcaMontaje",
+                        "caidasFreecut"
+                    ]
+                }
+            ]
+        },
+        {
+            title: "Documentación",
+            rows: [
+                {
+                    title: "Certificados",
+                    groups: [
+                        "certificadoControl",
+                        "certificadoContinuos",
+                        "certificadoCodigos",
+                        "unitarioPng"
+                    ]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "contactoDefault",
+            labelId: "contactoDefaultLabel",
+            labelTitle: "Contacto por defecto",
+            select: "simple",
+            options: [],
+            inputId: "contactoDefault",
+            inputName: "contactoDefault"
+        },
+        {
+            htmlFor: "bocetoRasterizado",
+            labelId: "bocetoRasterizadoLabel",
+            labelTitle: "Rasterizar",
+            inputType: "checkbox",
+            inputId: "bocetoRasterizado",
+            inputName: "bocetoRasterizado"
+        },
+        {
+            htmlFor: "plantillaBoceto",
+            labelId: "plantillaBocetoLabel",
+            labelTitle: "Tipo Plantilla",
+            select: "simple",
+            options: plantillasDocumentos,
+            inputId: "plantillaBoceto",
+            inputName: "plantillaBoceto",
+            visibleFor: ["Soporte"]
+        },
+        {
+            htmlFor: "anchoPlantillaBoceto",
+            labelId: "anchoPlantillaBocetoLabel",
+            labelTitle: "Ancho Plantilla Boceto",
+            inputType: "number",
+            inputId: "anchoPlantillaBoceto",
+            inputName: "anchoPlantillaBoceto",
+            visibleFor: ["Soporte"],
+            showIf: ({ inputData }) => inputData?.plantillaBoceto === "Personalizada"
+        },
+        {
+            htmlFor: "altoPlantillaBoceto",
+            labelId: "altoPlantillaBocetoLabel",
+            labelTitle: "Alto Plantilla Boceto",
+            inputType: "number",
+            inputId: "altoPlantillaBoceto",
+            inputName: "altoPlantillaBoceto",
+            visibleFor: ["Soporte"],
+            showIf: ({ inputData }) => inputData?.plantillaBoceto === "Personalizada"
+        },
+        {
+            htmlFor: "nombrePlantillaBoceto",
+            labelId: "nombrePlantillaBocetoLabel",
+            labelTitle: "Nombre Plantilla Boceto",
+            select: "simple",
+            options: [],
+            inputId: "nombrePlantillaBoceto",
+            inputName: "nombrePlantillaBoceto",
+            visibleFor: ["Soporte"],
+            showIf: ({ inputData }) => inputData?.plantillaBoceto === "Personalizada"
+        },
+        {
+            htmlFor: "cajaReferenciaBoceto",
+            labelId: "cajaReferenciaBocetoLabel",
+            labelTitle: "Caja Referencia Boceto",
+            select: "simple",
+            options: cajaReferenciaOptions,
+            inputId: "cajaReferenciaBoceto",
+            inputName: "cajaReferenciaBoceto",
+            visibleFor: ["Soporte"],
+            showIf: ({ inputData }) => inputData?.plantillaBoceto === "Personalizada"
+        },
+        {
+            htmlFor: "fichaRasterizada",
+            labelId: "fichaRasterizadaLabel",
+            labelTitle: "Rasterizar",
+            inputType: "checkbox",
+            inputId: "fichaRasterizada",
+            inputName: "fichaRasterizada"
+        },
+        {
+            htmlFor: "plantillaFicha",
+            labelId: "plantillaFichaLabel",
+            labelTitle: "Tipo Plantilla",
+            select: "simple",
+            options: plantillasDocumentos,
+            inputId: "plantillaFicha",
+            inputName: "plantillaFicha",
+            visibleFor: ["Soporte"]
+        },
+        {
+            htmlFor: "anchoPlantillaFicha",
+            labelId: "anchoPlantillaFichaLabel",
+            labelTitle: "Ancho Plantilla Ficha",
+            inputType: "number",
+            inputId: "anchoPlantillaFicha",
+            inputName: "anchoPlantillaFicha",
+            visibleFor: ["Soporte"],
+            showIf: ({ inputData }) => inputData?.plantillaFicha === "Personalizada"
+        },
+        {
+            htmlFor: "altoPlantillaFicha",
+            labelId: "altoPlantillaFichaLabel",
+            labelTitle: "Alto Plantilla Ficha",
+            inputType: "number",
+            inputId: "altoPlantillaFicha",
+            inputName: "altoPlantillaFicha",
+            visibleFor: ["Soporte"],
+            showIf: ({ inputData }) => inputData?.plantillaFicha === "Personalizada"
+        },
+        {
+            htmlFor: "nombrePlantillaFicha",
+            labelId: "nombrePlantillaFichaLabel",
+            labelTitle: "Nombre Plantilla Ficha",
+            select: "simple",
+            options: [],
+            inputId: "nombrePlantillaFicha",
+            inputName: "nombrePlantillaFicha",
+            visibleFor: ["Soporte"],
+            showIf: ({ inputData }) => inputData?.plantillaFicha === "Personalizada"
+        },
+        {
+            htmlFor: "cajaReferenciaFicha",
+            labelId: "cajaReferenciaFichaLabel",
+            labelTitle: "Caja Referencia Ficha",
+            select: "simple",
+            options: cajaReferenciaOptions,
+            inputId: "cajaReferenciaFicha",
+            inputName: "cajaReferenciaFicha",
+            visibleFor: ["Soporte"],
+            showIf: ({ inputData }) => inputData?.plantillaFicha === "Personalizada"
+        },
+        {
+            htmlFor: "compensacionCorte",
+            labelId: "compensacionCorteLabel",
+            labelTitle: "Compensación de corte",
+            inputType: "number",
+            inputId: "compensacionCorte",
+            inputName: "compensacionCorte"
+        },
+        {
+            htmlFor: "marcaMontaje",
+            labelId: "marcaMontajeLabel",
+            labelTitle: "Plantilla de montaje",
+            select: "simple",
+            options: [
+                {},
+                {
+                    _id: "personalizada",
+                    textoOpcion: "Personalizada"
+                },
+                {
+                    _id: "centrosConref",
+                    textoOpcion: "Centros con referencia"
+                },
+                {
+                    _id: "centrosSinRef",
+                    textoOpcion: "Centros sin referencia"
+                },
+                {
+                    _id: "puntosConRef",
+                    textoOpcion: "Puntos con referencia"
+                },
+                {
+                    _id: "puntosSinRef",
+                    textoOpcion: "Puntos sin referencia"
+                }
+            ],
+            inputId: "marcaMontaje",
+            inputName: "marcaMontaje"
+        },
+        {
+            htmlFor: "caidasFreecut",
+            labelId: "caidasFreecutLabel",
+            labelTitle: "Caídas Freecut",
+            select: "simple",
+            options: caidasFreecutOptions,
+            inputId: "caidasFreecut",
+            inputName: "caidasFreecut"
+        },
+        {
+            htmlFor: "certificadoControl",
+            labelId: "certificadoControlLabel",
+            labelTitle: "Control",
+            inputType: "checkbox",
+            inputId: "certificadoControl",
+            inputName: "certificadoControl"
+        },
+        {
+            htmlFor: "certificadoContinuos",
+            labelId: "certificadoContinuosLabel",
+            labelTitle: "Continuos",
+            inputType: "checkbox",
+            inputId: "certificadoContinuos",
+            inputName: "certificadoContinuos"
+        },
+        {
+            htmlFor: "certificadoCodigos",
+            labelId: "certificadoCodigosLabel",
+            labelTitle: "Códigos",
+            inputType: "checkbox",
+            inputId: "certificadoCodigos",
+            inputName: "certificadoCodigos"
+        },
+        {
+            htmlFor: "unitarioPng",
+            labelId: "unitarioPngLabel",
+            labelTitle: "Unitario PNG",
+            inputType: "checkbox",
+            inputId: "unitarioPng",
+            inputName: "unitarioPng"
+        }
+    ]
+}
+
 export const clientFormData = {
     headerIcon: <SlBriefcase />,
     headerTitle: "NUEVO CLIENTE",
@@ -1122,6 +2439,17 @@ export const userFormData = {
     editTitle: "EDITAR USUARIO",
     formSections: [
         {
+            rows: [
+                {
+                    groups: [
+                        "role",
+                        "departments",
+                        "responsibleDepartments"
+                    ]
+                }
+            ]
+        },
+        {
             title: "Datos personales",
             rows: [
                 {
@@ -1139,24 +2467,13 @@ export const userFormData = {
                     groups: [
                         "username",
                         "email",
-                        "password"
+                        "password",
+                        "teleWork"
                     ]
                 },
             ]
         },
-        {
-            title: "Rol Dpto.",
-            rows: [
-                {
-                    groups: [
-                        "role",
-                        "departments"
-                    ]
-                }
-            ]
-        }
     ],
-
     formFields: [
         {
             htmlFor: "username",
@@ -1191,10 +2508,11 @@ export const userFormData = {
             labelTitle: "Rol",
             select: "simple",
             options: [
+                "Operario",
                 "Administrador",
                 "Manager",
                 "Especialista",
-                "Operario"
+                "Soporte"
             ],
             inputId: "role",
             inputName: "role"
@@ -1207,14 +2525,31 @@ export const userFormData = {
             options: [
                 "Oficina",
                 "Dibujo",
-                "Sólido",
-                "Líquido",
+                "Solido",
+                "Liquido",
                 "Montaje",
                 "Expediciones",
-                "Técnico"
+                "Tecnico"
             ],
             inputId: "departments",
             inputName: "departments"
+        },
+        {
+            htmlFor: "responsibleDepartments",
+            labelId: "responsibleDepartmentsLabel",
+            labelTitle: "Responsable de",
+            select: "multiple",
+            options: [
+                "Oficina",
+                "Dibujo",
+                "Solido",
+                "Liquido",
+                "Montaje",
+                "Expediciones",
+                "Tecnico"
+            ],
+            inputId: "responsibleDepartments",
+            inputName: "responsibleDepartments"
         },
         {
             htmlFor: "email",
@@ -1234,6 +2569,14 @@ export const userFormData = {
             inputName: "password",
             required: true,
             minLength: 4
+        },
+        {
+            htmlFor: "teleWork",
+            labelId: "teleWorkLabel",
+            labelTitle: "Teletrabajo",
+            inputType: "checkbox",
+            inputId: "teleWork",
+            inputName: "teleWork"
         }
     ]
 };

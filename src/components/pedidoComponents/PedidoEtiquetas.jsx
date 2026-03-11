@@ -1,5 +1,27 @@
+import { useEffect, useState } from "react";
+
 function PedidoEtiquetas({ orderXml }) {
   const adhesivo = orderXml.actividad?.adhesivo;
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (adhesivo) {
+      Object.keys(adhesivo).forEach((key) => {
+        if (
+          adhesivo[key] &&
+          typeof adhesivo[key] === "object" &&
+          Object.keys(adhesivo[key]).length === 0
+        ) {
+          adhesivo[key] = "";
+        }
+      });
+    }
+    setLoading(false); // Mark as complete
+  }, [adhesivo]);
+
+  if (loading) {
+    return null; // Render nothing while loading
+  }
 
   return (
     <div className="etiquetas">
@@ -62,7 +84,7 @@ function PedidoEtiquetas({ orderXml }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default PedidoEtiquetas
+export default PedidoEtiquetas;

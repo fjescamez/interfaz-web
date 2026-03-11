@@ -13,3 +13,16 @@ export function normalizeData(data, columns) {
     return newItem;
   });
 }
+
+export function sanitizeData(data) {
+  if (Array.isArray(data)) {
+    return data.map(sanitizeData);
+  } else if (data && typeof data === "object" && Object.keys(data).length === 0) {
+    return ""; // Convert empty objects to empty strings
+  } else if (data && typeof data === "object") {
+    return Object.fromEntries(
+      Object.entries(data).map(([key, value]) => [key, sanitizeData(value)])
+    );
+  }
+  return data; // Return the value as is for non-object types
+};

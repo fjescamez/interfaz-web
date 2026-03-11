@@ -1,9 +1,9 @@
 import GeneralForm from "./GeneralForm";
 import { userFormData } from "../../helpers/formsData";
 
-function UserForm({ setModal, mode, setTableData, setTotal, user }) {
+function UserForm({ setModal, mode, setTableData, setTotal, user, setUser }) {
     let userData = {};
-    let { username, name, lastname, role, departments, email, _id } = user || {};
+    let { username, name, lastname, role, departments, responsibleDepartments, email, teleWork, _id } = user || {};
 
     if (mode && mode === "edit") {
         userData = {
@@ -12,17 +12,9 @@ function UserForm({ setModal, mode, setTableData, setTotal, user }) {
             lastname,
             role,
             departments,
-            email
-        }
-    } else {
-        userData = {
-            username: "",
-            name: "",
-            lastname: "",
-            role: "",
-            departments: [],
-            email: "",
-            password: ""
+            responsibleDepartments,
+            email,
+            teleWork
         }
     }
 
@@ -33,6 +25,7 @@ function UserForm({ setModal, mode, setTableData, setTotal, user }) {
             itemsData={userData}
             endpoint={"users"}
             setTableData={setTableData}
+            setData={setUser}
             setTotal={setTotal}
             mode={mode}
             _id={_id}

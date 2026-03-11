@@ -4,7 +4,7 @@ function ExecutingComponent({ message }) {
     return (
         <>
             <div className="executingOverlay">
-                <div className="executingContainer">
+                <div className="executingOverlayContainer">
                     <BlinkBlur variant="dotted" color="var(--highlight)" size="large" speedPlus="0" />
                     <h1>{message ? message : "Ejecutando..."}</h1>
                 </div>

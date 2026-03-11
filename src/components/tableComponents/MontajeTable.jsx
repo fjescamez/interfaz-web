@@ -4,10 +4,11 @@ import Table from '../Table';
 import { postData } from '../../helpers/fetchData';
 import RipPopUp from '../pedidoComponents/RipPopUp';
 import { notify } from '../../helpers/notify';
-import { toast } from 'react-toastify';
 import CompareMontajes from '../pedidoComponents/CompareMontajes';
+import MultiRipMontaje from './MultiRipMontaje';
 
 function MontajeTable({ setMontajeModal, fullOrder }) {
+    const urlApi = import.meta.env.VITE_API_URL;
     const [montajeIds, setMontajeIds] = useState([]);
     const [ripId, setRipId] = useState("");
     const [ripPopup, setRipPopup] = useState(false);
@@ -15,9 +16,11 @@ function MontajeTable({ setMontajeModal, fullOrder }) {
     const [montajeToCompare, setMontajeToCompare] = useState(undefined);
     const [tableInfo, setTableInfo] = useState(montajeTableInfo);
     const [montajeView, setMontajeView] = useState("");
+    const [multiRipPopup, setMultiRipPopup] = useState(false);
+    const [listMontajes, setListMontajes] = useState([]);
 
     const solicitarVista = async () => {
-        const url = `http://192.4.26.112:3000/montajes/solicitarVista`;
+        const url = `${urlApi}/montajes/solicitarVista`;
 
         try {
             const response = await fetch(url, {
@@ -32,7 +35,7 @@ function MontajeTable({ setMontajeModal, fullOrder }) {
             })
             const data = await response.json();
             if (data.status === "success") {
-                notify(toast.success, data.status, data.title, data.message);
+                notify(data.status, data.title, data.message);
                 setMontajeIds([]);
                 const updatedActions = tableInfo.actions.map(action => {
                     if (action.action === "solicitarVista" || action.action === "visualizarMontaje") {
@@ -45,11 +48,11 @@ function MontajeTable({ setMontajeModal, fullOrder }) {
 
                 return data;
             } else {
-                notify(toast.error, data.status, data.title, data.message);
+                notify(data.status, data.title, data.message);
                 return data;
             }
         } catch (error) {
-            notify(toast.error, 'error', 'Error', error);
+            notify('error', 'Error', error);
         }
     }
 
@@ -60,9 +63,9 @@ function MontajeTable({ setMontajeModal, fullOrder }) {
             setRipPopup(true);
 
             return { status: "success" };
-        } else if (action === "comparar") {            
+        } else if (action === "comparar") {
             if (montajeIds.length > 1) {
-                notify(toast.error, "error", "Demasiadas selecciones", "Por favor, seleccione un solo elemento para poder realizar esta acción.");
+                notify("error", "Demasiadas selecciones", "Por favor, seleccione un solo elemento para poder realizar esta acción.");
                 return { status: "success" };
             }
 
@@ -71,7 +74,7 @@ function MontajeTable({ setMontajeModal, fullOrder }) {
             return { status: "success" };
         } else if (action === "solicitarVista") {
             if (montajeIds.length > 1) {
-                notify(toast.error, "error", "Demasiadas selecciones", "Por favor, seleccione un solo elemento para poder realizar esta acción.");
+                notify("error", "Demasiadas selecciones", "Por favor, seleccione un solo elemento para poder realizar esta acción.");
                 return { status: "success" };
             }
 
@@ -79,21 +82,25 @@ function MontajeTable({ setMontajeModal, fullOrder }) {
         } else if (action === "visualizarMontaje") {
             window.open(montajeView, "_blank");
             return { status: "success" };
+        } else if (action === "menuRip") {
+            setListMontajes(data);
+            setMultiRipPopup(true);
+            return { status: "success" };
         } else {
-            const data = {
+            const sendData = {
                 ids: montajeIds,
                 action
             };
 
             setMontajeIds([]);
-            return postData(`montajes/${action}`, data);
+            return postData(`montajes/${action}`, sendData);
         }
     };
 
     return (
         <>
-            <div className="overlay"></div>
-            {(!ripPopup && !comparePopup) &&
+            {!multiRipPopup && <div className="overlay"></div>}
+            {(!ripPopup && !comparePopup && !multiRipPopup) &&
                 <div className="popUpTable">
                     <Table
                         actions={montajeActions}
@@ -102,6 +109,8 @@ function MontajeTable({ setMontajeModal, fullOrder }) {
                         setPopUpTable={setMontajeModal}
                         dinamicTableInfo={tableInfo}
                         orderFilter={fullOrder.id_pedido}
+                        openRows={true}
+                        customTable={true}
                     />
                 </div>
             }
@@ -116,6 +125,13 @@ function MontajeTable({ setMontajeModal, fullOrder }) {
                 <CompareMontajes
                     setModal={setComparePopup}
                     montaje={montajeToCompare}
+                />
+            }
+            {multiRipPopup &&
+                <MultiRipMontaje
+                    setModal={setMultiRipPopup}
+                    listMontajes={listMontajes}
+                    fullOrder={fullOrder}
                 />
             }
         </>

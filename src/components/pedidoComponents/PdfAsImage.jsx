@@ -6,7 +6,8 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
     import.meta.url
 ).toString();
 
-function PdfAsImage({ url, className }) {
+function PdfAsImage({ url, className, noOpen }) {
+    const urlApi = import.meta.env.VITE_API_URL;
     /* PDF a imagen */
     const [imgSrc, setImgSrc] = useState(null);
 
@@ -14,11 +15,17 @@ function PdfAsImage({ url, className }) {
         if (!url) return;
 
         setImgSrc(null);
+        let pdfDoc = null;
+        let cancelled = false;
 
         const renderPdf = async () => {
             try {
-                const pdf = await pdfjsLib.getDocument(`http://192.4.26.112:3000/pdf/${url}`).promise;
-                const page = await pdf.getPage(1); // primera página
+                pdfDoc = await pdfjsLib.getDocument(`${urlApi}/pdf/${url}`).promise;
+                if (cancelled) {
+                    await pdfDoc.destroy();
+                    return;
+                }
+                const page = await pdfDoc.getPage(1); // primera página
 
                 const scale = 0.5; // resolución
                 const viewport = page.getViewport({ scale });
@@ -33,11 +40,20 @@ function PdfAsImage({ url, className }) {
                 // Guardamos el PNG como dataURL
                 setImgSrc(canvas.toDataURL("image/png"));
             } catch (err) {
-                console.error("Error al renderizar PDF:", err);
+                if (!cancelled) console.error("Error al renderizar PDF:", err);
             }
         };
 
-        renderPdf();
+        if (url.includes("sinUnitario")) {
+            setImgSrc("/assets/img/sinUnitario.png");
+        } else {
+            renderPdf();
+        }
+
+        return () => {
+            cancelled = true;
+            if (pdfDoc) pdfDoc.destroy();
+        };
     }, [url]);
 
     return (
@@ -45,7 +61,7 @@ function PdfAsImage({ url, className }) {
             {(url === "" || url === "no asignado") ? (
                 <h1>No hay previo</h1>
             ) : (
-                imgSrc ? <img src={imgSrc} className={className} onClick={() => window.open(`http://192.4.26.112:3000/pdf/${url}`, "_blank")}></img> : <OrbitProgress variant="dotted" color="var(--highlight)" size="large" />
+                imgSrc ? <img src={imgSrc} className={className} onClick={!noOpen ? () => window.open(`${urlApi}/pdf/${url}`, "_blank") : undefined}></img> : <OrbitProgress variant="dotted" color="var(--highlight)" size="large" />
             )
             }
         </>

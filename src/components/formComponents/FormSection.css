@@ -10,8 +10,22 @@
         border-radius: 0.35rem;
         display: flex;
         flex-direction: column;
-        row-gap: 1rem;
+        row-gap: 1.5rem;
         font-size: 5rem;
+
+        .rowTitle {
+            p {
+                font-size: 2rem;
+            }
+        }
+
+        &.clickable {
+            cursor: pointer;
+
+            &:hover {
+                background-color: var(--highlight-low-opacity);
+            }
+        }
 
         p {
             text-align: left;
@@ -47,12 +61,23 @@
             column-gap: 2rem;
         }
 
+        .display255025 {
+            display: grid;
+            grid-template-columns: minmax(0, 23.5%) 1fr minmax(0, 23.5%);
+            column-gap: 2rem;
+        }
+
         .displayAuto {
             display: flex;
             gap: 1rem 2rem;
+            align-items: center;
 
             * {
                 flex: 1;
+            }
+
+            .formGroupRow {
+                max-width: fit-content !important;
             }
         }
     }

@@ -1,0 +1,33 @@
+.jacketItem {
+    display: flex;
+    justify-content: space-between;
+    padding: 1.4rem;
+    cursor: pointer;
+    border-radius: 0.2rem;
+    border: 2px solid var(--pantone431c);
+    background-color: var(--details);
+
+    &:hover {
+        background-color: var(--hover);
+    }
+
+    &.selected {
+        background: var(--orange-gradient);
+    }
+
+    .left,
+    .right {
+        display: flex;
+        column-gap: 1.5rem;
+        align-items: center;
+
+        svg {
+            width: 2rem;
+            height: 2rem;
+        }
+
+        p {
+            font-size: 1.7rem;
+        }
+    }
+}

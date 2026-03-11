@@ -34,6 +34,14 @@
         align-items: center;
         text-align: center;
 
+        .userFullName {
+            cursor: pointer;
+            
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+
         .iconContainer {
             width: 8rem;
             height: 8rem;

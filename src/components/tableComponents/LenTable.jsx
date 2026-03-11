@@ -1,24 +1,29 @@
 import { useState } from "react"
 import Table from "../Table";
 import { notify } from "../../helpers/notify";
-import { toast } from "react-toastify";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import InfoTintasTramas from "../pedidoComponents/InfoTintasTramas";
 import { postData } from "../../helpers/fetchData";
+import BarnizPopUp from "../pedidoComponents/BarnizPopUp";
 
 function LenTable({
     setLenModal,
     orderId,
     lenTableInfo,
-    popup
+    popup,
+    customTable
 }) {
     const [lenIds, setLenIds] = useState([]);
     const [tableInfo, setTableInfo] = useState(lenTableInfo);
     const [lenViewUrl, setLenViewUrl] = useState("");
     const [infoCurvasPopup, setInfoCurvasPopup] = useState(false);
     const [infoCurvas, setInfoCurvas] = useState(false);
+    const [barnizPopUp, setBarnizPopUp] = useState(false);
+    const [tableSetter, setTableSetter] = useState(undefined);
+    const [actionEnder, setActionEnder] = useState(undefined);
+    const [indexSetter, setIndexSetter] = useState(undefined);
 
-    const enviarProduccion = async (setTableData) => {
+    const enviarProduccion = async (setTableData, finishAction) => {
         if (lenIds.length > 0) {
             const data = {
                 action: "enviarProduccion",
@@ -29,7 +34,7 @@ function LenTable({
                 const response = await postData("lenFiles/enviarProduccion", data);
 
                 if (response.status === "success") {
-                    notify(toast.success, response.status, response.title, response.message);
+                    notify(response.status, response.title, response.message);
                     setTableData(prevData =>
                         prevData.map(row => {
                             const updated = response.enviado.listLen.find(len => len._id === row._id);
@@ -37,13 +42,19 @@ function LenTable({
                         })
                     );
                     setLenIds([]);
-                    return {status: "success", response};
+
+                    if (finishAction) {
+                        lenActions({ action: "finishProduccion" });
+                        return;
+                    }
+
+                    return { status: "success", response };
                 } else {
-                    notify(toast.error, data.status, data.title, data.message);
-                    return {status: "error", response};
+                    notify(data.status, data.title, data.message);
+                    return { status: "error", response };
                 }
             } catch (error) {
-                notify(toast.error, 'error', 'Error', error);
+                notify('error', 'Error', error);
             }
         }
     };
@@ -56,62 +67,93 @@ function LenTable({
 
         try {
             const response = await postData("lenFiles/infoCurvas", data);
-            
+
             if (response.status === "success") {
-                notify(toast.success, response.status, response.title, response.message);
+                notify(response.status, response.title, response.message);
                 setInfoCurvasPopup(true);
                 setInfoCurvas(response.info.contents.listRegistroColor);
                 return response;
             } else {
-                notify(toast.error, response.status, response.title, response.message);
+                notify(response.status, response.title, response.message);
                 return response;
             }
         } catch (error) {
-            notify(toast.error, 'error', 'Error', error);
+            notify('error', 'Error', error);
         }
     }
 
-    const solicitarVista = async () => {
+    const solicitarVista = async (tableData) => {
+        let id_pedido = orderId || "";
+
+        if (!orderId) {
+            id_pedido = tableData.find(len => len._id === lenIds[0])?.id_pedido;
+        }
+
         const data = {
             action: "solicitarVista",
-            orderId
+            orderId: id_pedido
+        }
+
+        if (lenIds.length === 1) {
+            data._id = lenIds[0];
+        } else if (lenIds.length > 1) {
+            notify('error', 'Error', 'Solo se puede seleccionar un LEN para solicitar vista');
+            return { status: "error" };
         }
 
         try {
             const response = await postData("lenFiles/solicitarVista", data);
-            console.log(response);
 
             if (response.status === "success") {
-                notify(toast.success, response.status, response.title, response.message);
-                setLenIds([]);
-                const updatedActions = tableInfo.actions.map(action => {
-                    if (action.action === "solicitarVista" || action.action === "visualizarLen") {
-                        return { ...action, hidden: !action.hidden };
+                notify(response.status, response.title, response.message);
+                let updatedActions = tableInfo.actions.map(action => {
+                    if (action.action === "visualizarLen") {
+                        return { ...action, hidden: false };
                     }
                     return action;
                 });
+
                 setTableInfo({ ...tableInfo, actions: updatedActions });
                 setLenViewUrl(response.vista.contents?.viewLink);
+                setLenIds([]);
 
                 return response;
             } else {
-                notify(toast.error, response.status, response.title, response.message);
+                notify(response.status, response.title, response.message);
                 return response;
             }
         } catch (error) {
-            notify(toast.error, 'error', 'Error', error);
+            notify('error', 'Error', error);
         }
     }
 
     const lenActions = (variables) => {
-        const { action, setTableData } = variables;
+        const { action, data, setTableData, setActionEnded, setCheckedIndexes } = variables;
+
         switch (action) {
             case "enviarProduccion":
-                return enviarProduccion(setTableData);
+                const lenCompletos = data.filter(len => lenIds.includes(len._id));
+
+                if (lenCompletos.some(len => len.color.toLowerCase().includes("barniz"))) {
+                    setBarnizPopUp(true);
+                    setTableSetter(() => setTableData);
+                    setActionEnder(() => setActionEnded);
+                    setIndexSetter(() => setCheckedIndexes);
+                    return { status: "waiting" };
+                } else {
+                    return enviarProduccion(setTableData);
+                }
+            case "finishProduccion":
+                console.log("Producción finalizada");
+
+                actionEnder(true);
+                setLenIds([]);
+                indexSetter([]);
+                return;
             case "infoCurvas":
                 return getInfoCurvas();
             case "solicitarVista":
-                return solicitarVista();
+                return solicitarVista(data);
             case "visualizarLen":
                 window.open(lenViewUrl, "_blank");
                 return { status: "success" };
@@ -133,8 +175,10 @@ function LenTable({
                             setPopUpTable={setLenModal}
                             dinamicTableInfo={tableInfo}
                             orderFilter={orderId}
+                            customTable={customTable}
                         />
                     </div>
+                    {barnizPopUp && <BarnizPopUp setBarnizPopUp={setBarnizPopUp} tableSetter={tableSetter} enviarProduccion={enviarProduccion} />}
                 </>
             ) : (
                 <>

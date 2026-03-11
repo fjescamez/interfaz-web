@@ -1,0 +1,32 @@
+.inputWithSearch {
+    width: 100%;
+    height: 4.5rem;
+
+    input {
+        width: 100%;
+        padding: 0.8rem;
+        font-size: 2.25rem;
+    }
+
+    .searchResults {
+        background-color: white;
+        border: 1px solid #ccc;
+        max-height: 20rem;
+        overflow-y: auto;
+        width: 100%;
+        position: relative;
+        z-index: 10;
+
+        ul {
+            li {
+                padding: 0.65rem;
+                font-size: 1.5rem;
+                cursor: pointer;
+
+                &:hover {
+                    background-color: var(--highlight);
+                }
+            }
+        }
+    }
+}

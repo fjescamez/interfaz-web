@@ -6,13 +6,14 @@ import { useTabs } from "../context/TabsContext";
 import UserForm from "../components/formComponents/UserForm";
 import DeleteForm from "../components/formComponents/DeleteForm";
 import DetailsHeader from "../components/DetailsHeader";
-import { useSession } from "../context/SessionContext";
 import { userFormData } from "../helpers/formsData";
 import FormSection from "../components/formComponents/FormSection";
 import GridComponent from "../components/GridComponent";
 import { usersDetails } from "../helpers/detailsGrid";
 import { userTableInfo } from "../helpers/tablesInfo";
 import { fetchOneItem } from "../helpers/fetchData";
+import { useLocation } from "react-router-dom";
+import { checkRole } from "../helpers/roleChecker";
 
 function UserDetails({ toggleKiosk }) {
     const [user, setUser] = useState({});
@@ -21,10 +22,10 @@ function UserDetails({ toggleKiosk }) {
     const { closeTab } = useTabs();
     const [editPopup, setEditPopup] = useState(false);
     const [deletePopup, setDeletePopup] = useState(false);
-    const { session } = useSession();
     const [showInfo, setShowInfo] = useState(true);
     const { grid } = usersDetails;
-    const isAdmin = session.role === "Administrador";
+    const { isAdmin } = checkRole();
+    const location = useLocation();
 
     useEffect(() => {
         const getUserDetails = async () => {
@@ -60,6 +61,7 @@ function UserDetails({ toggleKiosk }) {
                     setModal={setEditPopup}
                     mode={"edit"}
                     user={user}
+                    setUser={setUser}
                 />
             )}
             {(deletePopup && isAdmin) && (
@@ -72,15 +74,13 @@ function UserDetails({ toggleKiosk }) {
             <div className="detailsScroll">
                 {showInfo
                     ? <div className="formSections">
-                        {userFormData.formSections.map((section) => (
-                            <div key={section.title} className="formSection">
-                                <FormSection
-                                    sectionData={section}
-                                    formFields={userFormData.formFields}
-                                    inputData={user}
-                                    disable={true}
-                                />
-                            </div>
+                        {userFormData.formSections.map((section, index) => (
+                            <FormSection
+                                sectionData={section}
+                                formFields={userFormData.formFields}
+                                inputData={user}
+                                disable={true}
+                            />
                         ))}
                     </div>
                     :

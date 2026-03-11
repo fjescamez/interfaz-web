@@ -23,3 +23,9 @@
         height: 3rem;
     }
 }
+
+.homeGrid {
+    .gridContainer {
+        margin-left: 0 !important;
+    }
+}

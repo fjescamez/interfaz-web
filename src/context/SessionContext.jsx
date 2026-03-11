@@ -3,6 +3,8 @@ import { createContext, useContext, useEffect, useState } from "react";
 const SessionContext = createContext();
 
 export function SessionProvider({ children }) {
+    const urlApi = import.meta.env.VITE_API_URL;
+
     const [session, setSession] = useState(() => {
         const storedSession = JSON.parse(localStorage.getItem("session"));
         return storedSession ? storedSession : null;
@@ -13,9 +15,9 @@ export function SessionProvider({ children }) {
     }, [session]);
 
     const getAvatarUrl = (avatar) => {
-        if (!avatar) return "http://192.4.26.112:3000/uploads/avatars/avatar.jpg";
+        if (!avatar) return `${urlApi}/uploads/avatars/avatar.jpg`;
         if (avatar.startsWith("http") || avatar.startsWith("/")) return avatar;
-        return `http://192.4.26.112:3000/uploads/avatars/${avatar}`;
+        return `${urlApi}/uploads/avatars/${avatar}`;
     };
 
     const avatar = session && getAvatarUrl(session.avatar);

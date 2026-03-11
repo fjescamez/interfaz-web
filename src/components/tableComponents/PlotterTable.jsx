@@ -5,7 +5,6 @@ import { postData } from '../../helpers/fetchData';
 import InfoGmgTable from './InfoGmgTable';
 import PlotterKiosk from '../pedidoComponents/PlotterKiosk';
 import { notify } from '../../helpers/notify';
-import { toast } from 'react-toastify';
 import ExecutingComponent from '../ExecutingComponent';
 
 function PlotterTable({ setPlotterModal, orderId, fullOrder, filePath }) {
@@ -31,10 +30,10 @@ function PlotterTable({ setPlotterModal, orderId, fullOrder, filePath }) {
             const imprimir = await postData("plotter/imprimirFerro", body);
 
             if (imprimir.status === "success") {
-                notify(toast.success, imprimir.status, imprimir.title, imprimir.message);
+                notify(imprimir.status, imprimir.title, imprimir.message);
                 return { status: "success" }
-            } else if (imprimir.status === "error") {                
-                notify(toast.error, imprimir.status, imprimir.title, imprimir.message);
+            } else if (imprimir.status === "error") {
+                notify(imprimir.status, imprimir.title, imprimir.message);
                 return { status: "error" };
             }
         } else if (action === "openRow") {
@@ -59,7 +58,7 @@ function PlotterTable({ setPlotterModal, orderId, fullOrder, filePath }) {
                 } else {
                     setPlotterKiosk(false);
                     setLoading(false);
-                    notify(toast.error, tareaGmg.status, tareaGmg.title, tareaGmg.message);
+                    notify(tareaGmg.status, tareaGmg.title, tareaGmg.message);
                 }
             }
             getTareaGmg();
@@ -79,7 +78,8 @@ function PlotterTable({ setPlotterModal, orderId, fullOrder, filePath }) {
                             setPopUpTable={setPlotterModal}
                             dinamicTableInfo={plotterTableInfo}
                             orderFilter={orderId}
-                            filePath={filePath}
+                            openRows={true}
+                            customTable={true}
                         />
                     </div>
                     :

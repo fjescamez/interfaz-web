@@ -5,12 +5,14 @@ import { fetchData, fetchOneItem } from '../helpers/fetchData';
 import { useTabs } from '../context/TabsContext';
 import FormSection from '../components/formComponents/FormSection';
 import { strategyFormData } from '../helpers/formsData';
-import { useSession } from '../context/SessionContext';
 import StrategyForm from '../components/formComponents/StrategyForm';
 import DeleteForm from '../components/formComponents/DeleteForm';
 import { strategyTableInfo } from '../helpers/tablesInfo';
+import { useLocation } from "react-router-dom";
+import { BlinkBlur } from "react-loading-indicators";
+import { checkRole } from '../helpers/roleChecker';
 
-function StrategyDetails({ toggleKiosk }) {
+function StrategyDetails() {
   const [strategy, setStrategy] = useState(undefined);
   const { id } = useParams();
   const { closeTab } = useTabs();
@@ -18,8 +20,8 @@ function StrategyDetails({ toggleKiosk }) {
   const [editPopup, setEditPopup] = useState(false);
   const [deletePopup, setDeletePopup] = useState(false);
   const [itemsData, setItemsData] = useState({});
-  const { session } = useSession();
-  const isAdmin = session.role === "Administrador";
+  const { isAdmin } = checkRole();
+  const location = useLocation();
 
   useEffect(() => {
     const getStrategyDetails = async () => {
@@ -38,8 +40,6 @@ function StrategyDetails({ toggleKiosk }) {
   useEffect(() => {
     const getItemsData = async () => {
       if (strategy !== undefined) {
-        console.log(strategy);
-
         const {
           cliente_codigo,
           material,
@@ -53,7 +53,8 @@ function StrategyDetails({ toggleKiosk }) {
           nombrePCW,
           tipoTramado,
           curvaP,
-          curvaC
+          curvaC,
+          codigo_estrategia
         } = strategy;
 
         const cliente = await fetchData("clients", cliente_codigo);
@@ -74,7 +75,7 @@ function StrategyDetails({ toggleKiosk }) {
         setItemsData({
           cliente_nombre,
           cliente_codigo,
-          material_nombre: material,
+          material: material,
           material_codigo,
           plancha_fabricante,
           plancha_espesor,
@@ -88,7 +89,9 @@ function StrategyDetails({ toggleKiosk }) {
           estrategia_nombre: nombrePCW,
           tramado: tipoTramado,
           curva_cliches_nombre: nombreCurvaCliche,
-          curva_cliches_formato: formatoCurvaCliche
+          curva_cliches_formato: formatoCurvaCliche,
+          codigo_estrategia,
+          _id: id
         })
       }
     }
@@ -99,16 +102,13 @@ function StrategyDetails({ toggleKiosk }) {
     <>
       <div className="detailsContainer">
         <DetailsHeader
-          title={`Estrategia ${strategy?.codigo_estrategia}`}
-          subtitle={strategy?.cliente_codigo}
+          title={`Estrategia ${strategy?.codigo_estrategia || ""}`}
+          subtitle={`(${strategy?.cliente_codigo})`}
           endPoint={"strategies"}
-          id={""}
           setEditPopup={setEditPopup}
           setDeletePopup={setDeletePopup}
           hideInfoIcon={true}
           hideAvatar={true}
-          hideDeleteIcon={true}
-          hideEditIcon={true}
           grid={true}
         />
         {editPopup && (
@@ -116,6 +116,8 @@ function StrategyDetails({ toggleKiosk }) {
             setModal={setEditPopup}
             mode={"edit"}
             itemsData={itemsData}
+            clienteDato={{ name: itemsData.cliente_nombre, code: itemsData.cliente_codigo }}
+            setStrategy={setStrategy}
           />
         )}
         {(deletePopup && isAdmin) && (
@@ -126,18 +128,23 @@ function StrategyDetails({ toggleKiosk }) {
           />
         )}
         <div className="detailsScroll">
-          <div className="formSections">
-            {strategyFormData.formSections.map((section) => (
-              <div key={section.title} className="formSection">
+          {strategy ? (
+            <div className="formSections">
+              {strategyFormData.formSections.map((section) => (
                 <FormSection
                   sectionData={section}
                   formFields={strategyFormData.formFields}
                   inputData={itemsData}
                   disable={true}
                 />
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="executingContainer">
+              <BlinkBlur variant="dotted" color="var(--highlight)" size="large" speedPlus="0" />
+              <h1>Cargando</h1>
+            </div>
+          )}
         </div>
       </div>
     </>

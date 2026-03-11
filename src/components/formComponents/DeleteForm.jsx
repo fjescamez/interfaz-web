@@ -1,10 +1,11 @@
 import { IoMdCloseCircleOutline } from "react-icons/io"
 import { deleteMultipleObjects, updateData } from "../../helpers/fetchData";
-import { toast } from "react-toastify";
+
 import { notify } from "../../helpers/notify";
 import { useTabs } from "../../context/TabsContext";
 import { useLocation } from "react-router-dom";
 import { useSession } from "../../context/SessionContext";
+import { addKeyListener } from "../../helpers/toggleModal";
 
 function DeleteForm({
     setModal,
@@ -19,14 +20,16 @@ function DeleteForm({
     setTotal,
     isActive,
     setIsActive,
-    setActionEnded
+    setCheckedIndexes,
+    setActionEnded,
+    extraBodyData
 }) {
-    const { headerIcon, headerTitle, endPoint, deleteActions } = tableInfo;
-    console.log(tableInfo);
+    const { headerIcon, headerTitle, deleteTitle, endPoint, deleteActions } = tableInfo;
 
     const { closeTab } = useTabs();
     const location = useLocation();
     const { setSession } = useSession();
+    addKeyListener(setModal);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -50,7 +53,8 @@ function DeleteForm({
                 ids: filesToDelete,
                 id_pedido: id,
                 //files: filesUrls ? filesUrls : [],
-                deleteActions
+                deleteActions,
+                ...extraBodyData || {}
             };
 
             result = await deleteMultipleObjects(endPoint, data, setData);
@@ -58,7 +62,8 @@ function DeleteForm({
             if (setActionEnded) setActionEnded(true);
         } else {
             const data = {
-                id
+                id,
+                ...extraBodyData || {}
             };
 
             result = await deleteMultipleObjects(endPoint, data, setData);
@@ -66,7 +71,7 @@ function DeleteForm({
         }
 
         if (result.status === "success") {
-            notify(toast.success, result.status, result.title, result.message);
+            notify(result.status, result.title, result.message);
             if (Array.isArray(isActive)) {
                 setIsActive([]);
             } else {
@@ -80,10 +85,13 @@ function DeleteForm({
             }
 
             if (data && setData) {
-                setData(data.filter(obj => !filesToDelete.includes(obj._id)));
+                setData(data.filter(obj => !filesToDelete.includes(obj._id || obj.id)));
+            }
+            if (setCheckedIndexes) {
+                setCheckedIndexes([]);
             }
         } else {
-            notify(toast.error, result.status, result.title, result.message);
+            notify(result.status, result.title, result.message);
         }
     }
 
@@ -94,7 +102,7 @@ function DeleteForm({
                 <div className="formHeaderBackground">
                     <div className="formHeader">
                         {headerIcon}
-                        <h1>ELIMINAR {headerTitle}</h1>
+                        <h1>ELIMINAR {deleteTitle || headerTitle}</h1>
                         <button onClick={() => {
                             setModal(false);
                         }}>
@@ -104,7 +112,7 @@ function DeleteForm({
                 </div>
                 <div className="formBody">
                     <form onSubmit={handleSubmit}>
-                        <p>¿Estás seguro de que deseas eliminar {(totalFilesToDelete && totalFilesToDelete > 1) ? "estos/as" : "este/a"} {headerTitle}? Esta acción no se puede deshacer</p>
+                        <p>¿Estás seguro de que deseas eliminar {(totalFilesToDelete && totalFilesToDelete > 1) ? "estos/as" : "este/a"} {deleteTitle || headerTitle}? Esta acción no se puede deshacer</p>
                         {totalFilesToDelete && <p>Número de elementos que se van a eliminar: {totalFilesToDelete}</p>}
                         <div className="buttons">
                             <button type="submit" className="delete">Eliminar</button>

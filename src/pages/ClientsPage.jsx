@@ -4,7 +4,10 @@ import { clientTableInfo } from "../helpers/tablesInfo.jsx";
 function ClientsPage() {
     return (
 
-        <Table dinamicTableInfo={clientTableInfo} />
+        <Table
+            dinamicTableInfo={clientTableInfo}
+            tabTitleTemplate={"{name}"}
+        />
 
     )
 }

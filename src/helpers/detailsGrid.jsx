@@ -1,11 +1,113 @@
 import { MdOutlineEmail } from "react-icons/md";
 import { CgFileDocument } from "react-icons/cg";
 import { TbColorSwatch } from "react-icons/tb";
-import { FiPrinter } from "react-icons/fi";
+import { FaBoxOpen } from "react-icons/fa";
 import { PiGear } from "react-icons/pi";
 import { TiContacts } from "react-icons/ti";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import GroupsSvg from "../assets/svg/GroupsSvg";
+import { HiOutlineRefresh } from "react-icons/hi";
+import { PiOven } from "react-icons/pi";
+
+export const paginaSoporteDetails = {
+    title: "Soporte",
+    grid: [
+        {
+            icon: <HiOutlineRefresh />,
+            title: "Sincronizar Clientes BBDD",
+            key: "sincronizarClientes"
+        },
+        {
+            icon: <HiOutlineRefresh />,
+            title: "Pruebas",
+            key: "pruebas"
+        },
+    ]
+}
+
+export const produccionReferenciasDetails = {
+    title: "Referencias",
+    grid: [
+        {
+            icon: <PiOven />,
+            title: "Ref. Planchas",
+            key: "refPlanchas"
+        },
+        {
+            icon: <PiOven />,
+            title: "Ref. Continuos",
+            key: "refContinuos"
+        }
+    ]
+}
+
+export const produccionPlanchasDetails = {
+    title: "Planchas",
+    grid: [
+        {
+            icon: <PiOven />,
+            title: "Planchas",
+            key: "planchas"
+        },
+        {
+            icon: <PiOven />,
+            title: "Pre-producción",
+            key: "planchasPreproduccion"
+        },
+        {
+            icon: <PiOven />,
+            title: "Producción",
+            key: "planchasProduccion"
+        },
+        {
+            icon: <PiOven />,
+            title: "Finalizadas",
+            key: "planchasFinalizadas"
+        },
+        {
+            icon: <PiOven />,
+            title: "Trabajos",
+            key: "trabajosPlanchas"
+        },
+    ]
+}
+
+export const produccionTrabajosDetails = {
+    title: "Trabajos externos",
+    grid: [
+        {
+            icon: <PiOven />,
+            title: "Pendientes",
+            key: "externosPendientes"
+        },
+        {
+            icon: <PiOven />,
+            title: "Finalizados",
+            key: "externosFinalizados"
+        },
+        {
+            icon: <PiOven />,
+            title: "Anulados",
+            key: "externosAnulados"
+        },
+    ]
+}
+
+export const produccionOficinaDetails = {
+    title: "",
+    grid: [
+        {
+            icon: <IoDocumentTextOutline />,
+            title: "Ref. Continuos",
+            key: "refContinuos"
+        },
+        {
+            icon: <IoDocumentTextOutline />,
+            title: "Pendientes",
+            key: "externosPendientes"
+        }
+    ]
+}
 
 export const usersDetails = {
     grid: [
@@ -14,94 +116,86 @@ export const usersDetails = {
 }
 
 export const clientsDetails = {
-    title: "Cliente",
+    title: "Clientes",
     grid: [
         {
             icon: <IoDocumentTextOutline />,
             title: "Pedidos",
-            body: "Listado de pedidos realizados por este cliente.",
             key: "pedidos"
         },
         {
             icon: <TiContacts />,
             title: "Contactos",
-            body: "Lista de contactos pertenecientes a este cliente.",
             key: "contactos"
         },
         {
             icon: <GroupsSvg />,
             title: "Grupos",
-            body: "Lista de grupos de contactos pertenecientes a este cliente.",
             key: "grupos"
         },
         /* {
             icon: <MdOutlineEmail />,
             title: "Plantillas E-mail",
-            body: "Información técnica y relevante de las diferentes máquinas, del cliente, proveedores y protocolos internos de cada uno.",
             key: "emails"
         }, */
         /* {
             icon: <CgFileDocument />,
             title: "Fichas técnicas",
-            body: "Información técnica y relevante de las diferentes máquinas, del cliente, proveedores y protocolos internos de cada uno.",
             key: "fichasTecnicas"
         }, */
         {
             icon: <TbColorSwatch />,
             title: "Estrategias Color",
-            body: "Estrategias de color pertenecientes a este cliente",
             key: "estrategias"
         },
         /* {
             icon: <FiPrinter />,
             title: "Máquinas",
-            body: "Información técnica y relevante de las diferentes máquinas, del cliente, proveedores y protocolos internos de cada uno.",
             key: "maquinas"
         }, */
-        /* {
+        {
             icon: <PiGear />,
             title: "Configuración",
-            body: "Información técnica y relevante de las diferentes máquinas, del cliente, proveedores y protocolos internos de cada uno.",
             key: "configuracion"
-        } */
+        }
     ]
-};
+}
 
 export const stockDetails = {
     title: "Control de Stock",
     grid: [
         {
-            icon: <FiPrinter />,
+            icon: <FaBoxOpen />,
             title: "Categorías",
             key: "categorias"
         },
         {
-            icon: <FiPrinter />,
+            icon: <FaBoxOpen />,
             title: "Productos",
             key: "productos"
         },
         {
-            icon: <FiPrinter />,
+            icon: <FaBoxOpen />,
             title: "Notificaciones",
-            key: "notifiaciones"
+            key: "notificacionesDepartamento"
         },
         {
-            icon: <FiPrinter />,
+            icon: <FaBoxOpen />,
             title: "Órdenes de compra",
             key: "ordenesCompra"
         },
         {
-            icon: <FiPrinter />,
+            icon: <FaBoxOpen />,
             title: "Registro",
             key: "registro"
         },
         {
-            icon: <FiPrinter />,
+            icon: <FaBoxOpen />,
             title: "Incidencias",
             key: "incidencias"
         },
         {
-            icon: <FiPrinter />,
+            icon: <FaBoxOpen />,
             title: "Inventario",
             key: "inventario"
         },

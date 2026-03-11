@@ -1,14 +1,726 @@
-import { FaBoxOpen, FaUserCircle } from "react-icons/fa";
+import { FaBoxOpen, FaUserCircle, FaStamp } from "react-icons/fa";
 import { TiContacts } from "react-icons/ti";
-import { MdOutlineEmail } from "react-icons/md";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { PiImagesLight, PiNoteLight } from "react-icons/pi";
 import { TbColorSwatch } from "react-icons/tb";
+import { RiPaintFill } from "react-icons/ri";
+import { BsInfoLg } from "react-icons/bs";
+import { SlBriefcase } from "react-icons/sl";
+import { MdBarcodeReader } from "react-icons/md";
 import LenFile from "../assets/svg/LenFile";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
-import { SlBriefcase } from "react-icons/sl";
 import GroupsSvg from "../assets/svg/GroupsSvg";
+import { GoVersions } from "react-icons/go";
+
+export const addOrderTableInfo = {
+    tableName: "addOrder",
+    endPoint: "stockProducts",
+    headerIcon: <FaBoxOpen />,
+    headerTitle: "CREAR ORDEN DE COMPRA",
+    tableColumns: [
+        {
+            header: "Código",
+            active: true,
+            key: "codigo"
+        },
+        {
+            header: "Nombre",
+            active: true,
+            key: "nombre"
+        },
+        {
+            header: "Categoría",
+            active: true,
+            key: "categoria_nombre"
+        },
+        {
+            header: "Departamento",
+            active: true,
+            key: "departamento_nombre"
+        },
+        {
+            header: "Cantidad",
+            active: true,
+            key: "cantidad"
+        }
+    ]
+}
+
+export const ordenesCompraTableInfo = {
+    tableName: "ordenesCompra",
+    endPoint: "stockOrdenes",
+    headerIcon: <FaBoxOpen />,
+    headerTitle: "ÓRDENES DE COMPRA",
+    tableColumns: [
+        {
+            header: "Código",
+            active: true,
+            key: "codigo"
+        },
+        {
+            header: "Solicitante",
+            active: true,
+            key: "usuario_nombre"
+        },
+        {
+            header: "Fecha",
+            active: true,
+            key: "fecha"
+        },
+        {
+            header: "Producto",
+            active: true,
+            key: "producto_nombre"
+        },
+        {
+            header: "Referencia",
+            active: true,
+            key: "producto_codigo"
+        },
+        {
+            header: "Uds. Solicitadas",
+            active: true,
+            key: "cantidad_solicitada"
+        },
+        {
+            header: "Uds. Pendientes",
+            active: true,
+            key: "cantidad_pendiente"
+        },
+        {
+            header: "Estado",
+            active: true,
+            key: "estado_nombre"
+        }
+    ],
+    actions: [
+        {
+            title: "Añadir",
+            action: "addOrder",
+            noCheck: true
+        }
+    ]
+}
+
+export const notificacionesStockTableInfo = {
+    tableName: "notificacionesStock",
+    endPoint: "stockProducts/notifications",
+    headerIcon: <FaBoxOpen />,
+    headerTitle: "NOTIFICACIONES",
+    tableColumns: [
+        {
+            header: "Categoría",
+            active: true,
+            key: "categoria_nombre"
+        },
+        {
+            header: "Producto",
+            active: true,
+            key: "nombre"
+        },
+        {
+            header: "Departamento",
+            active: true,
+            key: "departamento_nombre"
+        },
+        {
+            header: "Stock Mínimo",
+            active: true,
+            key: "stock_min"
+        },
+        {
+            header: "Stock Actual",
+            active: true,
+            key: "cantidad"
+        }
+    ]
+}
+
+export const registroTableInfo = {
+    tableName: "registro",
+    endPoint: "register",
+    headerIcon: <FaBoxOpen />,
+    headerTitle: "REGISTRO DE ACCIONES",
+    tableColumns: [
+        {
+            header: "Usuario",
+            active: true,
+            key: "usuario_nombre"
+        },
+        {
+            header: "Fecha",
+            active: true,
+            key: "fecha"
+        },
+        {
+            header: "Acción",
+            active: true,
+            key: "descripcion"
+        },
+        {
+            header: "Dpto.",
+            active: true,
+            key: "departamento_nombre"
+        },
+    ]
+}
+
+export const productosStockTableInfo = {
+    tableName: "productosStock",
+    endPoint: "stockProducts",
+    headerIcon: <FaBoxOpen />,
+    headerTitle: "PRODUCTOS",
+    tableForm: "ProductoStockForm",
+    tableColumns: [
+        {
+            header: "Código",
+            active: true,
+            key: "codigo"
+        },
+        {
+            header: "Nombre",
+            active: true,
+            key: "nombre"
+        },
+        {
+            header: "Categoría",
+            active: true,
+            key: "categoria_nombre"
+        },
+        {
+            header: "Departamento",
+            active: true,
+            key: "departamento_nombre"
+        },
+        {
+            header: "Cantidad",
+            active: true,
+            key: "cantidad"
+        }
+    ],
+    actions: [
+        {
+            title: "Descontar",
+            action: "descontar"
+        },
+        {
+            title: "Incidencia",
+            action: "incidencia"
+        }
+    ]
+};
+
+export const categoriasStockTableInfo = {
+    tableName: "categoriasStock",
+    endPoint: "stockCategories",
+    headerIcon: <FaBoxOpen />,
+    headerTitle: "CATEGORÍAS DE PRODUCTOS",
+    tableForm: "CategoriaStockForm",
+    tableColumns: [
+        {
+            header: "Nombre",
+            active: true,
+            key: "nombre"
+        },
+        {
+            header: "Descripción",
+            active: true,
+            key: "descripcion"
+        }
+    ]
+};
+
+export const refContinuosTableInfo = {
+    tableName: "refContinuos",
+    endPoint: "refProduccion/refContinuos",
+    headerIcon: <IoDocumentTextOutline />,
+    headerTitle: "REFERENCIAS DE CONTINUOS",
+    tableForm: "RefContinuoForm",
+    tableColumns: [
+        {
+            header: "Propietario",
+            active: true,
+            key: "propietario"
+        },
+        {
+            header: "Tipo",
+            active: true,
+            key: "tipo"
+        },
+        {
+            header: "Desarrollo",
+            active: true,
+            key: "desarrollo"
+        },
+        {
+            header: "Ancho",
+            active: true,
+            key: "ancho"
+        },
+        {
+            header: "Núcleo",
+            active: true,
+            key: "nucleo"
+        },
+        {
+            header: "Stock",
+            active: true,
+            key: "stock"
+        },
+        {
+            header: "Adaptador",
+            active: true,
+            key: "adaptador",
+            check: true,
+            checkedConditions: [1]
+        }
+    ],
+    actions: [
+        {
+            title: "Eliminar",
+            action: "eliminar"
+        }
+    ]
+};
+
+export const refPlanchasTableInfo = {
+    tableName: "refPlanchas",
+    endPoint: "refProduccion/refPlanchas",
+    headerIcon: <IoDocumentTextOutline />,
+    headerTitle: "REFERENCIAS DE PLANCHAS",
+    tableForm: "RefPlanchaForm",
+    tableColumns: [
+        {
+            header: "Fabricante",
+            active: true,
+            key: "fabricante"
+        },
+        {
+            header: "Espesor",
+            active: true,
+            key: "espesor"
+        },
+        {
+            header: "Referencia",
+            active: true,
+            key: "referencia"
+        }
+    ]
+};
+
+export const pistolaTableInfo = {
+    tableName: "pistola",
+    headerIcon: <MdBarcodeReader />,
+    headerTitle: "REGISTRO PISTOLA",
+    tableColumns: [
+        {
+            header: "Nombre",
+            active: true,
+            key: "name"
+        },
+        {
+            header: "Acción",
+            active: true,
+            key: "action"
+        },
+        {
+            header: "Usuario",
+            active: true,
+            key: "username"
+        },
+        {
+            header: "Fecha",
+            active: true,
+            key: "date"
+        },
+        {
+            header: "Hora",
+            active: true,
+            key: "time"
+        },
+    ],
+    actions: [
+        {
+            title: "Limpiar",
+            action: "limpiar",
+            noCheck: true
+        }
+    ]
+}
+
+export const trabajosExternosTableInfo = {
+    tableName: "trabajosExternos",
+    endPoint: "externalJobs",
+    headerIcon: <FaStamp />,
+    headerTitle: "TRABAJOS EXTERNOS",
+    tableColumns: [
+        {
+            header: "Nombre",
+            active: true,
+            key: "documentName"
+        },
+        {
+            header: "Cliente",
+            active: true,
+            key: "username"
+        },
+        {
+            header: "Plancha",
+            active: true,
+            key: "refPlancha"
+        },
+        {
+            header: "Colores",
+            active: true,
+            key: "numero_colores"
+        },
+        {
+            header: "Fecha",
+            active: true,
+            key: "fecha"
+        },
+        {
+            header: "Estado",
+            active: true,
+            key: "state"
+        }
+    ],
+    actions: [
+        {
+            title: "Firmar",
+            action: "Firmar"
+        },
+        {
+            title: "Anular",
+            action: "Anular"
+        },
+        {
+            title: "Restaurar",
+            action: "restaurar"
+        }
+    ],
+    defaultChecks: true
+}
+
+export const externosFinalizadosTableInfo = {
+    tableName: "externosFinalizados",
+    endPoint: "externalJobs",
+    headerIcon: <FaStamp />,
+    headerTitle: "EXTERNOS FINALIZADOS",
+    tableColumns: [
+        {
+            header: "Nombre",
+            active: true,
+            key: "documentName"
+        },
+        {
+            header: "Cliente",
+            active: true,
+            key: "username"
+        },
+        {
+            header: "Plancha",
+            active: true,
+            key: "refPlancha"
+        },
+        {
+            header: "Colores",
+            active: true,
+            key: "numero_colores"
+        },
+        {
+            header: "Fecha",
+            active: true,
+            key: "fecha"
+        },
+        {
+            header: "Usuario",
+            active: true,
+            key: "usuario_firma.name"
+        },
+        {
+            header: "Estado",
+            active: true,
+            key: "state"
+        },
+    ],
+    actions: [
+        {
+            title: "Restaurar",
+            action: "restaurar"
+        }
+    ]
+}
+
+export const trabajosPlanchaTableInfo = {
+    tableName: "trabajosPlancha",
+    endPoint: "planchas/trabajos",
+    headerIcon: <FaStamp />,
+    headerTitle: "TRABAJOS",
+    tableColumns: [
+        {
+            header: "Nombre trabajo",
+            active: true,
+            key: "name"
+        },
+        {
+            header: "Resolución",
+            active: true,
+            key: "resolution"
+        },
+        {
+            header: "Ancho",
+            active: true,
+            key: "usedWidth"
+        },
+        {
+            header: "Alto",
+            active: true,
+            key: "usedHeight"
+        },
+        {
+            header: "Area",
+            active: true,
+            key: "usedArea"
+        }
+    ],
+}
+
+export const trabajosPlanchasTableInfo = {
+    tableName: "trabajosPlanchas",
+    endPoint: "planchas/trabajos",
+    headerIcon: <FaStamp />,
+    headerTitle: "TRABAJOS PLANCHAS",
+    tableColumns: [
+        {
+            header: "Nombre plancha",
+            active: true,
+            key: "nombre_plancha"
+        },
+        {
+            header: "Estado plancha",
+            active: true,
+            key: "nombre_estado_plancha"
+        },
+        {
+            header: "Fecha",
+            active: true,
+            key: "fecha_plancha"
+        },
+        {
+            header: "Nombre trabajo",
+            active: true,
+            key: "name"
+        },
+        {
+            header: "Resolución",
+            active: true,
+            key: "resolution"
+        },
+        {
+            header: "Ancho",
+            active: true,
+            key: "usedWidth"
+        },
+        {
+            header: "Alto",
+            active: true,
+            key: "usedHeight"
+        },
+        {
+            header: "Area",
+            active: true,
+            key: "usedArea"
+        }
+    ],
+}
+
+export const planchasTableInfo = {
+    tableName: "planchas",
+    endPoint: "planchas",
+    headerIcon: <FaStamp />,
+    headerTitle: "PLANCHAS",
+    tableColumns: [
+        {
+            header: "Nombre",
+            active: true,
+            key: "nombre_plancha"
+        },
+        {
+            header: "Referencia",
+            active: true,
+            key: "ref_plancha"
+        },
+        {
+            header: "CDI",
+            active: true,
+            key: "cdi"
+        },
+        {
+            header: "Estado",
+            active: true,
+            key: "nombre_estado"
+        },
+        {
+            header: "Fecha",
+            active: true,
+            key: "fecha"
+        },
+        {
+            header: "Albarán",
+            active: true,
+            key: "nombre_estado_albaran"
+        },
+        {
+            header: "Preproducción",
+            active: true,
+            key: "usuario_dfs"
+        },
+        {
+            header: "Producción",
+            active: true,
+            key: "usuario_produccion"
+        },
+        {
+            header: "Finalizada",
+            active: true,
+            key: "usuario_finalizada"
+        },
+        {
+            header: "Incidencia",
+            active: true,
+            key: "usuario_incidencia"
+        }
+    ],
+    actions: [
+        {
+            title: "Eliminar",
+            action: "eliminar"
+        },
+        {
+            title: "Sincronizar",
+            action: "sincronizar",
+            noCheck: true
+        },
+        {
+            title: "Firmar",
+            action: "firmar"
+        },
+        /* {
+            title: "Imprimir",
+            action: "imprimir"
+        }, */
+        {
+            title: "Solicitar Albarán",
+            action: "solicitarAlbaran"
+        },
+        {
+            title: "Albarán Parcial",
+            action: "albaranParcial"
+        },
+        {
+            title: "Resetear Albarán",
+            action: "resetearAlbaran"
+        },
+        {
+            title: "Incidencia",
+            action: "incidencia"
+        },
+        {
+            title: "Ver Trabajos",
+            action: "verTrabajos"
+        },
+        {
+            title: "Abrir Imagen",
+            action: "abrirImagen"
+        },
+    ]
+};
+
+export const emailInfoTableInfo = {
+    tableName: "emailInfo",
+    endPoint: "",
+    headerIcon: <BsInfoLg />,
+    headerTitle: "INFO EMAIL",
+    tableColumns: [
+        {
+            header: "Fecha",
+            active: true,
+            key: "fecha"
+        },
+        {
+            header: "Hora",
+            active: true,
+            key: "hora"
+        },
+        {
+            header: "Acción",
+            active: true,
+            key: "accion"
+        },
+        {
+            header: "Para",
+            active: true,
+            key: "contacto.textoOpcion"
+        },
+        {
+            header: "Usuario",
+            active: true,
+            key: "usuario"
+        },
+        {
+            header: "Asunto",
+            active: true,
+            key: "asunto"
+        },
+    ]
+}
+
+export const tintasTableInfo = {
+    tableName: "tintas",
+    endPoint: "colors",
+    headerIcon: <RiPaintFill />,
+    headerTitle: "TINTAS",
+    tableColumns: [
+        {
+            header: "Color",
+            active: true,
+            key: "color"
+        },
+        {
+            header: "Lineatura",
+            active: true,
+            key: "lineatura"
+        },
+        {
+            header: "Ángulo",
+            active: true,
+            key: "angulo"
+        },
+        {
+            header: "Trama",
+            active: true,
+            key: "trama"
+        },
+        {
+            header: "Plancha",
+            active: true,
+            key: "planchaArchivo"
+        },
+    ],
+    actions: [
+        {
+            title: "Imprimir Separaciones A3",
+            action: "imprimirA3"
+        },
+        {
+            title: "Config. Planchas",
+            action: "configPlancha",
+            noCheck: true
+        }
+    ]
+}
 
 export const infoGmgTableInfo = {
     tableName: "infoGmg",
@@ -44,7 +756,6 @@ export const ripTableInfo = {
     endPoint: "montajes/rip",
     headerIcon: <MontajeSvg />,
     headerTitle: "RIP MONTAJE",
-    tableChecks: true,
     tableColumns: [
         {
             header: "Color",
@@ -175,6 +886,11 @@ export const montajeTableInfo = {
             hidden: true,
             noCheck: true
         },
+        {
+            title: "Menú Rip",
+            action: "menuRip",
+            noCheck: true
+        }
     ],
 };
 
@@ -216,7 +932,6 @@ export const fileTableInfo = {
     endPoint: "files",
     headerIcon: <PiImagesLight />,
     headerTitle: "FICHAS",
-    tableChecks: true,
     tableColumns: [
         {
             header: "Previo",
@@ -258,7 +973,6 @@ export const orderLenTableInfo = {
     endPoint: "lenFiles",
     headerIcon: <LenFile />,
     headerTitle: "ARCHIVOS LEN",
-    tableChecks: true,
     tableColumns: [
         {
             header: "Archivo",
@@ -338,7 +1052,6 @@ export const lenTableInfo = {
     endPoint: "lenFiles",
     headerIcon: <LenFile />,
     headerTitle: "ARCHIVOS LEN",
-    tableChecks: true,
     tableColumns: [
         {
             header: "Pedido",
@@ -400,6 +1113,16 @@ export const lenTableInfo = {
         {
             title: "Enviar a producción",
             action: "enviarProduccion"
+        },
+        {
+            title: "Solicitar vista",
+            action: "solicitarVista"
+        },
+        {
+            title: "Visualizar LEN",
+            action: "visualizarLen",
+            hidden: true,
+            noCheck: true
         },
         {
             title: "Eliminar",
@@ -472,7 +1195,7 @@ export const noteTableInfo = {
 export const versionTableInfo = {
     tableName: "versiones",
     endPoint: "orders/versions",
-    headerIcon: <IoDocumentTextOutline />,
+    headerIcon: <GoVersions />,
     headerTitle: "VERSIONES DEL PEDIDO",
     tableColumns: [
         {
@@ -519,8 +1242,14 @@ export const orderTableInfo = {
     tableName: "pedidos",
     endPoint: "orders",
     headerIcon: <IoDocumentTextOutline />,
+    deleteTitle: "VERSIÓN",
     headerTitle: "PEDIDOS DE CLIENTES",
     tableColumns: [
+        {
+            header: "Previo",
+            active: true,
+            key: "unitario"
+        },
         {
             header: "Número",
             active: true,
@@ -550,19 +1279,22 @@ export const orderTableInfo = {
             header: "Boceto",
             active: true,
             key: "xml.numero.boceto",
-            check: true
+            check: true,
+            checkedConditions: ["-1", "X"]
         },
         {
             header: "Cliché",
             active: true,
             key: "xml.numero.cliche",
-            check: true
+            check: true,
+            checkedConditions: ["-1", "X"]
         },
         {
             header: "Plotter",
             active: true,
             key: "xml.tecnicos.plotter",
-            check: true
+            check: true,
+            checkedConditions: ["-1", "X"]
         },
         {
             header: "Prioridad",
@@ -580,6 +1312,16 @@ export const orderTableInfo = {
             key: "xml.actividad.id"
         },
         {
+            header: "En",
+            active: true,
+            key: "departamento_asignado"
+        },
+        {
+            header: "Asignado a",
+            active: true,
+            key: "nombre_usuario_asignado"
+        },
+        {
             header: "Albarán",
             active: true,
             key: "xml.numero.albaran"
@@ -589,7 +1331,18 @@ export const orderTableInfo = {
             active: true,
             key: "xml.numero.state"
         }
-    ]
+    ],
+    actions: [
+        {
+            title: "Asignar",
+            action: "asignar"
+        },
+        {
+            title: "Desasignar",
+            action: "desasignar"
+        }
+    ],
+    rolesActions: ["Manager", "Soporte"]
 };
 
 export const clientTableInfo = {
@@ -597,6 +1350,11 @@ export const clientTableInfo = {
     headerIcon: <SlBriefcase />,
     headerTitle: "CLIENTES",
     tableColumns: [
+        {
+            header: "Avatar",
+            active: true,
+            key: "avatar"
+        },
         {
             header: "Nombre comercial",
             active: true,
@@ -621,7 +1379,6 @@ export const groupTableInfo = {
     headerIcon: <GroupsSvg />,
     headerTitle: "GRUPOS",
     tableForm: "GroupForm",
-    tableChecks: true,
     tableColumns: [
         {
             header: "Nombre grupo",
@@ -751,35 +1508,12 @@ export const contactTableInfo = {
     ]
 };
 
-export const emailTableInfo = {
-    tableName: "emails",
-    endPoint: "emails",
-    headerIcon: <MdOutlineEmail />,
-    headerTitle: "PLANTILLAS DE EMAIL",
-    tableColumns: [
-        {
-            header: "Nombre",
-            active: true,
-            key: "name"
-        },
-        {
-            header: "Asunto",
-            active: true,
-            key: "subject"
-        },
-        {
-            header: "Cuerpo",
-            active: true,
-            key: "body"
-        }
-    ]
-};
-
 export const strategyTableInfo = {
     endPoint: "strategies",
     tableName: "estrategias",
     headerIcon: <TbColorSwatch />,
     headerTitle: "ESTRATEGIAS DE COLOR",
+    tableForm: "StrategyForm",
     tableColumns: [
         {
             header: "Cod. Cliente",
@@ -846,6 +1580,16 @@ export const strategyTableInfo = {
             header: "Tipo de Tramado",
             active: false,
             key: "tipoTramado"
+        }
+    ],
+    actions: [
+        {
+            title: "Duplicar",
+            action: "duplicar"
+        },
+        {
+            title: "Eliminar",
+            action: "eliminar"
         }
     ]
 };

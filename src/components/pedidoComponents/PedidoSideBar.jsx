@@ -1,12 +1,11 @@
 import "./PedidoSideBar.css";
-import { orderSidebarIcons } from "../../helpers/orderSidebarIcons";
+import { orderSidebarIcons, clientApps } from "../../helpers/orderSidebarIcons";
 import { useRef, useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { useTabs } from "../../context/TabsContext";
 import { fetchData, postData } from "../../helpers/fetchData";
 import { notify } from "../../helpers/notify";
-import { toast } from "react-toastify";
 import NoteTable from "../tableComponents/NoteTable";
 import VersionTable from "../tableComponents/VersionTable";
 import OrderLenTable from "../tableComponents/OrderLenTable";
@@ -18,9 +17,18 @@ import ComparePopUp from "./ComparePopUp";
 import EmailPopUp from "./EmailPopUp";
 import DocKiosk from "./DocKiosk";
 import XmlKiosk from "./XmlKiosk";
+import TintasPopUp from "./TintasPopUp";
+import OpcionalesPopUp from "./OpcionalesPopUp";
+import OrderInfoPopUp from "./OrderInfoPopUp";
+import { useSession } from "../../context/SessionContext";
+import SignJobForm from "../formComponents/SignJobForm";
+import { orderTableInfo } from "../../helpers/tablesInfo";
+import DeleteForm from "../formComponents/DeleteForm";
+import TraceTextForm from "../formComponents/TraceTextForm";
+import { checkRole } from "../../helpers/roleChecker";
 
 function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
-    const navigate = useNavigate();
+    const { session } = useSession();
     const location = useLocation();
     const [noteModal, setNoteModal] = useState(false);
     const [versionsModal, setVersionsModal] = useState(false);
@@ -30,15 +38,23 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
     const [compareModal, setCompareModal] = useState(false);
     const [lenModal, setLenModal] = useState(false);
     const [filesModal, setFilesModal] = useState(false);
+    const [traceModal, setTraceModal] = useState(false);
+    const [deletePopUp, setDeletePopUp] = useState(false);
+    const [signJobModal, setSignJobModal] = useState(false);
     const [montajeModal, setMontajeModal] = useState(false);
     const [plotterModal, setPlotterModal] = useState(false);
+    const [tintasModal, setTintasModal] = useState(false);
+    const [infoModal, setInfoModal] = useState(false);
+    const [opcionalesModal, setOpcionalesModal] = useState(false);
     const [executing, setExecuting] = useState(false);
     const [initialNotes, setInitialNotes] = useState([]);
+    const [areNotes, setAreNotes] = useState(false);
     const [buttonBar, setButtonBar] = useState({ visible: false, buttons: [], position: { top: 0, left: 0 } });
     const buttonBarRef = useRef(null);
     const sideBarRef = useRef(null);
-    const { tabs, setTabs } = useTabs();
+    const { createTab } = useTabs();
     const folderUrl = fullOrder.rutaTrabajo?.replace("cloudflow://", "").replace("PEDIDOS_", "Pedidos ");
+    const { isTeleWork } = checkRole();
 
     const updateOrder = async () => {
         setExecuting(true);
@@ -54,10 +70,10 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
         const response = await postData("orders/updateOrder", data);
 
         if (response && response.status === "success") {
-            notify(toast.success, response.status, response.title, "")
+            notify(response.status, response.title, "")
             setFullOrder(response.response.updatedOrder);
         } else {
-            notify(toast.error, response.status, response.title, "");
+            notify(response.status, response.title, "");
         }
 
         setExecuting(false);
@@ -67,12 +83,14 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
         if (fullOrder.xml?.numero.id) {
             fetchData("notes", "", fullOrder.xml.numero.id, setInitialNotes);
         }
+        setAreNotes(false);
     }, [fullOrder]);
 
     useEffect(() => {
         if (initialNotes.length > 0) {
             setNoteModal(true);
             setInitialNotes([]);
+            setAreNotes(true);
         }
     }, [initialNotes]);
 
@@ -91,7 +109,7 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
         };
     }, [buttonBar.visible]);
 
-    const handleClick = (action, buttons, event) => {
+    const handleClick = async (action, buttons, event) => {
         if (buttons) {
             const rect = event.currentTarget.getBoundingClientRect();
             const sideBarRect = sideBarRef.current.getBoundingClientRect();
@@ -115,7 +133,11 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
                 break;
             case "openFolder":
                 const openFolder = () => {
-                    window.location.href = `smb://192.4.26.120/Archivo%20Disengraf/TRABAJOS/${folderUrl}`;
+                    if (isTeleWork) {
+                        window.location.href = `smb://192.4.26.120/Archivo%20Disengraf/TRABAJOS/${folderUrl}`;
+                    } else {
+                        window.location.href = `smb://CLOUDFLOW2023/Archivo%20Disengraf/TRABAJOS/${folderUrl}`;
+                    }
                 }
                 openFolder();
                 break;
@@ -128,6 +150,13 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
             case "kioscoXml":
                 setXmlModal(true);
                 break;
+            case "clientApp":
+                const appUrl = clientApps.find(app => app.client === fullOrder.xml.numero.cliente_nombre)?.url;
+
+                if (appUrl !== undefined) {
+                    window.open(appUrl, "_blank");
+                }
+                break;
             case "email":
                 setEmailModal(true);
                 break;
@@ -137,31 +166,70 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
             case "lenFiles":
                 setLenModal(true);
                 break;
-            case "kiosk":
-                const path = `${location.pathname}/kiosk`;
-                const tabTitle = `${fullOrder.id_pedido} | KIOSKO`;
-
-                if (!tabs.some(tab => tab.path === path)) {
-                    setTabs(prev => {
-                        if (prev.some(tab => tab.path === path)) return prev;
-                        return [...prev, { path, title: tabTitle }];
-                    });
-                }
-                navigate(path);
-                break;
-            case "files":
-                setFilesModal(true);
-                break;
             case "montaje":
                 setMontajeModal(true);
                 break;
             case "plotter":
                 setPlotterModal(true);
                 break;
+            case "files":
+                setFilesModal(true);
+                break;
+            case "traceText":
+                setTraceModal(true);
+                break;
+            case "signJob":
+                setSignJobModal(true);
+                break;
+            case "deleteVersion":
+                setDeletePopUp(true);
+                break;
+            case "kiosk":
+                const path = `${location.pathname}/kiosco`;
+                const tabTitle = `${fullOrder.id_pedido} | KIOSCO`;
+
+                createTab(path, tabTitle);
+                break;
+            case "tintas":
+                setTintasModal(true);
+                break;
+            case "info":
+                if (fullOrder.registroInfo && fullOrder.registroInfo.length > 0) {
+                    setInfoModal(true);
+                }
+                break;
+            case "opcionales":
+                if (fullOrder.opcionales && fullOrder.opcionales.length > 0) {
+                    setOpcionalesModal(true);
+                }
+                break;
             default:
                 break;
         }
     }
+
+    // Desplegar el menú al hacer hover, en vez de tener que clicar
+    const handleMouseEnter = (buttons, event) => {
+        if (buttons) {
+            const rect = event.currentTarget.getBoundingClientRect();
+            const sideBarRect = sideBarRef.current.getBoundingClientRect();
+            setButtonBar({
+                visible: true,
+                buttons,
+                position: {
+                    top: rect.top,
+                    left: sideBarRect.left // Justo pegado a la barra lateral
+                }
+            });
+        }
+    };
+
+    const handleMouseLeave = (event) => {
+        if (buttonBarRef.current && buttonBarRef.current.contains(event.relatedTarget)) {
+            return; // Evitar cerrar el menú si el ratón está sobre los elementos internos
+        }
+        setButtonBar((prev) => ({ ...prev, visible: false }));
+    };
 
     return (
         <>
@@ -179,15 +247,28 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
             {compareModal && <ComparePopUp setCompareModal={setCompareModal} rutaTrabajo={fullOrder.rutaTrabajo} />}
             {lenModal && <OrderLenTable setLenModal={setLenModal} orderId={fullOrder.id_pedido} />}
             {filesModal && <FileTable setFilesModal={setFilesModal} orderId={fullOrder.id_pedido} filePath={filePath} />}
+            {traceModal && <TraceTextForm setModal={setTraceModal} rutaInfo={fullOrder.info || `${fullOrder.rutaTrabajo}INFO%20CLIENTE/`} />}
+            {signJobModal && <SignJobForm setSignJobModal={setSignJobModal} fullOrder={fullOrder} />}
+            {deletePopUp && <DeleteForm setModal={setDeletePopUp} id={fullOrder._id} tableInfo={orderTableInfo} />}
             {montajeModal && <MontajeTable setMontajeModal={setMontajeModal} fullOrder={fullOrder} filePath={filePath} />}
             {plotterModal && <PlotterTable setPlotterModal={setPlotterModal} orderId={fullOrder.id_pedido} fullOrder={fullOrder} filePath={filePath} />}
+            {tintasModal && <TintasPopUp setTintasModal={setTintasModal} fullOrder={fullOrder} />}
+            {infoModal && <OrderInfoPopUp setInfoModal={setInfoModal} _id={fullOrder._id} />}
+            {opcionalesModal && <OpcionalesPopUp setOpcionalesModal={setOpcionalesModal} fullOrder={fullOrder} />}
             <div className="pedidoSideBar" ref={sideBarRef}>
                 {orderSidebarIcons.map((icon, index) => (
                     <div className="iconContainer" key={index}>
-                        <div className="icons" onClick={(e) => handleClick(icon.action, icon.buttons, e)} data-tooltip-id="my-tooltip" data-tooltip-content={icon.tooltip}>
+                        <div
+                            className={"icons" + ((areNotes && icon.tooltip === "NOTAS") ? " active" : "")}
+                            onMouseEnter={(e) => handleMouseEnter(icon.buttons, e)}
+                            onMouseLeave={handleMouseLeave}
+                            onClick={(e) => handleClick(icon.action, icon.buttons, e)}
+                            data-tooltip-id="my-tooltip"
+                            data-tooltip-content={icon.tooltip}
+                        >
                             {icon.icon}
                         </div>
-                        {(!icon.last) && <div className="border"></div>}
+                        {index < orderSidebarIcons.length - 1 && <div className="border"></div>}
                     </div>
                 ))}
             </div>
@@ -201,20 +282,27 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
                         transform: "translateX(-98.5%) translateY(-4%)", // se extiende hacia la izquierda
                         zIndex: 2
                     }}
+                    onMouseLeave={handleMouseLeave}
+                    onMouseEnter={() => setButtonBar((prev) => ({ ...prev, visible: true }))} // Mantener abierto al pasar el ratón
                 >
-                    {buttonBar.buttons.map((icon, index) => (
-                        <div className="iconContainer" key={index}>
-                            <div
-                                className={"icons" + (icon.first ? " first" : "")}
-                                onClick={(e) => handleClick(icon.action, icon.buttons, e)}
-                                data-tooltip-id="my-tooltip"
-                                data-tooltip-content={icon.tooltip}
-                            >
-                                {icon.icon}
+                    {buttonBar.buttons.map((icon, index) => {
+                        if (icon.assigned && fullOrder.usuario_asignado !== session.username) {
+                            return null; // No renderizar el botón si no cumple la condición
+                        }
+
+                        return (
+                            <div className="iconContainer" key={index}>
+                                <div
+                                    className={"icons" + (icon.first ? " first" : "")}
+                                    onClick={(e) => handleClick(icon.action, icon.buttons, e)}
+                                    data-tooltip-id="my-tooltip"
+                                    data-tooltip-content={icon.tooltip}
+                                >
+                                    {icon.icon}
+                                </div>
                             </div>
-                            {/* {(!icon.last) && <div className="border"></div>} */}
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             )}
             <ReactTooltip id="my-tooltip" delayShow={750} />

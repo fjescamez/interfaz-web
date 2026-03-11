@@ -46,12 +46,14 @@
         .noteContainer {
             height: 15rem;
             padding: 1rem;
+            overflow-y: auto;
 
             p {
                 font-size: 2.5rem;
                 word-wrap: break-word; /* Permite que las palabras largas se ajusten */
                 white-space: pre-wrap; /* Mantiene los saltos de línea y ajusta el texto al contenedor */
                 overflow-wrap: break-word; /* Rompe las palabras largas para evitar desbordamiento */
+                user-select: text;
             }
         }
     }

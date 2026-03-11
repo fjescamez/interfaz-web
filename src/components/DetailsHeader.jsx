@@ -1,12 +1,13 @@
 import Test from '../assets/svg/Test'
 import { GrEdit } from 'react-icons/gr'
 import { BsTrash3Fill } from 'react-icons/bs'
-import { useSession } from '../context/SessionContext';
 import { TiInfoLarge } from 'react-icons/ti';
+import { checkRole } from '../helpers/roleChecker';
 
 function DetailsHeader({
     title,
     subtitle,
+    underTitle,
     avatar,
     endPoint,
     id,
@@ -21,10 +22,11 @@ function DetailsHeader({
     hideEditIcon,
     hideAvatar,
     hideDeleteIcon,
-    grid
+    grid,
+    insteadOfActions
 }) {
-    const { session } = useSession();
-    const isAdmin = session.role === "Administrador";
+    const urlApi = import.meta.env.VITE_API_URL;
+    const { isAdmin } = checkRole();
 
     const toggleInfo = () => {
         setShowInfo(prev => !prev);
@@ -35,22 +37,29 @@ function DetailsHeader({
             <Test />
             <div className="header">
                 <div className="title">
-                    <img src="/src/assets/img/LOGO-SOLO.png" alt="logo disengraf" />
+                    <img src="/assets/LOGO-SOLO.png" alt="logo disengraf" />
                     <div className="details">
-                        <h1>{title} {subtitle && <span>({subtitle})</span>}</h1>
+                        <h1>{title} {subtitle && <span> {subtitle}</span>}</h1>
                         {endPoint === "users" && <p><span>Departamento/s:</span> {(departments && departments[0]) ? departments.join(" - ") : "No asignado"}</p>}
+                        {underTitle && <p>{underTitle}</p>}
                     </div>
                     {(!hideInfoIcon && grid) && <TiInfoLarge style={showInfo ? { backgroundColor: "var(--highlight)" } : {}} onClick={toggleInfo} />}
                 </div>
-                <div className="actions">
-                    {!hideEditIcon && <GrEdit className="edit" onClick={isAdmin && (() => setEditPopup(true))} />}
-                    {!hideAvatar &&
-                        <div className="avatarImage clientAvatar">
-                            <img src={`http://192.4.26.112:3000/uploads/avatars/${avatar}`} alt="" onClick={isAdmin && (() => { if (toggleKiosk) toggleKiosk(endPoint, id, kioskData) })} />
-                        </div>
-                    }
-                    {!hideDeleteIcon && <BsTrash3Fill className="delete" onClick={isAdmin && (() => setDeletePopup(true))} />}
-                </div>
+                {!insteadOfActions ? (
+                    <div className="actions">
+                        {!hideEditIcon && <GrEdit className="edit" onClick={() => setEditPopup(prev => !prev)} />}
+                        {!hideAvatar &&
+                            <div className="avatarImage clientAvatar">
+                                <img src={`${urlApi}/uploads/avatars/${avatar}`} alt="" onClick={isAdmin ? (() => { if (toggleKiosk) toggleKiosk(endPoint, id, kioskData) }) : undefined} />
+                            </div>
+                        }
+                        {(!hideDeleteIcon && isAdmin) && <BsTrash3Fill className="delete" onClick={isAdmin ? (() => setDeletePopup(true)) : undefined} />}
+                    </div>
+                ) : (
+                    <div className="insteadOfActions">
+                        {insteadOfActions}
+                    </div>
+                )}
             </div>
             <div className="decoration"></div>
         </>

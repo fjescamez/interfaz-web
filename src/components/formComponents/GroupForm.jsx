@@ -88,7 +88,7 @@ function GroupForm({ setModal, mode, setTableData, setTotal, group, clienteDato,
             endpoint={"groups"}
             setTableData={setTableData}
             mode={mode}
-            id={_id}
+            _id={_id}
             setTotal={setTotal}
             clienteDato={clienteDato}
         />

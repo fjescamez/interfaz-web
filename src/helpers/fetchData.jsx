@@ -1,16 +1,18 @@
-import { toast } from 'react-toastify';
 import { notify } from "./notify";
 
 /* FETCH GENÉRICOS */
-export const fetchData = async (endPoint, searchValue, page = "1", setData, setTotal, clientFilter = "") => {
+export const fetchData = async (endPoint, searchValue, page = "1", setData, setTotal, clientFilter = "", userFilter = "", orderBy = undefined) => {
+    const urlApi = import.meta.env.VITE_API_URL;
 
-    let url = `http://192.4.26.112:3000/${endPoint}/get/${page}`;
+    let url = `${urlApi}/${endPoint}/get/${page}`;
 
     const session = JSON.parse(localStorage.getItem('session'));
 
     const params = [];
     if (searchValue) params.push(`search=${encodeURIComponent(searchValue)}`);
     if (clientFilter) params.push(`cliente_codigo=${encodeURIComponent(clientFilter)}`);
+    if (userFilter) params.push(`usuario_asignado=${encodeURIComponent(userFilter)}`);
+    if (orderBy) params.push(`orderBy=${encodeURIComponent(orderBy)}`);    
 
     if (params.length > 0) {
         url += `?${params.join('&')}`;
@@ -25,17 +27,14 @@ export const fetchData = async (endPoint, searchValue, page = "1", setData, setT
             }
         });
 
-        // Aviso de reinicio de sesión cuando el token pierde validez
+        // Reinicio de sesión cuando el token pierde validez
         if (!response.ok) {
             const errorData = await response.json();
             if (response.status === 401) {
-                notify(toast.error, 'error', 'Token inválido', 'Su token de sesión es inválido. Se va a cerrar su sesión.');
                 localStorage.removeItem('session');
-                setTimeout(() => {
-                    window.location.href = '/login';
-                }, 2000);
+                window.location.href = '/login';
             } else {
-                notify(toast.error, 'error', 'Error', errorData.error || 'Error desconocido');
+                notify('error', 'Error', errorData.error || 'Error desconocido');
             }
             return [];
         }
@@ -56,12 +55,16 @@ export const fetchData = async (endPoint, searchValue, page = "1", setData, setT
 
         return data.results;
     } catch (error) {
-        notify(toast.error, 'error', 'Error', 'Ha ocurrido un error al cargar los datos');
+        if (session) {
+            notify('error', 'Error', 'Ha ocurrido un error al cargar los datos');
+        }
     }
 };
 
-export const fetchOneItem = async (endPoint, id) => {
-    let url = `http://192.4.26.112:3000/${endPoint}/${id}`;
+export const fetchDataNoLimits = async (endPoint) => {
+    const urlApi = import.meta.env.VITE_API_URL;
+
+    let url = `${urlApi}/${endPoint}/getAll`;
 
     const session = JSON.parse(localStorage.getItem('session'));
 
@@ -77,13 +80,38 @@ export const fetchOneItem = async (endPoint, id) => {
 
         return data;
     } catch (error) {
-        notify(toast.error, 'error', 'Error', error);
+        notify('error', 'Error', 'Ha ocurrido un error al cargar los datos');
+    }
+}
+
+export const fetchOneItem = async (endPoint, id) => {
+    const urlApi = import.meta.env.VITE_API_URL;
+
+    let url = `${urlApi}/${endPoint}/${id}`;
+
+    const session = JSON.parse(localStorage.getItem('session'));
+
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session.token}`
+            }
+        })
+        const data = await response.json();
+
+        return data;
+    } catch (error) {
+        notify('error', 'Error', error);
     }
 };
 
-export const postData = async (endPoint, data) => {
+export const postData = async (endPoint, data = {}) => {
+    const urlApi = import.meta.env.VITE_API_URL;
 
-    let url = `http://192.4.26.112:3000/${endPoint}`;
+    let url = `${urlApi}/${endPoint}`;
+
     const session = JSON.parse(localStorage.getItem('session'));
 
     try {
@@ -99,13 +127,15 @@ export const postData = async (endPoint, data) => {
 
         return result;
     } catch (error) {
-        notify(toast.error, 'error', 'Error', 'Ha ocurrido un error al enviar los datos');
+        notify('error', 'Error', 'Ha ocurrido un error al enviar los datos');
         return { status: "error" };
     }
 };
 
 export const updateData = async (endPoint, data, id) => {
-    let url = `http://192.4.26.112:3000/${endPoint}/${id}`;
+    const urlApi = import.meta.env.VITE_API_URL;
+
+    let url = `${urlApi}/${endPoint}/${id}`;
     const session = JSON.parse(localStorage.getItem('session'));
 
     try {
@@ -120,56 +150,15 @@ export const updateData = async (endPoint, data, id) => {
         const result = await response.json();
         return result;
     } catch (error) {
-        notify(toast.error, 'error', 'Error', error);
+        notify('error', 'Error', error);
     }
 };
 
-/* export const deleteData = async (endPoint, id) => {
-    let url = `http://192.4.26.112:3000/${endPoint}/${id}`;
-    const session = JSON.parse(localStorage.getItem('session'));
-
-    try {
-        const response = await fetch(url, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${session.token}`
-            }
-        });
-        const result = await response.json();
-        console.log(result);
-        
-        return result;
-    } catch (error) {
-        notify(toast.error, 'error', 'Error', 'Ha ocurrido un error al eliminar los datos');
-    }
-}; */
-
-/* PREFERENCIAS DE USUARIO */
-/*
-export const fetchUserPreferences = async (username, table) => {
-    const url = `http://192.4.26.112:3000/userPreferences/get?username=${encodeURIComponent(username)}&table=${encodeURIComponent(table)}`;
-
-    try {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        const data = await response.json();
-        if (data.status === "success") {
-            return data
-        }
-    } catch (error) {
-        notify(toast.error, 'error', 'Error', error);
-    }
-}
-*/
-
 /* BORRAR VARIOS ELEMENTOS */
 export const deleteMultipleObjects = async (endPoint, data, setData) => {
-    let url = `http://192.4.26.112:3000/${endPoint}/remove`;
+    const urlApi = import.meta.env.VITE_API_URL;
+    let url = `${urlApi}/${endPoint}/remove`;
+
     const session = JSON.parse(localStorage.getItem('session'));
 
     try {
@@ -188,6 +177,6 @@ export const deleteMultipleObjects = async (endPoint, data, setData) => {
         }
         return result;
     } catch (error) {
-        notify(toast.error, 'error', 'Error', 'Ha ocurrido un error al eliminar los datos');
+        notify('error', 'Error', 'Ha ocurrido un error al eliminar los datos');
     }
 };

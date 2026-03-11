@@ -105,6 +105,11 @@ svg {
     height: 4rem;
 }
 
+.hidden {
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
 /* Flecha de scroll */
 
 .scrollTopArrow {
@@ -153,6 +158,18 @@ svg {
     background: rgba(65, 65, 65, 0.8);
 }
 
+.overlay2 {
+    z-index: 6;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    background: rgba(65, 65, 65, 0.8);
+}
+
 .executingOverlay {
     z-index: 12;
     width: 100vw;
@@ -167,7 +184,7 @@ svg {
     justify-content: center;
     align-items: center;
 
-    .executingContainer {
+    .executingOverlayContainer {
         background-color: var(--details);
         display: flex;
         flex-direction: column;
@@ -178,6 +195,7 @@ svg {
         padding-top: 5rem;
         border-radius: 1rem;
         border: 2px solid var(--pantone431c);
+        height: fit-content;
 
         h1 {
             font-size: 3rem;
@@ -194,7 +212,7 @@ svg {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 120rem;
+    width: 65%;
     border-radius: 3rem;
     padding: 0.3rem;
     max-height: 80%;
@@ -223,6 +241,11 @@ svg {
                 }
             }
 
+            .stroke {
+                fill: none !important;
+                stroke: white;
+            }
+
             h1 {
                 font-size: 4rem;
                 color: white;
@@ -242,17 +265,13 @@ svg {
         height: 100%;
     }
 
-    /* .narrow {
-        display: flex;
-        flex-direction: column;
-        row-gap: 1rem;
+    .formBody.bigForm {
+        min-height: 45rem;
     }
 
-    .wide {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        column-gap: 2rem;
-    } */
+    form.bigForm {
+        min-height: 45rem;
+    }
 
     form {
         background-image: url("./assets/img/FONDO_CLARO.png");
@@ -372,12 +391,14 @@ svg {
 .formGroup {
     display: flex;
     flex-direction: column;
-    margin-bottom: 1.5rem;
+    max-width: 100% !important;
 
     &.formGroupRow {
         flex-direction: row;
-        column-gap: 2rem;
+        column-gap: 1.5rem;
         align-items: center;
+        justify-self: center;
+        max-width: fit-content;
 
         label {
             max-width: fit-content;
@@ -386,6 +407,41 @@ svg {
         input {
             max-width: 2rem;
             min-height: 2rem;
+        }
+    }
+
+    .formSwitch {
+        max-width: 4.5rem;
+        height: 2.6rem;
+        padding: 0;
+        outline: 2px solid white;
+        border-radius: 1.5rem;
+
+        .MuiSwitch-switchBase {
+            padding: 1rem;
+            padding: 3px;
+        }
+
+        .MuiSwitch-thumb {
+            width: 1.9rem;
+            height: 1.9rem;
+        }
+
+        .MuiSwitch-track {
+            border-radius: 1rem;
+            background-color: white;
+            border: 2px solid var(--pantone431c);
+            border-radius: 1.5rem;
+            opacity: 1;
+        }
+
+        .MuiSwitch-switchBase.Mui-checked {
+            color: var(--highlight);
+        }
+
+        .Mui-checked+.MuiSwitch-track {
+            background-color: white !important;
+            opacity: 1 !important;
         }
     }
 
@@ -407,12 +463,34 @@ svg {
         border-radius: 1rem 1rem 0 0;
         padding: 0.25rem 1rem;
         font-size: 2rem;
-        max-width: fit-content;
+        /* max-width: fit-content; */
+        
+        &.clickable {
+            cursor: pointer;
+        }
     }
 
     .fullLabel {
-        border-radius: 1rem;
+        background: var(--orange-gradient);
+        color: black;
+        font-size: 2rem;
+        padding: 0.5rem 1rem;
         border: 2px solid var(--pantone431c);
+        border-radius: 1.5rem;
+        min-width: fit-content;
+        align-self: center;
+        
+        &.clickable {
+            cursor: pointer;
+
+            &:active {
+                transform: scale(0.99);
+            }
+
+            &:hover {
+                box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.3);
+            }
+        }
     }
 
     .noStyleLabel {
@@ -433,8 +511,9 @@ svg {
         font-family: 'Museo Sans', sans-serif;
         font-size: 2rem;
         border: 2px solid var(--header);
-        border-radius: 0 1.5rem 1.5rem 1.5rem;
+        border-radius: 0 0 1.5rem 1.5rem;
         padding: 1rem;
+        max-width: 100% !important;
 
         &::placeholder {
             color: var(--backgrounds);
@@ -457,8 +536,23 @@ svg {
         background-color: white;
         font-family: 'Museo Sans', sans-serif;
         border: 2px solid var(--header);
-        border-radius: 0 1.5rem 1.5rem 1.5rem;
+        border-radius: 0 0 1.5rem 1.5rem;
         padding: 0.80rem;
+    }
+
+    .chosen-choices {
+        max-height: 15rem;
+        overflow-y: auto;
+    }
+
+    &.noLabel {
+
+        input,
+        select,
+        textarea,
+        .chosen-container {
+            border-radius: 1.5rem;
+        }
     }
 
     .chosen-single,
@@ -494,10 +588,76 @@ svg {
     }
 }
 
+.submitButton {
+    background: var(--orange-gradient);
+    color: black;
+    font-size: 2rem;
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--header);
+    border-radius: 1.5rem;
+    cursor: pointer;
+    width: fit-content;
+    align-self: center;
+
+    &:active {
+        transform: scale(0.99);
+    }
+
+    &:hover {
+        box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.3);
+    }
+}
+
+.deleteButton {
+    background: var(--red-gradient);
+    color: black;
+    font-size: 2rem;
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--header);
+    border-radius: 1.5rem;
+    cursor: pointer;
+    width: fit-content;
+    align-self: center;
+
+    &:active {
+        transform: scale(0.99);
+    }
+
+    &:hover {
+        box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.3);
+    }
+}
+
+.playButton {
+    background: var(--green-gradient);
+    color: black;
+    font-size: 2rem;
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--header);
+    border-radius: 1.5rem;
+    cursor: pointer;
+    width: fit-content;
+    align-self: center;
+
+    &:active {
+        transform: scale(0.99);
+    }
+
+    &:hover {
+        box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.3);
+    }
+}
+
 .deleteForm {
     z-index: 6;
 
     svg {
         color: white !important;
     }
+}
+
+.input-pistola {
+    position: absolute;
+    top: 10rem;
+    left: -20rem;
 }
