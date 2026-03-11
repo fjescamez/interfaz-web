@@ -10,7 +10,6 @@ import { BsInfoLg } from "react-icons/bs";
 import { FaTasks } from "react-icons/fa";
 import { RiText } from "react-icons/ri";
 import { AiOutlineSignature } from "react-icons/ai";
-import { TbSquareLetterKFilled } from "react-icons/tb";
 import LenFile from "../assets/svg/LenFile";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
