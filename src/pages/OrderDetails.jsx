@@ -284,7 +284,7 @@ function OrderDetails() {
                     <tbody>
                       <tr>
                         <td><p><span className="highlight">REVISIÓN:</span></p></td>
-                        <td>{orderXml.actividad?.revisiones?.revision[0]?.revision_id || ""}</td>
+                        <td>{orderXml.actividad?.revisiones?.revision[0]?.revision_id || orderXml.actividad?.revisiones?.revision?.revision_id}</td>
                       </tr>
                       <tr>
                         <td><p><span className="highlight">FECHA REV.:</span></p></td>
@@ -413,14 +413,26 @@ function OrderDetails() {
                     <p>INSTRUCCIONES DE PEDIDO</p>
                   </div>
                   <div className="body">
-                    {orderXml.actividad?.revisiones.revision.map((revision) => (
-                      <div className="revisiones" key={revision.revision_id}>
-                        <p className="revision">Revisión Nº {revision.revision_id} | Fecha: {revision.revision_fechahora} | Motivo: {revision.revision_mot}</p>
-                        <br />
-                        <p>{revision.revision_obs}</p>
-                        <br />
-                      </div>
-                    ))}
+                    {Array.isArray(orderXml?.actividad?.revisiones?.revision) ? (
+                      orderXml.actividad?.revisiones.revision.map((revision) => (
+                        <div className="revisiones" key={revision.revision_id}>
+                          <p className="revision">Revisión Nº {revision.revision_id} | Fecha: {revision.revision_fechahora} | Motivo: {revision.revision_mot}</p>
+                          <br />
+                          <p>{revision.revision_obs}</p>
+                          <br />
+                        </div>
+                      ))
+                    ) : (
+                      orderXml.actividad?.revisiones.revision && (
+                        <div className="revisiones" key={orderXml.actividad.revisiones.revision.revision_id}>
+                          <p className="revision">Revisión Nº {orderXml.actividad.revisiones.revision.revision_id} | Fecha: {orderXml.actividad.revisiones.revision.revision_fechahora} | Motivo: {orderXml.actividad.revisiones.revision.revision_mot}</p>
+                          <br />
+                          <p>{orderXml.actividad.revisiones.revision.revision_obs}</p>
+                          <br />
+                        </div>
+                      )
+                    )
+                    }
                   </div>
                 </div>
               </div>
