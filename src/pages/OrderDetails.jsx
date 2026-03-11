@@ -284,7 +284,7 @@ function OrderDetails() {
                     <tbody>
                       <tr>
                         <td><p><span className="highlight">REVISIÓN:</span></p></td>
-                        <td>{orderXml.actividad?.revisiones.revision[0].revision_id}</td>
+                        <td>{orderXml.actividad?.revisiones?.revision[0]?.revision_id || ""}</td>
                       </tr>
                       <tr>
                         <td><p><span className="highlight">FECHA REV.:</span></p></td>
