@@ -131,25 +131,10 @@ export const orderSidebarIcons = [
         tooltip: "COMPARAR"
     },
     {
-        icon: <LenFile />,
-        action: "lenFiles",
-        tooltip: "FICHEROS LEN"
-    },
-    /* {
-        icon: <PiStorefrontLight />,
-        action: "kiosk",
-        tooltip: "KIOSKO"
-    }, */
-    {
-        icon: <PiImagesLight />,
-        action: "files",
-        tooltip: "FICHAS"
-    },
-    /* {
         icon: <RiPaintFill />,
         action: "tintas",
         tooltip: "TINTAS"
-    }, */
+    },
     {
         icon: <BsInfoLg />,
         action: "info",
