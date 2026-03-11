@@ -8,6 +8,7 @@ function ClientConfigForm({ setModal, itemsData, setItemsData, formData }) {
             itemsData={itemsData}
             setData={setItemsData}
             endpoint={"clientConfig/update"}
+            onInputChange={setItemsData}
         />
     )
 }

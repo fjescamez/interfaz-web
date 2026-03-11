@@ -76,14 +76,12 @@ function ClientDetails({ toggleKiosk }) {
                     {showInfo
                         ? <div className="formSections">
                             {clientFormData.formSections.map((section) => (
-                                <div key={section.title} className="formSection">
-                                    <FormSection
-                                        sectionData={section}
-                                        formFields={clientFormData.formFields}
-                                        inputData={client}
-                                        disable={true}
-                                    />
-                                </div>
+                                <FormSection
+                                    sectionData={section}
+                                    formFields={clientFormData.formFields}
+                                    inputData={client}
+                                    disable={true}
+                                />
                             ))}
                         </div>
                         :

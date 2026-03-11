@@ -3,52 +3,41 @@ import { PiMinusCircle, PiPlusCircle } from "react-icons/pi";
 import ChosenSelect from "../formComponents/ChosenSelect";
 import "./KioskComponents.css";
 import { notify } from "../../helpers/notify";
+import { formatosBoceto, tiposBoceto } from '../../helpers/constants';
 
+const agregarBoceto = () => {
+    setOpciones(prev => [...prev, { id: opciones.at(-1).id + 1, rasterizado: false, lpi: "300", formato: "Pdf", tipo: "Compuesto" }]);
+}
+
+const eliminarBoceto = (id) => {
+    setOpciones(prev => prev.filter(obj => obj.id !== id));
+}
+
+const checkActive = (id) => {
+    setOpciones(prev => (
+        prev.map(obj =>
+            obj.id === id
+                ? {
+                    ...obj,
+                    rasterizado: !obj.rasterizado
+                }
+                :
+                obj
+        )
+    )
+    );
+}
+
+const handleChange = (id, fieldName, value) => {
+    setOpciones(prev => (
+        prev.map(obj =>
+            obj.id === id ? { ...obj, [fieldName]: value } : obj
+        )
+    )
+    );
+}
 
 function BocetoComponent({ opciones, setOpciones }) {
-    const options1 = [
-        "Pdf",
-        "Png",
-        "Jpg"
-    ];
-
-    const options = [
-        "Compuesto",
-        "CMYK",
-        "RGB"
-    ];
-
-    const agregarBoceto = () => {
-        setOpciones(prev => [...prev, { id: opciones.at(-1).id + 1, rasterizado: false, lpi: "300", formato: "Pdf", tipo: "Compuesto" }]);
-    }
-
-    const eliminarBoceto = (id) => {
-        setOpciones(prev => prev.filter(obj => obj.id !== id));
-    }
-
-    const checkActive = (id) => {
-        setOpciones(prev => (
-            prev.map(obj =>
-                obj.id === id
-                    ? {
-                        ...obj,
-                        rasterizado: !obj.rasterizado
-                    }
-                    :
-                    obj
-            )
-        )
-        );
-    }
-
-    const handleChange = (id, fieldName, value) => {
-        setOpciones(prev => (
-            prev.map(obj =>
-                obj.id === id ? { ...obj, [fieldName]: value } : obj
-            )
-        )
-        );
-    }
 
     return (
         <div className="actionBody">
@@ -77,13 +66,13 @@ function BocetoComponent({ opciones, setOpciones }) {
                             </div>
                             {/* <ChosenSelect
                                 name={`formato-${index}`}
-                                options={options1}
+                                options={formatosBoceto}
                                 value={opcion.formato}
                                 onChange={e => handleChange(opcion.id, "formato", e.target.value)}
                             />
                             <ChosenSelect
                                 name={`tipo-${index}`}
-                                options={options}
+                                options={tiposBoceto}
                                 value={opcion.tipo}
                                 onChange={e => handleChange(opcion.id, "tipo", e.target.value)}
                             />

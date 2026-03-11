@@ -92,8 +92,8 @@ function OrderKiosk({ configMode }) {
     isTrappingWaiting: false,
     isTrappingDone: false,
     isTrappingCanceled: false,
-    bocetos: [{ id: 0, rasterizado: false, lpi: "300", formato: "Pdf", tipo: "Compuesto" }],
-    fichas: [{ id: 0, rasterizado: false, lpi: "300", formato: "Pdf", tipo: "Compuesto" }],
+    bocetos: [{ id: 0, rasterizado: true, lpi: "300", formato: "Pdf", tipo: "Compuesto" }],
+    fichas: [{ id: 0, rasterizado: true, lpi: "300", formato: "Pdf", tipo: "Compuesto" }],
     posMacula: "",
     freecutData: {
       posiCortes: "Izquierda"
@@ -242,10 +242,9 @@ function OrderKiosk({ configMode }) {
 
       if (cliente_id !== "") {
         const clientConfig = await fetchData("clientConfig", cliente_id);
-
         updateState("clientConfig", clientConfig);
 
-        if (clientConfig && clientConfig?.configuraciones?.kioscos.length > 0) {
+        if (clientConfig && clientConfig?.configuraciones?.kioscos?.length > 0) {
           const kioscoDefault = clientConfig.configuraciones.kioscos.find(kiosk => kiosk.kioscoDefault === true) || clientConfig.configuraciones.kioscos[0];
 
           updateState("kioskOptions", [
@@ -257,13 +256,24 @@ function OrderKiosk({ configMode }) {
           ]);
           updateState("defaultKiosk", kioscoDefault);
           updateState("chosenKiosk", kioscoDefault);
-        } else if (clientConfig && clientConfig?.configuraciones?.documentacion) {
-          updateState("otraDocumentacion", {
-            certificadoControl: clientConfig.configuraciones.documentacion.certificadoControl || false,
-            certificadoContinuos: clientConfig.configuraciones.documentacion.certificadoContinuos || false,
-            certificadoCodigos: clientConfig.configuraciones.documentacion.certificadoCodigos || false,
-            unitarioPng: clientConfig.configuraciones.documentacion.unitarioPng || false,
-          });
+        } else if (clientConfig) {
+          if (clientConfig.configuraciones?.documentacion) {
+            updateState("otraDocumentacion", {
+              certificadoControl: clientConfig.configuraciones.documentacion.certificadoControl || false,
+              certificadoContinuos: clientConfig.configuraciones.documentacion.certificadoContinuos || false,
+              certificadoCodigos: clientConfig.configuraciones.documentacion.certificadoCodigos || false,
+              unitarioPng: clientConfig.configuraciones.documentacion.unitarioPng || false,
+            });
+          }
+          if (clientConfig.configuraciones?.boceto) {
+            updateState("bocetos", [{ id: 0, rasterizado: clientConfig.configuraciones.boceto.bocetoRasterizado, lpi: "300", formato: "Pdf", tipo: "Compuesto" }]);
+          }
+          if (clientConfig.configuraciones?.ficha) {
+            updateState("fichas", [{ id: 0, rasterizado: clientConfig.configuraciones.ficha.fichaRasterizada, lpi: "300", formato: "Pdf", tipo: "Compuesto" }]);
+          }
+
+          updateState("defaultKiosk", state.kioskOptions[0]);
+          updateState("chosenKiosk", state.kioskOptions[0]);
         } else {
           updateState("defaultKiosk", state.kioskOptions[0]);
           updateState("chosenKiosk", state.kioskOptions[0]);
@@ -329,7 +339,8 @@ function OrderKiosk({ configMode }) {
               setIsActive: (updater) => updateState("isActive", updater),
               setIsOpen: (updater) => updateState("isOpen", updater),
               setOtraDocumentacion: (updater) => updateState("otraDocumentacion", updater),
-              orderColorsObjects: state.orderColorsObjects
+              orderColorsObjects: state.orderColorsObjects,
+              state
             });
           } else if (state.chosenKiosk === "Manual") {
             resetKiosk({
@@ -411,10 +422,10 @@ function OrderKiosk({ configMode }) {
       salidaColores: [],
       listDigimark: [],
       bocetos: [
-        { id: 0, rasterizado: false, lpi: "300", formato: "Pdf", tipo: "Compuesto" }
+        { id: 0, rasterizado: true, lpi: "300", formato: "Pdf", tipo: "Compuesto" }
       ],
       fichas: [
-        { id: 0, rasterizado: false, lpi: "300", formato: "Pdf", tipo: "Compuesto" }
+        { id: 0, rasterizado: true, lpi: "300", formato: "Pdf", tipo: "Compuesto" }
       ],
       montajeData: [],
       freecutData: {},
@@ -586,12 +597,12 @@ function OrderKiosk({ configMode }) {
     const totalErrors = (state.orderReport?.filter(item => item.status === "error").length || 0) +
       (state.fileReport?.filter(item => item.status === "error").length || 0);
 
-    if (totalErrors + totalWarnings > 0 && !state.loadingFileReport && !state.loadingOrderReport) {
+    /* if (totalErrors + totalWarnings > 0 && !state.loadingFileReport && !state.loadingOrderReport) {
       updateState("isOpen", (prevIsOpen) => ({
         ...prevIsOpen,
         reportePrevio: true
       }));
-    }
+    } */
 
     updateState({
       reportFixes: totalFixes,

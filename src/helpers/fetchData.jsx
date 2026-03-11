@@ -1,7 +1,7 @@
 import { notify } from "./notify";
 
 /* FETCH GENÉRICOS */
-export const fetchData = async (endPoint, searchValue, page = "1", setData, setTotal, clientFilter = "", userFilter = "") => {
+export const fetchData = async (endPoint, searchValue, page = "1", setData, setTotal, clientFilter = "", userFilter = "", orderBy = undefined) => {
     const urlApi = import.meta.env.VITE_API_URL;
 
     let url = `${urlApi}/${endPoint}/get/${page}`;
@@ -12,6 +12,7 @@ export const fetchData = async (endPoint, searchValue, page = "1", setData, setT
     if (searchValue) params.push(`search=${encodeURIComponent(searchValue)}`);
     if (clientFilter) params.push(`cliente_codigo=${encodeURIComponent(clientFilter)}`);
     if (userFilter) params.push(`usuario_asignado=${encodeURIComponent(userFilter)}`);
+    if (orderBy) params.push(`orderBy=${encodeURIComponent(orderBy)}`);    
 
     if (params.length > 0) {
         url += `?${params.join('&')}`;

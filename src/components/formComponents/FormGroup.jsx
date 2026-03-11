@@ -1,13 +1,16 @@
 import React from "react";
 import ChosenSelect from "./ChosenSelect"
 import Switch from "@mui/material/Switch";
+import { sessionInfo } from "../../helpers/roleChecker";
 
 const FormGroup = React.memo(function FormGroup({
     handleForm,
     value,
     error,
     field,
-    disable
+    disable,
+    showIfCondition,
+    inputData
 }) {
     const { htmlFor,
         labelId,
@@ -24,12 +27,16 @@ const FormGroup = React.memo(function FormGroup({
         hideField,
         minNumber,
         maxNumber,
-        noDecimals
+        noDecimals,
+        visibleFor,
+        showIf
     } = field;
+
+    const roleDptUser = sessionInfo();
 
     return (
         <>
-            {!hideField &&
+            {(!hideField && (!visibleFor || roleDptUser.some(item => visibleFor.includes(item))) && (!showIf || showIf({ showIfCondition, inputData }))) &&
                 <>
                     {(labelId && (!inputType || (inputType && inputType !== "checkbox"))) &&
                         <label

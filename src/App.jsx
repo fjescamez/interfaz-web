@@ -261,7 +261,7 @@ function App() {
           <Route path="/usuarios" element={<UsersPage />} />
           <Route path="/usuarios/:id" element={<UserDetails toggleKiosk={toggleKiosk} />} />
           <Route path="/soporte" element={<Soporte />} />
-          <Route path="/test" element={<HomePage />} />
+          <Route path="/test" element={<OrdersPage />} />
         </Routes>
       </div>
     </>

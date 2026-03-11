@@ -61,14 +61,12 @@ function RefContinuoDetails() {
             <div className="detailsScroll">
                 <div className="formSections">
                     {refContinuosFormData.formSections.map((section) => (
-                        <div key={section.title} className="formSection">
-                            <FormSection
-                                sectionData={section}
-                                formFields={refContinuosFormData.formFields}
-                                inputData={inputData}
-                                disable={true}
-                            />
-                        </div>
+                        <FormSection
+                            sectionData={section}
+                            formFields={refContinuosFormData.formFields}
+                            inputData={inputData}
+                            disable={true}
+                        />
                     ))}
                 </div>
             </div>

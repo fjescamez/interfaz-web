@@ -1,8 +1,8 @@
 import Test from '../assets/svg/Test'
 import { GrEdit } from 'react-icons/gr'
 import { BsTrash3Fill } from 'react-icons/bs'
-import { useSession } from '../context/SessionContext';
 import { TiInfoLarge } from 'react-icons/ti';
+import { checkRole } from '../helpers/roleChecker';
 
 function DetailsHeader({
     title,
@@ -26,8 +26,7 @@ function DetailsHeader({
     insteadOfActions
 }) {
     const urlApi = import.meta.env.VITE_API_URL;
-    const { session } = useSession();
-    const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
+    const { isAdmin } = checkRole();
 
     const toggleInfo = () => {
         setShowInfo(prev => !prev);

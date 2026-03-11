@@ -27,7 +27,8 @@ function GeneralForm({
     afterSubmit,
     clickableSections,
     onClickSection,
-    bigForm
+    bigForm,
+    showIfCondition
 }) {
     const { headerIcon, headerTitle, editTitle, formFields, clientsMap, codesMap } = formData;
     const [errorMessage, setErrorMessage] = useState(false);
@@ -234,7 +235,7 @@ function GeneralForm({
                             <div className="formSections">
                                 {extras && extras}
                                 {formData.formSections.map((section, index) => (
-                                    <div key={index} className={`formSection ${clickableSections && clickableSections.includes(section) ? "clickable" : ""}`} onClick={() => onClickSection && clickableSections.includes(section) ? onClickSection(section) : null}>
+                                    <div key={index} className={clickableSections && clickableSections.includes(section) ? "clickable" : ""} onClick={() => onClickSection && clickableSections.includes(section) ? onClickSection(section) : null}>
                                         <FormSection
                                             fieldErrors={fieldErrors}
                                             sectionData={section}
@@ -243,6 +244,7 @@ function GeneralForm({
                                             handleForm={handleForm}
                                             inputData={inputData}
                                             disable={!!clienteDato && !!section.disableIfFilter}
+                                            showIfCondition={showIfCondition}
                                         />
                                     </div>
                                 ))}

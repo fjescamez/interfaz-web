@@ -335,14 +335,12 @@ function MontajeAvanzadoComponent({ state, updateState, configAvanzadaData, setC
           </div>
           {stations.length > 0 && (
             formData.formSections.map((section, sectionIndex) => (
-              <div className="formSection" key={sectionIndex}>
-                <FormSection
-                  sectionData={section}
-                  formFields={formData.formFields}
-                  handleForm={e => handleChange(e.target.name, e.target.type === "checkbox" ? e.target.checked : e.target.value)}
-                  inputData={activeStation}
-                />
-              </div>
+              <FormSection
+                sectionData={section}
+                formFields={formData.formFields}
+                handleForm={e => handleChange(e.target.name, e.target.type === "checkbox" ? e.target.checked : e.target.value)}
+                inputData={activeStation}
+              />
             ))
           )}
         </div>

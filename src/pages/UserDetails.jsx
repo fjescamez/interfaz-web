@@ -6,15 +6,14 @@ import { useTabs } from "../context/TabsContext";
 import UserForm from "../components/formComponents/UserForm";
 import DeleteForm from "../components/formComponents/DeleteForm";
 import DetailsHeader from "../components/DetailsHeader";
-import { useSession } from "../context/SessionContext";
 import { userFormData } from "../helpers/formsData";
 import FormSection from "../components/formComponents/FormSection";
 import GridComponent from "../components/GridComponent";
 import { usersDetails } from "../helpers/detailsGrid";
 import { userTableInfo } from "../helpers/tablesInfo";
-import { fetchDataNoLimits, fetchOneItem } from "../helpers/fetchData";
+import { fetchOneItem } from "../helpers/fetchData";
 import { useLocation } from "react-router-dom";
-import { HiOutlineRefresh } from "react-icons/hi";
+import { checkRole } from "../helpers/roleChecker";
 
 function UserDetails({ toggleKiosk }) {
     const [user, setUser] = useState({});
@@ -23,10 +22,9 @@ function UserDetails({ toggleKiosk }) {
     const { closeTab } = useTabs();
     const [editPopup, setEditPopup] = useState(false);
     const [deletePopup, setDeletePopup] = useState(false);
-    const { session } = useSession();
     const [showInfo, setShowInfo] = useState(true);
     const { grid } = usersDetails;
-    const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
+    const { isAdmin } = checkRole();
     const location = useLocation();
 
     useEffect(() => {
@@ -77,14 +75,12 @@ function UserDetails({ toggleKiosk }) {
                 {showInfo
                     ? <div className="formSections">
                         {userFormData.formSections.map((section, index) => (
-                            <div key={index} className="formSection">
-                                <FormSection
-                                    sectionData={section}
-                                    formFields={userFormData.formFields}
-                                    inputData={user}
-                                    disable={true}
-                                />
-                            </div>
+                            <FormSection
+                                sectionData={section}
+                                formFields={userFormData.formFields}
+                                inputData={user}
+                                disable={true}
+                            />
                         ))}
                     </div>
                     :

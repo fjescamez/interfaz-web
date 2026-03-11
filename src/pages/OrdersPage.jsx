@@ -7,6 +7,7 @@ import AsignarPedidoForm from "../components/formComponents/AsignarPedidoForm";
 import { postData } from "../helpers/fetchData";
 import { notify } from "../helpers/notify";
 import { BsFillInboxFill } from "react-icons/bs";
+import TableRefactor from "../components/TableRefactor";
 
 function OrdersPage({ filter, filterBandeja }) {
     const [tableInfo, setTableInfo] = useState(orderTableInfo);
@@ -66,17 +67,31 @@ function OrdersPage({ filter, filterBandeja }) {
 
     return (
         <>
-            <Table
-                clientFilter={filter}
-                userFilter={userFilter}
-                dinamicTableInfo={tableInfo}
-                normalizedData={true}
-                checkedRows={checkedOrders}
-                setCheckedRows={isManager ? setCheckedOrders : null}
-                actions={orderActions}
-                tabTitleTemplate={"{id_pedido}"}
-                specificPath={`/${tableInfo.tableName}`}
-            />
+            {(location.pathname === "/test" && session?.role === "Soporte") ? (
+                <TableRefactor
+                    clientFilter={filter}
+                    userFilter={userFilter}
+                    dinamicTableInfo={tableInfo}
+                    normalizedData={true}
+                    checkedRows={checkedOrders}
+                    setCheckedRows={isManager ? setCheckedOrders : null}
+                    actions={orderActions}
+                    tabTitleTemplate={"{id_pedido}"}
+                    specificPath={`/${tableInfo.tableName}`}
+                />
+            ) : (
+                <Table
+                    clientFilter={filter}
+                    userFilter={userFilter}
+                    dinamicTableInfo={tableInfo}
+                    normalizedData={true}
+                    checkedRows={checkedOrders}
+                    setCheckedRows={isManager ? setCheckedOrders : null}
+                    actions={orderActions}
+                    tabTitleTemplate={"{id_pedido}"}
+                    specificPath={`/${tableInfo.tableName}`}
+                />
+            )}
             {asignarPopUp && <AsignarPedidoForm setModal={setAsignarPopUp} orderIds={checkedOrders} pedidos={pedidos} setTableData={dataSetter} />}
         </>
     )

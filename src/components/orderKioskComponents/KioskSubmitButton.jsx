@@ -71,48 +71,8 @@ function KioskSubmitButton({ state, updateState, buttonAction, buttonText, compo
                     loadingTrapping: true
                 }));
                 dataToSend.holdInKiosk = true;
-            } else {
-                /* updateState("loading", true);
-                updateTabState(tabKey, (prevState) => ({
-                    ...prevState,
-                    loading: true
-                })); */
             }
 
-            /* postDataContext(
-                "orderKiosks/kioscoPedidoAuto",
-                dataToSend,
-                (result) => {
-                    if (result.status === "success") {
-                        if (result.workable_id && result.node_id) {
-                            updateState("workableId", result.workable_id);
-                            updateState("nodeId", result.node_id);
-                            updateState("isTrappingWaiting", true);
-                            updateState("isOpen", (prevIsOpen) => ({
-                                ...prevIsOpen,
-                                trapping: true
-                            }));
-                            updateTabState(tabKey, (prevState) => ({
-                                ...prevState,
-                                isOpen: {
-                                    ...prevState.isOpen,
-                                    trapping: true
-                                },
-                                isTrappingWaiting: true,
-                                workableId: result.workable_id,
-                                nodeId: result.node_id,
-                                loadingTrapping: false
-                            }));
-                        }
-                        notify("success", result.title, result.message);
-                    } else {
-                        notify("error", result.title, result.message);
-                    }
-                },
-                (error) => {
-                    notify("error", "Error", "Ha ocurrido un error en el envío.");
-                }
-            ); */
             postData("orderKiosks/kioscoPedidoAuto", dataToSend);
             createTab("/kiosco", "KIOSCO GENERAL");
             removeTabState(tabKey);

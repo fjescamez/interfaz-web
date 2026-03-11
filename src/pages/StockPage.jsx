@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { fetchData } from '../helpers/fetchData';
 import { useSession } from '../context/SessionContext';
 import { FaBoxOpen } from "react-icons/fa";
+import { checkRole } from '../helpers/roleChecker';
 
 function StockPage() {
     const { grid } = stockDetails;
@@ -14,8 +15,7 @@ function StockPage() {
     const { createTab } = useTabs();
     const { session } = useSession();
     const userFilter = session ? session?.departments : "";
-    const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
-    const isJefeDepartamento = session?.responsibleDepartments && session?.responsibleDepartments.length > 0;
+    const { isAdmin, isJefeDepartamento } = checkRole();
 
     const stockGridClick = (key, title) => {
         const path = '/stock/' + key;

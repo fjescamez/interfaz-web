@@ -63,14 +63,12 @@ function RefPlanchaDetails() {
       <div className="detailsScroll">
         <div className="formSections">
           {refPlanchaFormData.formSections.map((section) => (
-            <div key={section.title} className="formSection">
-              <FormSection
-                sectionData={section}
-                formFields={refPlanchaFormData.formFields}
-                inputData={inputData}
-                disable={true}
-              />
-            </div>
+            <FormSection
+              sectionData={section}
+              formFields={refPlanchaFormData.formFields}
+              inputData={inputData}
+              disable={true}
+            />
           ))}
         </div>
       </div>

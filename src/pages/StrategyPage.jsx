@@ -1,12 +1,11 @@
 import { useState } from "react";
 import Table from "../components/Table.jsx";
 import { strategyTableInfo } from "../helpers/tablesInfo.jsx";
-import { postData } from "../helpers/fetchData.jsx";
-import { useSession } from "../context/SessionContext.jsx";
 import StrategyForm from "../components/formComponents/StrategyForm.jsx";
 import { useClienteFilter } from "../context/ClientFilterContext.jsx";
 import { useLocation } from "react-router-dom";
 import { notify } from "../helpers/notify.jsx";
+import { checkRole } from "../helpers/roleChecker.js";
 
 function StrategyPage({ filter }) {
     const location = useLocation();
@@ -15,10 +14,9 @@ function StrategyPage({ filter }) {
     const [checkedStrategy, setCheckedStrategy] = useState(null);
     const [dataSetter, setDataSetter] = useState(null);
     const [totalSetter, setTotalSetter] = useState(null);
-    const { session } = useSession();
     const { clienteDatos } = useClienteFilter();
     const clienteDato = clienteDatos[location.pathname] || null;
-    const isTecnico = session?.departments.includes("Tecnico");
+    const { isTecnico } = checkRole();
 
     const strategyActions = async (variables) => {
         const { action, data, setTableData, setTotal } = variables;

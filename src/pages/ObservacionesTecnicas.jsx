@@ -67,11 +67,6 @@ function ObservacionesTecnicas() {
                 <DetailsHeader
                     title={"Observaciones Técnicas"}
                     subtitle={`Pedido (${orderData?.id_pedido})`}
-                    /* toggleKiosk={toggleKiosk}
-                    kioskData={client}
-                    setEditPopup={setEditPopup}
-                    showInfo={showInfo}
-                    setShowInfo={setShowInfo} */
                     hideEditIcon={true}
                     hideAvatar={true}
                     hideDeleteIcon={true}
@@ -79,14 +74,12 @@ function ObservacionesTecnicas() {
                 <div className="detailsScroll">
                     <div className="formSections">
                         {observacionesTecnicasFormData.formSections.map((section) => (
-                            <div key={section.title} className="formSection">
-                                <FormSection
-                                    sectionData={section}
-                                    formFields={observacionesTecnicasFormData.formFields}
-                                    inputData={itemsData}
-                                    disable={true}
-                                />
-                            </div>
+                            <FormSection
+                                sectionData={section}
+                                formFields={observacionesTecnicasFormData.formFields}
+                                inputData={itemsData}
+                                disable={true}
+                            />
                         ))}
                     </div>
                 </div>

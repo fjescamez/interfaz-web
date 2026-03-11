@@ -40,14 +40,12 @@ function EmailDetails() {
                 {emailInfo ?
                     <div className="formSections">
                         {emailInfoFormData.formSections.map((section) => (
-                            <div key={section.title} className="formSection">
-                                <FormSection
-                                    sectionData={section}
-                                    formFields={emailInfoFormData.formFields}
-                                    inputData={inputData}
-                                    disable={true}
-                                />
-                            </div>
+                            <FormSection
+                                sectionData={section}
+                                formFields={emailInfoFormData.formFields}
+                                inputData={inputData}
+                                disable={true}
+                            />
                         ))}
                     </div>
                     :

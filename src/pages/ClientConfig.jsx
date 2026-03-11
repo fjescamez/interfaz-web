@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from "react-router-dom";
-import { fetchData, fetchOneItem } from '../helpers/fetchData';
+import { fetchData, fetchDataNoLimits, fetchOneItem } from '../helpers/fetchData';
 import { useTabs } from '../context/TabsContext';
 import DetailsHeader from '../components/DetailsHeader';
 import { clientConfigFormData } from '../helpers/formsData';
@@ -8,6 +8,7 @@ import FormSection from '../components/formComponents/FormSection';
 import ClientConfigForm from '../components/formComponents/ClientConfigForm';
 import { notify } from '../helpers/notify';
 import { useLocation } from "react-router-dom";
+import { BlinkBlur } from "react-loading-indicators";
 
 function ClientConfig({ toggleKiosk }) {
     const [client, setClient] = useState({});
@@ -16,6 +17,9 @@ function ClientConfig({ toggleKiosk }) {
     const [contactos, setContactos] = useState([]);
     const [itemsData, setItemsData] = useState({});
     const [editPopup, setEditPopup] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [contactsLoaded, setContactsLoaded] = useState(false);
+    const [configLoaded, setConfigLoaded] = useState(false);
     const { id } = useParams();
     const navigate = useNavigate();
     const { closeTab } = useTabs();
@@ -36,7 +40,10 @@ function ClientConfig({ toggleKiosk }) {
         const configData = await fetchData("clientConfig", client._id);
         if (configData) {
             setClientConfig(configData);
+        } else {
+            setClientConfig({});
         }
+        setConfigLoaded(true);
     }
 
     const getContacts = async () => {
@@ -45,6 +52,7 @@ function ClientConfig({ toggleKiosk }) {
 
         if ((contacts.length + groups.length) < 1) {
             notify('warning', 'Aviso', 'Este cliente no tiene contactos');
+            setContactsLoaded(true);
             return;
         }
 
@@ -61,6 +69,7 @@ function ClientConfig({ toggleKiosk }) {
         })
 
         setContactos(options);
+        setContactsLoaded(true);
 
         setItemsData(prev => ({
             ...prev,
@@ -81,12 +90,38 @@ function ClientConfig({ toggleKiosk }) {
         }));
     }
 
+    const getPlantillas = async () => {
+        const plantillas = await fetchDataNoLimits("clientConfig/plantillas");
+
+        setFormData(prev => ({
+            ...prev,
+            formFields: prev.formFields.map(field => {
+                if (field.htmlFor === "nombrePlantillaBoceto" || field.htmlFor === "nombrePlantillaFicha") {
+                    return {
+                        ...field,
+                        options: [
+                            "",
+                            ...plantillas.results
+                        ]
+                    }
+                }
+                return field
+            })
+        }));
+    }
+
     useEffect(() => {
+        setLoading(true);
+        setContactsLoaded(false);
+        setConfigLoaded(false);
         getClientDetails();
+        getPlantillas();
     }, [id]);
 
     useEffect(() => {
         if (client._id) {
+            setConfigLoaded(false);
+            setContactsLoaded(false);
             getClientConfig();
             getContacts();
             setItemsData(prev => ({
@@ -110,6 +145,18 @@ function ClientConfig({ toggleKiosk }) {
         setItemsData(prev => ({
             ...prev,
             contactoDefault: clientConfig.configuraciones?.email?.contactoDefault || contactos[0],
+            bocetoRasterizado: clientConfig.configuraciones?.boceto?.bocetoRasterizado || true,
+            plantillaBoceto: clientConfig.configuraciones?.boceto?.plantillaBoceto || "",
+            anchoPlantillaBoceto: clientConfig.configuraciones?.boceto?.anchoPlantillaBoceto || "",
+            altoPlantillaBoceto: clientConfig.configuraciones?.boceto?.altoPlantillaBoceto || "",
+            nombrePlantillaBoceto: clientConfig.configuraciones?.boceto?.nombrePlantillaBoceto || "",
+            cajaReferenciaBoceto: clientConfig.configuraciones?.boceto?.cajaReferenciaBoceto || "",
+            fichaRasterizada: clientConfig.configuraciones?.ficha?.fichaRasterizada || true,
+            plantillaFicha: clientConfig.configuraciones?.ficha?.plantillaFicha || "",
+            anchoPlantillaFicha: clientConfig.configuraciones?.ficha?.anchoPlantillaFicha || "",
+            altoPlantillaFicha: clientConfig.configuraciones?.ficha?.altoPlantillaFicha || "",
+            nombrePlantillaFicha: clientConfig.configuraciones?.ficha?.nombrePlantillaFicha || "",
+            cajaReferenciaFicha: clientConfig.configuraciones?.ficha?.cajaReferenciaFicha || "",
             compensacionCorte: clientConfig.configuraciones?.montaje?.compensacionCorte || 0,
             marcaMontaje: clientConfig.configuraciones?.montaje?.marcaMontaje || "",
             caidasFreecut: clientConfig.configuraciones?.montaje?.caidasFreecut || "COMPLETO",
@@ -120,34 +167,47 @@ function ClientConfig({ toggleKiosk }) {
         }));
     }, [clientConfig]);
 
+    useEffect(() => {
+        if (configLoaded && contactsLoaded) {
+            setLoading(false);
+        }
+    }, [configLoaded, contactsLoaded]);
+
     return (
         <>
             <div className="detailsContainer">
-                <DetailsHeader
-                    title={client.name}
-                    subtitle={"(Configuración)"}
-                    avatar={client.avatar}
-                    endPoint={"clients"}
-                    id={id}
-                    toggleKiosk={toggleKiosk}
-                    kioskData={client}
-                    hideDeleteIcon={true}
-                    setEditPopup={setEditPopup}
-                />
-                <div className="detailsScroll">
-                    <div className="formSections">
-                        {formData.formSections.map((section) => (
-                            <div key={section.title} className="formSection">
-                                <FormSection
-                                    sectionData={section}
-                                    formFields={formData.formFields}
-                                    inputData={itemsData}
-                                    disable={true}
-                                />
-                            </div>
-                        ))}
+                {loading ? (
+                    <div className="executingContainer">
+                        <BlinkBlur variant="dotted" color="var(--highlight)" size="large" speedPlus="0" />
+                        <h1>Cargando</h1>
                     </div>
-                </div>
+                ) : (
+                    <>
+                        <DetailsHeader
+                            title={client.name}
+                            subtitle={"(Configuración)"}
+                            avatar={client.avatar}
+                            endPoint={"clients"}
+                            id={id}
+                            toggleKiosk={toggleKiosk}
+                            kioskData={client}
+                            hideDeleteIcon={true}
+                            setEditPopup={setEditPopup}
+                        />
+                        <div className="detailsScroll">
+                            <div className="formSections">
+                                {formData.formSections.map((section) => (
+                                    <FormSection
+                                        sectionData={section}
+                                        formFields={formData.formFields}
+                                        inputData={itemsData}
+                                        disable={true}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    </>
+                )}
                 {editPopup && <ClientConfigForm setModal={setEditPopup} client={client} itemsData={itemsData} setItemsData={setItemsData} formData={formData} />}
             </div>
         </>

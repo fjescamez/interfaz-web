@@ -1,16 +1,11 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useRef, useState } from "react";
 import { postData } from "../helpers/fetchData";
-import useSocket from "../helpers/useSocket";
-import { notify } from "../helpers/notify";
-import { useSession } from "./SessionContext";
 
 const TabStateContext = createContext();
 
 export function TabStateProvider({ children }) {
     const [tabStates, setTabStates] = useState({});
     const closedTabKeysRef = useRef(new Set());
-    const socket = useSocket();
-    const { session } = useSession();
 
     // Guardar el estado
     const saveTabState = (key, state) => {

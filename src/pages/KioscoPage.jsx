@@ -91,12 +91,15 @@ function KioscoPage() {
                 limit
             }
         }, session.username);
-        
+
         setSession(prev => ({
             ...prev,
-            kioskFilters: {
-                filters,
-                limit
+            preferences: {
+                ...prev.preferences,
+                kioskFilters: {
+                    filters,
+                    limit
+                }
             }
         }));
     }, [filters, limit])

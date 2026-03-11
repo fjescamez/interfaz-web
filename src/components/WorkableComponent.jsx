@@ -2,17 +2,14 @@ import "./WorkableComponent.css";
 import { RiProhibited2Line } from "react-icons/ri";
 import { FaPause, FaPlay, FaFlag } from "react-icons/fa";
 import TrappingComponent from "./orderKioskComponents/TrappingComponent";
-import { useEffect, useState } from "react";
-import useSocket from "../helpers/useSocket";
-import { useSession } from "../context/SessionContext";
+import { useState } from "react";
 import { RxCross2 } from "react-icons/rx";
+import { checkRole } from "../helpers/roleChecker";
 
 function WorkableComponent({ jacketId, workable, id_pedido, trappingData }) {
     const whitepaperUrl = `http://192.4.26.120:9090/portal.cgi?quantum&jacketId=${jacketId}&workableId=${workable.workable}`;    
     const { workable_name, start_whitepaper_name, start_node_name, whitepaper_name, log: nodeHistory, workable_state, workable_aborted, workable_done, workable_hold_in_kiosk } = workable;
-    const socket = useSocket();
-    const { session } = useSession();
-    const isTecnico = session?.departments?.includes("Tecnico");
+    const { isTecnico } = checkRole();
 
     const [state, setState] = useState({
         id_pedido,

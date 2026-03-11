@@ -30,14 +30,12 @@ function ExternosDetails() {
             <div className="detailsScroll">
                 <div className="formSections">
                     {externosFormData.formSections.map((section, index) => (
-                        <div key={index} className="formSection">
-                            <FormSection
-                                sectionData={section}
-                                formFields={externosFormData.formFields}
-                                inputData={trabajo || {}}
-                                disable={true}
-                            />
-                        </div>
+                        <FormSection
+                            sectionData={section}
+                            formFields={externosFormData.formFields}
+                            inputData={trabajo || {}}
+                            disable={true}
+                        />
                     ))}
                 </div>
                 {trabajo?.documentName &&

@@ -191,12 +191,15 @@ export function resetKiosk({ setIsActive, setIsOpen }) {
     });
 }
 
-export function kioskConfigPerso() {
-
-}
-
 export function handleExceptions({ module, state, updateState }) {
     const { isActive, actividad, cliente } = state;
+
+    if (module === "trapping" && !state.isActive.trapping && (state.trappingData?.distancia_trapping === "0" || state.trappingData?.distancia_trapping === 0 || state.trappingData?.distancia_trapping === "")) {
+        updateState("isOpen", (prev) => ({
+            ...prev,
+            trapping: true
+        }));
+    }
 
     if (module === "montaje" && !isActive.montaje && (actividad === "MADERA" || actividad === "ETIQUETAS")) {
         updateState("isActive", (prev) => ({

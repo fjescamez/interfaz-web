@@ -6,12 +6,12 @@ import { useTabs } from "../context/TabsContext";
 import ContactForm from "../components/formComponents/ContactForm";
 import DeleteForm from "../components/formComponents/DeleteForm";
 import DetailsHeader from "../components/DetailsHeader";
-import { useSession } from "../context/SessionContext";
 import { contactFormData } from "../helpers/formsData";
 import FormSection from "../components/formComponents/FormSection";
 import { fetchOneItem } from "../helpers/fetchData";
 import { contactTableInfo } from "../helpers/tablesInfo";
 import { useLocation } from "react-router-dom";
+import { checkRole } from "../helpers/roleChecker";
 
 function ContactDetails({ toggleKiosk }) {
     const [contact, setContact] = useState({});
@@ -20,10 +20,8 @@ function ContactDetails({ toggleKiosk }) {
     const { closeTab } = useTabs();
     const [editPopup, setEditPopup] = useState(false);
     const [deletePopup, setDeletePopup] = useState(false);
-    const { session } = useSession();
     const [showInfo, setShowInfo] = useState(true);
-    //const { grid } = usersDetails;
-    const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
+    const { isAdmin } = checkRole();
     const location = useLocation();
 
     const clienteNombreOptions = contact.cliente_nombre ? [contact.cliente_nombre] : [];
@@ -81,14 +79,12 @@ function ContactDetails({ toggleKiosk }) {
             <div className="detailsScroll">
                 <div className="formSections">
                     {contactFormData.formSections.map((section) => (
-                        <div key={section.title} className="formSection">
-                            <FormSection
-                                sectionData={section}
-                                formFields={formFieldsWithOptions}
-                                inputData={contact}
-                                disable={true}
-                            />
-                        </div>
+                        <FormSection
+                            sectionData={section}
+                            formFields={formFieldsWithOptions}
+                            inputData={contact}
+                            disable={true}
+                        />
                     ))}
                 </div>
             </div>

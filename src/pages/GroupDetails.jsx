@@ -5,7 +5,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useTabs } from "../context/TabsContext";
 import GroupForm from "../components/formComponents/GroupForm";
 import DetailsHeader from "../components/DetailsHeader";
-import { useSession } from "../context/SessionContext";
 import { groupFormData } from "../helpers/formsData";
 import FormSection from "../components/formComponents/FormSection";
 import { fetchOneItem } from "../helpers/fetchData";
@@ -13,6 +12,7 @@ import DeleteForm from "../components/formComponents/DeleteForm";
 import { groupTableInfo } from "../helpers/tablesInfo";
 import { ThreeDot } from 'react-loading-indicators';
 import { useLocation } from "react-router-dom";
+import { checkRole } from "../helpers/roleChecker";
 
 function GroupDetails({ toggleKiosk }) {
     const [group, setGroup] = useState({});
@@ -23,10 +23,8 @@ function GroupDetails({ toggleKiosk }) {
     const { closeTab } = useTabs();
     const [editPopup, setEditPopup] = useState(false);
     const [deletePopup, setDeletePopup] = useState(false);
-    const { session } = useSession();
     const [showInfo, setShowInfo] = useState(true);
-    //const { grid } = usersDetails;
-    const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
+    const { isAdmin } = checkRole();
     const location = useLocation();
 
     useEffect(() => {
@@ -119,59 +117,55 @@ function GroupDetails({ toggleKiosk }) {
             <div className="detailsScroll">
                 <div className="formSections">
                     {formData.formSections.map((section) => (
-                        <div key={section.title} className="formSection">
-                            <FormSection
-                                sectionData={section}
-                                formFields={formData.formFields}
-                                inputData={group || {}}
-                                disable={true}
-                            />
-                        </div>
+                        <FormSection
+                            sectionData={section}
+                            formFields={formData.formFields}
+                            inputData={group || {}}
+                            disable={true}
+                        />
                     ))}
                     {contacts.length < 1
                         ?
                         <p className='loading'>Cargando <ThreeDot color="black" size="small" speedPlus={2} /></p>
                         : contacts.map((contact, index) => (
-                            <div key={index} className="formSection">
-                                <FormSection
-                                    sectionData={{
-                                        title: `Contacto ${index + 1}`,
-                                        rows: [
-                                            {
-                                                groups: ["contacto", "telefono", "email"]
-                                            }
-                                        ]
-                                    }}
-                                    formFields={[
+                            <FormSection
+                                sectionData={{
+                                    title: `Contacto ${index + 1}`,
+                                    rows: [
                                         {
-                                            htmlFor: "contacto",
-                                            labelId: "contacto",
-                                            labelTitle: "Nombre del contacto",
-                                            inputType: "text",
-                                            inputId: "contacto",
-                                            inputName: "contacto"
-                                        },
-                                        {
-                                            htmlFor: "telefono",
-                                            labelId: "telefono",
-                                            labelTitle: "Teléfono",
-                                            inputType: "text",
-                                            inputId: "telefono",
-                                            inputName: "telefono"
-                                        },
-                                        {
-                                            htmlFor: "email",
-                                            labelId: "email",
-                                            labelTitle: "Email",
-                                            inputType: "email",
-                                            inputId: "email",
-                                            inputName: "email"
+                                            groups: ["contacto", "telefono", "email"]
                                         }
-                                    ]}
-                                    inputData={contact || {}}
-                                    disable={true}
-                                />
-                            </div>
+                                    ]
+                                }}
+                                formFields={[
+                                    {
+                                        htmlFor: "contacto",
+                                        labelId: "contacto",
+                                        labelTitle: "Nombre del contacto",
+                                        inputType: "text",
+                                        inputId: "contacto",
+                                        inputName: "contacto"
+                                    },
+                                    {
+                                        htmlFor: "telefono",
+                                        labelId: "telefono",
+                                        labelTitle: "Teléfono",
+                                        inputType: "text",
+                                        inputId: "telefono",
+                                        inputName: "telefono"
+                                    },
+                                    {
+                                        htmlFor: "email",
+                                        labelId: "email",
+                                        labelTitle: "Email",
+                                        inputType: "email",
+                                        inputId: "email",
+                                        inputName: "email"
+                                    }
+                                ]}
+                                inputData={contact || {}}
+                                disable={true}
+                            />
                         ))}
                 </div>
             </div>

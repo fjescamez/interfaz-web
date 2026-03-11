@@ -3,16 +3,18 @@ import { paginaSoporteDetails } from '../helpers/detailsGrid'
 import GridComponent from '../components/GridComponent';
 import { fetchDataNoLimits, postData } from '../helpers/fetchData';
 import { useSession } from '../context/SessionContext';
+import { useTabs } from '../context/TabsContext';
 
 function Soporte() {
   const { grid } = paginaSoporteDetails;
   const { session } = useSession();
+  const { createTab } = useTabs();
 
   const handleClick = async (key) => {
     if (key === "sincronizarClientes") {
       await fetchDataNoLimits("clients/sync/cloudflow");
     } else if (key === "pruebas") {
-      const result = await postData("orderKiosks/testJackets", {});
+      createTab("/test", "TEST");
     }
   }
 

@@ -11,7 +11,7 @@ import { RiText } from "react-icons/ri";
 import GroupsSvg from "../assets/svg/GroupsSvg";
 import Plotter from "../assets/svg/Plotter";
 import MontajeSvg from "../assets/svg/MontajeSvg";
-import { caidasFreecutOptions } from "./constants";
+import { caidasFreecutOptions, cajaReferenciaOptions, plantillasDocumentos } from "./constants";
 
 export const traceTextForm = {
     headerIcon: <RiText />,
@@ -2084,6 +2084,52 @@ export const clientConfigFormData = {
             ]
         },
         {
+            title: "Boceto",
+            rows: [
+                {
+                    groups: [
+                        "bocetoRasterizado",
+                        "plantillaBoceto"
+                    ]
+                },
+                {
+                    groups: [
+                        "nombrePlantillaBoceto"
+                    ]
+                },
+                {
+                    groups: [
+                        "anchoPlantillaBoceto",
+                        "altoPlantillaBoceto",
+                        "cajaReferenciaBoceto"
+                    ]
+                }
+            ]
+        },
+        {
+            title: "Ficha",
+            rows: [
+                {
+                    groups: [
+                        "fichaRasterizada",
+                        "plantillaFicha"
+                    ]
+                },
+                {
+                    groups: [
+                        "nombrePlantillaFicha"
+                    ]
+                },
+                {
+                    groups: [
+                        "anchoPlantillaFicha",
+                        "altoPlantillaFicha",
+                        "cajaReferenciaFicha"
+                    ]
+                }
+            ]
+        },
+        {
             title: "Montaje",
             rows: [
                 {
@@ -2121,6 +2167,126 @@ export const clientConfigFormData = {
             inputName: "contactoDefault"
         },
         {
+            htmlFor: "bocetoRasterizado",
+            labelId: "bocetoRasterizadoLabel",
+            labelTitle: "Rasterizar",
+            inputType: "checkbox",
+            inputId: "bocetoRasterizado",
+            inputName: "bocetoRasterizado"
+        },
+        {
+            htmlFor: "plantillaBoceto",
+            labelId: "plantillaBocetoLabel",
+            labelTitle: "Tipo Plantilla",
+            select: "simple",
+            options: plantillasDocumentos,
+            inputId: "plantillaBoceto",
+            inputName: "plantillaBoceto",
+            visibleFor: ["Soporte"]
+        },
+        {
+            htmlFor: "anchoPlantillaBoceto",
+            labelId: "anchoPlantillaBocetoLabel",
+            labelTitle: "Ancho Plantilla Boceto",
+            inputType: "number",
+            inputId: "anchoPlantillaBoceto",
+            inputName: "anchoPlantillaBoceto",
+            visibleFor: ["Soporte"],
+            showIf: ({ inputData }) => inputData?.plantillaBoceto === "Personalizada"
+        },
+        {
+            htmlFor: "altoPlantillaBoceto",
+            labelId: "altoPlantillaBocetoLabel",
+            labelTitle: "Alto Plantilla Boceto",
+            inputType: "number",
+            inputId: "altoPlantillaBoceto",
+            inputName: "altoPlantillaBoceto",
+            visibleFor: ["Soporte"],
+            showIf: ({ inputData }) => inputData?.plantillaBoceto === "Personalizada"
+        },
+        {
+            htmlFor: "nombrePlantillaBoceto",
+            labelId: "nombrePlantillaBocetoLabel",
+            labelTitle: "Nombre Plantilla Boceto",
+            select: "simple",
+            options: [],
+            inputId: "nombrePlantillaBoceto",
+            inputName: "nombrePlantillaBoceto",
+            visibleFor: ["Soporte"],
+            showIf: ({ inputData }) => inputData?.plantillaBoceto === "Personalizada"
+        },
+        {
+            htmlFor: "cajaReferenciaBoceto",
+            labelId: "cajaReferenciaBocetoLabel",
+            labelTitle: "Caja Referencia Boceto",
+            select: "simple",
+            options: cajaReferenciaOptions,
+            inputId: "cajaReferenciaBoceto",
+            inputName: "cajaReferenciaBoceto",
+            visibleFor: ["Soporte"],
+            showIf: ({ inputData }) => inputData?.plantillaBoceto === "Personalizada"
+        },
+        {
+            htmlFor: "fichaRasterizada",
+            labelId: "fichaRasterizadaLabel",
+            labelTitle: "Rasterizar",
+            inputType: "checkbox",
+            inputId: "fichaRasterizada",
+            inputName: "fichaRasterizada"
+        },
+        {
+            htmlFor: "plantillaFicha",
+            labelId: "plantillaFichaLabel",
+            labelTitle: "Tipo Plantilla",
+            select: "simple",
+            options: plantillasDocumentos,
+            inputId: "plantillaFicha",
+            inputName: "plantillaFicha",
+            visibleFor: ["Soporte"]
+        },
+        {
+            htmlFor: "anchoPlantillaFicha",
+            labelId: "anchoPlantillaFichaLabel",
+            labelTitle: "Ancho Plantilla Ficha",
+            inputType: "number",
+            inputId: "anchoPlantillaFicha",
+            inputName: "anchoPlantillaFicha",
+            visibleFor: ["Soporte"],
+            showIf: ({ inputData }) => inputData?.plantillaFicha === "Personalizada"
+        },
+        {
+            htmlFor: "altoPlantillaFicha",
+            labelId: "altoPlantillaFichaLabel",
+            labelTitle: "Alto Plantilla Ficha",
+            inputType: "number",
+            inputId: "altoPlantillaFicha",
+            inputName: "altoPlantillaFicha",
+            visibleFor: ["Soporte"],
+            showIf: ({ inputData }) => inputData?.plantillaFicha === "Personalizada"
+        },
+        {
+            htmlFor: "nombrePlantillaFicha",
+            labelId: "nombrePlantillaFichaLabel",
+            labelTitle: "Nombre Plantilla Ficha",
+            select: "simple",
+            options: [],
+            inputId: "nombrePlantillaFicha",
+            inputName: "nombrePlantillaFicha",
+            visibleFor: ["Soporte"],
+            showIf: ({ inputData }) => inputData?.plantillaFicha === "Personalizada"
+        },
+        {
+            htmlFor: "cajaReferenciaFicha",
+            labelId: "cajaReferenciaFichaLabel",
+            labelTitle: "Caja Referencia Ficha",
+            select: "simple",
+            options: cajaReferenciaOptions,
+            inputId: "cajaReferenciaFicha",
+            inputName: "cajaReferenciaFicha",
+            visibleFor: ["Soporte"],
+            showIf: ({ inputData }) => inputData?.plantillaFicha === "Personalizada"
+        },
+        {
             htmlFor: "compensacionCorte",
             labelId: "compensacionCorteLabel",
             labelTitle: "Compensación de corte",
@@ -2131,7 +2297,7 @@ export const clientConfigFormData = {
         {
             htmlFor: "marcaMontaje",
             labelId: "marcaMontajeLabel",
-            labelTitle: "Marca de montaje",
+            labelTitle: "Plantilla de montaje",
             select: "simple",
             options: [
                 {},
@@ -2158,6 +2324,15 @@ export const clientConfigFormData = {
             ],
             inputId: "marcaMontaje",
             inputName: "marcaMontaje"
+        },
+        {
+            htmlFor: "caidasFreecut",
+            labelId: "caidasFreecutLabel",
+            labelTitle: "Caídas Freecut",
+            select: "simple",
+            options: caidasFreecutOptions,
+            inputId: "caidasFreecut",
+            inputName: "caidasFreecut"
         },
         {
             htmlFor: "certificadoControl",
@@ -2190,15 +2365,6 @@ export const clientConfigFormData = {
             inputType: "checkbox",
             inputId: "unitarioPng",
             inputName: "unitarioPng"
-        },
-        {
-            htmlFor: "caidasFreecut",
-            labelId: "caidasFreecutLabel",
-            labelTitle: "Caídas Freecut",
-            select: "simple",
-            options: caidasFreecutOptions,
-            inputId: "caidasFreecut",
-            inputName: "caidasFreecut"
         }
     ]
 }

@@ -20,12 +20,12 @@ import XmlKiosk from "./XmlKiosk";
 import TintasPopUp from "./TintasPopUp";
 import OpcionalesPopUp from "./OpcionalesPopUp";
 import OrderInfoPopUp from "./OrderInfoPopUp";
-import TraceTextPopUp from "./TraceTextPopUp";
 import { useSession } from "../../context/SessionContext";
 import SignJobForm from "../formComponents/SignJobForm";
 import { orderTableInfo } from "../../helpers/tablesInfo";
 import DeleteForm from "../formComponents/DeleteForm";
 import TraceTextForm from "../formComponents/TraceTextForm";
+import { checkRole } from "../../helpers/roleChecker";
 
 function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
     const { session } = useSession();
@@ -54,8 +54,7 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
     const sideBarRef = useRef(null);
     const { createTab } = useTabs();
     const folderUrl = fullOrder.rutaTrabajo?.replace("cloudflow://", "").replace("PEDIDOS_", "Pedidos ");
-    const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
-    const isTecnico = session?.departments.includes("Tecnico");
+    const { isTeleWork } = checkRole();
 
     const updateOrder = async () => {
         setExecuting(true);
@@ -134,7 +133,7 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
                 break;
             case "openFolder":
                 const openFolder = () => {
-                    if (session.teleWork) {
+                    if (isTeleWork) {
                         window.location.href = `smb://192.4.26.120/Archivo%20Disengraf/TRABAJOS/${folderUrl}`;
                     } else {
                         window.location.href = `smb://CLOUDFLOW2023/Archivo%20Disengraf/TRABAJOS/${folderUrl}`;
@@ -248,7 +247,6 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
             {compareModal && <ComparePopUp setCompareModal={setCompareModal} rutaTrabajo={fullOrder.rutaTrabajo} />}
             {lenModal && <OrderLenTable setLenModal={setLenModal} orderId={fullOrder.id_pedido} />}
             {filesModal && <FileTable setFilesModal={setFilesModal} orderId={fullOrder.id_pedido} filePath={filePath} />}
-            {/* {traceModal && <TraceTextPopUp setTraceModal={setTraceModal} rutaTrabajo={fullOrder.rutaTrabajo} unitario={fullOrder.unitario} />} */}
             {traceModal && <TraceTextForm setModal={setTraceModal} rutaInfo={fullOrder.info || `${fullOrder.rutaTrabajo}INFO%20CLIENTE/`} />}
             {signJobModal && <SignJobForm setSignJobModal={setSignJobModal} fullOrder={fullOrder} />}
             {deletePopUp && <DeleteForm setModal={setDeletePopUp} id={fullOrder._id} tableInfo={orderTableInfo} />}

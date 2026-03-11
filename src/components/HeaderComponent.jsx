@@ -9,16 +9,16 @@ import { useEffect, useRef } from "react";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import { useInputPistola } from "../context/InputPistolaContext";
 import { MdBarcodeReader } from "react-icons/md";
+import { checkRole } from "../helpers/roleChecker";
 
 function HeaderComponent({ toggleUserDropdown, isOnline, setIsOnline }) {
     const { tabs, createTab, closeTab, closeAllTabs } = useTabs();
     const { accionPistola } = useInputPistola();
     const location = useLocation();
-    const { avatar, session } = useSession();
+    const { avatar } = useSession();
     const navigate = useNavigate();
     const simpleBarRef = useRef();
-    const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
-    const isProduccion = session?.departments?.includes("Solido") || session?.departments?.includes("Liquido");
+    const { isAdmin, isProduccion } = checkRole();
 
     useEffect(() => {
         const el = simpleBarRef.current?.getScrollElement?.() || simpleBarRef.current;

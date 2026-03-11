@@ -225,7 +225,7 @@ function OrderDetails() {
                     <p>VERSIÓN</p>
                   </div>
                   <div className="body">
-                    <p>{orderXml.numero?.version} {/* <BsTrash3Fill onClick={() => setDeletePopup(true)} style={{ width: "3.5rem", height: "3.5rem", cursor: "pointer" }} /> */}</p>
+                    <p>{orderXml.numero?.version}</p>
                   </div>
                 </div>
                 <div className="footer">
@@ -403,7 +403,6 @@ function OrderDetails() {
                       <p>MÁQUINA</p>
                     </div>
                     <div className="body">
-                      {/* PARCHE MIENTRAS QUE LA MÁQUINA (FICHA TÉCNICA) PUEDA LLEGAR COMO OBJETO VACIO */}
                       <p>{typeof orderXml.tecnicos?.ficha_tecnica !== "object" && orderXml.tecnicos?.ficha_tecnica} <span className="highlight" onClick={openFichaTecnica}>(VER FICHA)</span></p>
                     </div>
                   </div>
@@ -439,21 +438,10 @@ function OrderDetails() {
             </div>
             <div className="row4">
               <div className="tipoMaterial">
-                {/* No se si switch es lo más recomendable */}
-                {(() => {
-                  switch (orderXml.actividad?.id) {
-                    case 'MADERA':
-                      return <PedidoMadera orderXml={orderXml} />
-                    case 'CARTON':
-                      return <PedidoCarton orderXml={orderXml} />
-                    case 'FLEXIBLE':
-                      return <PedidoFlexible orderXml={orderXml} />
-                    case 'ETIQUETAS':
-                      return <PedidoEtiquetas orderXml={orderXml} />
-                    default:
-                      return null;
-                  }
-                })()}
+                {orderXml.actividad?.id === "MADERA" && <PedidoMadera orderXml={orderXml} />}
+                {orderXml.actividad?.id === "CARTON" && <PedidoCarton orderXml={orderXml} />}
+                {orderXml.actividad?.id === "FLEXIBLE" && <PedidoFlexible orderXml={orderXml} />}
+                {orderXml.actividad?.id === "ETIQUETAS" && <PedidoEtiquetas orderXml={orderXml} />}
                 <div className="datosTecnicos flex">
                   <div className="title">
                     <p>DATOS TÉCNICOS</p>

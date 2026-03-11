@@ -25,7 +25,7 @@ import useSocket from "../helpers/useSocket";
 import { addKeyListener } from "../helpers/toggleModal";
 import { checkRole } from "../helpers/roleChecker";
 
-function Table({
+function TableRefactor({
     normalizedData,
     dinamicTableInfo,
     specificHeaderTitle,
@@ -51,6 +51,7 @@ function Table({
     extraStyles
 }) {
     const didInitialFetch = useRef(false);
+    const advancedQuerySourceRef = useRef(null); // 'location' | 'user' | null
     const urlApi = import.meta.env.VITE_API_URL;
     const location = useLocation();
     const [checkedIndexes, setCheckedIndexes] = useState([]);
@@ -93,12 +94,13 @@ function Table({
     }
 
     useEffect(() => {
-        didInitialFetch.current = false;
         setSearch("");
         setDebouncedSearch("");
+        advancedQuerySourceRef.current = "location";
         setAdvancedQuery({});
         setPage(1);
         setShowChecks(tableActions.length > 0 && tableActions.some(action => !action.noCheck) && (rolesActions ? rolesActions.includes(session?.role) : true));
+        didInitialFetch.current = false;
     }, [location]);
 
     const lastApiResultRef = useRef([]);
@@ -107,21 +109,17 @@ function Table({
         if (oldResults.length !== newResults.length) return false;
 
         const getKey = (r) => r._id ?? r.id;
+        const oldById = new Map(oldResults.map(r => [getKey(r), r]));
 
-        for (let i = 0; i < newResults.length; i++) {
-            const oldItem = oldResults[i];
-            const newItem = newResults[i];
-
-            // si cambia el id o el contenido, consideramos que ha cambiado
-            if (getKey(oldItem) !== getKey(newItem)) return false;
-            if (JSON.stringify(oldItem) !== JSON.stringify(newItem)) return false;
-        }
-
-        return true; // misma longitud, mismo orden, mismo contenido
+        return newResults.every(r => {
+            const old = oldById.get(getKey(r));
+            if (!old) return false;
+            return JSON.stringify(old) === JSON.stringify(r);
+        });
     };
 
     const getData = async (page, searchValue = "", clientFilter = "") => {
-        const result = await fetchData(endPoint, searchValue, page, null, setTotal, clientFilter, userFilter, new URLSearchParams(orderBy)?.toString());
+        const result = await fetchData(endPoint, searchValue, page, null, setTotal, clientFilter, userFilter);
 
         if (!areResultsEqual(lastApiResultRef.current, result)) {
             lastApiResultRef.current = result;
@@ -303,16 +301,26 @@ function Table({
     useEffect(() => {
         if (!didInitialFetch.current) return;
 
-        if (advancedQuery !== null) {
-            const searchParams = new URLSearchParams(advancedQuery)?.toString();
+        const source = advancedQuerySourceRef.current;
 
+        // Cambios de advancedQuery que vienen de navegación -> no hacer fetch extra
+        if (source === "location") {
+            advancedQuerySourceRef.current = null;
+            return;
+        }
+
+        const hasFilters = advancedQuery && Object.keys(advancedQuery).length > 0;
+
+        if (hasFilters) {
+            const searchParams = new URLSearchParams(advancedQuery)?.toString();
             if (searchParams !== "") {
                 getData(page, searchParams, clienteCodigo || clientFilter);
-            } else {
-                if (!initialData) {
-                    setPage(1);
-                    getData(1, search || actualTab?.search || "", clienteCodigo || clientFilter);
-                }
+            }
+        } else {
+            // Usuario ha borrado todos los filtros avanzados
+            if (!initialData) {
+                setPage(1);
+                getData(1, search || actualTab?.search || "", clienteCodigo || clientFilter);
             }
         }
     }, [advancedQuery]);
@@ -376,6 +384,7 @@ function Table({
     const handleFilters = (e) => {
         const { name, value } = e.target;
 
+        advancedQuerySourceRef.current = "user";
         setAdvancedQuery(prev => {
             const newState = { ...prev };
 
@@ -406,17 +415,53 @@ function Table({
         }
     };
 
+    const orderByColumn = () => {
+        if (orderBy.column && orderBy.direction) {
+            const sortedData = tableData.sort((a, b) => {
+                let valueA = a[orderBy.column];
+                let valueB = b[orderBy.column];
+
+                // Si el nombre de la columna incluye "fecha", convertir a Date
+                if (orderBy.column.toLowerCase().includes("fecha")) {
+                    const parseDate = (dateStr) => {
+                        if (dateStr.includes("-")) {
+                            const [day, month, year] = dateStr.split("-").map(Number); // Para formato DD-MM-YYYY
+                            return new Date(year, month - 1, day);
+                        } else if (dateStr.includes("/")) {
+                            const [day, month, year] = dateStr.split("/").map(Number); // Para formato DD/MM/YYYY
+                            return new Date(year, month - 1, day);
+                        }
+                    };
+
+                    valueA = parseDate(valueA);
+                    valueB = parseDate(valueB);
+                }
+
+                if (valueA < valueB) return orderBy.direction === "asc" ? -1 : 1;
+                if (valueA > valueB) return orderBy.direction === "asc" ? 1 : -1;
+                return 0;
+            });
+
+            setTableData([...sortedData]);
+        } else {
+            if (!initialData) {
+                let searchParams = search;
+                const advancedFilters = new URLSearchParams(advancedQuery)?.toString();
+
+                if (advancedFilters !== "") {
+                    searchParams = advancedFilters;
+                }
+
+                getData(1, searchParams, clienteCodigo || clientFilter);
+            } else {
+                setTableData(initialData);
+            }
+        }
+    }
 
     useEffect(() => {
-        let searchParams = search;
-        const advancedFilters = new URLSearchParams(advancedQuery)?.toString();
-
-        if (advancedFilters !== "") {
-            searchParams = advancedFilters;
-        }
-
         if (orderBy !== "") {
-            getData(1, searchParams, clienteCodigo || clientFilter);
+            orderByColumn();
         }
     }, [orderBy]);
 
@@ -464,6 +509,7 @@ function Table({
             setPage(1);
             if (actualTab && actualTab.advancedQuery) {
                 setAdvancedFilters(true);
+                advancedQuerySourceRef.current = "location";
                 setAdvancedQuery(actualTab.advancedQuery);
                 const searchParams = new URLSearchParams(actualTab.advancedQuery)?.toString();
                 getData(1, searchParams, clienteCodigo || clientFilter);
@@ -479,7 +525,6 @@ function Table({
         // Muy importante: marcar que la carga inicial ya se hizo
         didInitialFetch.current = true;
     }, [location]);
-
 
     const searchData = (e) => {
         setSearch(e.target.value);
@@ -731,6 +776,7 @@ function Table({
                                         className={`filtersButton ${advancedFilters ? "active" : ""}`}
                                         onClick={() => {
                                             setAdvancedFilters(prev => !prev);
+                                            advancedQuerySourceRef.current = "user";
                                             setAdvancedQuery({});
                                             setPage(1);
                                             setSearch("");
@@ -994,4 +1040,4 @@ function Table({
     )
 }
 
-export default Table
+export default TableRefactor;

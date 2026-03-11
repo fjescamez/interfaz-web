@@ -5,12 +5,12 @@ import { fetchData, fetchOneItem } from '../helpers/fetchData';
 import { useTabs } from '../context/TabsContext';
 import FormSection from '../components/formComponents/FormSection';
 import { strategyFormData } from '../helpers/formsData';
-import { useSession } from '../context/SessionContext';
 import StrategyForm from '../components/formComponents/StrategyForm';
 import DeleteForm from '../components/formComponents/DeleteForm';
 import { strategyTableInfo } from '../helpers/tablesInfo';
 import { useLocation } from "react-router-dom";
 import { BlinkBlur } from "react-loading-indicators";
+import { checkRole } from '../helpers/roleChecker';
 
 function StrategyDetails() {
   const [strategy, setStrategy] = useState(undefined);
@@ -20,8 +20,7 @@ function StrategyDetails() {
   const [editPopup, setEditPopup] = useState(false);
   const [deletePopup, setDeletePopup] = useState(false);
   const [itemsData, setItemsData] = useState({});
-  const { session } = useSession();
-  const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
+  const { isAdmin } = checkRole();
   const location = useLocation();
 
   useEffect(() => {
@@ -132,14 +131,12 @@ function StrategyDetails() {
           {strategy ? (
             <div className="formSections">
               {strategyFormData.formSections.map((section) => (
-                <div key={section.title} className="formSection">
-                  <FormSection
-                    sectionData={section}
-                    formFields={strategyFormData.formFields}
-                    inputData={itemsData}
-                    disable={true}
-                  />
-                </div>
+                <FormSection
+                  sectionData={section}
+                  formFields={strategyFormData.formFields}
+                  inputData={itemsData}
+                  disable={true}
+                />
               ))}
             </div>
           ) : (

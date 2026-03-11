@@ -101,7 +101,7 @@ function FreecutComponent({ state, updateState, freecutData, setFreecutData, col
                         <input type="text" onChange={(e) => handleColors(null, "distancia", e.target.value)} />
                         <ChosenSelect
                             name={""}
-                            value={freecutData.caidasAll || state.clientConfig?.configuraciones?.montaje?.caidasFreecut || ""}
+                            value={freecutData.caidasAll || state?.clientConfig?.configuraciones?.montaje?.caidasFreecut || ""}
                             options={caidasFreecutOptions}
                             onChange={e => handleColors(null, "caidas", e.target.value)}
                         />

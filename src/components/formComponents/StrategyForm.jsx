@@ -62,7 +62,7 @@ function StrategyForm({ setModal, mode, itemsData, clienteDato, setTableData, se
         }
     };
 
-    useEffect(() => {
+    useEffect(() => {        
         if (itemsData) {
             const {
                 perfil_nombre,
@@ -72,15 +72,15 @@ function StrategyForm({ setModal, mode, itemsData, clienteDato, setTableData, se
                 tipoTramado
             } = itemsData;
 
-            const perfil = perfil_nombre.split(".");
+            const perfil = perfil_nombre?.split(".") || "";
             const nombrePerfil = perfil[0] || "";
             const formatoPerfil = perfil[1] || "";
 
-            const curvaPlotter = curvaP.split(".");
+            const curvaPlotter = curvaP?.split(".") || "";
             const nombreCurvaPlotter = curvaPlotter[0] || "";
             const formatoCurvaPlotter = curvaPlotter[1] || "";
 
-            const curvaCliche = curvaC.split(".");
+            const curvaCliche = curvaC?.split(".") || "";
             const nombreCurvaCliche = curvaCliche[0] || "";
             const formatoCurvaCliche = curvaCliche[1] || "";
 
@@ -90,12 +90,12 @@ function StrategyForm({ setModal, mode, itemsData, clienteDato, setTableData, se
                 cliente_codigo: clienteDato ? clienteDato.code : "",
                 perfil_nombre: nombrePerfil,
                 perfil_formato: formatoPerfil,
-                curva_plotter_nombre: nombreCurvaPlotter,
-                curva_plotter_formato: formatoCurvaPlotter,
-                curva_cliches_nombre: nombreCurvaCliche,
-                curva_cliches_formato: formatoCurvaCliche,
-                estrategia_nombre: nombrePCW,
-                tramado: tipoTramado,
+                curva_plotter_nombre: nombreCurvaPlotter || itemsData.curva_plotter_nombre,
+                curva_plotter_formato: formatoCurvaPlotter || itemsData.curva_plotter_formato,
+                curva_cliches_nombre: nombreCurvaCliche || itemsData.curva_cliches_nombre,
+                curva_cliches_formato: formatoCurvaCliche || itemsData.curva_cliches_formato,
+                estrategia_nombre: nombrePCW || itemsData.estrategia_nombre,
+                tramado: tipoTramado || itemsData.tramado
             });
         } else {
             setStrategyData({

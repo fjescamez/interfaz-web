@@ -6,12 +6,10 @@ import { produccionOficinaDetails, produccionPlanchasDetails, produccionReferenc
 import { useTabs } from "../context/TabsContext";
 import { fetchData } from "../helpers/fetchData";
 import { useEffect, useState } from "react";
-import { useSession } from "../context/SessionContext";
+import { checkRole } from "../helpers/roleChecker";
 
 function ProduccionPage() {
-    const { session } = useSession();
-    const isProduccion = session?.departments?.includes("Solido") || session?.departments?.includes("Liquido");
-    const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
+    const { isAdmin, isProduccion } = checkRole();
     const [produccionPlanchas, setProduccionPlanchas] = useState(produccionPlanchasDetails);
     const [produccionExternos, setProduccionExternos] = useState(produccionTrabajosDetails);
     const [totales, setTotales] = useState({

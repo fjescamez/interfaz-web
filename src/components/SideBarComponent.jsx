@@ -8,19 +8,14 @@ import LenFile from "../assets/svg/LenFile";
 import { SlBriefcase } from "react-icons/sl";
 import { PiOven } from "react-icons/pi";
 import { BsFillInboxFill } from "react-icons/bs";
-import { useSession } from "../context/SessionContext";
 import { MdBarcodeReader } from "react-icons/md";
 import { FaScrewdriverWrench } from "react-icons/fa6";
 import { PiStorefrontLight } from "react-icons/pi"
+import { checkRole } from "../helpers/roleChecker";
 
 function SideBarComponent({ isActive, setIsActive }) {
     const { createTab } = useTabs();
-    const { session } = useSession();
-    const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
-    const isProduccion = session?.departments?.includes("Solido") || session?.departments?.includes("Liquido");
-    const isOficina = session?.departments?.includes("Oficina");
-    const isSoporte = session?.role === "Soporte";
-    const isJefeDepartamento = session?.role === "Manager";
+    const { isAdmin, isProduccion, isOficina, isSoporte, isJefeDepartamento, isTeleWork } = checkRole();
 
     const handleClick = (icon, name) => {
         setIsActive(prev => {
@@ -49,7 +44,7 @@ function SideBarComponent({ isActive, setIsActive }) {
                 <div className={`icons ${isActive.kiosco ? "active" : ""}`} onClick={() => handleClick("kiosco", "KIOSCO GENERAL")} data-tooltip-id="my-tooltip" data-tooltip-content={"KIOSCO GENERAL"} >
                     <PiStorefrontLight />
                 </div>
-                {(isAdmin || session?.teleWork) && (
+                {(isAdmin || isTeleWork) && (
                     <>
                         <div className="border"></div>
                         <div className={`icons ${isActive.bandeja ? "active" : ""}`} onClick={() => handleClick("bandeja", "BANDEJA")} data-tooltip-id="my-tooltip" data-tooltip-content={"BANDEJA"} >

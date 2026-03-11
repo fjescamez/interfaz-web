@@ -89,14 +89,12 @@ function ProductoDetails() {
         <div className="detailsScroll">
           <div className="formSections">
             {formData.formSections.map((section, index) => (
-              <div key={index} className="formSection">
-                <FormSection
-                  sectionData={section}
-                  formFields={formData.formFields}
-                  inputData={itemsData}
-                  disable={true}
-                />
-              </div>
+              <FormSection
+                sectionData={section}
+                formFields={formData.formFields}
+                inputData={itemsData}
+                disable={true}
+              />
             ))}
           </div>
         </div>

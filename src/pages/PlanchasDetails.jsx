@@ -49,14 +49,12 @@ function PlanchasDetails() {
       <div className="detailsScroll">
         <div className="formSections">
           {planchasFormData.formSections.map((section, index) => (
-            <div key={index} className="formSection">
               <FormSection
                 sectionData={section}
                 formFields={planchasFormData.formFields}
                 inputData={plancha || {}}
                 disable={true}
               />
-            </div>
           ))}
         </div>
         {plancha?.nombre_plancha &&
