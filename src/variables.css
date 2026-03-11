@@ -10,6 +10,4 @@
     --green-gradient: linear-gradient(0deg, rgba(0, 128, 0, 1) 30%, rgba(255, 255, 255, 1) 100%);
     --grey-gradient: linear-gradient(0deg, rgba(87, 102, 113, 1) 65%, rgba(255, 255, 255, 1) 110%);
     --red-gradient: linear-gradient(0deg, red 20%, rgba(255, 255, 255, 1) 100%);
-    --rednuevo: red;
-    --bluenuevo: blue;
 }
