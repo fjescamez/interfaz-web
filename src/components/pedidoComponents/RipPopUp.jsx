@@ -178,7 +178,7 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder, multiRip }) {
                         />
                     )
                     :
-                    !multiRip && <ExecutingComponent />
+                    !multiRip && <ExecutingComponent message={"Cargando..."} />
             ) : (
                 <FreecutPopUp setFreecutModal={setFreecutPopup} colores={tintas} id_pedido={fullOrder.id_pedido} montaje={montaje} />
             )}

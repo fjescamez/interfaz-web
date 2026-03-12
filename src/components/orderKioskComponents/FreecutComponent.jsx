@@ -25,8 +25,27 @@ function FreecutComponent({ state, updateState, freecutData, setFreecutData, col
                     plancha: color.process?.replace("custom_", "") || ""
                 }))
             ]);
+        }else{
+            console.log("freeCutColors",freeCutColors)
+            setFreeCutColors((prev) => [
+                {
+                    check: false,
+                    color: "FREECUT",
+                    distancia: "0",
+                    caidas: "COMPLETO",
+                    plancha: "MIXTO"
+                },
+                ...prev.map(color => ({
+                    check: false,
+                    color: color.name,
+                    distancia: "0",
+                    caidas: "COMPLETO",
+                    plancha: color.plancha || ""
+                }))
+            ]);
+
         }
-    }, [state?.orderColorsObjects]);
+    }, []);
 
     const handleChange = (fieldName, value) => {
         setFreecutData((prev) => ({
