@@ -83,6 +83,7 @@ function OrderKiosk({ configMode }) {
     unitarioData: {
       archivo: null
     },
+    loadingUnitario: true,
     trappingData: {
       distancia_trapping: "0",
       intensidad: 100,
@@ -209,6 +210,8 @@ function OrderKiosk({ configMode }) {
       const result = await postData("orderKiosks/getUnitario", state.order);
 
       updateState("unitarios", result.options);
+      updateState("loadingUnitario", false);
+      notify("error", "Falta unitario", "No hay archivos para esta versión", false);
 
       let unitarioDefault = "";
 
@@ -920,10 +923,14 @@ function OrderKiosk({ configMode }) {
             </div>
           </>
         ) : (
-          <div className="executingContainer">
-            <BlinkBlur variant="dotted" color="var(--highlight)" size="large" speedPlus="0" />
-            <h1>Cargando</h1>
-          </div>
+          state.loadingUnitario ? (
+            <div className="executingContainer">
+              <BlinkBlur variant="dotted" color="var(--highlight)" size="large" speedPlus="0" />
+              <h1>Cargando</h1>
+            </div>
+          ) : (
+            <></>
+          )
         )}
         {state.infoPopUp && <InfoPopUp setInfoPopUp={(value) => updateState("infoPopUp", value)} infoContent={state.infoContent} setInfoContent={(value) => updateState("infoContent", value)} />}
       </div>
