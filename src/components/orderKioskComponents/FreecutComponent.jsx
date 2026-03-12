@@ -37,7 +37,7 @@ function FreecutComponent({ state, updateState, freecutData, setFreecutData, col
                 },
                 ...prev.map(color => ({
                     check: false,
-                    color: color.name,
+                    color: color.color,
                     distancia: "0",
                     caidas: "COMPLETO",
                     plancha: color.plancha || ""
