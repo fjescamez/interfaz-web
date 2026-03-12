@@ -211,7 +211,7 @@ function OrderKiosk({ configMode }) {
 
       updateState("unitarios", result.options);
       updateState("loadingUnitario", false);
-      notify("error", "Falta unitario", "No hay archivos para esta versión", 3000);
+      if(result.options.length === 0) notify("error", "Falta unitario", "No hay archivos para esta versión", 3000);
 
       let unitarioDefault = "";
 
