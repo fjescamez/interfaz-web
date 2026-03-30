@@ -78,18 +78,7 @@ function App() {
   }, [session, navigate]);
 
   const getActiveFromPath = (pathname) => {
-    if (pathname.startsWith("/home")) return "home";
-    if (pathname.startsWith("/pedidos")) return "pedidos";
-    if (pathname.startsWith("/kiosco")) return "kiosco";
-    if (pathname.startsWith("/bandeja")) return "bandeja";
-    if (pathname.startsWith("/len")) return "len";
-    if (pathname.startsWith("/clientes")) return "clientes";
-    if (pathname.startsWith("/produccion")) return "produccion";
-    if (pathname.startsWith("/pistola")) return "pistola";
-    if (pathname.startsWith("/stock")) return "stock";
-    if (pathname.startsWith("/usuarios")) return "usuarios";
-    if (pathname.startsWith("/soporte")) return "soporte";
-    return "home";
+    return pathname.replace("/", "")
   };
 
   const initialState = icons.reduce((acc, key) => {
@@ -262,6 +251,7 @@ function App() {
           <Route path="/usuarios/:id" element={<UserDetails toggleKiosk={toggleKiosk} />} />
           <Route path="/soporte" element={<Soporte />} />
           <Route path="/test" element={<OrdersPage />} />
+
         </Routes>
       </div>
     </>

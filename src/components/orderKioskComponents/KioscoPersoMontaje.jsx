@@ -1,16 +1,36 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import { globalKioskForm, globalKioskVariables } from './kioscoPersoConfig'
-import FormGroup from '../formComponents/FormGroup';
-import Switch from "@mui/material/Switch";
+import FormGroup from '../formComponents/FormGroup'
+import Switch from "@mui/material/Switch"
 
-function KioscoPersoMontaje({ orderXml, kioscoPersoData, updateState, colores, configAvanzadaData, state }) {
+function KioscoPersoMontaje({
+    orderXml,
+    kioscoPersoData,
+    updateState,
+    colores,
+    configAvanzadaData,
+    state
+}) {
     const actividadFormFields = Object.keys(globalKioskVariables).filter(key =>
         globalKioskVariables[key].includes(orderXml?.actividad?.id)
     );
+
     const clientFormFields = Object.keys(globalKioskVariables).filter(key =>
-        globalKioskVariables[key].includes(orderXml.numero.cliente_codigo)
+        globalKioskVariables[key].includes(orderXml?.numero?.cliente_codigo)
     );
-    
+
+    const resolvedKioskForm = useMemo(() => {
+        return globalKioskForm.map(field => {
+            if (field.inputName === "muestraT") {
+                return {
+                    ...field,
+                    options: colores || []
+                }
+            }
+            return field
+        })
+    }, [orderXml?.numero?.cliente_codigo, colores])
+
     useEffect(() => {
         updateState("isActive", prev => ({
             ...prev,
@@ -69,100 +89,111 @@ function KioscoPersoMontaje({ orderXml, kioscoPersoData, updateState, colores, c
                 }));
             }
 
-            if (orderXml.actividad.id === "CARTON" && !kioscoPersoData.poscicionPestana) {
+            if (orderXml?.actividad?.id === "CARTON" && !kioscoPersoData.poscicionPestana) {
                 updateState("kioscoPersoData", prevData => ({
                     ...prevData,
                     pestana: "0",
                     poscicionPestana: "CENTRADO",
                     posVarilla: "ARRIBA"
-                }));
+                }))
+            }
 
-                if (cliente_codigo === "0022" && !kioscoPersoData.tomaPinza) {
-                    updateState("kioscoPersoData", prevData => ({
-                        ...prevData,
-                        checkRegistron: false,
-                        despRegistron: "0",
-                        mastercut: false,
-                        tomaPinza: "15"
-                    }));
-                }
-
+            if (cliente_codigo === "0022" && !kioscoPersoData.tomaPinza) {
+                updateState("kioscoPersoData", prevData => ({
+                    ...prevData,
+                    checkRegistron: false,
+                    despRegistron: "0",
+                    mastercut: false,
+                    tomaPinza: "15",
+                    muestraT: colores?.[0] || ""
+                }))
             }
         }
-    }, [orderXml]);
+    }, [orderXml, colores])
 
     const calculateAlturaMicropuntos = () => {
-        let alturaMicropuntos = 0;
-        let orientacionMontaje = (configAvanzadaData && configAvanzadaData.length > 0) ? configAvanzadaData[0].stations[0].Orientation?.orientation : "up";
-        const { flexible_motivos, flexible_ancho_caida, flexible_desamvto } = orderXml?.actividad?.flexible;
+        let alturaMicropuntos = 0
+        let orientacionMontaje =
+            (configAvanzadaData && configAvanzadaData.length > 0)
+                ? configAvanzadaData[0].stations[0].Orientation?.orientation
+                : "up"
 
-        const motivos = parseInt(flexible_motivos);
+        const {
+            flexible_motivos,
+            flexible_ancho_caida,
+            flexible_desamvto
+        } = orderXml?.actividad?.flexible || {}
 
-        if (motivos != 1 && motivos % 2 !== 0) {
-            const numero = parseFloat(flexible_ancho_caida);
-            const mitad = Math.floor(numero * 100) / 2 / 100; // Corta a 2 decimales
-            alturaMicropuntos = -mitad;
+        const motivos = parseInt(flexible_motivos)
+
+        if (motivos !== 1 && motivos % 2 !== 0) {
+            const numero = parseFloat(flexible_ancho_caida)
+            const mitad = Math.floor(numero * 100) / 2 / 100
+            alturaMicropuntos = -mitad
 
             if (orientacionMontaje === "up") {
-                const numero = parseFloat(flexible_desamvto);
-                const mitad = Math.floor(numero * 100) / 2 / 100; // Corta a 2 decimales
-                alturaMicropuntos = -mitad;
+                const numero = parseFloat(flexible_desamvto)
+                const mitad = Math.floor(numero * 100) / 2 / 100
+                alturaMicropuntos = -mitad
             }
         }
 
-        return alturaMicropuntos.toString();
-    };
+        return alturaMicropuntos.toString()
+    }
 
     useEffect(() => {
-        if (orderXml?.numero?.cliente_codigo) {
-            const cliente_codigo = orderXml.numero.cliente_codigo;
-            if (cliente_codigo === "0101") {
-                updateState("kioscoPersoData", prevData => ({
-                    ...prevData,
-                    alturaMicropuntos: calculateAlturaMicropuntos()
-                }));
-
-            }
+        if (orderXml?.numero?.cliente_codigo === "0101") {
+            updateState("kioscoPersoData", prevData => ({
+                ...prevData,
+                alturaMicropuntos: calculateAlturaMicropuntos()
+            }))
         }
-    }, [configAvanzadaData]);
+    }, [configAvanzadaData])
 
     useEffect(() => {
-        if (orderXml?.numero?.cliente_codigo) {
-            const cliente_codigo = orderXml.numero.cliente_codigo;
-            if (cliente_codigo === "0101") {
-                updateState("kioscoPersoData", prevData => ({
-                    ...prevData,
-                    alturaMicropuntos: calculateAlturaMicropuntos(),
-                    microIzquierda: "-1",
-                    microDerecha: "0"
-                }));
-
-            }
+        if (orderXml?.numero?.cliente_codigo === "0101") {
+            updateState("kioscoPersoData", prevData => ({
+                ...prevData,
+                alturaMicropuntos: calculateAlturaMicropuntos(),
+                microIzquierda: "-1",
+                microDerecha: "0"
+            }))
         }
-    }, [orderXml]);
+    }, [orderXml])
 
     const handleForm = (e) => {
-        const { name, value } = e.target;
+        const { name, value, type, checked } = e.target
 
         updateState("kioscoPersoData", prevData => ({
             ...prevData,
-            [name]: value
-        }));
-    };
+            [name]: type === "checkbox" ? checked : value
+        }))
+    }
 
     const filterFields = (fields) =>
         fields.filter(field =>
             !field.showIf || field.showIf({ state })
-        );
+        )
+
+    const actividadFieldsToRender = filterFields(
+        resolvedKioskForm.filter(field => actividadFormFields.includes(field.inputName))
+    )
+
+    const clientFieldsToRender = filterFields(
+        resolvedKioskForm.filter(field => clientFormFields.includes(field.inputName))
+    )
 
     return (
         <div className="kioscoPerso">
-            {actividadFormFields.length > 0 && filterFields(globalKioskForm.filter(field => actividadFormFields.includes(field.inputName))).length > 0 && (
+            {actividadFieldsToRender.length > 0 && (
                 <>
                     <hr className="separator" />
                     <div className="kioscoPersoForm">
-                        {filterFields(globalKioskForm.filter(field => actividadFormFields.includes(field.inputName))).map((field, index) => (
-                            <div className={`formGroup ${(field.inputType === "checkbox" || field.inputType === "radioGroup") ? "formGroupRow" : ""}`} key={index}>
+                        {actividadFieldsToRender.map((field, index) => (
+                            <div
+                                className={`formGroup ${(field.inputType === "checkbox" || field.inputType === "radioGroup") ? "formGroupRow" : ""}`}
+                                key={index}
+                            >
                                 <FormGroup
                                     handleForm={handleForm}
                                     value={kioscoPersoData[field.inputName] || ""}
@@ -173,12 +204,16 @@ function KioscoPersoMontaje({ orderXml, kioscoPersoData, updateState, colores, c
                     </div>
                 </>
             )}
-            {clientFormFields.length > 0 && (
+
+            {clientFieldsToRender.length > 0 && (
                 <>
                     <hr className="separator" />
                     <div className="kioscoPersoForm">
-                        {clientFormFields.length > 0 && filterFields(globalKioskForm.filter(field => clientFormFields.includes(field.inputName))).map((field, index) => (
-                            <div className={`formGroup ${(field.inputType === "checkbox" || field.inputType === "radioGroup") ? "formGroupRow" : ""}`} key={index}>
+                        {clientFieldsToRender.map((field, index) => (
+                            <div
+                                className={`formGroup ${(field.inputType === "checkbox" || field.inputType === "radioGroup") ? "formGroupRow" : ""}`}
+                                key={index}
+                            >
                                 <FormGroup
                                     handleForm={handleForm}
                                     value={kioscoPersoData[field.inputName] || ""}
@@ -189,9 +224,13 @@ function KioscoPersoMontaje({ orderXml, kioscoPersoData, updateState, colores, c
                     </div>
                 </>
             )}
+
             {orderXml?.numero?.cliente_codigo === "0022" && (
-                <p className="kioscoPersoInfo">Para numeros de troquel 20.000, 50.000 y 80.000 usar marcas MASTERCUT</p>
+                <p className="kioscoPersoInfo">
+                    Para numeros de troquel 20.000, 50.000 y 80.000 usar marcas MASTERCUT
+                </p>
             )}
+
             {(orderXml?.numero?.cliente_codigo === "0156" || orderXml?.numero?.cliente_codigo === "0038") && (
                 <>
                     <p className="microVertical">Micropunto vertical</p>
@@ -201,13 +240,15 @@ function KioscoPersoMontaje({ orderXml, kioscoPersoData, updateState, colores, c
                                 <Switch
                                     className="kioskSwitch"
                                     checked={kioscoPersoData.microVertical?.[color] || false}
-                                    onClick={() => updateState("kioscoPersoData", prev => ({
-                                        ...prev,
-                                        microVertical: {
-                                            ...prev.microVertical,
-                                            [color]: !(prev.microVertical?.[color] || false)
-                                        }
-                                    }))}
+                                    onClick={() =>
+                                        updateState("kioscoPersoData", prev => ({
+                                            ...prev,
+                                            microVertical: {
+                                                ...prev.microVertical,
+                                                [color]: !(prev.microVertical?.[color] || false)
+                                            }
+                                        }))
+                                    }
                                 />
                                 <p>{color}</p>
                             </div>

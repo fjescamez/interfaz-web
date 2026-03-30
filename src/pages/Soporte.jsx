@@ -4,6 +4,7 @@ import GridComponent from '../components/GridComponent';
 import { fetchDataNoLimits, postData } from '../helpers/fetchData';
 import { useSession } from '../context/SessionContext';
 import { useTabs } from '../context/TabsContext';
+import { notify } from '../helpers/notify';
 
 function Soporte() {
   const { grid } = paginaSoporteDetails;

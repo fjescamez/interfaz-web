@@ -211,7 +211,7 @@ function OrderKiosk({ configMode }) {
 
       updateState("unitarios", result.options);
       updateState("loadingUnitario", false);
-      if(result.options.length === 0) notify("error", "Falta unitario", "No hay archivos para esta versión", 3000);
+      if (result.options.length === 0) notify("error", "Falta unitario", "No hay archivos para esta versión", 3000);
 
       let unitarioDefault = "";
 
@@ -520,6 +520,7 @@ function OrderKiosk({ configMode }) {
         notify("error", res.title || "Error", "Ha ocurrido un error inesperado al generar el reporte del pedido.");
       }
     });
+    
 
     let dataToReport = {
       _id: state.order?._id || "",

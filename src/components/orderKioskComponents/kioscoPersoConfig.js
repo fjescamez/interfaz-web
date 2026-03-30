@@ -17,10 +17,20 @@ export const globalKioskVariables = {
     reservaCaidas: ["0160"],
     archivo_pagina: ["0101"],
     filas: ["0101"],
-    anchoRound: ["CARTON", "MADERA", "FLEXIBLE", "ETIQUETAS"]
+    anchoRound: ["CARTON", "MADERA", "FLEXIBLE", "ETIQUETAS"],
+    muestraT: ["0022"]
 };
 
 export const globalKioskForm = [
+    {
+        htmlFor: "muestraT",
+        labelId: "muestraTLabel",
+        labelTitle: "Color marcas T",
+        select: "simple",
+        options: [],
+        inputId: "muestraT",
+        inputName: "muestraT"
+    },
     {
         htmlFor: "microCalle",
         labelId: "microCalleLabel",
@@ -168,7 +178,7 @@ export const globalKioskForm = [
         inputType: "checkbox",
         inputId: "archivo_pagina",
         inputName: "archivo_pagina",
-        showIf: ({state}) => state?.unitarioMetadata?.number_of_pages > 1
+        showIf: ({ state }) => state?.unitarioMetadata?.number_of_pages > 1
     },
     {
         htmlFor: "filas",
@@ -177,7 +187,7 @@ export const globalKioskForm = [
         inputType: "number",
         inputId: "filas",
         inputName: "filas",
-        showIf: ({state}) => state?.unitarioMetadata?.number_of_pages > 1
+        showIf: ({ state }) => state?.unitarioMetadata?.number_of_pages > 1
     },
     {
         htmlFor: "anchoRound",
@@ -186,6 +196,6 @@ export const globalKioskForm = [
         inputType: "number",
         inputId: "anchoRound",
         inputName: "anchoRound",
-        showIf: ({state}) => state?.orderColorsObjects?.some(colorObj => typeof colorObj.process === 'string' && colorObj.process.toUpperCase().includes('FAST'))
+        showIf: ({ state }) => state?.orderColorsObjects?.some(colorObj => typeof colorObj.process === 'string' && colorObj.process.toUpperCase().includes('FAST'))
     }
 ]
