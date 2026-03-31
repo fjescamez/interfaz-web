@@ -1,3 +1,5 @@
+const clientesNoEti = ["0139", "0340"]
+
 export function kioskConfigAuto({ orderXml, actividad, fileReport, setIsActive, setIsOpen, setOtraDocumentacion, orderColorsObjects }) {
     const { numero, tecnicos } = orderXml;
     const { cliente_codigo, cliche } = numero;
@@ -48,7 +50,17 @@ export function kioskConfigAuto({ orderXml, actividad, fileReport, setIsActive, 
             }));
         }
 
-        if (actividad === "MADERA" || actividad === "CARTON") {
+        if (actividad === "MADERA") {
+            setIsActive(prev => ({
+                ...prev,
+                otraDocumentacion: true
+            }));
+            setOtraDocumentacion(prev => ({
+                ...prev,
+                etiquetasMontaje: true
+            }));
+
+        } else if (actividad === "CARTON" && !clientesNoEti.includes(cliente_codigo)) {
             setIsActive(prev => ({
                 ...prev,
                 otraDocumentacion: true
@@ -135,7 +147,7 @@ export function kioskConfigAuto({ orderXml, actividad, fileReport, setIsActive, 
     }
 
     // Etiquetas
-    if (actividad === "CARTON" && isCliche && orderXml?.actividad?.carton?.carton_premontado === "-1") {
+    if (actividad === "CARTON" && isCliche && orderXml?.actividad?.carton?.carton_premontado === "-1" && !clientesNoEti.includes(cliente_codigo)) {
         setIsActive(prev => ({
             ...prev,
             otraDocumentacion: true
@@ -239,6 +251,12 @@ export function handleExceptions({ module, state, updateState }) {
             salidaColores: true
         }));
     }
+
+    if (module === "otraDocumentacion" && !isActive.otraDocumentacion) {
+        console.log("module", module)
+    }
+
+
 
     if (module === "otraDocumentacion" && isActive.otraDocumentacion) {
         updateState("otraDocumentacion", {});
