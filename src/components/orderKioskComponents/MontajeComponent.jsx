@@ -7,6 +7,7 @@ import FormGroup from '../formComponents/FormGroup';
 import { avanzadoFormData } from '../../helpers/orderKioskActions';
 
 function MontajeComponent({ state, orderXml, montajeData, configAvanzadaData, updateState, kioscoPersoData, colores, isActive }) {
+
   useEffect(() => {
     if (orderXml?.actividad?.id !== "MADERA" || !isActive.montaje) return;
 

@@ -92,43 +92,6 @@ function TrappingComponent({ state, updateState, id_pedido, workableId, nodeId, 
             to_connector = "decision.74";
         }
 
-        /* await postDataContext("orderKiosks/confirmTrapping", {
-            trappingData: state.trappingData,
-            workable_id: workableId,
-            node_id: nodeId,
-            to_connector,
-            id_pedido,
-            username: session?.username
-        }, (res) => {
-            if (action !== "modificar") {
-                updateState("loadingTrapping", false);
-                updateTabState(key, applyTrappingConfirmation);
-            }
-
-            if (res.isTrappingCanceled) {
-                updateState("isTrappingCanceled", true);
-                if (!fromWorkable) updateState("isTrappingWaiting", false);
-                updateTabState(key, (prevState) => ({
-                    ...prevState,
-                    isTrappingCanceled: true,
-                    isTrappingWaiting: false
-                }));
-            }
-
-            if (action === "aceptar") {
-                updateState("isTrappingDone", true);
-                if (!fromWorkable) updateState("isTrappingWaiting", false);
-                updateTabState(key, (prevState) => ({
-                    ...prevState,
-                    isTrappingDone: true,
-                    isTrappingWaiting: false
-                }));
-            }
-        }, (err) => {
-            notify("error", err.title);
-            updateState("loadingTrapping", false);
-            updateTabState(key, applyTrappingConfirmation);
-        }); */
         postData("orderKiosks/confirmTrapping", {
             trappingData: state.trappingData,
             workable_id: workableId,

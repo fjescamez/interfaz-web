@@ -21,6 +21,27 @@ export const globalKioskVariables = {
     muestraT: ["0022"]
 };
 
+export const globalKioskBocetoForm = [
+    {
+        htmlFor: "filas",
+        labelId: "filasLabel",
+        labelTitle: "Motivos en VERTICAL",
+        inputType: "number",
+        inputId: "filas",
+        inputName: "filas",
+        //showIf: ({ state }) => state?.unitarioMetadata?.number_of_pages > 1
+    },
+    {
+        htmlFor: "archivo_pagina",
+        labelId: "archivo_paginaLabel",
+        labelTitle: "Archivo por página",
+        inputType: "checkbox",
+        inputId: "archivo_pagina",
+        inputName: "archivo_pagina",
+        //showIf: ({ state }) => state?.unitarioMetadata?.number_of_pages > 1
+    },
+]
+
 export const globalKioskForm = [
     {
         htmlFor: "muestraT",
@@ -170,24 +191,6 @@ export const globalKioskForm = [
         inputType: "checkbox",
         inputId: "reservaCaidas",
         inputName: "reservaCaidas"
-    },
-    {
-        htmlFor: "archivo_pagina",
-        labelId: "archivo_paginaLabel",
-        labelTitle: "Archivo por página",
-        inputType: "checkbox",
-        inputId: "archivo_pagina",
-        inputName: "archivo_pagina",
-        showIf: ({ state }) => state?.unitarioMetadata?.number_of_pages > 1
-    },
-    {
-        htmlFor: "filas",
-        labelId: "filasLabel",
-        labelTitle: "Motivos en VERTICAL",
-        inputType: "number",
-        inputId: "filas",
-        inputName: "filas",
-        showIf: ({ state }) => state?.unitarioMetadata?.number_of_pages > 1
     },
     {
         htmlFor: "anchoRound",

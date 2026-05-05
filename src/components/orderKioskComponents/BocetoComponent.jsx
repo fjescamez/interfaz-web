@@ -4,8 +4,12 @@ import ChosenSelect from "../formComponents/ChosenSelect";
 import "./KioskComponents.css";
 import { notify } from "../../helpers/notify";
 import { formatosBoceto, tiposBoceto } from '../../helpers/constants';
+import FormGroup from '../formComponents/FormGroup';
+import { globalKioskBocetoForm } from './kioscoPersoConfig';
+import KioscoPersoBoceto from './KioscoPersoBoceto';
+import { useEffect } from 'react';
 
-function BocetoComponent({ opciones, setOpciones }) {
+function BocetoComponent({ opciones, setOpciones, orderXml, kioscoPersoBocData, updateState, colores, state }) {
 
     const agregarBoceto = () => {
         setOpciones(prev => [...prev, { id: opciones.at(-1).id + 1, rasterizado: false, lpi: "300", formato: "Pdf", tipo: "Compuesto" }]);
@@ -78,10 +82,17 @@ function BocetoComponent({ opciones, setOpciones }) {
                             />
                             {opciones.indexOf(opcion) === 0 && <PiPlusCircle onClick={agregarBoceto} />}
                             {opciones.indexOf(opcion) !== 0 && <PiMinusCircle onClick={() => eliminarBoceto(opcion.id)} />} */}
+
                         </div>
                     </div>
+
                 ))}
+
             </form>
+            <div className="montaje">
+                <br></br>
+                <KioscoPersoBoceto orderXml={orderXml} kioscoPersoBocData={kioscoPersoBocData} updateState={updateState} colores={colores} state={state} />
+            </div>
         </div>
     )
 }

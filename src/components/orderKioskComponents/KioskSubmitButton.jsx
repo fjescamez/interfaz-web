@@ -35,6 +35,7 @@ function KioskSubmitButton({ state, updateState, buttonAction, buttonText, compo
 
             Object.keys(state.isActive).forEach(key => {
                 if (state.isActive[key]) {
+
                     dataToSend[key] = components[key].data;
                 }
             });

@@ -24,6 +24,13 @@ export function kioskConfigAuto({ orderXml, actividad, fileReport, setIsActive, 
         }
     }
 
+    if (cliente_codigo === "0101") {
+        setIsOpen(prev => ({
+            ...prev,
+            bocetos: true
+        }));
+    }
+
     // Fichas
     if ((actividad === "CARTON" && isCliche && (tecnicos.ficha_impresa === "-1" || tecnicos.ficha_por_email === "X")) || (actividad === "FLEXIBLE" && (cliente_codigo === "0055" || cliente_codigo === "0282"))) {
         setIsActive(prev => ({

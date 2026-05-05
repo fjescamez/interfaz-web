@@ -102,6 +102,7 @@ function OrderKiosk({ configMode }) {
     freeCutColors: [],
     montajeData: [],
     kioscoPersoData: {},
+    kioscoPersoBocData: {},
     otraDocumentacion: {},
     countOtraDoc: {},
     salidaColores: [],
@@ -698,9 +699,10 @@ function OrderKiosk({ configMode }) {
       `1 Boceto: ${state.bocetos[0].rasterizado ? `${state.bocetos[0].lpi} lpi, ` : ""}${state.bocetos[0].formato}, ${state.bocetos[0].tipo}` :
       state.bocetos.length > 1 ? `${state.bocetos.length} bocetos (Desplegar para ver más)` : "", */
       title: `Rasterizado: ${state.bocetos.some(boceto => boceto.rasterizado) ? 'Sí' : 'No'}`,
-      component: <BocetoComponent opciones={state.bocetos} setOpciones={(value) => updateState("bocetos", value)} />,
+      component: <BocetoComponent state={state} kioscoPersoBocData={state.kioscoPersoBocData} updateState={updateState} unitarioMetadata={state.unitarioMetadata} configAvanzadaData={state.configAvanzadaData} orderXml={state.orderXml} opciones={state.bocetos} setOpciones={(value) => updateState("bocetos", value)} />,
       data: state.bocetos
     },
+
     "fichas": {
       /*  title: state.fichas.length === 1 ?
       `1 Ficha: ${state.fichas[0].rasterizado ? `${state.fichas[0].lpi} lpi, ` : ""}${state.fichas[0].formato}, ${state.fichas[0].tipo}` :
@@ -720,7 +722,7 @@ function OrderKiosk({ configMode }) {
     },
     "montaje": {
       title: "",
-      component: <MontajeComponent state={state} orderXml={state.orderXml} montajeData={state.montajeData} configAvanzadaData={state.configAvanzadaData} kioscoPersoData={state.kioscoPersoData} colores={state.orderColors} isActive={state.isActive} updateState={updateState} /* setMontajeData={(value) => updateState("montajeData", value)} setConfigAvanzadaData={(value) => updateState("configAvanzadaData", value)} setIsActive={(value) => updateState("isActive", value)} setIsOpen={(value) => updateState("isOpen", value)} */ />,
+      component: <MontajeComponent unitarioMetadata={state.unitarioMetadata} state={state} orderXml={state.orderXml} montajeData={state.montajeData} configAvanzadaData={state.configAvanzadaData} kioscoPersoData={state.kioscoPersoData} colores={state.orderColors} isActive={state.isActive} updateState={updateState} /* setMontajeData={(value) => updateState("montajeData", value)} setConfigAvanzadaData={(value) => updateState("configAvanzadaData", value)} setIsActive={(value) => updateState("isActive", value)} setIsOpen={(value) => updateState("isOpen", value)} */ />,
       data: state.montajeData,
       noSave: true
     },
@@ -733,6 +735,11 @@ function OrderKiosk({ configMode }) {
     "kioscoPerso": {
       data: state.kioscoPersoData
     },
+
+    "kioscoPersoBoc": {
+      data: state.kioscoPersoBocData
+    },
+    
     "freecut": {
       title: state.freeCutColors.filter(color => color.check).length > 0 ?
         `${state.freeCutColors.filter(color => color.check).map(color => color.color).join(", ")}` :
