@@ -12,9 +12,7 @@ function KioscoPersoBoceto({
 
     const [renderizar, setRenderizar] = useState(false);
 
-    useEffect(() => {
-        console.log("isActive actualizado:", state.isActive);
-    }, [state.isActive]);
+    if (typeof updateState !== "function") return null;
 
     useEffect(() => {
         updateState("isActive", prev => ({
@@ -33,7 +31,7 @@ function KioscoPersoBoceto({
                 }));
             }
         }
-    }, [orderXml, colores])
+    }, [orderXml])
 
     const handleForm = (e) => {
         const { name, value, type, checked } = e.target
