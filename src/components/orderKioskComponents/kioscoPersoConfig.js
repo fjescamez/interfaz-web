@@ -8,6 +8,7 @@ export const globalKioskVariables = {
     posicionCortesCaidas: ["0159", "0360"],
     microVertical: ["0156", "0038"],
     pestana: ["CARTON"],
+    capiculado: ["CARTON"],
     poscicionPestana: ["CARTON"],
     posVarilla: ["CARTON"],
     checkRegistron: ["0022"],
@@ -146,6 +147,18 @@ export const globalKioskForm = [
         ],
         inputId: "posVarilla",
         inputName: "posVarilla"
+    },
+    {
+        htmlFor: "capiculado",
+        labelId: "capiculadoLabel",
+        labelTitle: "Capiculados",
+        select: "simple",
+        options: [
+            "NO",
+            "SI"
+        ],
+        inputId: "capiculado",
+        inputName: "capiculado"
     },
     {
         htmlFor: "checkRegistron",
