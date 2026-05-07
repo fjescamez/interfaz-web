@@ -17,6 +17,7 @@ function KioskSubmitButton({ state, updateState, buttonAction, buttonText, compo
     const handleSubmit = async (action) => {
         if (
             state.orderReport.some(item =>
+                item.info !== "indicar valor de distorsion" &&
                 item.type &&
                 Object.keys(state.isActive).some(key => state.isActive[key] && item.type.includes(key))
             )
@@ -28,17 +29,18 @@ function KioskSubmitButton({ state, updateState, buttonAction, buttonText, compo
             id_pedido: state.order?.id_pedido || ""
         };
 
+
+
         if (action === "submit") {
             dataToSend.salidaColores = state.salidaColores || [];
             dataToSend.listDigimark = state.listDigimark || [];
             dataToSend.listMontajes = Object.keys(state.montajeData || {}).filter((key) => state.montajeData[key]?.isActive) || [];
-
             Object.keys(state.isActive).forEach(key => {
                 if (state.isActive[key]) {
-
                     dataToSend[key] = components[key].data;
                 }
             });
+
         } else if (action === "saveConfig") {
             Object.keys(components).forEach(key => {
                 if (!components[key].noSave) {
