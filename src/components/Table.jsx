@@ -3,7 +3,7 @@ import ArrowDownSvg from "../assets/svg/ArrowDownSvg";
 import EditTable from "./EditTable";
 import AllForms from "./formComponents/AllForms";
 import DeleteForm from "./formComponents/DeleteForm";
-import PdfAsImage from "./pedidoComponents/PdfAsImage";
+import PdfAsImage from "./PdfAsImage";
 import { useLocation, useNavigate } from "react-router-dom";
 import { HiViewColumns } from "react-icons/hi2";
 import { useEffect, useState, useRef } from "react";
@@ -24,8 +24,10 @@ import { BsTrash3Fill } from "react-icons/bs";
 import useSocket from "../helpers/useSocket";
 import { addKeyListener } from "../helpers/toggleModal";
 import { checkRole } from "../helpers/roleChecker";
+import { resolveIcon } from "../shared/icons/resolveIcon";
 
 function Table({
+    iconMode = "modern",
     normalizedData,
     dinamicTableInfo,
     specificHeaderTitle,
@@ -674,13 +676,31 @@ function Table({
     }
     // )
 
+    const resolveHeaderIcon = () => {
+        if (!headerIcon) return null;
+
+        // 🆕 NUEVO SISTEMA (string → icono)
+        if (iconMode === "modern") {
+            if (typeof headerIcon === "string") {
+                return resolveIcon(headerIcon); // tu mapper
+            }
+            return headerIcon;
+        }
+
+        // 🧓 LEGACY (como estaba antes)
+        return headerIcon;
+    };
+
     return (
         <>
             <div className="tableContainer">
                 <div className="headerBackground">
                     <div className="tableHeader">
                         <div className="headerTitle">
-                            {headerIcon}
+                            {(() => {
+                                const Icon = resolveHeaderIcon();
+                                return Icon ? <Icon /> : null;
+                            })()}
                             <h1>{specificHeaderTitle ? specificHeaderTitle : headerTitle}</h1>
                         </div>
                         <div className="headerActions">

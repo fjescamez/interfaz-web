@@ -1,4 +1,4 @@
-import LenTable from "../components/tableComponents/LenTable";
+import LenTable from "../modules/orders/components/LenTable";
 import { lenTableInfo } from "../helpers/tablesInfo";
 
 function LenPage() {

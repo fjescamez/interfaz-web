@@ -1,6 +1,6 @@
 import { HiOutlineRefresh } from "react-icons/hi"
 import { PiNoteLight, PiFoldersLight, PiEnvelopeLight, PiStackLight, PiStorefrontLight, PiImagesLight } from "react-icons/pi"
-import { BsFiletypeDoc, BsFiletypeXml, BsFileEarmark, BsTrash3Fill } from "react-icons/bs";
+import { BsFiletypeDoc, BsFiletypeXml, BsTrash3Fill } from "react-icons/bs";
 import { FaExternalLinkAlt } from "react-icons/fa";
 import { RiPaintFill } from "react-icons/ri";
 import { SlSpeech } from "react-icons/sl";

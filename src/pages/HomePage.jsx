@@ -4,7 +4,9 @@ import GridComponent from "../components/GridComponent";
 import { FaGear } from 'react-icons/fa6';
 import "./HomePage.css";
 
-import { clientsDetails, stockDetails, produccionPlanchasDetails } from "../helpers/detailsGrid";
+import { produccionPlanchasDetails } from "../helpers/detailsGrid";
+import { clientsDetails } from "../modules/clients/config/client.config";
+
 import { useTabs } from "../context/TabsContext";
 
 function HomePage({ toggleKiosk }) {

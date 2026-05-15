@@ -14,7 +14,7 @@ import DetailsHeader from "../components/DetailsHeader";
 import MontajeComponent from "../components/orderKioskComponents/MontajeComponent";
 import OtraDocComponent from "../components/orderKioskComponents/OtraDocComponent";
 import ColoresComponent from "../components/orderKioskComponents/ColoresComponent";
-import FreecutComponent from "../components/orderKioskComponents/FreecutComponent";
+import FreecutComponent from "../modules/orders/components/FreecutComponent";
 import { notify } from "../helpers/notify";
 import MontajeAvanzadoComponent from "../components/orderKioskComponents/MontajeAvanzadoComponent";
 import ExecutingComponent from "../components/ExecutingComponent";

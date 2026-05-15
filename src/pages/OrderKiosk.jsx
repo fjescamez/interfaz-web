@@ -13,7 +13,7 @@ import DetailsHeader from "../components/DetailsHeader";
 import MontajeComponent from "../components/orderKioskComponents/MontajeComponent";
 import OtraDocComponent from "../components/orderKioskComponents/OtraDocComponent";
 import ColoresComponent from "../components/orderKioskComponents/ColoresComponent";
-import FreecutComponent from "../components/orderKioskComponents/FreecutComponent";
+import FreecutComponent from "../modules/orders/components/FreecutComponent";
 import { notify } from "../helpers/notify";
 import MontajeAvanzadoComponent from "../components/orderKioskComponents/MontajeAvanzadoComponent";
 import ExecutingComponent from "../components/ExecutingComponent";
@@ -30,6 +30,7 @@ import {
   resetKiosk
 } from "../components/orderKioskComponents/configBehavior";
 import PosMaculaComponent from "../components/orderKioskComponents/PosMaculaComponent";
+import KioscoPersoBoceto from "../components/orderKioskComponents/KioscoPersoBoceto";
 import SubmitButton from "../components/buttons/SubmitButton";
 import CabeceraModulos from "../components/orderKioskComponents/CabeceraModulos";
 import KioskSubmitButton from "../components/orderKioskComponents/KioskSubmitButton";
@@ -106,6 +107,7 @@ function OrderKiosk({ configMode }) {
     otraDocumentacion: {},
     countOtraDoc: {},
     salidaColores: [],
+    filasAndCombinar: {},
     listDigimark: [],
     coloresForm: undefined,
     coloresInputData: {},
@@ -424,6 +426,7 @@ function OrderKiosk({ configMode }) {
         distancia_remetido: "0"
       },
       salidaColores: [],
+      filasAndCombinar: {},
       listDigimark: [],
       bocetos: [
         { id: 0, rasterizado: true, lpi: "300", formato: "Pdf", tipo: "Compuesto" }
@@ -521,7 +524,7 @@ function OrderKiosk({ configMode }) {
         notify("error", res.title || "Error", "Ha ocurrido un error inesperado al generar el reporte del pedido.");
       }
     });
-    
+
 
     let dataToReport = {
       _id: state.order?._id || "",
@@ -686,6 +689,12 @@ function OrderKiosk({ configMode }) {
       data: state.salidaColores,
       noSave: true
     },
+    "filasAndCombinar": {
+      title: `Rasterizado: ${state.bocetos.some(boceto => boceto.rasterizado) ? 'Sí' : 'No'}`,
+      component: <KioscoPersoBoceto
+       state={state} kioscoPersoBocData={state.kioscoPersoBocData} updateState={updateState} unitarioMetadata={state.unitarioMetadata} configAvanzadaData={state.configAvanzadaData} orderXml={state.orderXml} opciones={state.bocetos} setOpciones={(value) => updateState("bocetos", value)} />,
+      data: state.bocetos
+    },
     "listDigimark": {
       title: state.listDigimark.length > 0 ?
         `${state.listDigimark.map(color => color).join(", ")}` :
@@ -739,7 +748,7 @@ function OrderKiosk({ configMode }) {
     "kioscoPersoBoc": {
       data: state.kioscoPersoBocData
     },
-    
+
     "freecut": {
       title: state.freeCutColors.filter(color => color.check).length > 0 ?
         `${state.freeCutColors.filter(color => color.check).map(color => color.color).join(", ")}` :

@@ -3,7 +3,7 @@ import ArrowDownSvg from "../assets/svg/ArrowDownSvg";
 import EditTable from "./EditTable";
 import AllForms from "./formComponents/AllForms";
 import DeleteForm from "./formComponents/DeleteForm";
-import PdfAsImage from "./pedidoComponents/PdfAsImage";
+import PdfAsImage from "./PdfAsImage";
 import { useLocation, useNavigate } from "react-router-dom";
 import { HiViewColumns } from "react-icons/hi2";
 import { useEffect, useState, useRef } from "react";

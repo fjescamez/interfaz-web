@@ -1,0 +1,20 @@
+.cambianColores {
+    margin-bottom: .5rem;
+    padding: 1rem;
+    border-bottom: 1.5px solid var(--pantone431c);
+}
+
+.cambianColores span {
+    color: black;
+    font-size: 1.2rem;
+    text-transform: none;
+    margin-left: 1rem;
+}
+
+.cambianColores h3 {
+    font-family: 'Museo Sans 700 Italic';
+    text-transform: uppercase;
+    font-size: 1.4rem;
+    color: #E9550D;
+    margin-bottom: .7rem;
+}

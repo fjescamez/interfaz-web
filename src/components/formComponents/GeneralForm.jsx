@@ -6,6 +6,7 @@ import FormSection from "./FormSection";
 import ExecutingComponent from "../ExecutingComponent";
 import { addKeyListener } from "../../helpers/toggleModal";
 import { useSession } from "../../context/SessionContext";
+import { resolveIcon } from "../../shared/icons/resolveIcon";
 
 function GeneralForm({
     setModal,
@@ -30,7 +31,18 @@ function GeneralForm({
     bigForm,
     showIfCondition
 }) {
-    const { headerIcon, headerTitle, editTitle, formFields, clientsMap, codesMap } = formData;
+
+    const {
+        headerIcon,
+        headerTitle,
+        editTitle,
+        formFields,
+        clientsMap,
+        codesMap
+    } = formData;
+
+    const Icon = resolveIcon(headerIcon);
+
     const [errorMessage, setErrorMessage] = useState(false);
     const [executing, setExecuting] = useState(false);
     const [error, setError] = useState("");
@@ -220,8 +232,13 @@ function GeneralForm({
                 <div className="formContainer">
                     <div className="formHeaderBackground">
                         <div className="formHeader">
-                            {headerIcon}
-                            <h1>{mode === "edit" ? editTitle : headerTitle}</h1>
+
+                            {Icon && <Icon />}
+
+                            <h1>
+                                {mode === "edit" ? editTitle : headerTitle}
+                            </h1>
+
                             <button onClick={() => {
                                 setModal(false);
                                 if (setMode) setMode("");

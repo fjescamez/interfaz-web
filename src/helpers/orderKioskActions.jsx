@@ -22,7 +22,6 @@ export const kioskActions = [
         title: "CAMBIAN COLORES",
         id: "salidaColores",
         openOnActive: true,
-        specificClients: ["0159", "0168"],
         hideWhenConfig: true,
         steps: [3]
     },
@@ -48,6 +47,14 @@ export const kioskActions = [
         title: "PLOTTER",
         id: "plotter",
         disableOpen: true,
+        steps: [3]
+    },
+    {
+        title: "FILAS Y COMBINADO",
+        id: "listDigimark",
+        openOnActive: true,
+        specificClients: ["0101"],
+        hideWhenConfig: true,
         steps: [3]
     },
     {
