@@ -38,6 +38,7 @@ export const kioskActions = [
         id: "filasAndCombinar",
         openOnActive: true,
         specificClients: ["0101"],
+        onlyMultipage: true,
         hideWhenConfig: true,
         steps: [3]
     },

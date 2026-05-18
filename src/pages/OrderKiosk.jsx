@@ -546,7 +546,6 @@ function OrderKiosk({ configMode }) {
         const orderHasErrors = (prev.orderReport || []).some((item) => item.status === "error" && !item.type);
         const fileHasErrors = (nextFileReport || []).some((item) => item.status === "error" && !item.type);
         const canAdvance = !orderHasErrors && !fileHasErrors && !prev.loadingOrderReport;
-
         const orderColorsObjects = res.fileColors?.filter(color => color.type !== "technical") || [];
         const orderColors = orderColorsObjects.map(colorObj => colorObj.name);
 
@@ -698,8 +697,7 @@ function OrderKiosk({ configMode }) {
       noSave: true
     },
     "filasAndCombinar": {
-      title: `
-      Filas: ${state?.filasAndCombinar?.filas ?? 1}, Archivo por página: ${state?.filasAndCombinar?.archivo_pagina ? "Sí" : "No"}`,
+      title: `Filas: ${state?.filasAndCombinar?.filas ?? 1}, Archivo por página: ${state?.filasAndCombinar?.archivo_pagina ? "Sí" : "No"}`,
       component: <FilasAndCombinadoComponent updateState={updateState} state={state} />,
       data: state.filasAndCombinar,
       noSave: true
@@ -846,8 +844,13 @@ function OrderKiosk({ configMode }) {
               </div>
               {kioskActions
                 .filter(option => {
+                  console.log("state",state )
                   const clientOk = (!option.specificClients || option.specificClients.includes(state.orderXml?.numero?.cliente_codigo));
+                  const pagesOk = !option.onlyMultipage || (state.unitarioMetadata?.number_of_pages > 1);
+
                   if (!clientOk) return false;
+
+                  if (!pagesOk) return false;
 
                   if (configMode && option.hideWhenConfig) return false;
 
