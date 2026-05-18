@@ -30,7 +30,7 @@ function OrdersPage({ filter, filterBandeja }) {
         if (location.pathname === "/bandeja") {
             setTableInfo(prev => ({
                 ...prev,
-                headerIcon: <BsFillInboxFill />,
+                headerIcon: "BsFillInboxFill",
                 headerTitle: "BANDEJA PERSONAL"
             }));
         } else {
