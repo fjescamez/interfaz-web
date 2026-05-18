@@ -34,6 +34,14 @@ export const kioskActions = [
         steps: [3]
     },
     {
+        title: "FILAS Y COMBINADO",
+        id: "filasAndCombinar",
+        openOnActive: true,
+        specificClients: ["0101"],
+        hideWhenConfig: true,
+        steps: [3]
+    },
+    {
         title: "BOCETO",
         id: "bocetos",
         steps: [3]
@@ -47,14 +55,6 @@ export const kioskActions = [
         title: "PLOTTER",
         id: "plotter",
         disableOpen: true,
-        steps: [3]
-    },
-    {
-        title: "FILAS Y COMBINADO",
-        id: "listDigimark",
-        openOnActive: true,
-        specificClients: ["0101"],
-        hideWhenConfig: true,
         steps: [3]
     },
     {
@@ -534,5 +534,44 @@ export const trappingFormData = {
             inputId: "distancia_remetido",
             inputName: "distancia_remetido"
         }
+    ]
+}
+
+export const filasCombinadoFormData = {
+    formSections: [
+        {
+            rows: [
+                {
+                    groups: [
+                        "filas",
+                        "archivo_pagina",
+                    ]
+                },
+                {
+                    groups: [
+                    ]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "filas",
+            labelId: "filasLabel",
+            labelTitle: "Motivos en VERTICAL",
+            inputType: "number",
+            minNumber: 0,
+            inputId: "filas",
+            inputName: "filas",
+        },
+        {
+            htmlFor: "archivo_pagina",
+            labelId: "archivo_paginaLabel",
+            labelTitle: "Archivo por página",
+            inputType: "checkbox",
+            inputId: "archivo_pagina",
+            inputName: "archivo_pagina",
+        },
+
     ]
 }

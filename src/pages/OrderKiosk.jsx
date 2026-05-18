@@ -7,6 +7,7 @@ import { kioskActions } from "../helpers/orderKioskActions";
 import { BlinkBlur } from "react-loading-indicators";
 import UnitarioComponent from "../components/orderKioskComponents/UnitarioComponent";
 import TrappingComponent from "../components/orderKioskComponents/TrappingComponent";
+import FilasAndCombinadoComponent from "../components/orderKioskComponents/FilasAndCombinadoComponent";
 import BocetoComponent from "../components/orderKioskComponents/BocetoComponent";
 import { fetchData, fetchOneItem, postData } from "../helpers/fetchData";
 import DetailsHeader from "../components/DetailsHeader";
@@ -30,7 +31,6 @@ import {
   resetKiosk
 } from "../components/orderKioskComponents/configBehavior";
 import PosMaculaComponent from "../components/orderKioskComponents/PosMaculaComponent";
-import KioscoPersoBoceto from "../components/orderKioskComponents/KioscoPersoBoceto";
 import SubmitButton from "../components/buttons/SubmitButton";
 import CabeceraModulos from "../components/orderKioskComponents/CabeceraModulos";
 import KioskSubmitButton from "../components/orderKioskComponents/KioskSubmitButton";
@@ -689,18 +689,19 @@ function OrderKiosk({ configMode }) {
       data: state.salidaColores,
       noSave: true
     },
-    "filasAndCombinar": {
-      title: `Rasterizado: ${state.bocetos.some(boceto => boceto.rasterizado) ? 'Sí' : 'No'}`,
-      component: <KioscoPersoBoceto
-       state={state} kioscoPersoBocData={state.kioscoPersoBocData} updateState={updateState} unitarioMetadata={state.unitarioMetadata} configAvanzadaData={state.configAvanzadaData} orderXml={state.orderXml} opciones={state.bocetos} setOpciones={(value) => updateState("bocetos", value)} />,
-      data: state.bocetos
-    },
     "listDigimark": {
       title: state.listDigimark.length > 0 ?
         `${state.listDigimark.map(color => color).join(", ")}` :
         "",
       component: <ColoresComponent state={state} updateState={updateState} formData={state.coloresDigimarkForm} colores={state.orderColors} setColoresList={(value) => updateState("listDigimark", value)} inputData={state.digimarkInputData} setInputData={(value) => updateState("digimarkInputData", value)} />,
       data: state.listDigimark,
+      noSave: true
+    },
+    "filasAndCombinar": {
+      title: `
+      Filas: ${state?.filasAndCombinar?.filas ?? 1}, Archivo por página: ${state?.filasAndCombinar?.archivo_pagina ? "Sí" : "No"}`,
+      component: <FilasAndCombinadoComponent updateState={updateState} state={state} />,
+      data: state.filasAndCombinar,
       noSave: true
     },
     "bocetos": {
