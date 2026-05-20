@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Table from "../../../components/Table.jsx";
 import { contactTableInfo } from "../config/contact.config.js";
-import GroupForm from "../../../components/formComponents/GroupForm.jsx"
+import GroupForm from "../components/GroupForm.jsx"
 import { useClienteFilter } from "../../../context/ClientFilterContext.jsx";
 import { useLocation } from "react-router-dom";
 

@@ -1,18 +1,18 @@
-import "./DetailsPage.css";
-import "../components/formComponents/FormSection.css";
+import "../../../pages/DetailsPage.css";
+import "../../../components/formComponents/FormSection.css";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
-import { useTabs } from "../context/TabsContext";
-import GroupForm from "../components/formComponents/GroupForm";
-import DetailsHeader from "../components/DetailsHeader";
-import { groupFormData } from "../helpers/formsData";
-import FormSection from "../components/formComponents/FormSection";
-import { fetchOneItem } from "../helpers/fetchData";
-import DeleteForm from "../components/formComponents/DeleteForm";
-import { groupTableInfo } from "../helpers/tablesInfo";
+import { useTabs } from "../../../context/TabsContext";
+import GroupForm from "../components/GroupForm";
+import DetailsHeader from "../../../components/DetailsHeader";
+import { groupFormData } from "../config/contact.config";
+import FormSection from "../../../components/formComponents/FormSection";
+import { fetchOneItem } from "../../../helpers/fetchData";
+import DeleteForm from "../../../components/formComponents/DeleteForm";
+import { groupTableInfo } from "../config/contact.config";
 import { ThreeDot } from 'react-loading-indicators';
 import { useLocation } from "react-router-dom";
-import { checkRole } from "../helpers/roleChecker";
+import { checkRole } from "../../../helpers/roleChecker";
 
 function GroupDetails({ toggleKiosk }) {
     const [group, setGroup] = useState({});

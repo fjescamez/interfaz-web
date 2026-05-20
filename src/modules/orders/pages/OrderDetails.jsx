@@ -1,5 +1,5 @@
 import "./OrderDetails.css"
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useTabs } from "../../../context/TabsContext";
 import PedidoMadera from "../components/PedidoMadera";
@@ -15,6 +15,10 @@ import DeleteForm from "../../../components/formComponents/DeleteForm";
 import { orderTableInfo } from "../config/order.config";
 import { BlinkBlur } from "react-loading-indicators";
 import { InfoCambianColores } from "../components/InfoCambianColores";
+import InfoCard from "../components/InfoCard";
+import InfoTable from "../components/InfoTable";
+import { yesNo, safeValue } from "../helpers/orderFormatters";
+import { normalizeOrderData } from "../helpers/normalizeOrderData";
 
 function OrderDetails() {
   const [fullOrder, setFullOrder] = useState({});
@@ -29,6 +33,15 @@ function OrderDetails() {
   const { closeTab, createTab } = useTabs();
   const [deletePopup, setDeletePopup] = useState(false);
 
+  const order = useMemo(() => {
+    console.log("dentro de usememo")
+    if (!orderXml || Object.keys(orderXml).length === 0) {
+      return null;
+    }
+
+    return normalizeOrderData(orderXml);
+  }, [orderXml]);
+
   const getOrderDetails = async (id) => {
     try {
       const orderData = await fetchOneItem("orders/getOrder", id);
@@ -39,6 +52,7 @@ function OrderDetails() {
       }
       setOrderXml(sanitizeData(orderData.xml)); // Sanitizar los datos XML
       setFullOrder(sanitizeData(orderData));
+
     } catch (error) {
       notify("error", "Error en el pedido", "Ha ocurrido un error al cargar los datos del pedido");
     }
@@ -141,7 +155,6 @@ function OrderDetails() {
     fullOrder._id ? (
       <>
 
-
         {deletePopup && <DeleteForm setModal={setDeletePopup} id={fullOrder._id} tableInfo={orderTableInfo} />}
         <PedidoSideBar
           getOrderDetails={getOrderDetails}
@@ -235,140 +248,181 @@ function OrderDetails() {
                   </div>
                 </div>
               </div>
-              <div className="datosPedido flex">
-                <div className="title">
-                  <p>DATOS DEL PEDIDO</p>
-                </div>
-                <div className="body">
-                  <table>
-                    <tbody>
-                      <tr>
-                        <td><p><span className="highlight">CLIENTE:</span></p></td>
-                        <td><p className="openClient" onClick={openClient}>{orderXml.numero?.cliente_nombre} 🔗</p></td>
-                      </tr>
-                      <tr>
-                        <td><p><span className="highlight">MARCA:</span></p></td>
-                        <td>{orderXml.numero?.marca}</td>
-                      </tr>
-                      <tr>
-                        <td><p><span className="highlight">REF. CLIENTE:</span></p></td>
-                        <td>{typeof orderXml.numero?.ref_cliente !== "object" ? orderXml.numero?.ref_cliente : ""}</td>
-                      </tr>
-                      <tr>
-                        <td><p><span className="highlight">CONTACTO:</span></p></td>
-                        <td>{orderXml.numero?.contacto}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <div className="footer">
-                  <div className="opcionPedido">
-                    <p>BOCETO</p>
-                    <input type="checkbox" className="check" checked={orderXml.numero?.boceto === "-1"} readOnly />
-                  </div>
-                  <div className="opcionPedido">
-                    <p>CLICHE</p>
-                    <input type="checkbox" className="check" checked={orderXml.numero?.cliche === "-1"} readOnly />
-                  </div>
-                  <div className="opcionPedido">
-                    <p>MONTAJE</p>
-                    <input type="checkbox" className="check" checked={orderXml.numero?.montaje === "-1"} readOnly />
-                  </div>
-                </div>
-              </div>
-              <div className="datosVersion flex">
-                <div className="title">
-                  <p>DATOS DE VERSIÓN</p>
-                </div>
-                <div className="body">
-                  <table>
-                    <tbody>
-                      <tr>
-                        <td><p><span className="highlight">REVISIÓN:</span></p></td>
-                        <td>{orderXml.actividad?.revisiones?.revision[0]?.revision_id || orderXml.actividad?.revisiones?.revision?.revision_id}</td>
-                      </tr>
-                      <tr>
-                        <td><p><span className="highlight">FECHA REV.:</span></p></td>
-                        <td>{fechaRevision && fechaRevision[0]} <span className="highlight">{fechaRevision && `(${fechaRevision[1]})`}</span></td>
-                      </tr>
-                      <tr>
-                        <td><p><span className="highlight">FECHA SOL.:</span></p></td>
-                        <td>{orderXml.numero?.fecha_solicitud}</td>
-                      </tr>
-                      <tr>
-                        <td><p><span className="highlight">FECHA ENT.:</span></p></td>
-                        <td>{orderXml.numero?.fecha_entrega}</td>
-                      </tr>
-                      <tr>
-                        <td><p><span className="highlight">MOT. VER.:</span></p></td>
-                        <td>{orderXml.numero?.motivo_version}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-              <div className="datosPlancha flex">
-                <div className="title">
-                  <p>DATOS DE PLANCHA</p>
-                </div>
-                <div className="body">
-                  <table>
-                    <tbody>
-                      <tr>
-                        <td><p><span className="highlight">TIPO CLICHÉ:</span></p></td>
-                        <td>{orderXml.tecnicos?.tipo_cliche}</td>
-                      </tr>
-                      <tr>
-                        <td><p><span className="highlight">ESPESOR:</span></p></td>
-                        <td>{orderXml.tecnicos?.espesor}</td>
-                      </tr>
-                      <tr>
-                        <td><p><span className="highlight">TIPO IMPRESIÓN:</span></p></td>
-                        <td>{orderXml.tecnicos?.tipo_impresion}</td>
-                      </tr>
-                      <tr>
-                        <td><p><span className="highlight">DISTORSIÓN:</span></p></td>
-                        <td>{orderXml.tecnicos?.distorsion}</td>
-                      </tr>
-                      <tr>
-                        <td><p><span className="highlight">DIST. TRAPPING:</span></p></td>
-                        <td>{typeof orderXml.tecnicos?.trapping !== "object" ? orderXml.tecnicos?.trapping : ""}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-              <div className="documentacion flex">
-                <div className="title">
-                  <p>DOCUMENTACIÓN</p>
-                </div>
-                <div className="body">
-                  <table>
-                    <tbody>
-                      <tr>
-                        <td><p><span className="highlight">FICHA IMPRESA:</span></p></td>
-                        <td>{orderXml.tecnicos?.ficha_impresa === "-1" ? "SÍ" : "NO"}</td>
-                      </tr>
-                      <tr>
-                        <td><p><span className="highlight">FICHA EMAIL:</span></p></td>
-                        <td>{orderXml.tecnicos?.ficha_por_email === "X" ? "SÍ" : "NO"}</td>
-                      </tr>
-                      <tr>
-                        <td><p><span className="highlight">FORMATO PDF:</span></p></td>
-                        <td>{orderXml.tecnicos?.pdf === "X" ? "SÍ" : "NO"}</td>
-                      </tr>
-                      <tr>
-                        <td><p><span className="highlight">FORMATO JPG:</span></p></td>
-                        <td>{orderXml.tecnicos?.jpg === "X" ? "SÍ" : "NO"}</td>
-                      </tr>
-                      <tr>
-                        <td><p><span className="highlight">HACER PLOTTER:</span></p></td>
-                        <td>{orderXml.tecnicos?.plotter === "X" ? "SÍ" : "NO"}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+
+              <InfoCard title="DATOS DEL PEDIDO"
+                className="datosPedido"
+                footer={(
+                  <>
+                    <div className="opcionPedido">
+                      <p>BOCETO</p>
+                      <input
+                        type="checkbox"
+                        className="check"
+                        checked={orderXml.numero?.boceto === "-1"}
+                        readOnly
+                      />
+                    </div>
+
+                    <div className="opcionPedido">
+                      <p>CLICHÉ</p>
+                      <input
+                        type="checkbox"
+                        className="check"
+                        checked={orderXml.numero?.cliche === "-1"}
+                        readOnly
+                      />
+                    </div>
+
+                    <div className="opcionPedido">
+                      <p>MONTAJE</p>
+                      <input
+                        type="checkbox"
+                        className="check"
+                        checked={orderXml.numero?.montaje === "-1"}
+                        readOnly
+                      />
+                    </div>
+                  </>
+                )}
+              >
+                <InfoTable
+                  rows={[
+                    [
+                      "CLIENTE",
+                      (
+                        <p className="openClient" onClick={openClient}>
+                          {orderXml.numero?.cliente_nombre} ({orderXml.numero?.cliente_codigo}) 🔗
+                        </p>
+                      )
+                    ],
+
+                    [
+                      "MARCA",
+                      orderXml.numero?.marca
+                    ],
+
+                    [
+                      "REF. CLIENTE",
+                      typeof orderXml.numero?.ref_cliente !== "object"
+                        ? orderXml.numero?.ref_cliente
+                        : ""
+                    ],
+
+                    [
+                      "CONTACTO",
+                      orderXml.numero?.contacto
+                    ]
+                  ]}
+                />
+              </InfoCard>
+
+              <InfoCard title="DATOS DE VERSIÓN"
+                className="datosVersion"
+              >
+                <InfoTable
+                  rows={[
+                    [
+                      "REVISIÓN",
+                      orderXml.actividad?.revisiones?.revision[0]?.revision_id ||
+                      orderXml.actividad?.revisiones?.revision?.revision_id
+                    ],
+
+                    [
+                      "FECHA REV.",
+                      <>
+                        {fechaRevision?.[0]}{" "}
+                        {fechaRevision?.[1] && (
+                          <span className="highlight">
+                            ({fechaRevision[1]})
+                          </span>
+                        )}
+                      </>
+                    ],
+
+                    [
+                      "FECHA SOL.",
+                      orderXml.numero?.fecha_solicitud
+                    ],
+
+                    [
+                      "FECHA ENT.",
+                      orderXml.numero?.fecha_entrega
+                    ],
+
+                    [
+                      "MOT. VER.",
+                      orderXml.numero?.motivo_version
+                    ]
+                  ]}
+                />
+              </InfoCard>
+
+              <InfoCard title="DATOS DE PLANCHA"
+                className="datosPlancha"
+              >
+                <InfoTable
+                  rows={[
+                    [
+                      "TIPO CLICHÉ",
+                      orderXml.tecnicos?.tipo_cliche
+                    ],
+
+                    [
+                      "ESPESOR",
+                      orderXml.tecnicos?.espesor
+                    ],
+
+                    [
+                      "TIPO IMPRESIÓN",
+                      orderXml.tecnicos?.tipo_impresion
+                    ],
+
+                    [
+                      "DISTORSIÓN",
+                      orderXml.tecnicos?.distorsion
+                    ],
+
+                    [
+                      "DIST. TRAPPING",
+                      safeValue(orderXml.tecnicos?.trapping)
+                    ]
+                  ]}
+                />
+              </InfoCard>
+
+              <InfoCard title="DOCUMENTACIÓN"
+                className="documentacion"
+              >
+                <InfoTable
+                  rows={[
+                    [
+                      "FICHA IMPRESA",
+                      yesNo(orderXml.tecnicos?.ficha_impresa, "-1")
+                    ],
+
+                    [
+                      "FICHA EMAIL",
+                      yesNo(orderXml.tecnicos?.ficha_por_email)
+                    ],
+
+                    [
+                      "FORMATO PDF",
+                      yesNo(orderXml.tecnicos?.pdf)
+                    ],
+
+                    [
+                      "FORMATO JPG",
+                      yesNo(orderXml.tecnicos?.jpg)
+                    ],
+
+                    [
+                      "HACER PLOTTER",
+                      yesNo(orderXml.tecnicos?.plotter)
+                    ]
+                  ]}
+                />
+              </InfoCard>
+
             </div>
             <div className="row3">
               <div className="divPrevio flex">
@@ -382,33 +436,30 @@ function OrderDetails() {
                 </div>
               </div>
               <div className="gridMaterial">
-                <div className="docuRecibida flex">
-                  <div className="title">
-                    <p>DOCUMENTACIÓN RECIBIDA</p>
-                  </div>
-                  <div className="body">
-                    <p>{orderXml.numero?.recibido_con}</p>
-                  </div>
-                </div>
+
+                <InfoCard title="DOCUMENTACIÓN RECIBIDA"
+                  className="docuRecibida"
+                >
+                  <p>{orderXml.numero?.recibido_con}</p>
+                </InfoCard>
+
                 <div className="materialMaquina">
-                  <div className="material flex">
-                    <div className="title">
-                      <p>MATERIAL</p>
-                    </div>
-                    <div className="body">
-                      <p>{typeof orderXml.actividad?.material !== "object" ? orderXml.actividad?.material : ""} <span className="highlight" onClick={openStrategy}>(VER ESTRATEGIA COMPLETA)</span></p>
-                    </div>
-                  </div>
-                  <div className="maquina flex">
-                    <div className="title">
-                      <p>MÁQUINA</p>
-                    </div>
-                    <div className="body">
-                      <p>{typeof orderXml.tecnicos?.ficha_tecnica !== "object" && orderXml.tecnicos?.ficha_tecnica} <span className="highlight" onClick={openFichaTecnica}>(VER FICHA)</span></p>
-                    </div>
-                  </div>
+                  <InfoCard title="MATERIAL"
+                    className="material flex"
+                  >
+                    <p>{typeof orderXml.actividad?.material !== "object" ? orderXml.actividad?.material : ""} <span className="highlight" onClick={openStrategy}>(VER ESTRATEGIA COMPLETA)</span></p>
+                  </InfoCard>
+
+                  <InfoCard title="MÁQUINA"
+                    className="maquina"
+                  >
+                    <p>{typeof orderXml.tecnicos?.ficha_tecnica !== "object" && orderXml.tecnicos?.ficha_tecnica} <span className="highlight" onClick={openFichaTecnica}>(VER FICHA)</span></p>
+                  </InfoCard>
                 </div>
+
+
                 <div className="instrucciones flex">
+
                   <div className="title">
                     <p>INSTRUCCIONES DE PEDIDO</p>
                   </div>
@@ -435,6 +486,7 @@ function OrderDetails() {
                     }
                   </div>
                 </div>
+                
               </div>
             </div>
             <div className="row4">

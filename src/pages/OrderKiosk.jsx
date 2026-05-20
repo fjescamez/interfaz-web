@@ -844,7 +844,6 @@ function OrderKiosk({ configMode }) {
               </div>
               {kioskActions
                 .filter(option => {
-                  console.log("state",state )
                   const clientOk = (!option.specificClients || option.specificClients.includes(state.orderXml?.numero?.cliente_codigo));
                   const pagesOk = !option.onlyMultipage || (state.unitarioMetadata?.number_of_pages > 1);
 

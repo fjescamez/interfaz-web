@@ -1,11 +1,11 @@
 import { useState } from "react";
-import Table from "../components/Table.jsx";
-import { strategyTableInfo } from "../helpers/tablesInfo.jsx";
-import StrategyForm from "../components/formComponents/StrategyForm.jsx";
-import { useClienteFilter } from "../context/ClientFilterContext.jsx";
+import Table from "../../../components/Table.jsx";
+import { strategyTableInfo } from "../config/strategy.config.js";
+import StrategyForm from "../components/StrategyForm.jsx";
+import { useClienteFilter } from "../../../context/ClientFilterContext.jsx";
 import { useLocation } from "react-router-dom";
-import { notify } from "../helpers/notify.jsx";
-import { checkRole } from "../helpers/roleChecker.js";
+import { notify } from "../../../helpers/notify.jsx";
+import { checkRole } from "../../../helpers/roleChecker.js";
 
 function StrategyPage({ filter }) {
     const location = useLocation();

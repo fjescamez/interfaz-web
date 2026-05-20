@@ -709,9 +709,6 @@ function TableRefactor({
             columnsOrder: [...newColumns]
         };
 
-        console.log(data);
-
-
         savePreferences(data);
 
         setColumns(newColumns);

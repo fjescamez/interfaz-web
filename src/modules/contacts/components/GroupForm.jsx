@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { groupFormData } from '../../helpers/formsData';
-import GeneralForm from './GeneralForm';
-import { fetchData } from '../../helpers/fetchData';
-import ExecutingComponent from '../ExecutingComponent';
+import { groupFormData } from '../config/contact.config';
+import GeneralForm from '../../../components/formComponents/GeneralForm';
+import { fetchData } from '../../../helpers/fetchData';
+import ExecutingComponent from '../../../components/ExecutingComponent';
 
 function GroupForm({ setModal, mode, setTableData, setTotal, group, clienteDato, contacts }) {
     const [formData, setFormData] = useState(groupFormData);

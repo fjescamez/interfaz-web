@@ -26,7 +26,6 @@ function FreecutComponent({ state, updateState, freecutData, setFreecutData, col
                 }))
             ]);
         }else{
-            console.log("freeCutColors",freeCutColors)
             setFreeCutColors((prev) => [
                 {
                     check: false,

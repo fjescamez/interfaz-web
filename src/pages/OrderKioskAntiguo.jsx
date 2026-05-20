@@ -807,7 +807,6 @@ function OrderKioskAntiguo({ configMode }) {
       } else {
         notify("error", result.title, result.message);
       }
-      //console.log(dataToSend);
 
     } else if (action === "saveConfig") {
       const activosDefault = Object.keys(state.isActive).filter(key => state.isActive[key]);

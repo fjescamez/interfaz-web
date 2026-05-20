@@ -1,13 +1,13 @@
-import GeneralForm from "./GeneralForm"
-import { strategyFormData } from "../../helpers/formsData";
+import GeneralForm from "../../../components/formComponents/GeneralForm"
+import { strategyFormData } from "../config/strategy.config";
 import { useEffect, useState } from "react";
-import GeneralPopUp from "../GeneralPopUp";
-import ListWithSearch from "../ListWithSearch";
-import ExecutingComponent from "../ExecutingComponent";
-import { fetchDataNoLimits, postData } from "../../helpers/fetchData";
-import FormGroup from "./FormGroup";
-import SubmitButton from "../buttons/SubmitButton";
-import { notify } from "../../helpers/notify";
+import GeneralPopUp from "../../../components/GeneralPopUp";
+import ListWithSearch from "../../../components/ListWithSearch";
+import ExecutingComponent from "../../../components/ExecutingComponent";
+import { fetchDataNoLimits, postData } from "../../../helpers/fetchData";
+import FormGroup from "../../../components/formComponents/FormGroup";
+import SubmitButton from "../../../components/buttons/SubmitButton";
+import { notify } from "../../../helpers/notify";
 
 function StrategyForm({ setModal, mode, itemsData, clienteDato, setTableData, setTotal, setStrategy }) {
     const clickableSections = strategyFormData.formSections.filter(section => section.key !== "cliente");

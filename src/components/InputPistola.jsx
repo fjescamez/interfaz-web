@@ -52,8 +52,6 @@ function InputPistola() {
 
         e.target.value = "";
 
-        console.log("Código leído por pistola:", codigo);
-
         // Cambiar por que empiece por?
         const regexAccion = /^[A-Za-z][0-9]+[’']?[A-Za-z]{3}\?[A-Za-z][0-9]+[’']?[A-Za-z]{3}/;
 

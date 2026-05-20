@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Table from "../components/Table.jsx";
-import { groupTableInfo } from "../helpers/tablesInfo.jsx";
+import Table from "../../../components/Table.jsx";
+import { groupTableInfo } from "../config/contact.config.js";
 
 function GroupsPage({ filter }) {
     const [groupIds, setGroupIds] = useState([]);

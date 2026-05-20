@@ -2,9 +2,9 @@ import { useState } from "react"
 import Table from "../../../components/Table";
 import { notify } from "../../../helpers/notify";
 import { IoMdCloseCircleOutline } from "react-icons/io";
-import InfoTintasTramas from "./InfoTintasTramas";
+import InfoTintasTramas from "../../orders/components/InfoTintasTramas";
 import { postData } from "../../../helpers/fetchData";
-import BarnizPopUp from "./BarnizPopUp";
+import BarnizPopUp from "../../orders/components/BarnizPopUp";
 
 function LenTable({
     setLenModal,
@@ -144,8 +144,6 @@ function LenTable({
                     return enviarProduccion(setTableData);
                 }
             case "finishProduccion":
-                console.log("Producción finalizada");
-
                 actionEnder(true);
                 setLenIds([]);
                 indexSetter([]);

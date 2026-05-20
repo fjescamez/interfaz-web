@@ -121,9 +121,53 @@ function Table({
 
         return true; // misma longitud, mismo orden, mismo contenido
     };
+    const latestRequestRef = useRef(0);
 
     const getData = async (page, searchValue = "", clientFilter = "") => {
+        const requestId = ++latestRequestRef.current;
+
+        setTableCharging(true);
+
+        const result = await fetchData(
+            endPoint,
+            searchValue,
+            page,
+            null,
+            setTotal,
+            clientFilter,
+            userFilter,
+            new URLSearchParams(orderBy)?.toString()
+        );
+
+        // ⛔ ignorar respuestas antiguas
+        if (requestId !== latestRequestRef.current) return;
+
+        if (!areResultsEqual(lastApiResultRef.current, result)) {
+            lastApiResultRef.current = result;
+
+            if (page !== 1) {
+                setTableData(prev => [...prev, ...result]);
+            } else {
+                setTableData(result);
+            }
+        }
+
+        setTableCharging(false);
+
+        setNoDataToShow(
+            result &&
+            result.length < 1 &&
+            (!tableInfo.actions?.some(item =>
+                alwaysVisibleActions?.includes(item.action)
+            ))
+        );
+    };
+
+    /*
+    const getData = async (page, searchValue = "", clientFilter = "") => {
         const result = await fetchData(endPoint, searchValue, page, null, setTotal, clientFilter, userFilter, new URLSearchParams(orderBy)?.toString());
+
+        console.log("result", result)
 
         if (!areResultsEqual(lastApiResultRef.current, result)) {
             lastApiResultRef.current = result;
@@ -141,6 +185,7 @@ function Table({
             setNoDataToShow(false);
         }
     }
+        */
 
     useEffect(() => {
         setCheckedIndexes([]);
@@ -302,6 +347,7 @@ function Table({
         }
     }, [initialData]);
 
+    /*
     useEffect(() => {
         if (!didInitialFetch.current) return;
 
@@ -317,6 +363,20 @@ function Table({
                 }
             }
         }
+    }, [advancedQuery]);
+    */
+
+    useEffect(() => {
+        if (!didInitialFetch.current) return;
+
+        const searchParams = new URLSearchParams(advancedQuery || {}).toString();
+
+        // ⛔ evitar refetch vacío innecesario
+        if (searchParams === "") return;
+
+        setPage(1);
+        getData(1, searchParams, clienteCodigo || clientFilter);
+
     }, [advancedQuery]);
 
     // Normalizar los datos una vez setteados

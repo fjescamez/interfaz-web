@@ -1,5 +1,5 @@
 import { orderLenTableInfo } from '../config/order.config';
-import LenTable from "./LenTable";
+import LenTable from "../../len/components/LenTable";
 
 function OrderLenTable({ setLenModal, orderId }) {
     return (

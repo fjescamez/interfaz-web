@@ -274,7 +274,7 @@ export function handleExceptions({ module, state, updateState }) {
     }
 
     if (module === "otraDocumentacion" && !isActive.otraDocumentacion) {
-        console.log("module", module)
+
     }
 
 

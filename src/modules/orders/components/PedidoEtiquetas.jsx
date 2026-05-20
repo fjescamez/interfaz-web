@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import InfoCard from "./InfoCard";
+import InfoTable from "./InfoTable";
 
 function PedidoEtiquetas({ orderXml }) {
   const adhesivo = orderXml.actividad?.adhesivo;
@@ -25,29 +27,29 @@ function PedidoEtiquetas({ orderXml }) {
 
   return (
     <div className="etiquetas">
-      <div className="medidas flex">
-        <div className="title">
-          <p>MEDIDAS</p>
-        </div>
-        <div className="body">
-          <table>
-            <tbody>
-              <tr>
-                <td><span className="highlight">AVANCE:</span></td>
-                <td>{adhesivo.adhesivo_avance}</td>
-              </tr>
-              <tr>
-                <td><span className="highlight">SEPARACIÓN:</span></td>
-                <td>{adhesivo.adhesivo_separacion}</td>
-              </tr>
-              <tr>
-                <td><span className="highlight">DESARROLLO:</span></td>
-                <td>{adhesivo.adhesivo_desarrollo}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <InfoCard title="MEDIDAS"
+        className="medidas"
+      >
+        <InfoTable
+          rows={[
+            [
+              "AVANCE",
+              adhesivo.adhesivo_avance
+            ],
+
+            [
+              "SEPARACIÓN",
+              adhesivo.adhesivo_separacion
+            ],
+
+            [
+              "DESARROLLO",
+              adhesivo.adhesivo_desarrollo
+            ]
+          ]}
+        />
+      </InfoCard>
+      
       <div className="datosMontaje flex">
         <div className="title">
           <p>DATOS MONTAJE</p>

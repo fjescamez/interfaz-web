@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from "react-router-dom";
-import DetailsHeader from '../components/DetailsHeader'
-import { fetchData, fetchOneItem } from '../helpers/fetchData';
-import { useTabs } from '../context/TabsContext';
-import FormSection from '../components/formComponents/FormSection';
-import { strategyFormData } from '../helpers/formsData';
-import StrategyForm from '../components/formComponents/StrategyForm';
-import DeleteForm from '../components/formComponents/DeleteForm';
-import { strategyTableInfo } from '../helpers/tablesInfo';
+import DetailsHeader from '../../../components/DetailsHeader'
+import { fetchData, fetchOneItem } from '../../../helpers/fetchData';
+import { useTabs } from '../../../context/TabsContext';
+import FormSection from '../../../components/formComponents/FormSection';
+import { strategyFormData } from '../config/strategy.config';
+import StrategyForm from '../components/StrategyForm';
+import DeleteForm from '../../../components/formComponents/DeleteForm';
+import { strategyTableInfo } from '../config/strategy.config';
 import { useLocation } from "react-router-dom";
 import { BlinkBlur } from "react-loading-indicators";
-import { checkRole } from '../helpers/roleChecker';
+import { checkRole } from '../../../helpers/roleChecker';
 
 function StrategyDetails() {
   const [strategy, setStrategy] = useState(undefined);

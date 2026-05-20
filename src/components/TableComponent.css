@@ -94,7 +94,7 @@
             flex-wrap: wrap;
             column-gap: 2rem;
             row-gap: 2rem;
-            font-size: 4rem;
+            font-size: 3.5rem;
 
             .actionHover:hover {
                 cursor: pointer;
@@ -106,17 +106,17 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 1rem;
+            padding: .85rem;
             column-gap: 10rem;
             background-color: var(--details);
-            border: 2px solid var(--highlight);
+            border: 1px solid var(--highlight);
             border-radius: 1rem;
-            min-height: 5rem;
+
 
             p {
                 color: black;
-                font-size: 2.2rem;
-                margin: 0.5rem 1rem;
+                font-size: 1.8rem;
+
                 display: inline-block;
             }
 
@@ -132,7 +132,7 @@
     }
 
     h1 {
-        font-size: 4rem;
+        font-size: 3.5rem;
         color: white;
         margin: 0;
     }
@@ -247,8 +247,8 @@
     justify-content: space-between;
 
     svg {
-        width: 6.5rem;
-        height: 6.5rem;
+        width: 4.5rem;
+        height: 4.5rem;
 
         .cls-1 {
             fill: white;
