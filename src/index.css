@@ -388,6 +388,7 @@ svg {
     }
 }
 
+
 .formGroup {
     display: flex;
     flex-direction: column;
@@ -464,7 +465,7 @@ svg {
         padding: 0.25rem 1rem;
         font-size: 2rem;
         /* max-width: fit-content; */
-        
+
         &.clickable {
             cursor: pointer;
         }
@@ -479,7 +480,7 @@ svg {
         border-radius: 1.5rem;
         min-width: fit-content;
         align-self: center;
-        
+
         &.clickable {
             cursor: pointer;
 

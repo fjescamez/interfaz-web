@@ -7,15 +7,17 @@ export const caidasFreecutOptions = [
 
 export const formatosBoceto = [
     "Pdf",
-    "Png",
     "Jpg"
 ]
 
 export const tiposBoceto = [
     "Compuesto",
+    "Sep+Compuesto",
     "CMYK",
     "RGB"
 ]
+
+export const clientesBocetosEspeciales = ["0022", "0014", "0013", "0101", "0038", "0055", "0160", "0156", "0106", "0360", "0159"];
 
 export const plantillasDocumentos = [
     "",

@@ -34,7 +34,6 @@ function OrderDetails() {
   const [deletePopup, setDeletePopup] = useState(false);
 
   const order = useMemo(() => {
-    console.log("dentro de usememo")
     if (!orderXml || Object.keys(orderXml).length === 0) {
       return null;
     }

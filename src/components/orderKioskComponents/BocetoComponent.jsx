@@ -3,13 +3,14 @@ import { PiMinusCircle, PiPlusCircle } from "react-icons/pi";
 import ChosenSelect from "../formComponents/ChosenSelect";
 import "./KioskComponents.css";
 import { notify } from "../../helpers/notify";
-import { formatosBoceto, tiposBoceto } from '../../helpers/constants';
+import { formatosBoceto, tiposBoceto, clientesBocetosEspeciales } from '../../helpers/constants';
 import FormGroup from '../formComponents/FormGroup';
 import { globalKioskBocetoForm } from './kioscoPersoConfig';
 import KioscoPersoBoceto from './KioscoPersoBoceto';
 import { useEffect } from 'react';
 
 function BocetoComponent({ opciones, setOpciones, orderXml, kioscoPersoBocData, updateState, colores, state }) {
+    const { cliente_codigo, marca } = orderXml?.numero;
 
     const agregarBoceto = () => {
         setOpciones(prev => [...prev, { id: opciones.at(-1).id + 1, rasterizado: false, lpi: "300", formato: "Pdf", tipo: "Compuesto" }]);
@@ -43,6 +44,17 @@ function BocetoComponent({ opciones, setOpciones, orderXml, kioscoPersoBocData, 
         );
     }
 
+    useEffect(() => {
+        if (marca?.toLowerCase().includes("hacendado") || marca?.toLowerCase().includes("mercadona")) {
+            setOpciones(prev =>
+                prev.map(opcion => ({
+                    ...opcion,
+                    tipo: "Sep+Compuesto"
+                }))
+            );
+        }
+    }, []);
+
     return (
         <div className="actionBody">
             <form>
@@ -74,14 +86,25 @@ function BocetoComponent({ opciones, setOpciones, orderXml, kioscoPersoBocData, 
                                 value={opcion.formato}
                                 onChange={e => handleChange(opcion.id, "formato", e.target.value)}
                             />
-                            <ChosenSelect
-                                name={`tipo-${index}`}
-                                options={tiposBoceto}
-                                value={opcion.tipo}
-                                onChange={e => handleChange(opcion.id, "tipo", e.target.value)}
-                            />
+                            */}
+
+
+                            {clientesBocetosEspeciales.includes(cliente_codigo) &&
+                                <div className="formGroup">
+                                    <label>Salida</label>
+                                    <ChosenSelect
+                                        options={tiposBoceto}
+                                        name={`tipo-${index}`}
+                                        onChange={e => handleChange(opcion.id, "tipo", e.target.value)}
+                                        value={opcion.tipo}
+                                    />
+
+                                </div>
+                            }
+                            {/*
                             {opciones.indexOf(opcion) === 0 && <PiPlusCircle onClick={agregarBoceto} />}
-                            {opciones.indexOf(opcion) !== 0 && <PiMinusCircle onClick={() => eliminarBoceto(opcion.id)} />} */}
+                            {opciones.indexOf(opcion) !== 0 && <PiMinusCircle onClick={() => eliminarBoceto(opcion.id)} />} 
+                            */}
 
                         </div>
                     </div>

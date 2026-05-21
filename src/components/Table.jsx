@@ -422,7 +422,7 @@ function Table({
         }
 
         const { _id, id, id_plancha } = data;
-        const tabTitle = tabTitleTemplate.replace(/\{(\w+)\}/g, (_, key) => data[key] || "");
+        const tabTitle = typeof tabTitleTemplate === "string" ? tabTitleTemplate.replace(/\{(\w+)\}/g, (_, key) => data[key]) : "";
 
         let path = `${specificPath || location.pathname}/${id_plancha || id || _id}`;
 
