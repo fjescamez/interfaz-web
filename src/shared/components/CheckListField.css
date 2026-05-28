@@ -1,0 +1,41 @@
+/* src/shared/components/CheckListField.css */
+.checkListField {
+
+
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 16px;
+  margin-top: 2rem;
+}
+
+.checkListLabel {
+  font-size: 14px;
+  font-weight: 600;
+  text-align: end;
+  color: #2b2b2b;
+  padding-right: 10px;
+}
+
+.checkListContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 24px;
+  border: 1px solid #d6d6d6;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.checkListItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  font-size: 24px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkListItem input {
+  cursor: pointer;
+}

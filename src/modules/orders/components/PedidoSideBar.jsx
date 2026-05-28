@@ -190,6 +190,12 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
 
                 createTab(path, tabTitle);
                 break;
+            case "pactions":
+                const path1 = `${location.pathname}/pactions`;
+                const tabTitle1 = `${fullOrder.id_pedido} | PACTIONS`;
+
+                createTab(path1, tabTitle1);
+                break;
             case "tintas":
                 setTintasModal(true);
                 break;

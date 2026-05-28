@@ -1,0 +1,17 @@
+.switchesPro {
+    margin-bottom: .5rem;
+  .switchGroupPro {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 25px;
+    width: 100%;
+    align-items: center;
+
+
+    > :first-child {
+      justify-self: end;
+      text-align: right;
+      margin-right: 6px;
+    }
+  }
+}

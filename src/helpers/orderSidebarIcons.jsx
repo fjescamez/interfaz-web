@@ -1,5 +1,6 @@
 import { HiOutlineRefresh } from "react-icons/hi"
 import { PiNoteLight, PiFoldersLight, PiEnvelopeLight, PiStackLight, PiStorefrontLight, PiImagesLight } from "react-icons/pi"
+import { SiZazzle } from "react-icons/si";
 import { BsFiletypeDoc, BsFiletypeXml, BsTrash3Fill } from "react-icons/bs";
 import { FaExternalLinkAlt } from "react-icons/fa";
 import { RiPaintFill } from "react-icons/ri";
@@ -61,6 +62,11 @@ export const orderSidebarIcons = [
                 icon: <BsFiletypeXml />,
                 action: "kioscoXml",
                 tooltip: "KIOSCO XML"
+            },
+            {
+                icon: <SiZazzle />,
+                action: "pactions",
+                tooltip: "PACTIONS"
             },
             {
                 icon: <PiStorefrontLight />,

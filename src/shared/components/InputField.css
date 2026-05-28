@@ -1,0 +1,57 @@
+/* src/shared/components/InputField.css */
+
+.inputField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.inputFieldLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2b2b2b;
+}
+
+.inputFieldInput {
+  width: 100%;
+  min-height: 42px;
+
+  padding: 0 12px;
+
+  border: 1px solid #d6d6d6;
+  border-radius: 8px;
+
+  background-color: #fff;
+
+  font-size: 14px;
+  color: #2b2b2b;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.inputFieldInput:focus {
+  outline: none;
+  border-color: #5b8cff;
+  box-shadow: 0 0 0 3px rgba(91, 140, 255, 0.15);
+}
+
+.inputFieldInput:disabled {
+  background-color: #f3f3f3;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.inputFieldInput::placeholder {
+  color: #999;
+}
+.inputField {
+  width: 100%;
+}
+
+.inputFieldAuto {
+  width: auto;
+}

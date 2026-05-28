@@ -5,6 +5,7 @@ import OrderDetails from "./pages/OrderDetails";
 import ObservacionesTecnicas from "./pages/ObservacionesTecnicas";
 import EmailDetails from "./pages/EmailDetails";
 import KioscoPage from "../../pages/KioscoPage";
+import PactionsPage from "../pactions/pages/PactionsPage";
 
 export function ordersRoutes(OrderKioskRouted) {
     return (
@@ -14,6 +15,7 @@ export function ordersRoutes(OrderKioskRouted) {
             <Route path="/pedidos" element={<OrdersPage />} />
             <Route path="/pedidos/:id" element={<OrderDetails />} />
             <Route path="/pedidos/:id/kiosco" element={<OrderKioskRouted />} />
+            <Route path="/pedidos/:id/pactions" element={<PactionsPage />} />
             <Route path="/kiosco" element={<KioscoPage />} />
             <Route path="/bandeja" element={<OrdersPage filterBandeja={true} />} />
             <Route path="/bandeja/:id" element={<OrderDetails />} />

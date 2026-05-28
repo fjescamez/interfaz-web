@@ -66,7 +66,7 @@ function BocetoComponent({ opciones, setOpciones, orderXml, kioscoPersoBocData, 
                             <div className="firstGroup">
                                 <p><strong>¿Rasterizar?</strong></p>
                                 <Switch className="kioskSwitch" onClick={() => checkActive(opcion.id)} checked={opcion.rasterizado} />
-                                {/* {opcion.rasterizado && (
+                                {opcion.rasterizado && (
                                     <div className="lpiGroup">
                                         <input
                                             type="text"
@@ -78,15 +78,15 @@ function BocetoComponent({ opciones, setOpciones, orderXml, kioscoPersoBocData, 
                                             <p>lpi</p>
                                         </div>
                                     </div>
-                                )} */}
+                                )}
                             </div>
-                            {/* <ChosenSelect
+                            <ChosenSelect
                                 name={`formato-${index}`}
                                 options={formatosBoceto}
                                 value={opcion.formato}
                                 onChange={e => handleChange(opcion.id, "formato", e.target.value)}
                             />
-                            */}
+                            
 
 
                             {clientesBocetosEspeciales.includes(cliente_codigo) &&

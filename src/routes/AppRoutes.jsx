@@ -16,6 +16,7 @@ import { ordersRoutes } from "../modules/orders/routes";
 import { lenRoutes } from "../modules/len/routes";
 import { strategiesRoutes } from "../modules/strategies/routes";
 
+
 function OrderKioskRouted({ configMode }) {
     const { id } = useParams();
 
@@ -44,6 +45,7 @@ function AppRoutes({ toggleKiosk }) {
             {productionRoutes()}
             {lenRoutes()}
             {strategiesRoutes()}
+
         </Routes>
     )
 }

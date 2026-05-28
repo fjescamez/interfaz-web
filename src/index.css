@@ -388,6 +388,11 @@ svg {
     }
 }
 
+.flexSection {
+  display: flex;
+  flex-direction: row;
+  gap: 5rem;
+}
 
 .formGroup {
     display: flex;
@@ -661,4 +666,10 @@ svg {
     position: absolute;
     top: 10rem;
     left: -20rem;
+}
+
+.displayFlexGroupForm {
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }

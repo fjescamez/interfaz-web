@@ -26,6 +26,7 @@ function CabeceraModulos({ state, originalState, updateState, option, components
         });
     }, [option.id]);
 
+
     return (
         <div className={`actionHeader ${state.isOpen[option.id] ? "open" : ""}`}>
             <Switch
@@ -35,6 +36,11 @@ function CabeceraModulos({ state, originalState, updateState, option, components
                 onClick={() => {
                     if ((option.id === "salidaColores" || option.id === "listDigimark") && state.orderColors.length === 0) {
                         notify("warning", "Sin colores", "Este pedido no tiene colores");
+
+                    }else if (option.id === "exportPdf") {
+                        notify("warning", "Accion no permitida", "Esta accion no puede desactivarse");
+                        return
+
                     } else {
                         if (state.isActive[option.id] && (state.isOpen[option.id])) {
                             updateState("isOpen", (prevIsOpen) => ({
@@ -106,7 +112,7 @@ function CabeceraModulos({ state, originalState, updateState, option, components
                     </div>
                 </div>
             ) : (
-                option.id === "unitario" || option.id === "reportePrevio" ? (
+                option.id === "unitario" || option.id === "reportePrevio" || option.id === "exportPdf" ? (
                     <div
                         className="warning"
                         data-tooltip-id="my-tooltip"
@@ -135,10 +141,17 @@ function CabeceraModulos({ state, originalState, updateState, option, components
                             }
                         }}
                     >
-                        {((state.loadingOrderReport || state.loadingFileReport) && option.id === "reportePrevio") ? (
+
+                        {state.runningExport && option.id === "exportPdf" && (
+                            <OrbitProgress variant="dotted" color={"var(--highlight)"} size="small" />
+                        )}
+
+                        {((state.loadingOrderReport || state.loadingFileReport) && option.id === "reportePrevio")
+                        
+                        ? (
                             <OrbitProgress variant="dotted" color={"var(--highlight)"} size="small" />
                         ) : (
-                            (option.id === "reportePrevio" && state.hideSubmitButton) ? null : state.step > 2 && <HiOutlineRefresh className="refreshIcon" />
+                            (option.id === "exportPdf" || (option.id === "reportePrevio" && state.hideSubmitButton)) ? null : state.step > 2 && <HiOutlineRefresh className="refreshIcon" />
                         )}
                     </div>
                 ) : (
@@ -162,15 +175,17 @@ function CabeceraModulos({ state, originalState, updateState, option, components
                 )
             )
             }
-            { }
+
             <div className="openArrow">
+
                 {state.isOpen[option.id] ?
-                    <MdKeyboardArrowDown
+                    < MdKeyboardArrowDown
                         className="openArrowIcon"
                         onClick={() => {
-                            updateState("isOpen", (prevIsOpen) => ({
-                                ...prevIsOpen,
-                                [option.id]: !prevIsOpen[option.id]
+                            console.log("click")
+                            updateState("isOpen", (prev) => ({
+                                ...prev,
+                                [option.id]: !prev[option.id]
                             }))
                         }} />
                     :
