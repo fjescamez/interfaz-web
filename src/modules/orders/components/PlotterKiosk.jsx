@@ -45,6 +45,14 @@ function PlotterKiosk({ setPlotterKiosk, tareaGmg, setTareaGmg }) {
                 curva: "",
                 perfil: "ISO Coated V2 (39L)"
             }))
+
+        } else {
+            setGmgData(prev => ({
+                ...prev,
+                configuracion: updatedInputData.configuracion,
+                perfil: updatedInputData.configuracion,
+                tipo: tareaGmg.tipo
+            }))
         }
     }
 
