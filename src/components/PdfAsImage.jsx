@@ -1,71 +1,114 @@
 import { useEffect, useState } from "react";
 import * as pdfjsLib from "pdfjs-dist";
+import pdfjsWorker from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 import { OrbitProgress } from "react-loading-indicators";
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-    "pdfjs-dist/build/pdf.worker.min.mjs",
-    import.meta.url
-).toString();
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 function PdfAsImage({ url, className, noOpen }) {
     const urlApi = import.meta.env.VITE_API_URL;
-    /* PDF a imagen */
+
     const [imgSrc, setImgSrc] = useState(null);
+    const [error, setError] = useState(false);
 
     useEffect(() => {
         if (!url) return;
 
         setImgSrc(null);
+        setError(false);
+
         let pdfDoc = null;
         let cancelled = false;
 
         const renderPdf = async () => {
             try {
-                pdfDoc = await pdfjsLib.getDocument(`${urlApi}/pdf/${url}`).promise;
+                const pdfUrl = `${urlApi}/pdf/${url}`;
+
+                const loadingTask = pdfjsLib.getDocument({
+                    url: pdfUrl
+                });
+
+                pdfDoc = await loadingTask.promise;
+
                 if (cancelled) {
                     await pdfDoc.destroy();
                     return;
                 }
-                const page = await pdfDoc.getPage(1); // primera página
 
-                const scale = 0.5; // resolución
+                const page = await pdfDoc.getPage(1);
+
+                const scale = 0.5;
                 const viewport = page.getViewport({ scale });
 
                 const canvas = document.createElement("canvas");
                 const context = canvas.getContext("2d");
+
                 canvas.width = viewport.width;
                 canvas.height = viewport.height;
 
-                await page.render({ canvasContext: context, viewport }).promise;
+                await page.render({
+                    canvasContext: context,
+                    viewport,
+                }).promise;
 
-                // Guardamos el PNG como dataURL
+                if (cancelled) return;
+
                 setImgSrc(canvas.toDataURL("image/png"));
             } catch (err) {
-                if (!cancelled) console.error("Error al renderizar PDF:", err);
+                if (!cancelled) {
+                    console.error("Error al renderizar PDF:", err);
+                    setError(true);
+                }
             }
         };
 
         if (url.includes("sinUnitario")) {
             setImgSrc("/assets/img/sinUnitario.png");
-        } else {
-            renderPdf();
+            return;
         }
+
+        renderPdf();
 
         return () => {
             cancelled = true;
-            if (pdfDoc) pdfDoc.destroy();
+            if (pdfDoc) {
+                try {
+                    pdfDoc.destroy();
+                } catch {}
+            }
         };
-    }, [url]);
+    }, [url, urlApi]);
+
+    if (url === "" || url === "no asignado") {
+        return <h1>No hay previo</h1>;
+    }
+
+    if (error) {
+        return <h1>Error cargando PDF</h1>;
+    }
 
     return (
         <>
-            {(url === "" || url === "no asignado") ? (
-                <h1>No hay previo</h1>
+            {imgSrc ? (
+                <img
+                    src={imgSrc}
+                    className={className}
+                    onClick={
+                        !noOpen
+                            ? () => window.open(`${urlApi}/pdf/${url}`, "_blank")
+                            : undefined
+                    }
+                    alt="PDF preview"
+                />
             ) : (
-                imgSrc ? <img src={imgSrc} className={className} onClick={!noOpen ? () => window.open(`${urlApi}/pdf/${url}`, "_blank") : undefined}></img> : <OrbitProgress variant="dotted" color="var(--highlight)" size="large" />
-            )
-            }
+                <OrbitProgress
+                    variant="dotted"
+                    color="var(--highlight)"
+                    size="large"
+                />
+            )}
         </>
-    )
+    );
 }
 
-export default PdfAsImage
+export default PdfAsImage;
