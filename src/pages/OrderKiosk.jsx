@@ -604,12 +604,12 @@ function OrderKiosk({ configMode }) {
     const totalErrors = (state.orderReport?.filter(item => item.status === "error").length || 0) +
       (state.fileReport?.filter(item => item.status === "error").length || 0);
 
-    /* if (totalErrors + totalWarnings > 0 && !state.loadingFileReport && !state.loadingOrderReport) {
+    if (totalErrors + totalWarnings > 0 && !state.loadingFileReport && !state.loadingOrderReport) {
       updateState("isOpen", (prevIsOpen) => ({
         ...prevIsOpen,
         reportePrevio: true
       }));
-    } */
+    }
 
     updateState({
       reportFixes: totalFixes,
