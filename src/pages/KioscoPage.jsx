@@ -39,9 +39,10 @@ function KioscoPage() {
     const [userJackets, setUserJackets] = useState([]);
     const [selectedJacket, setSelectedJacket] = useState(null);
 
-    const [isRefreshing, setIsRefreshing] = useState(false);
     const [initialLoading, setInitialLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
+    const requestIdRef = useRef(0);
     const jacketsRef = useRef(userJackets);
 
     const [filters, setFilters] = useState(
@@ -55,27 +56,75 @@ function KioscoPage() {
     const filtersRef = useRef(filters);
     const limitRef = useRef(limit);
 
+    // ==============================
+    // FETCH BASE (sin loading)
+    // ==============================
     const listJackets = async () => {
-        const result = await postData("orderKiosks/getFilteredJackets", {
-            username: session.username,
-            filters: filtersRef.current,
-            limit: limitRef.current
-        });
+        const requestId = ++requestIdRef.current;
 
-        const newJackets = result?.jackets || [];
+        const filtersSnapshot = filtersRef.current;
+        const limitSnapshot = limitRef.current;
 
-        if (!areJacketsEqual(jacketsRef.current, newJackets)) {
-            setUserJackets(newJackets);
+        try {
+            const result = await postData("orderKiosks/getFilteredJackets", {
+                username: session.username,
+                filters: filtersSnapshot,
+                limit: limitSnapshot
+            });
+
+            if (requestId !== requestIdRef.current) return;
+
+            const newJackets = result?.jackets || [];
+
+            setUserJackets(prev => {
+                if (areJacketsEqual(prev, newJackets)) return prev;
+                return newJackets;
+            });
+
+        } catch (err) {
+            console.error(err);
         }
     };
 
-    const fetchData = async () => {
-        setIsRefreshing(true);
-        await listJackets();
-        setInitialLoading(false);
-        setIsRefreshing(false);
+    // ==============================
+    // FETCH CON LOADING (solo filtros)
+    // ==============================
+    const fetchWithLoading = async () => {
+        setLoading(true);
+
+        try {
+            await listJackets();
+        } finally {
+            setLoading(false);
+        }
     };
 
+    // ==============================
+    // INIT + POLLING
+    // ==============================
+    useEffect(() => {
+        let cancelled = false;
+
+        const run = async () => {
+            await listJackets();
+            setInitialLoading(false);
+
+            while (!cancelled) {
+                await listJackets();
+                await new Promise(r => setTimeout(r, 7500));
+            }
+        };
+
+        run();
+
+        return () => {
+            cancelled = true;
+        };
+    }, []);
+
+    // ==============================
+    // UPDATE SELECTED JACKET
+    // ==============================
     useEffect(() => {
         jacketsRef.current = userJackets;
 
@@ -85,23 +134,20 @@ function KioscoPage() {
         });
     }, [userJackets]);
 
-    useEffect(() => {
-
-        fetchData();
-        const interval = setInterval(() => {
-            listJackets();
-        }, 5000);
-
-        return () => clearInterval(interval);
-    }, []);
-
+    // ==============================
+    // FILTERS EFFECT (con loading)
+    // ==============================
     useEffect(() => {
         filtersRef.current = filters;
         limitRef.current = limit;
 
         saveTabState(tabKey, { filters, limit });
 
-        listJackets();
+        const run = async () => {
+            await fetchWithLoading();
+        };
+
+        run();
 
         updateData("userPreferences", {
             kioskFilters: { filters, limit }
@@ -116,19 +162,30 @@ function KioscoPage() {
         }));
     }, [filters, limit]);
 
+    // ==============================
+    // SOCKET (sin loading)
+    // ==============================
     useEffect(() => {
         if (!socket) return;
 
-        socket.on("updateKiosk", ({ username, tabKey }) => {
+        const handler = ({ username, tabKey }) => {
             if (username === session?.username) {
-                listJackets();
+                void listJackets();
+
                 if (tabKey) closeTab(tabKey, false);
             }
-        });
+        };
 
-        return () => socket.off("updateKiosk");
-    }, [socket]);
+        socket.on("updateKiosk", handler);
 
+        return () => {
+            socket.off("updateKiosk", handler);
+        };
+    }, [session?.username]);
+
+    // ==============================
+    // HANDLER FILTROS
+    // ==============================
     const handleFilterChange = (filterKey) => {
         setFilters(prev => {
             const updated = { ...prev };
@@ -139,13 +196,11 @@ function KioscoPage() {
                 updated[filterKey] = filterKey === "state" ? "error" : true;
             }
 
-
-
             return updated;
         });
     };
 
-    const showEmptyState = !initialLoading && userJackets.length === 0;
+    const showEmptyState = !loading && !initialLoading && userJackets.length === 0;
 
     return (
         <div className="detailsContainer kioskPage">
@@ -154,12 +209,21 @@ function KioscoPage() {
                 title="KIOSCO GENERAL"
                 subtitle={
                     <HiOutlineRefresh
-                        onClick={fetchData}
-                        style={{ border: "none", opacity: isRefreshing ? 0.5 : 1 }}
+                        onClick={fetchWithLoading}
+                        style={{ border: "none", opacity: loading ? 0.5 : 1 }}
                     />
                 }
                 insteadOfActions={<></>}
             />
+
+            {loading && (
+                <div className="kioskRefreshingOverlay">
+                    <div className="executingContainer">
+                        <BlinkBlur variant="dotted" color="var(--highlight)" size="large" />
+                        <h1>Cargando</h1>
+                    </div>
+                </div>
+            )}
 
             <div className="kioskContainer">
 
@@ -199,18 +263,15 @@ function KioscoPage() {
                             }}
                         />
                     </div>
-
                 </div>
 
-                {/* ===== ZONA ESTABLE (sin saltos) ===== */}
                 {initialLoading ? (
                     <div className="executingContainer">
-                        <BlinkBlur variant="dotted" color="var(--highlight)" size="large" />
-                        <h1>Cargando</h1>
+
                     </div>
                 ) : showEmptyState ? (
                     <div className="executingContainer">
-                        <h1>No hay elementos que cumplan los filtros aplicados</h1>
+
                     </div>
                 ) : (
                     <div className="kioskColumns">
@@ -238,13 +299,6 @@ function KioscoPage() {
                             ))}
                         </div>
 
-                    </div>
-                )}
-
-                {/* overlay suave de refresh (NO rompe layout) */}
-                {isRefreshing && !initialLoading && (
-                    <div className="kioskRefreshingOverlay">
-                        <span>Actualizando…</span>
                     </div>
                 )}
 
