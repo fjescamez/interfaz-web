@@ -111,7 +111,7 @@ function KioscoPage() {
 
             while (!cancelled) {
                 await listJackets();
-                await new Promise(r => setTimeout(r, 7500));
+                await new Promise(r => setTimeout(r, 8000));
             }
         };
 
@@ -220,7 +220,7 @@ function KioscoPage() {
                 <div className="kioskRefreshingOverlay">
                     <div className="executingContainer">
                         <BlinkBlur variant="dotted" color="var(--highlight)" size="large" />
-                        <h1>Cargando</h1>
+                        
                     </div>
                 </div>
             )}
