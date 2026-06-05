@@ -10,7 +10,7 @@ import KioscoPersoBoceto from './KioscoPersoBoceto';
 import { useEffect } from 'react';
 
 function BocetoComponent({ opciones, setOpciones, orderXml, kioscoPersoBocData, updateState, colores, state }) {
-    const { cliente_codigo, marca } = orderXml?.numero;
+const { cliente_codigo, marca } = orderXml?.numero || {};
 
     const agregarBoceto = () => {
         setOpciones(prev => [...prev, { id: opciones.at(-1).id + 1, rasterizado: false, lpi: "300", formato: "Pdf", tipo: "Compuesto" }]);
