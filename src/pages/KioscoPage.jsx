@@ -1,117 +1,158 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import DetailsHeader from '../components/DetailsHeader';
 import { useSession } from '../context/SessionContext';
-import { postData, updateData } from '../helpers/fetchData';
+import { get_overview_with_options } from '../helpers/cloudflow/hub';
 import JacketComponent from '../components/JacketComponent';
-import "./KioscoPage.css";
 import WorkableComponent from '../components/WorkableComponent';
+import "./KioscoPage.css";
 import useSocket from '../helpers/useSocket';
 import { HiOutlineRefresh } from "react-icons/hi";
 import { useTabs } from '../context/TabsContext';
 import { RxCross2 } from "react-icons/rx";
 import { FaPause, FaPlay, FaFlag } from "react-icons/fa";
-import FormGroup from '../components/formComponents/FormGroup';
 import { BlinkBlur } from "react-loading-indicators";
-import { useTabState } from '../context/TabStateContext';
 import { useLocation } from "react-router-dom";
 
-const areJacketsEqual = (oldJackets = [], newJackets = []) => {
-    if (oldJackets.length !== newJackets.length) return false;
+const STORAGE_KEY = "kiosk_filters";
 
-    const oldById = new Map(oldJackets.map(j => [j._id, j]));
+/* =========================
+   LOCAL STORAGE
+========================= */
+const loadState = () => {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return null;
+        return JSON.parse(raw);
+    } catch {
+        return null;
+    }
+};
 
-    return newJackets.every(j => {
-        const old = oldById.get(j._id);
-        if (!old) return false;
-        return JSON.stringify(old) === JSON.stringify(j);
-    });
+const saveState = (state) => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 };
 
 function KioscoPage() {
     const socket = useSocket();
     const location = useLocation();
-    const tabKey = location.pathname;
+    const { session } = useSession();
 
-    const { closeTab } = useTabs();
-    const { session, setSession } = useSession();
-    const { saveTabState, getTabState } = useTabState();
+    const stored = loadState();
 
     const [userJackets, setUserJackets] = useState([]);
-    const [selectedJacket, setSelectedJacket] = useState(null);
+    const [listProgress, setListProgress] = useState([]);
 
+    const [selectedJacketId, setSelectedJacketId] = useState(null);
+
+    const [filters, setFilters] = useState(stored || {});
+
+    const [loading, setLoading] = useState(true);
     const [initialLoading, setInitialLoading] = useState(true);
-    const [loading, setLoading] = useState(false);
 
-    const requestIdRef = useRef(0);
-    const jacketsRef = useRef(userJackets);
+    const requestRef = useRef(0);
+    const previousTimestampRef = useRef(null);
+    const loadJacketIds = useRef([])
 
-    const [filters, setFilters] = useState(
-        session?.kioskFilters?.filters || getTabState(tabKey)?.filters || {}
-    );
-
-    const [limit, setLimit] = useState(
-        session?.kioskFilters?.limit || getTabState(tabKey)?.limit || 10
-    );
-
-    const filtersRef = useRef(filters);
-    const limitRef = useRef(limit);
-
-    // ==============================
-    // FETCH BASE (sin loading)
-    // ==============================
-    const listJackets = async () => {
-        const requestId = ++requestIdRef.current;
-
-        const filtersSnapshot = filtersRef.current;
-        const limitSnapshot = limitRef.current;
+    /* =========================
+       FETCH JACKETS
+    ========================= */
+    const fetchJackets = async (isInitial = false) => {
+        const requestId = ++requestRef.current;
+        const activeFilters = loadState();
+        const timeStamp = isInitial
+            ? null
+            : previousTimestampRef.current;
 
         try {
-            const result = await postData("orderKiosks/getFilteredJackets", {
-                username: session.username,
-                filters: filtersSnapshot,
-                limit: limitSnapshot
-            });
+            const res = await get_overview_with_options(
+                activeFilters,
+                loadJacketIds.current,
+                timeStamp,
+            );
 
-            if (requestId !== requestIdRef.current) return;
+            if (requestId !== requestRef.current) return;
 
-            const newJackets = result?.jackets || [];
+            const updatedEntries = res?.entries || [];
+            const updatedModified = res?.modified || [];
+            const timestampRes = res?.timestamp || null;
+            const progress = res?.progress || [];
+
+            setLoading(false);
+            previousTimestampRef.current = timestampRes;
+
+
+            /* 🔥 PROGRESS SIEMPRE */
+            applyProgress(progress);
+
+            const entries = updatedEntries.slice(0, 100);
+            const entriesIds = entries.map(j => j.id);
+
+            if (isInitial) {
+                setInitialLoading(false);
+                setUserJackets(entries);
+                loadJacketIds.current = entriesIds;
+                return;
+            }
 
             setUserJackets(prev => {
-                if (areJacketsEqual(prev, newJackets)) return prev;
-                return newJackets;
+                const map = new Map(prev.map(j => [j.id, j]));
+
+                // aplicar updates/inserts
+                entries.forEach(entry => {
+                    map.set(entry.id, {
+                        ...(map.get(entry.id) || {}),
+                        ...entry
+                    });
+                });
+
+                // 🔥 eliminar los que vienen en modified
+                updatedModified.forEach(id => {
+                    map.delete(id);
+                });
+
+                // separar nuevos vs existentes
+                const newIds = entries.map(e => e.id);
+
+                const newItems = newIds
+                    .map(id => map.get(id))
+                    .filter(Boolean);
+
+                const oldItems = Array.from(map.values())
+                    .filter(j => !newIds.includes(j.id));
+
+                const finalList = [...newItems, ...oldItems];
+
+                // mantener ids sincronizados
+                loadJacketIds.current = finalList.map(j => j.id);
+
+                return finalList;
             });
 
+            loadJacketIds.current = userJackets.map(j => j.id);
+
+
         } catch (err) {
-            console.error(err);
+            console.error("fetch error:", err);
         }
     };
 
-    // ==============================
-    // FETCH CON LOADING (solo filtros)
-    // ==============================
-    const fetchWithLoading = async () => {
-        setLoading(true);
+    const applyProgress = (progress) => {
+        if (!progress) return;
+        setListProgress(progress);
+    }
 
-        try {
-            await listJackets();
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    // ==============================
-    // INIT + POLLING
-    // ==============================
+    /* =========================
+       POLLING LOOP
+    ========================= */
     useEffect(() => {
         let cancelled = false;
 
         const run = async () => {
-            await listJackets();
-            setInitialLoading(false);
+            await fetchJackets(true);
 
             while (!cancelled) {
-                await listJackets();
-                await new Promise(r => setTimeout(r, 8000));
+                await fetchJackets(false);
+                await new Promise(r => setTimeout(r, 8500));
             }
         };
 
@@ -122,86 +163,45 @@ function KioscoPage() {
         };
     }, []);
 
-    // ==============================
-    // UPDATE SELECTED JACKET
-    // ==============================
+    /* =========================
+       SELECTED JACKET
+    ========================= */
     useEffect(() => {
-        jacketsRef.current = userJackets;
+        if (!userJackets.length) return;
 
-        setSelectedJacket(prev => {
-            if (!userJackets.length) return null;
-            return userJackets.find(j => j._id === prev?._id) || userJackets[0];
+        setSelectedJacketId(prev => {
+            if (!prev) return userJackets[0].id;
+
+            const exists = userJackets.some(j => j.id === prev);
+            return exists ? prev : userJackets[0].id;
         });
     }, [userJackets]);
 
-    // ==============================
-    // FILTERS EFFECT (con loading)
-    // ==============================
-    useEffect(() => {
-        filtersRef.current = filters;
-        limitRef.current = limit;
+    const selectedJacket = useMemo(
+        () => userJackets.find(j => j.id === selectedJacketId),
+        [userJackets, selectedJacketId]
+    );
 
-        saveTabState(tabKey, { filters, limit });
+    /* =========================
+       FILTERS
+    ========================= */
+    const handleFilterChange = (key) => {
+        const next = { ...filters };
+        setLoading(true);
 
-        const run = async () => {
-            await fetchWithLoading();
-        };
+        if (next[key]) delete next[key];
+        else next[key] = key === "state" ? "error" : true;
 
-        run();
-
-        updateData("userPreferences", {
-            kioskFilters: { filters, limit }
-        }, session.username);
-
-        setSession(prev => ({
-            ...prev,
-            preferences: {
-                ...prev.preferences,
-                kioskFilters: { filters, limit }
-            }
-        }));
-    }, [filters, limit]);
-
-    // ==============================
-    // SOCKET (sin loading)
-    // ==============================
-    useEffect(() => {
-        if (!socket) return;
-
-        const handler = ({ username, tabKey }) => {
-            if (username === session?.username) {
-                void listJackets();
-
-                if (tabKey) closeTab(tabKey, false);
-            }
-        };
-
-        socket.on("updateKiosk", handler);
-
-        return () => {
-            socket.off("updateKiosk", handler);
-        };
-    }, [session?.username]);
-
-    // ==============================
-    // HANDLER FILTROS
-    // ==============================
-    const handleFilterChange = (filterKey) => {
-        setFilters(prev => {
-            const updated = { ...prev };
-
-            if (updated[filterKey]) {
-                delete updated[filterKey];
-            } else {
-                updated[filterKey] = filterKey === "state" ? "error" : true;
-            }
-
-            return updated;
-        });
+        setFilters(next);
+        saveState(next);
+        fetchJackets(true);
     };
 
     const showEmptyState = !loading && !initialLoading && userJackets.length === 0;
 
+    /* =========================
+       RENDER
+    ========================= */
     return (
         <div className="detailsContainer kioskPage">
 
@@ -209,92 +209,70 @@ function KioscoPage() {
                 title="KIOSCO GENERAL"
                 subtitle={
                     <HiOutlineRefresh
-                        onClick={fetchWithLoading}
-                        style={{ border: "none", opacity: loading ? 0.5 : 1 }}
+                        onClick={() => {
+                            setLoading(true);
+                            fetchJackets(true);
+                        }}
+                        style={{ opacity: loading ? 0.5 : 1 }}
                     />
                 }
-                insteadOfActions={<></>}
             />
 
             {loading && (
                 <div className="kioskRefreshingOverlay">
-                    <div className="executingContainer">
-                        <BlinkBlur variant="dotted" color="var(--highlight)" size="large" />
-                        
-                    </div>
+                    <BlinkBlur variant="dotted" color="var(--highlight)" size="large" />
                 </div>
             )}
 
             <div className="kioskContainer">
 
                 <div className="filterButtons">
-                    <div className={`filtersButton ${filters.state ? 'clicked' : ''}`} onClick={() => handleFilterChange("state")}>
+                    <div className={`filtersButton ${filters.state ? 'clicked' : ''}`}
+                        onClick={() => handleFilterChange("state")}>
                         <RxCross2 /> Error
                     </div>
 
-                    <div className={`filtersButton ${filters.hold_in_kiosk ? 'clicked' : ''}`} onClick={() => handleFilterChange("hold_in_kiosk")}>
+                    <div className={`filtersButton ${filters.hold_in_kiosk ? 'clicked' : ''}`}
+                        onClick={() => handleFilterChange("hold_in_kiosk")}>
                         <FaPause /> Hold
                     </div>
 
-                    <div className={`filtersButton ${filters.running ? 'clicked' : ''}`} onClick={() => handleFilterChange("running")}>
+                    <div className={`filtersButton ${filters.running ? 'clicked' : ''}`}
+                        onClick={() => handleFilterChange("running")}>
                         <FaPlay /> Running
                     </div>
 
-                    <div className={`filtersButton ${filters.done ? 'clicked' : ''}`} onClick={() => handleFilterChange("done")}>
+                    <div className={`filtersButton ${filters.done ? 'clicked' : ''}`}
+                        onClick={() => handleFilterChange("done")}>
                         <FaFlag /> Finished
-                    </div>
-
-                    <div className="formGroup noLabel">
-                        <FormGroup
-                            handleForm={(e) => setLimit(Number(e.target.value.id))}
-                            value={limit}
-                            field={{
-                                htmlFor: "limit",
-                                select: "simple",
-                                options: [
-                                    { id: 10, textoOpcion: "Mostrar 10" },
-                                    { id: 15, textoOpcion: "Mostrar 15" },
-                                    { id: 25, textoOpcion: "Mostrar 25" },
-                                    { id: 50, textoOpcion: "Mostrar 50" },
-                                    { id: 100, textoOpcion: "Mostrar 100" }
-                                ],
-                                inputId: "limit",
-                                inputName: "limit"
-                            }}
-                        />
                     </div>
                 </div>
 
                 {initialLoading ? (
-                    <div className="executingContainer">
-
-                    </div>
+                    <div />
                 ) : showEmptyState ? (
-                    <div className="executingContainer">
-
-                    </div>
+                    <div />
                 ) : (
                     <div className="kioskColumns">
 
                         <div className="jacketList">
-                            {userJackets.map(jacket => (
+                            {userJackets.map(j => (
                                 <JacketComponent
-                                    key={jacket?._id}
-                                    jacket={jacket}
-                                    selectedJacket={selectedJacket}
-                                    setSelectedJacket={setSelectedJacket}
+                                    key={j.id}
+                                    jacket={j}
+                                    selectedJacketId={selectedJacketId}
+                                    setSelectedJacketId={setSelectedJacketId}
                                 />
                             ))}
                         </div>
 
                         <div className="workableList">
-                            {selectedJacket?.log?.map(workable => (
+                            {selectedJacket?.workables?.map(w => (
                                 <WorkableComponent
-                                    key={workable.workable}
-                                    jacketId={selectedJacket._id}
-                                    workable={workable}
-                                    id_pedido={selectedJacket?.variables?.id_pedido || null}
-                                    trappingData={selectedJacket?.variables?.trapping || null}
+                                    key={w.id}
+                                    jacketId={selectedJacket.id}
+                                    workable={w}
+                                    listProgress={listProgress}
                                 />
                             ))}
                         </div>

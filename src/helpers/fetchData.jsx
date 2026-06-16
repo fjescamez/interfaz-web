@@ -12,7 +12,7 @@ export const fetchData = async (endPoint, searchValue, page = "1", setData, setT
     if (searchValue) params.push(`search=${encodeURIComponent(searchValue)}`);
     if (clientFilter) params.push(`cliente_codigo=${encodeURIComponent(clientFilter)}`);
     if (userFilter) params.push(`usuario_asignado=${encodeURIComponent(userFilter)}`);
-    if (orderBy) params.push(`orderBy=${encodeURIComponent(orderBy)}`);    
+    if (orderBy) params.push(`orderBy=${encodeURIComponent(orderBy)}`);
 
     if (params.length > 0) {
         url += `?${params.join('&')}`;

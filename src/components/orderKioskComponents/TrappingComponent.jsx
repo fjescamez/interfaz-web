@@ -3,21 +3,25 @@ import { trappingFormData } from '../../helpers/orderKioskActions'
 import { useTabState } from '../../context/TabStateContext';
 import { notify } from '../../helpers/notify';
 import { useLocation } from "react-router-dom";
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import SubmitButton from '../buttons/SubmitButton';
 import FormGroup from '../formComponents/FormGroup';
 import { useSession } from '../../context/SessionContext';
 import { postData } from '../../helpers/fetchData';
+import { continue_workable_from_kiosk } from '../../helpers/cloudflow/hub';
 
-function TrappingComponent({ state, updateState, id_pedido, workableId, nodeId, fromWorkable, loadingTrapping, isTrappingDone, isTrappingWaiting, isTrappingCanceled, trappingData }) {
+function TrappingComponent({ state, updateState, workablesId, node_id, fromWorkable }) {
+
     const { postDataContext, updateTabState } = useTabState();
     const location = useLocation();
     const key = location.pathname;
     const { session } = useSession();
+    const [modificar, setModificar] = useState(false);
+    const [mostrarAcciones, setMostrarAcciones] = useState(true);
 
     useEffect(() => {
         // Mensajes de error
-        if (state.trappingData.manual) {
+        if (state?.trappingData?.manual) {
             updateState("orderReport", (prevOrderReport) => prevOrderReport.filter(item => !item?.type?.includes("trapping") && item?.status !== "warning"));
         } else {
             const error1 = {
@@ -31,7 +35,7 @@ function TrappingComponent({ state, updateState, id_pedido, workableId, nodeId, 
                 type: ["trapping"]
             };
 
-            if (state.orderReport) {
+            if (state?.orderReport) {
                 updateState("orderReport", (prevOrderReport) => {
                     let next = prevOrderReport;
                     // Añadir error1 si corresponde
@@ -43,7 +47,7 @@ function TrappingComponent({ state, updateState, id_pedido, workableId, nodeId, 
                         next = next.filter(item => !(item.message === error1.message && JSON.stringify(item.type) === JSON.stringify(error1.type)));
                     }
                     // Añadir error2 si corresponde
-                    if (state.trappingData.remetido !== "No" && (state.trappingData.distancia_remetido === "0" || state.trappingData.distancia_remetido === "")) {
+                    if (state?.trappingData.remetido !== "No" && (state.trappingData.distancia_remetido === "0" || state.trappingData.distancia_remetido === "")) {
                         const exists = next.some(item => item.message === error2.message && JSON.stringify(item.type) === JSON.stringify(error2.type));
                         if (!exists) next = [...next, error2];
                     } else {
@@ -66,11 +70,6 @@ function TrappingComponent({ state, updateState, id_pedido, workableId, nodeId, 
         }));
     }
 
-    const applyTrappingConfirmation = (prev) => ({
-        ...prev,
-        loadingTrapping: false
-    });
-
     const setLoadingTrappingTabState = (value) => {
         updateTabState(key, (prev) => ({
             ...prev,
@@ -78,10 +77,13 @@ function TrappingComponent({ state, updateState, id_pedido, workableId, nodeId, 
         }));
     };
 
+
     const handleTrappingConfirmation = async (action) => {
         updateState("loadingTrapping", true);
+        setMostrarAcciones(false);
 
         setLoadingTrappingTabState(true);
+        setModificar(false);
         let to_connector = "";
 
         if (action === "aceptar") {
@@ -92,16 +94,23 @@ function TrappingComponent({ state, updateState, id_pedido, workableId, nodeId, 
             to_connector = "decision.74";
         }
 
-        postData("orderKiosks/confirmTrapping", {
-            trappingData: state.trappingData,
-            workable_id: workableId,
-            node_id: nodeId,
-            to_connector,
-            id_pedido,
-            username: session?.username
-        });
+        const variables = {
+            trapping: state.trappingData
+        };
+        const workable_id = workablesId;
 
-        // setLoadingTrappingTabState(false);
+        try {
+            const res = await continue_workable_from_kiosk(
+                workable_id,
+                node_id,
+                to_connector,
+                variables
+            );
+
+        } catch (err) {
+            console.error("fetch error:", err);
+        }
+
     }
 
     return (
@@ -124,7 +133,7 @@ function TrappingComponent({ state, updateState, id_pedido, workableId, nodeId, 
                         </div>
                     </div>
                 )}
-                {!state?.trappingData.manual && (
+                {modificar && (
                     <div className="kioskFormRow">
                         {trappingFormData.formFields.map((field) => (
                             <div className="formGroup">
@@ -137,13 +146,25 @@ function TrappingComponent({ state, updateState, id_pedido, workableId, nodeId, 
                         ))}
                     </div>
                 )}
-                {state?.isTrappingWaiting && !state?.loadingTrapping && (
-                    <div className="buttons">
-                        <SubmitButton onClick={() => handleTrappingConfirmation("aceptar")} text="Aceptar" />
-                        <SubmitButton onClick={() => handleTrappingConfirmation("modificar")} text="Modificar valor" />
-                        <SubmitButton onClick={() => handleTrappingConfirmation("cancelar")} text="Cancelar y eliminar trapping" />
-                    </div>
-                )}
+                <div className="buttons">
+                    {mostrarAcciones && !modificar && (
+                        <>
+                            <SubmitButton onClick={() => handleTrappingConfirmation("aceptar")} text="Aceptar" />
+                            <SubmitButton onClick={() => setModificar(true)} text="Modificar" />
+                            <SubmitButton onClick={() => handleTrappingConfirmation("cancelar")} text="Cancelar y Eliminar" />
+                        </>
+                    )}
+
+                    {mostrarAcciones && modificar && (
+                        <>
+                            <SubmitButton onClick={() => handleTrappingConfirmation("modificar")} text="Aplicar nuevos valores" />
+                            <SubmitButton onClick={() => setModificar(false)} text="volver" />
+                        </>
+                    )}
+
+
+                </div>
+
             </div>
         </div>
     )

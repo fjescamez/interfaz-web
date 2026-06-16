@@ -23,17 +23,18 @@ function ComparePopUp({ setCompareModal, rutaTrabajo }) {
     }
   }
 
-  useEffect(() => {
-    const getIndexacion = async () => {
-      const response = await postData("compare/getIndexacion", post);
+  const getIndexacion = async () => {
+    const response = await postData("compare/getIndexacion", post);
 
-      if (response && response.listFiles) {
-        const defaultFile = response.listFiles.find(file => file.type === "file");
-        setFile1(defaultFile);
-        setIndexacion(response.listFiles);
-        setLoading(false);
-      }
+    if (response && response.listFiles) {
+      const defaultFile = response.listFiles.find(file => file.type === "file");
+      setFile1(defaultFile);
+      setIndexacion(response.listFiles);
+      setLoading(false);
     }
+  }
+
+  useEffect(() => {
     getIndexacion();
   }, []);
 
@@ -114,7 +115,7 @@ function ComparePopUp({ setCompareModal, rutaTrabajo }) {
               <label>Archivo A:</label>
               <input
                 type="text"
-                value={file1.name || ""}
+                value={file1?.name || ""}
                 onDoubleClick={() => {
                   setFile1("");
                   setCompareLink("");
