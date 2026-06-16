@@ -58,7 +58,7 @@ function KioscoPage() {
     ========================= */
     const fetchJackets = async (isInitial = false) => {
         const requestId = ++requestRef.current;
-        const activeFilters = loadState();
+        const activeFilters = loadState() || {};
         const timeStamp = isInitial
             ? null
             : previousTimestampRef.current;
