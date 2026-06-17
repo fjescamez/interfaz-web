@@ -16,8 +16,20 @@ function TrappingComponent({ state, updateState, workablesId, node_id, fromWorka
     const location = useLocation();
     const key = location.pathname;
     const { session } = useSession();
-    const [modificar, setModificar] = useState(false);
-    const [mostrarAcciones, setMostrarAcciones] = useState(true);
+    const [mostrarParametros, setMostrarParametros] = useState(true);
+    const [mostrarAcciones, setMostrarAcciones] = useState(false);
+
+
+    useEffect(() => {
+        if (node_id) {
+            setMostrarParametros(false);
+            setMostrarAcciones(true);
+        } else {
+            setMostrarParametros(true);
+            setMostrarAcciones(false);
+        }
+    }, [node_id]);
+
 
     useEffect(() => {
         // Mensajes de error
@@ -82,8 +94,9 @@ function TrappingComponent({ state, updateState, workablesId, node_id, fromWorka
         updateState("loadingTrapping", true);
         setMostrarAcciones(false);
 
+        setMostrarParametros(false);
         setLoadingTrappingTabState(true);
-        setModificar(false);
+
         let to_connector = "";
 
         if (action === "aceptar") {
@@ -110,7 +123,6 @@ function TrappingComponent({ state, updateState, workablesId, node_id, fromWorka
         } catch (err) {
             console.error("fetch error:", err);
         }
-
     }
 
     return (
@@ -133,10 +145,11 @@ function TrappingComponent({ state, updateState, workablesId, node_id, fromWorka
                         </div>
                     </div>
                 )}
-                {modificar && (
+                {mostrarParametros && (
                     <div className="kioskFormRow">
-                        {trappingFormData.formFields.map((field) => (
-                            <div className="formGroup">
+                        {trappingFormData.formFields.map((field, index) => (
+        
+                            <div key={index} className="formGroup">
                                 <FormGroup
                                     value={state?.trappingData ? state.trappingData[field.htmlFor] ?? "" : ""}
                                     handleForm={handleForm}
@@ -147,18 +160,18 @@ function TrappingComponent({ state, updateState, workablesId, node_id, fromWorka
                     </div>
                 )}
                 <div className="buttons">
-                    {mostrarAcciones && !modificar && (
+                    {mostrarAcciones && !mostrarParametros && (
                         <>
                             <SubmitButton onClick={() => handleTrappingConfirmation("aceptar")} text="Aceptar" />
-                            <SubmitButton onClick={() => setModificar(true)} text="Modificar" />
+                            <SubmitButton onClick={() => setMostrarParametros(true)} text="Modificar" />
                             <SubmitButton onClick={() => handleTrappingConfirmation("cancelar")} text="Cancelar y Eliminar" />
                         </>
                     )}
 
-                    {mostrarAcciones && modificar && (
+                    {mostrarAcciones && mostrarParametros && (
                         <>
                             <SubmitButton onClick={() => handleTrappingConfirmation("modificar")} text="Aplicar nuevos valores" />
-                            <SubmitButton onClick={() => setModificar(false)} text="volver" />
+                            <SubmitButton onClick={() => setMostrarParametros(false)} text="volver" />
                         </>
                     )}
 

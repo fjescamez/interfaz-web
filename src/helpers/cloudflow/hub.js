@@ -18,7 +18,6 @@ export const get_overview_with_options = async (activeFilters, loadJacketIds = [
         "(",
         "roles.handler", "equal to", infoUser.username,
         ")"
-        
     ];
 
     const filtersList = [];

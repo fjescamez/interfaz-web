@@ -9,12 +9,13 @@ import { useTabs } from '../../context/TabsContext';
 
 function KioskSubmitButton({ state, updateState, buttonAction, buttonText, components }) {
     const { postDataContext, updateTabState, removeTabState } = useTabState();
-    const { createTab } = useTabs();
+    const { createTab, closeTab } = useTabs();
     const location = useLocation();
     const tabKey = location.pathname;
     const { session } = useSession();
 
     const handleSubmit = async (action) => {
+        console.log("action", action)
         if (
             state.orderReport.some(item =>
                 item.info !== "indicar valor de distorsion" &&
@@ -79,6 +80,9 @@ function KioskSubmitButton({ state, updateState, buttonAction, buttonText, compo
             postData("orderKiosks/kioscoPedidoAuto", dataToSend);
             createTab("/kiosco", "KIOSCO GENERAL");
             removeTabState(tabKey);
+            closeTab(tabKey);
+
+
         } else if (action === "saveConfig") {
             const activosDefault = Object.keys(state.isActive).filter(key => state.isActive[key]);
             const abiertosDefault = Object.keys(state.isOpen).filter(key => state.isOpen[key]);

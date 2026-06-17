@@ -80,7 +80,6 @@ function KioscoPage() {
             setLoading(false);
             previousTimestampRef.current = timestampRes;
 
-
             /* 🔥 PROGRESS SIEMPRE */
             applyProgress(progress);
 
