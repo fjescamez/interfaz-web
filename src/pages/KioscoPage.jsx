@@ -48,6 +48,9 @@ function KioscoPage() {
     const previousTimestampRef = useRef(null);
     const loadJacketIds = useRef([])
 
+    const sortJackets = (list) =>
+        [...list].sort((a, b) => b.id.localeCompare(a.id));
+
 
     /* =========================
        FETCH JACKETS
@@ -83,9 +86,12 @@ function KioscoPage() {
             const entriesIds = entries.map(j => j.id);
 
             if (isInitial) {
+                const initialEntries = sortJackets(entries);
+
                 setInitialLoading(false);
-                setUserJackets(entries);
-                loadJacketIds.current = entriesIds;
+                setUserJackets(initialEntries);
+
+                loadJacketIds.current = initialEntries.map(j => j.id);
                 return;
             }
 
@@ -105,8 +111,7 @@ function KioscoPage() {
                     map.delete(id);
                 });
 
-                const finalList = Array.from(map.values())
-                    .sort((a, b) => b.id.localeCompare(a.id)); // más nuevas arriba
+                const finalList = sortJackets(Array.from(map.values()));
 
                 loadJacketIds.current = finalList.map(j => j.id);
 
