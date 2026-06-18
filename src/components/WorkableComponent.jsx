@@ -8,14 +8,16 @@ import { get_variables_from_workable } from "../helpers/cloudflow/hub";
 import { useEffect, useState, useRef } from "react";
 
 
-function WorkableComponent({ jacketId, workable, id_pedido, listProgress }) {
+function WorkableComponent({ jacketId, workable, id_pedido, listProgress, setUserJackets }) {
 
     const [progress, setProgress] = useState({});
     const requestRef = useRef(0);
     const workablesId = workable?.id;
+    const [holdInKiosk, setHoldInKiosk] = useState(
+        workable?.hold_in_kiosk ?? false
+    );
 
     const [variablesWorkable, setVariablesWorkable] = useState({});
-
     const whitepaperUrl = `http://192.4.26.120:9090/portal.cgi?quantum&jacketId=${jacketId}&workableId=${workablesId}`;
 
     const {
@@ -44,6 +46,31 @@ function WorkableComponent({ jacketId, workable, id_pedido, listProgress }) {
         trappingData: variablesWorkable?.trapping
     });
 
+    const updateHoldInKiosk = (value) => {
+
+        setHoldInKiosk(value);
+
+        setUserJackets(prev =>
+            prev.map(jacket => {
+
+                if (jacket.id !== jacketId) return jacket;
+
+                return {
+                    ...jacket,
+                    hold_in_kiosk: value,
+                    log: jacket.log?.map(w =>
+                        w.id === workable.id
+                            ? {
+                                ...w,
+                                hold_in_kiosk: value
+                            }
+                            : w
+                    )
+                };
+            })
+        );
+    };
+
     const updateState = (key, value) => {
         setState(prev => ({
             ...prev,
@@ -69,6 +96,10 @@ function WorkableComponent({ jacketId, workable, id_pedido, listProgress }) {
     }
 
     useEffect(() => {
+        setHoldInKiosk(workable_hold_in_kiosk ?? false);
+    }, [workable_hold_in_kiosk]);
+
+    useEffect(() => {
         if (!workable_id || !workable_hold_in_kiosk) return;
         getVariablesWorkable();
     }, [workable_id])
@@ -86,19 +117,19 @@ function WorkableComponent({ jacketId, workable, id_pedido, listProgress }) {
         setProgress(listProgress.filter(progress => progress.id === workable.id))
     }, [listProgress]);
 
-
     return (
         <div className="workableItem">
             <div className="workableHeader">
+
                 <div className="icon">
                     {workable_state === "error"
                         ? <RxCross2 color="red" />
                         : workable_aborted
                             ? <RiProhibited2Line color="red" />
-                            : workable_done
-                                ? <FaFlag color="yellowgreen" />
-                                : workable_hold_in_kiosk
-                                    ? <FaPause />
+                            : holdInKiosk
+                                ? <FaPause />
+                                : workable_done
+                                    ? <FaFlag color="yellowgreen" />
                                     : <FaPlay color="green" />
                     }
                 </div>
@@ -140,7 +171,7 @@ function WorkableComponent({ jacketId, workable, id_pedido, listProgress }) {
                 </div>
 
                 {(whitepaper === "Iniciar Tarea_2020"
-                    && workable_hold_in_kiosk
+                    && holdInKiosk
                     && node === "Aprobación"
                     && !workable_aborted) && (
 
@@ -152,6 +183,7 @@ function WorkableComponent({ jacketId, workable, id_pedido, listProgress }) {
                                 workablesId={workablesId}
                                 node_id={node_id}
                                 fromWorkable={true}
+                                setHoldInKiosk={updateHoldInKiosk}
                             />
                         </div>
                     )}

@@ -1,17 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import DetailsHeader from '../components/DetailsHeader';
-import { useSession } from '../context/SessionContext';
-import { get_overview_with_options } from '../helpers/cloudflow/hub';
+import { get_overview_with_options, get_jacket_actions } from '../helpers/cloudflow/hub';
 import JacketComponent from '../components/JacketComponent';
 import WorkableComponent from '../components/WorkableComponent';
 import "./KioscoPage.css";
-import useSocket from '../helpers/useSocket';
 import { HiOutlineRefresh } from "react-icons/hi";
-import { useTabs } from '../context/TabsContext';
 import { RxCross2 } from "react-icons/rx";
 import { FaPause, FaPlay, FaFlag } from "react-icons/fa";
 import { BlinkBlur } from "react-loading-indicators";
-import { useLocation } from "react-router-dom";
 
 const STORAGE_KEY = "kiosk_filters";
 
@@ -28,15 +24,13 @@ const loadState = () => {
     }
 };
 
+
+
 const saveState = (state) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 };
 
 function KioscoPage() {
-    const socket = useSocket();
-    const location = useLocation();
-    const { session } = useSession();
-
     const stored = loadState();
 
     const [userJackets, setUserJackets] = useState([]);
@@ -48,10 +42,12 @@ function KioscoPage() {
 
     const [loading, setLoading] = useState(true);
     const [initialLoading, setInitialLoading] = useState(true);
+    const [actions, setActions] = useState([]);
 
     const requestRef = useRef(0);
     const previousTimestampRef = useRef(null);
     const loadJacketIds = useRef([])
+
 
     /* =========================
        FETCH JACKETS
@@ -96,7 +92,7 @@ function KioscoPage() {
             setUserJackets(prev => {
                 const map = new Map(prev.map(j => [j.id, j]));
 
-                // aplicar updates/inserts
+                // actualizar / insertar
                 entries.forEach(entry => {
                     map.set(entry.id, {
                         ...(map.get(entry.id) || {}),
@@ -104,24 +100,14 @@ function KioscoPage() {
                     });
                 });
 
-                // 🔥 eliminar los que vienen en modified
+                // eliminar modificadas
                 updatedModified.forEach(id => {
                     map.delete(id);
                 });
 
-                // separar nuevos vs existentes
-                const newIds = entries.map(e => e.id);
+                const finalList = Array.from(map.values())
+                    .sort((a, b) => b.id.localeCompare(a.id)); // más nuevas arriba
 
-                const newItems = newIds
-                    .map(id => map.get(id))
-                    .filter(Boolean);
-
-                const oldItems = Array.from(map.values())
-                    .filter(j => !newIds.includes(j.id));
-
-                const finalList = [...newItems, ...oldItems];
-
-                // mantener ids sincronizados
                 loadJacketIds.current = finalList.map(j => j.id);
 
                 return finalList;
@@ -134,6 +120,19 @@ function KioscoPage() {
             console.error("fetch error:", err);
         }
     };
+
+    const fetchActions = async () => {
+        const requestId = ++requestRef.current;
+
+        try {
+            const res = await get_jacket_actions(selectedJacketId);
+            if (requestId !== requestRef.current) return;
+            setActions(res.actions)
+
+        } catch (error) {
+            console.error("fetch error:", err);
+        }
+    }
 
     const applyProgress = (progress) => {
         if (!progress) return;
@@ -151,7 +150,7 @@ function KioscoPage() {
 
             while (!cancelled) {
                 await fetchJackets(false);
-                await new Promise(r => setTimeout(r, 8500));
+                await new Promise(r => setTimeout(r, 6000));
             }
         };
 
@@ -176,10 +175,29 @@ function KioscoPage() {
         });
     }, [userJackets]);
 
+    useEffect(() => {
+
+        if (!selectedJacketId) return;
+
+        fetchActions();
+
+    }, [selectedJacketId]);
+
     const selectedJacket = useMemo(
         () => userJackets.find(j => j.id === selectedJacketId),
         [userJackets, selectedJacketId]
     );
+
+    const cleanDeleted = (id_jacket) => {
+        setUserJackets(prev =>
+            prev.filter(j => j.id !== id_jacket)
+        );
+
+        // opcional: limpiar selección si era la eliminada
+        setSelectedJacketId(prev =>
+            prev === id_jacket ? null : prev
+        );
+    };
 
     /* =========================
        FILTERS
@@ -201,6 +219,7 @@ function KioscoPage() {
     /* =========================
        RENDER
     ========================= */
+
     return (
         <div className="detailsContainer kioskPage">
 
@@ -253,7 +272,6 @@ function KioscoPage() {
                     <div />
                 ) : (
                     <div className="kioskColumns">
-
                         <div className="jacketList">
                             {userJackets.map(j => (
                                 <JacketComponent
@@ -261,6 +279,8 @@ function KioscoPage() {
                                     jacket={j}
                                     selectedJacketId={selectedJacketId}
                                     setSelectedJacketId={setSelectedJacketId}
+                                    actions={actions}
+                                    cleanDeleted={cleanDeleted}
                                 />
                             ))}
                         </div>
@@ -272,10 +292,10 @@ function KioscoPage() {
                                     jacketId={selectedJacket.id}
                                     workable={w}
                                     listProgress={listProgress}
+                                    setUserJackets={setUserJackets}
                                 />
                             ))}
                         </div>
-
                     </div>
                 )}
 

@@ -94,3 +94,26 @@ export const continue_workable_from_kiosk = async (workable_id, node_id, to_conn
         variables
     });
 }
+
+export const get_jacket_actions = (jacket_id) => {
+    return postDataCloud({
+        method: "hub.get_jacket_actions",
+        jacket_id
+    })
+}
+
+export const cleanup_jacket = (jacket_id, whitepaper_id="") => {
+    return postDataCloud({
+        method: "hub.cleanup_jacket",
+        jacket_id,
+        whitepaper_id
+    })
+}
+
+export const abort_jacket = (jacket_id, immediate_kill = false) => {
+    return postDataCloud({
+        method: "hub.abort_jacket",
+        jacket_id,
+        immediate_kill
+    })
+}

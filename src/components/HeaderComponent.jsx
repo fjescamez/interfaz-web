@@ -33,32 +33,6 @@ function HeaderComponent({ toggleUserDropdown, isOnline, setIsOnline }) {
         return () => el.removeEventListener("wheel", onWheel);
     }, []);
 
-    /* let draggedTab;
-
-    function dragStart(event) {
-        draggedTab = event.target.closest('li');
-    }
-
-    function allowDrop(event) {
-        event.preventDefault();
-    }
-
-    function drop(event) {
-        event.preventDefault();
-
-        const targetTab = event.target.closest('li');
-        if (!targetTab || draggedTab === targetTab) return;
-
-        const rect = targetTab.getBoundingClientRect();
-        const isAfter = event.clientX > rect.left + rect.width / 2;
-
-        if (isAfter) {
-            targetTab.parentNode.insertBefore(draggedTab, targetTab.nextSibling);
-        } else {
-            targetTab.parentNode.insertBefore(draggedTab, targetTab);
-        }
-    } */
-
     return (
         <div className="pageHeader">
             <h1 className="headerTitle" onClick={() => {

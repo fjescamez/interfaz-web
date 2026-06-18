@@ -3,22 +3,21 @@ import { trappingFormData } from '../../helpers/orderKioskActions'
 import { useTabState } from '../../context/TabStateContext';
 import { notify } from '../../helpers/notify';
 import { useLocation } from "react-router-dom";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import SubmitButton from '../buttons/SubmitButton';
 import FormGroup from '../formComponents/FormGroup';
 import { useSession } from '../../context/SessionContext';
 import { postData } from '../../helpers/fetchData';
 import { continue_workable_from_kiosk } from '../../helpers/cloudflow/hub';
 
-function TrappingComponent({ state, updateState, workablesId, node_id, fromWorkable }) {
+function TrappingComponent({ state, updateState, workablesId, node_id, fromWorkable, setHoldInKiosk }) {
 
     const { postDataContext, updateTabState } = useTabState();
     const location = useLocation();
     const key = location.pathname;
     const { session } = useSession();
-    const [mostrarParametros, setMostrarParametros] = useState(true);
-    const [mostrarAcciones, setMostrarAcciones] = useState(false);
-
+    const [mostrarParametros, setMostrarParametros] = useState(!node_id);
+    const [mostrarAcciones, setMostrarAcciones] = useState(!!node_id);
 
     useEffect(() => {
         if (node_id) {
@@ -29,7 +28,6 @@ function TrappingComponent({ state, updateState, workablesId, node_id, fromWorka
             setMostrarAcciones(false);
         }
     }, [node_id]);
-
 
     useEffect(() => {
         // Mensajes de error
@@ -120,6 +118,10 @@ function TrappingComponent({ state, updateState, workablesId, node_id, fromWorka
                 variables
             );
 
+            if (res) {
+                setHoldInKiosk(false);
+            }
+
         } catch (err) {
             console.error("fetch error:", err);
         }
@@ -148,7 +150,7 @@ function TrappingComponent({ state, updateState, workablesId, node_id, fromWorka
                 {mostrarParametros && (
                     <div className="kioskFormRow">
                         {trappingFormData.formFields.map((field, index) => (
-        
+
                             <div key={index} className="formGroup">
                                 <FormGroup
                                     value={state?.trappingData ? state.trappingData[field.htmlFor] ?? "" : ""}

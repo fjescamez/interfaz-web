@@ -6,6 +6,7 @@ import { useTabState } from '../../context/TabStateContext';
 import { useLocation } from "react-router-dom";
 import { useSession } from '../../context/SessionContext';
 import { useTabs } from '../../context/TabsContext';
+import { useNavigate } from "react-router-dom";
 
 function KioskSubmitButton({ state, updateState, buttonAction, buttonText, components }) {
     const { postDataContext, updateTabState, removeTabState } = useTabState();
@@ -13,6 +14,7 @@ function KioskSubmitButton({ state, updateState, buttonAction, buttonText, compo
     const location = useLocation();
     const tabKey = location.pathname;
     const { session } = useSession();
+    const navigate = useNavigate();
 
     const handleSubmit = async (action) => {
         console.log("action", action)
@@ -81,7 +83,7 @@ function KioskSubmitButton({ state, updateState, buttonAction, buttonText, compo
             createTab("/kiosco", "KIOSCO GENERAL");
             removeTabState(tabKey);
             closeTab(tabKey);
-
+            navigate('/kiosco');
 
         } else if (action === "saveConfig") {
             const activosDefault = Object.keys(state.isActive).filter(key => state.isActive[key]);
