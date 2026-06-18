@@ -127,11 +127,9 @@ function KioscoPage() {
     };
 
     const fetchActions = async () => {
-        const requestId = ++requestRef.current;
 
         try {
             const res = await get_jacket_actions(selectedJacketId);
-            if (requestId !== requestRef.current) return;
             setActions(res.actions)
 
         } catch (error) {
@@ -155,7 +153,7 @@ function KioscoPage() {
 
             while (!cancelled) {
                 await fetchJackets(false);
-                await new Promise(r => setTimeout(r, 6000));
+                await new Promise(r => setTimeout(r, 8500));
             }
         };
 
