@@ -111,12 +111,15 @@ function TrappingComponent({ state, updateState, workablesId, node_id, fromWorka
         const workable_id = workablesId;
 
         try {
+            console.log("antes del post")
             const res = await continue_workable_from_kiosk(
                 workable_id,
                 node_id,
                 to_connector,
                 variables
             );
+
+            console.log("despues del post", res)
 
             if (res) {
                 setHoldInKiosk(false);
