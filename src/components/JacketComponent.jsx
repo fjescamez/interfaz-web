@@ -57,6 +57,7 @@ function JacketComponent({ jacket, selectedJacketId, setSelectedJacketId, action
         }
     }
 
+
     return (
         <div
             className={`jacketItem ${selectedJacketId === jacket?.id ? "selected" : ""}`}

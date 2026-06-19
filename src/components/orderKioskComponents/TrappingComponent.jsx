@@ -10,6 +10,7 @@ import { useSession } from '../../context/SessionContext';
 import { postData } from '../../helpers/fetchData';
 import { continue_workable_from_kiosk } from '../../helpers/cloudflow/hub';
 
+
 function TrappingComponent({ state, updateState, workablesId, node_id, fromWorkable, setHoldInKiosk }) {
 
     const { postDataContext, updateTabState } = useTabState();
@@ -106,9 +107,15 @@ function TrappingComponent({ state, updateState, workablesId, node_id, fromWorka
         }
 
         const variables = {
-            trapping: state.trappingData
+            trapping: state.trappingData || null
         };
         const workable_id = workablesId;
+
+        if (!workable_id) {
+            console.log("workable_id", workable_id)
+            notify("error", "Selecciona una tarea antes de realizar alguna accion");
+            return
+        }
 
         try {
             console.log("antes del post")
@@ -119,11 +126,14 @@ function TrappingComponent({ state, updateState, workablesId, node_id, fromWorka
                 variables
             );
 
-            console.log("despues del post", res)
-
-            if (res) {
-                setHoldInKiosk(false);
+            if (res.error) {
+                notify("error", "Selecciona una tarea antes de realizar alguna accion");
+                setMostrarAcciones(true);
+                return
             }
+
+            setHoldInKiosk(false);
+            
 
         } catch (err) {
             console.error("fetch error:", err);
