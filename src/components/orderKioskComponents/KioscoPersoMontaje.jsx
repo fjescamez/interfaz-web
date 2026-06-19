@@ -19,6 +19,10 @@ function KioscoPersoMontaje({
         globalKioskVariables[key].includes(orderXml?.numero?.cliente_codigo)
     );
 
+    const { cliente_codigo } = orderXml.numero;
+    const { ficha_tecnica: fichaTecnica } = orderXml.tecnicos;
+    const ficha_tecnica = typeof fichaTecnica === "string" ? fichaTecnica : "";
+
     const resolvedKioskForm = useMemo(() => {
         return globalKioskForm.map(field => {
             if (field.inputName === "muestraT") {
@@ -37,8 +41,7 @@ function KioscoPersoMontaje({
             kioscoPerso: true
         }));
 
-        if (orderXml?.numero?.cliente_codigo) {
-            const cliente_codigo = orderXml.numero.cliente_codigo;
+        if (cliente_codigo) {
 
             if (cliente_codigo === "0159" || cliente_codigo === "0360") {
                 updateState("kioscoPersoData", prevData => ({
@@ -106,6 +109,16 @@ function KioscoPersoMontaje({
                     mastercut: false,
                     tomaPinza: "15",
                     muestraT: colores?.[0] || ""
+                }))
+            }
+
+            if (cliente_codigo === "0177" && ficha_tecnica.includes("GÖPFERT")) {
+                const isGofert = ficha_tecnica.includes("GÖPFERT");
+                const checkDefault = isGofert && colores.length > 1 ? true : false
+                updateState("kioscoPersoData", prevData => ({
+                    ...prevData,
+                    checkRegistron: checkDefault,
+                    despRegistron: "0",
                 }))
             }
         }
@@ -179,9 +192,14 @@ function KioscoPersoMontaje({
         resolvedKioskForm.filter(field => actividadFormFields.includes(field.inputName))
     )
 
-    const clientFieldsToRender = filterFields(
+    let clientFieldsToRender = filterFields(
         resolvedKioskForm.filter(field => clientFormFields.includes(field.inputName))
     )
+
+    // excepciones
+    if (cliente_codigo === "0177" && !ficha_tecnica.includes("GÖPFERT")) {
+        clientFieldsToRender = [];
+    }
 
     return (
         <div className="kioscoPerso">
