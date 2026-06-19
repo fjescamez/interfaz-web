@@ -80,6 +80,7 @@ const { cliente_codigo, marca } = orderXml?.numero || {};
                                     </div>
                                 )}
                             </div>
+                            
                             <ChosenSelect
                                 name={`formato-${index}`}
                                 options={formatosBoceto}
@@ -112,10 +113,7 @@ const { cliente_codigo, marca } = orderXml?.numero || {};
                 ))}
 
             </form>
-            <div className="montaje">
-                <br></br>
-                <KioscoPersoBoceto orderXml={orderXml} kioscoPersoBocData={kioscoPersoBocData} updateState={updateState} colores={colores} state={state} />
-            </div>
+           
         </div>
     )
 }
