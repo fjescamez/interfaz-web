@@ -21,7 +21,9 @@ function KioscoPersoMontaje({
 
     const { cliente_codigo } = orderXml.numero;
     const { ficha_tecnica: fichaTecnica } = orderXml.tecnicos;
+    const { id: actividad, obs_actividad: obsActividad } = orderXml.actividad;
     const ficha_tecnica = typeof fichaTecnica === "string" ? fichaTecnica : "";
+    const obs_actividad = typeof obsActividad === "string" ? obsActividad : "";
 
     const resolvedKioskForm = useMemo(() => {
         return globalKioskForm.map(field => {
@@ -121,6 +123,13 @@ function KioscoPersoMontaje({
                     despRegistron: "0",
                 }))
             }
+
+            if (actividad === "ETIQUETAS" && obs_actividad.includes("TOPO")) {
+                updateState("kioscoPersoData", prevData => ({
+                    ...prevData,
+                    anchoTopo: 4,
+                }))
+            }
         }
     }, [orderXml, colores])
 
@@ -188,7 +197,7 @@ function KioscoPersoMontaje({
             !field.showIf || field.showIf({ state })
         )
 
-    const actividadFieldsToRender = filterFields(
+    let actividadFieldsToRender = filterFields(
         resolvedKioskForm.filter(field => actividadFormFields.includes(field.inputName))
     )
 
@@ -200,6 +209,12 @@ function KioscoPersoMontaje({
     if (cliente_codigo === "0177" && !ficha_tecnica.includes("GÖPFERT")) {
         clientFieldsToRender = [];
     }
+
+    // excepciones
+    if (actividad === "ETIQUETAS" && !obs_actividad.includes("TOPO")) {
+        actividadFieldsToRender = [];
+    }
+
 
     return (
         <div className="kioscoPerso">

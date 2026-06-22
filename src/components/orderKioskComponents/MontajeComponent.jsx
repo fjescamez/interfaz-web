@@ -213,6 +213,7 @@ function MontajeComponent({ state, orderXml, montajeData, configAvanzadaData, up
     }
   }, [orderXml]);
 
+
   return (
     <div className="actionBody">
       <div className="montaje">

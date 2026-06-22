@@ -19,6 +19,7 @@ export const globalKioskVariables = {
     archivo_pagina: ["0101"],
     filas: ["0101"],
     anchoRound: ["CARTON", "MADERA", "FLEXIBLE", "ETIQUETAS"],
+    anchoTopo: ["ETIQUETAS"],
     muestraT: ["0022"]
 };
 
@@ -44,6 +45,14 @@ export const globalKioskBocetoForm = [
 ]
 
 export const globalKioskForm = [
+    {
+        htmlFor: "anchoTopo",
+        labelId: "anchoTopoLabel",
+        labelTitle: "Ancho Topo",
+        inputType: "number",
+        inputId: "anchoTopo",
+        inputName: "anchoTopo"
+    },
     {
         htmlFor: "muestraT",
         labelId: "muestraTLabel",
@@ -215,3 +224,4 @@ export const globalKioskForm = [
         showIf: ({ state }) => state?.orderColorsObjects?.some(colorObj => typeof colorObj.process === 'string' && colorObj.process.toUpperCase().includes('FAST'))
     }
 ]
+

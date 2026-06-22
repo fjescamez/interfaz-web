@@ -112,13 +112,11 @@ function TrappingComponent({ state, updateState, workablesId, node_id, fromWorka
         const workable_id = workablesId;
 
         if (!workable_id) {
-            console.log("workable_id", workable_id)
             notify("error", "Selecciona una tarea antes de realizar alguna accion");
             return
         }
 
         try {
-            console.log("antes del post")
             const res = await continue_workable_from_kiosk(
                 workable_id,
                 node_id,
