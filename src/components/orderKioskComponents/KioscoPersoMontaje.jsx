@@ -24,6 +24,9 @@ function KioscoPersoMontaje({
     const { id: actividad, obs_actividad: obsActividad } = orderXml.actividad;
     const ficha_tecnica = typeof fichaTecnica === "string" ? fichaTecnica : "";
     const obs_actividad = typeof obsActividad === "string" ? obsActividad : "";
+    const { orderColorsObjects } = state;
+
+    const planchasFast = orderColorsObjects.filter(color => typeof color.process === "string" && color.process.includes("FAST"));
 
     const resolvedKioskForm = useMemo(() => {
         return globalKioskForm.map(field => {
@@ -212,6 +215,9 @@ function KioscoPersoMontaje({
 
     // excepciones
     if (actividad === "ETIQUETAS" && !obs_actividad.includes("TOPO")) {
+        actividadFieldsToRender = [];
+
+    }else if (actividad === "FLEXIBLE" && planchasFast.length === 0) {
         actividadFieldsToRender = [];
     }
 

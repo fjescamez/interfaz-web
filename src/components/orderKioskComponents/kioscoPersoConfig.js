@@ -18,7 +18,7 @@ export const globalKioskVariables = {
     reservaCaidas: ["0160"],
     archivo_pagina: ["0101"],
     filas: ["0101"],
-    anchoRound: ["CARTON", "MADERA", "FLEXIBLE", "ETIQUETAS"],
+    anchoRound: ["FLEXIBLE"],
     anchoTopo: ["ETIQUETAS"],
     muestraT: ["0022"]
 };
@@ -221,7 +221,6 @@ export const globalKioskForm = [
         inputType: "number",
         inputId: "anchoRound",
         inputName: "anchoRound",
-        showIf: ({ state }) => state?.orderColorsObjects?.some(colorObj => typeof colorObj.process === 'string' && colorObj.process.toUpperCase().includes('FAST'))
     }
 ]
 
