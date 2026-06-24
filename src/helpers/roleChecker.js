@@ -5,6 +5,7 @@ export const checkRole = () => {
     const isSoporte = session?.role === "Soporte";
     const isAdmin = session?.role === "Administrador" || session?.role === "Soporte";
     const isTecnico = session?.departments?.includes("Tecnico");
+    const isDibujo = session?.departments?.includes("Dibujo");
     const isOficina = session?.departments?.includes("Oficina");
     const isProduccion = session?.departments?.includes("Solido") || session?.departments?.includes("Liquido");
     const isJefeDepartamento = session?.responsibleDepartments && session?.responsibleDepartments.length > 0;
@@ -17,7 +18,8 @@ export const checkRole = () => {
         isOficina,
         isProduccion,
         isJefeDepartamento,
-        isTeleWork
+        isTeleWork,
+        isDibujo
     }
 }
 

@@ -15,6 +15,7 @@ import { stockRoutes } from "../modules/stock/routes";
 import { ordersRoutes } from "../modules/orders/routes";
 import { lenRoutes } from "../modules/len/routes";
 import { strategiesRoutes } from "../modules/strategies/routes";
+import { palleteRoutes } from "../modules/pallette/routes";
 
 
 function OrderKioskRouted({ configMode }) {
@@ -45,6 +46,7 @@ function AppRoutes({ toggleKiosk }) {
             {productionRoutes()}
             {lenRoutes()}
             {strategiesRoutes()}
+            {palleteRoutes(toggleKiosk)}
 
         </Routes>
     )

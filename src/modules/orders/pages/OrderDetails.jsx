@@ -1,5 +1,5 @@
 import "./OrderDetails.css"
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, Fragment } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useTabs } from "../../../context/TabsContext";
 import PedidoMadera from "../components/PedidoMadera";
@@ -19,8 +19,15 @@ import InfoCard from "../components/InfoCard";
 import InfoTable from "../components/InfoTable";
 import { yesNo, safeValue } from "../helpers/orderFormatters";
 import { normalizeOrderData } from "../helpers/normalizeOrderData";
+import { collection as palleteCollection } from "../../pallette/config/pallete.config";
+import { list_with_options } from "../../../helpers/cloudflow/custom_objects";
+import { MdDescription } from "react-icons/md";
+import { HiColorSwatch } from "react-icons/hi";
+
 
 function OrderDetails() {
+  const [colorInPallete, setColorInPallete] = useState([]);
+  const [selectedPaletteColor, setSelectedPaletteColor] = useState(null);
   const [fullOrder, setFullOrder] = useState({});
   const [orderXml, setOrderXml] = useState({});
   const [unitarioView, setUnitarioView] = useState("");
@@ -32,6 +39,25 @@ function OrderDetails() {
   const navigate = useNavigate();
   const { closeTab, createTab } = useTabs();
   const [deletePopup, setDeletePopup] = useState(false);
+
+  const getColorsInPalette = async () => {
+    const colorNameList = orderColors.map(color => color.color);
+
+    const query = colorNameList.flatMap((color, index) => [
+      ...(index > 0 ? ["or"] : []),
+      "description",
+      "contains text like",
+      color
+    ]);
+
+    const response = await list_with_options(
+      palleteCollection,
+      query
+    );
+
+    return response?.results || [];
+  };
+
 
   const order = useMemo(() => {
     if (!orderXml || Object.keys(orderXml).length === 0) {
@@ -113,6 +139,18 @@ function OrderDetails() {
     }
   }
 
+  const openColorPalette = (paletteInfo) => {
+
+    if (!paletteInfo) {
+      return
+    }
+    const path = `/paleta/${paletteInfo?._id}`;
+    const tabTitle = `PALETA | ${paletteInfo.description}`;
+
+    createTab(path, tabTitle);
+  }
+
+
   const openFichaTecnica = () => {
     const path = `/fichaTecnica/${id}`;
     const tabTitle = `OBS. TÉCNICAS ${fullOrder.id_pedido}`;
@@ -136,6 +174,13 @@ function OrderDetails() {
     setFullOrder({});
     setOrderXml({});
     getOrderDetails(id);
+
+    const loadColors = async () => {
+      const colors = await getColorsInPalette();
+      setColorInPallete(colors);
+    };
+
+    loadColors();
   }, [id]);
 
   useEffect(() => {
@@ -485,7 +530,7 @@ function OrderDetails() {
                     }
                   </div>
                 </div>
-                
+
               </div>
             </div>
             <div className="row4">
@@ -503,6 +548,7 @@ function OrderDetails() {
                   </div>
                 </div>
               </div>
+
               <div className="colores flex">
                 <div className="title">
                   <p>TINTAS DEL TRABAJO</p>
@@ -520,43 +566,98 @@ function OrderDetails() {
                         <td><p className="highlight">TRAMA</p></td>
                         <td><p className="highlight">PLANCHA</p></td>
                       </tr>
-                      {orderColors.map((color) => (
-                        <tr key={color._id}>
-                          <td>
-                            <p>
-                              {color.color}
-                              {infoSalidaColores?.includes(color.color) &&
-                                <span style={{ fontSize: "1.5rem", color: "red", marginLeft: 10 }}>
-                                  *
-                                </span>
-                              }
 
-                            </p>
-                          </td>
+                      {orderColors.map((color) => {
+                        const paletteInfo = colorInPallete?.find(
+                          paletteColor => paletteColor.description === color.color
+                        );
 
-                          <td><p>{color.lineatura}</p></td>
-                          <td><p>{typeof color.angulo !== "object" && color.angulo}</p></td>
-                          <td><p>{color.trama}</p></td>
-                          <td><p>{color.planchaArchivo}</p></td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                        return (
+                          <Fragment key={color._id}>
+                            <tr>
+                              <td>
+                                <p
+                                  className={paletteInfo ? "openEnlace" : ""}
+                                  onClick={() => paletteInfo && openColorPalette(paletteInfo)}
+                                >
+                                  <HiColorSwatch
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (!paletteInfo) return;
 
-                </div>
+                                    setSelectedPaletteColor(
+                                      selectedPaletteColor?._id === paletteInfo._id
+                                        ? null
+                                        : paletteInfo
+                                    );
+                                  }}
+                                  style={{
+                                    width: "2rem",
+                                    height: "2rem",
+                                    color: paletteInfo ? "green" : "#999",
+                                    marginRight: 8,
+                                    verticalAlign: "middle",
+                                    cursor: paletteInfo ? "pointer" : "default"
+                                  }}
+                                />
+
+                                {color.color}
+
+                              </p>
+                            </td>
+
+                            <td><p>{color.lineatura}</p></td>
+                            <td><p>{typeof color.angulo !== "object" && color.angulo}</p></td>
+                            <td><p>{color.trama}</p></td>
+                            <td><p>{color.planchaArchivo}</p></td>
+                          </tr>
+
+                            {
+                          paletteInfo && selectedPaletteColor?._id === paletteInfo._id && (
+                            <tr className="paletteDetails">
+                              <td colSpan={5}>
+                                <div>
+                                  {paletteInfo.delta && (
+                                    <p>ΔE: {paletteInfo.delta}</p>
+                                  )}
+
+                                  <p>L: {paletteInfo.l_value}</p>
+                                  <p>A: {paletteInfo.a_value}</p>
+                                  <p>B: {paletteInfo.b_value}</p>
+
+                                  {paletteInfo.observations && (
+                                    <p>
+                                      Observaciones: {paletteInfo.observations}
+                                    </p>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          )
+                        }
+
+                          </Fragment>
+                    );
+                      })}
+
+                  </tbody>
+                </table>
+
               </div>
             </div>
+
           </div>
         </div>
+      </div >
       </>
     ) : (
-      <div className="detailsContainer">
-        <div className="executingContainer">
-          <BlinkBlur variant="dotted" color="var(--highlight)" size="large" speedPlus="0" />
-          <h1>Cargando</h1>
-        </div>
+    <div className="detailsContainer">
+      <div className="executingContainer">
+        <BlinkBlur variant="dotted" color="var(--highlight)" size="large" speedPlus="0" />
+        <h1>Cargando</h1>
       </div>
-    )
+    </div>
+  )
   )
 }
 

@@ -11,11 +11,12 @@ import { BsFillInboxFill } from "react-icons/bs";
 import { MdBarcodeReader } from "react-icons/md";
 import { FaScrewdriverWrench } from "react-icons/fa6";
 import { PiStorefrontLight } from "react-icons/pi"
+import { HiColorSwatch } from "react-icons/hi";
 import { checkRole } from "../helpers/roleChecker";
 
 function SideBarComponent({ isActive, setIsActive }) {
     const { createTab } = useTabs();
-    const { isAdmin, isProduccion, isOficina, isSoporte, isJefeDepartamento, isTeleWork } = checkRole();
+    const { isAdmin, isProduccion, isOficina, isSoporte, isJefeDepartamento, isTeleWork, isDibujo } = checkRole();
 
     const handleClick = (icon, name) => {
         setIsActive(prev => {
@@ -74,6 +75,14 @@ function SideBarComponent({ isActive, setIsActive }) {
                         <div className="border"></div>
                         <div className={`icons ${isActive.pistola ? "active" : ""}`} onClick={() => handleClick("pistola", "PISTOLA")} data-tooltip-id="my-tooltip" data-tooltip-content={"PISTOLA"} >
                             <MdBarcodeReader />
+                        </div>
+                    </>
+                )}
+                {(isAdmin || isDibujo) && (
+                    <>
+                        <div className="border"></div>
+                        <div className={`icons ${isActive.stock ? "active" : ""}`} onClick={() => handleClick("paleta", "PALETA")} data-tooltip-id="my-tooltip" data-tooltip-content={"PALETA"} >
+                            <HiColorSwatch />
                         </div>
                     </>
                 )}

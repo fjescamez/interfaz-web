@@ -7,6 +7,8 @@ import { useLocation } from "react-router-dom";
 import { useSession } from "../../context/SessionContext";
 import { addKeyListener } from "../../helpers/toggleModal";
 
+import { delete_multiple } from "../../helpers/cloudflow/custom_objects";
+
 function DeleteForm({
     setModal,
     tableInfo,
@@ -22,8 +24,11 @@ function DeleteForm({
     setIsActive,
     setCheckedIndexes,
     setActionEnded,
-    extraBodyData
+    extraBodyData,
+    collection
 }) {
+
+
     const { headerIcon, headerTitle, deleteTitle, endPoint, deleteActions } = tableInfo;
 
     const { closeTab } = useTabs();
@@ -49,24 +54,56 @@ function DeleteForm({
             }
             toggleKiosk();
         } else if (filesToDelete) {
+            const ids = filesToDelete;
             const data = {
-                ids: filesToDelete,
+                ids,
                 id_pedido: id,
                 //files: filesUrls ? filesUrls : [],
                 deleteActions,
                 ...extraBodyData || {}
             };
 
-            result = await deleteMultipleObjects(endPoint, data, setData);
+            if (collection) {
+                const response = await delete_multiple(collection, ids);
+                if (response) {
+                    result = {
+                        status: "success",
+                        title: "Eliminado Correctamente",
+                        response
+                    };
+
+                }
+
+            } else {
+                result = await deleteMultipleObjects(endPoint, data, setData);
+            }
+
             if (setTotal) setTotal(prev => prev - filesToDelete.length);
             if (setActionEnded) setActionEnded(true);
+
         } else {
+
             const data = {
                 id,
                 ...extraBodyData || {}
             };
 
-            result = await deleteMultipleObjects(endPoint, data, setData);
+            if (collection) {
+                const ids = [id];
+                const response = await delete_multiple(collection, ids);
+
+                if (response) {
+                    result = {
+                        status: "success",
+                        title: "Eliminado Correctamente",
+                        response
+                    }
+                }
+
+            } else {
+                result = await deleteMultipleObjects(endPoint, data, setData);
+            }
+
             closeTab(location.pathname);
         }
 

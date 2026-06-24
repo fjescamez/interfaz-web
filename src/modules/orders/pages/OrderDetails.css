@@ -1,7 +1,9 @@
 .orderFile {
     padding: 2rem 3rem;
     display: grid;
-    grid-template-rows: auto auto auto /* 50rem 40rem */;
+    grid-template-rows: auto auto auto
+        /* 50rem 40rem */
+    ;
     gap: 1rem;
 
     .datosPedido .body,
@@ -508,4 +510,13 @@
             }
         }
     }
+}
+
+.openEnlace {
+    cursor: pointer;
+    width: fit-content;
+}
+
+.openEnlace:hover {
+    text-decoration: underline;
 }

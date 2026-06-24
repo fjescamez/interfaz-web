@@ -61,6 +61,7 @@
 .tableContainer {
     background-color: var(--pantone431c);
     width: 80%;
+    max-width: 150rem;
     margin: 0 auto;
     margin-top: 10rem;
     margin-bottom: 10rem;

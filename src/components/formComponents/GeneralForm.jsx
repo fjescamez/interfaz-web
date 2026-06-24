@@ -8,8 +8,12 @@ import { addKeyListener } from "../../helpers/toggleModal";
 import { useSession } from "../../context/SessionContext";
 import { resolveIcon } from "../../shared/icons/resolveIcon";
 
+import { set_keys, create } from "../../helpers/cloudflow/custom_objects";
+
 function GeneralForm({
     setModal,
+    collection = null,
+    hideFields,
     formData,
     itemsData,
     endpoint,
@@ -166,14 +170,48 @@ function GeneralForm({
         let result = {};
 
         if (mode === "edit") {
-            result = await updateData(endpoint, dataToSend, _id);
+
+            if (collection) {
+                const id = _id;
+                const data = dataToSend;
+                const response = await set_keys(collection, id, data);
+
+                if (response) {
+                    result = {
+                        ...response,
+                        status: "success",
+                        title: "Edicción Exitosa",
+                        updatedItem: {
+                            _id: id
+                        }
+                    };
+                }
+
+            } else {
+                result = await updateData(endpoint, dataToSend, _id);
+            }
+
 
             if (endpoint === "users" && result.updatedItem?.username && result.updatedItem.username === session.username) {
                 const { password, ...rest } = result.updatedItem;
                 setSession(prev => ({ ...prev, ...rest }));
             }
         } else {
-            result = await postData(endpoint, dataToSend);
+            if (collection) {
+                const data = dataToSend;
+                const response = await create(collection, data)
+
+                if (response) {
+                    result = {
+                        status: "success",
+                        title: "Creado Correctamente",
+                        newItem: response
+                    };
+                }
+
+            } else {
+                result = await postData(endpoint, dataToSend);
+            }
         }
 
         if (result && result.status === "success") {
@@ -182,6 +220,7 @@ function GeneralForm({
             setModal(false);
             setError("");
             if (setMode) setMode("");
+
         } else {
             setExecuting(false);
             notify(result.status, result.title, result.message);
@@ -251,20 +290,50 @@ function GeneralForm({
                         <form className={bigForm ? "bigForm" : ""} onSubmit={handleSubmit}>
                             <div className="formSections">
                                 {extras && extras}
-                                {formData.formSections.map((section, index) => (
-                                    <div key={index} className={clickableSections && clickableSections.includes(section) ? "clickable" : ""} onClick={() => onClickSection && clickableSections.includes(section) ? onClickSection(section) : null}>
-                                        <FormSection
-                                            fieldErrors={fieldErrors}
-                                            sectionData={section}
-                                            formFields={formData.formFields}
-                                            fieldsData={itemsData}
-                                            handleForm={handleForm}
-                                            inputData={inputData}
-                                            disable={!!clienteDato && !!section.disableIfFilter}
-                                            showIfCondition={showIfCondition}
-                                        />
-                                    </div>
-                                ))}
+
+                                {formData.formSections.map((section, index) => {
+                                    const filteredSection = {
+                                        ...section,
+                                        rows: section.rows
+                                            ?.map(row => ({
+                                                ...row,
+                                                groups: row.groups?.filter(
+                                                    field => !hideFields?.includes(field)
+                                                )
+                                            }))
+                                            .filter(row => row.groups.length > 0)
+                                    };
+
+                                    return (
+                                        <div
+                                            key={index}
+                                            className={
+                                                clickableSections &&
+                                                    clickableSections.includes(section)
+                                                    ? "clickable"
+                                                    : ""
+                                            }
+                                            onClick={() =>
+                                                onClickSection &&
+                                                    clickableSections.includes(section)
+                                                    ? onClickSection(section)
+                                                    : null
+                                            }
+                                        >
+                                            <FormSection
+                                                fieldErrors={fieldErrors}
+                                                sectionData={filteredSection}
+                                                formFields={formData.formFields}
+                                                fieldsData={itemsData}
+                                                handleForm={handleForm}
+                                                inputData={inputData}
+                                                disable={!!clienteDato && !!section.disableIfFilter}
+                                                showIfCondition={showIfCondition}
+                                            />
+                                        </div>
+                                    );
+                                })}
+
                             </div>
                             {errorMessage && (
                                 <div className="errorMessage">{error}</div>

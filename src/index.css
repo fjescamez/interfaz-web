@@ -212,7 +212,8 @@ svg {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 65%;
+    min-width: 85rem;
+    max-width: 50%;
     border-radius: 3rem;
     padding: 0.3rem;
     max-height: 80%;
@@ -534,7 +535,7 @@ svg {
         resize: none;
         min-width: 100%;
         max-width: 100%;
-        min-height: 30rem;
+        min-height: 25rem;
     }
 
     .chosen-container {

@@ -13,7 +13,7 @@ import { TiContacts } from "react-icons/ti";
 
 import { TbColorSwatch } from "react-icons/tb";
 
-import { HiOutlineRefresh } from "react-icons/hi";
+import { HiOutlineRefresh, HiColorSwatch } from "react-icons/hi";
 
 import {
     PiOven,
@@ -55,6 +55,7 @@ export const appIcons = {
     groups: GroupsSvg,
 
     palette: TbColorSwatch,
+    pallete: HiColorSwatch,
     paint: RiPaintFill,
 
     gear: PiGear,

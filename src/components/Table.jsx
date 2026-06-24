@@ -25,9 +25,11 @@ import useSocket from "../helpers/useSocket";
 import { addKeyListener } from "../helpers/toggleModal";
 import { checkRole } from "../helpers/roleChecker";
 import { resolveIcon } from "../shared/icons/resolveIcon";
+import { setQuery, create, list_with_options } from "../helpers/cloudflow/custom_objects";
 
 function Table({
     iconMode = "modern",
+    fetchCloud = false,
     normalizedData,
     dinamicTableInfo,
     specificHeaderTitle,
@@ -50,7 +52,8 @@ function Table({
     customTable,
     noRefreshTable,
     extraLogic,
-    extraStyles
+    extraStyles,
+    collection
 }) {
     const didInitialFetch = useRef(false);
     const urlApi = import.meta.env.VITE_API_URL;
@@ -94,6 +97,9 @@ function Table({
         addKeyListener(setPopUpTable);
     }
 
+
+
+
     useEffect(() => {
         didInitialFetch.current = false;
         setSearch("");
@@ -104,6 +110,8 @@ function Table({
     }, [location]);
 
     const lastApiResultRef = useRef([]);
+
+    const searchFields = useRef(dinamicTableInfo.searchFields || null);
 
     const areResultsEqual = (oldResults = [], newResults = []) => {
         if (oldResults.length !== newResults.length) return false;
@@ -125,19 +133,37 @@ function Table({
 
     const getData = async (page, searchValue = "", clientFilter = "") => {
         const requestId = ++latestRequestRef.current;
-
+        let result;
         setTableCharging(true);
 
-        const result = await fetchData(
-            endPoint,
-            searchValue,
-            page,
-            null,
-            setTotal,
-            clientFilter,
-            userFilter,
-            new URLSearchParams(orderBy)?.toString()
-        );
+        // consultacloudflow
+        if (fetchCloud) {
+            const data = {
+                description: "pantone 3",
+                l_value: "-1",
+                a_value: "36",
+                b_value: "-54"
+            }
+
+            const query = await setQuery(searchValue, searchFields.current);
+            const response = await list_with_options(
+                collection,
+                query
+            )
+            result = response?.results;
+
+        } else {
+            result = await fetchData(
+                endPoint,
+                searchValue,
+                page,
+                null,
+                setTotal,
+                clientFilter,
+                userFilter,
+                new URLSearchParams(orderBy)?.toString()
+            );
+        }
 
         // ⛔ ignorar respuestas antiguas
         if (requestId !== latestRequestRef.current) return;
@@ -162,30 +188,6 @@ function Table({
             ))
         );
     };
-
-    /*
-    const getData = async (page, searchValue = "", clientFilter = "") => {
-        const result = await fetchData(endPoint, searchValue, page, null, setTotal, clientFilter, userFilter, new URLSearchParams(orderBy)?.toString());
-
-        console.log("result", result)
-
-        if (!areResultsEqual(lastApiResultRef.current, result)) {
-            lastApiResultRef.current = result;
-            if (page != 1) {
-                setTableData(prev => [...prev, ...result]);
-            } else {
-                setTableData(result);
-            }
-        }
-
-        setTableCharging(false);
-        if (result && result.length < 1 && (!tableInfo.actions?.some(item => alwaysVisibleActions?.includes(item.action)))) {
-            setNoDataToShow(true);
-        } else {
-            setNoDataToShow(false);
-        }
-    }
-        */
 
     useEffect(() => {
         setCheckedIndexes([]);
@@ -329,6 +331,9 @@ function Table({
                 getUserPreferences(session, dinamicTableInfo, setTableInfo, setColumns);
             }
         }
+
+        searchFields.current = dinamicTableInfo.searchFields || null;
+
     }, [dinamicTableInfo, session]);
 
     useEffect(() => {
@@ -347,24 +352,6 @@ function Table({
         }
     }, [initialData]);
 
-    /*
-    useEffect(() => {
-        if (!didInitialFetch.current) return;
-
-        if (advancedQuery !== null) {
-            const searchParams = new URLSearchParams(advancedQuery)?.toString();
-
-            if (searchParams !== "") {
-                getData(page, searchParams, clienteCodigo || clientFilter);
-            } else {
-                if (!initialData) {
-                    setPage(1);
-                    getData(1, search || actualTab?.search || "", clienteCodigo || clientFilter);
-                }
-            }
-        }
-    }, [advancedQuery]);
-    */
 
     useEffect(() => {
         if (!didInitialFetch.current) return;
@@ -726,7 +713,6 @@ function Table({
             columnsOrder: [...newColumns]
         };
 
-        console.log(data);
 
 
         savePreferences(data);
@@ -750,6 +736,7 @@ function Table({
         // 🧓 LEGACY (como estaba antes)
         return headerIcon;
     };
+
 
     return (
         <>
@@ -1068,6 +1055,7 @@ function Table({
                     setIsActive={setCheckedRows}
                     setCheckedIndexes={setCheckedIndexes}
                     setActionEnded={setActionEnded}
+                    collection={collection}
                 />
             }
         </>

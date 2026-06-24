@@ -8,6 +8,7 @@ import CategoriaStockForm from "../../modules/stock/components/CategoriaStockFor
 import ProductoStockForm from "../../modules/stock/components/ProductoStockForm";
 import OrdenCompraForm from "../../modules/stock/components/OrdenCompraForm";
 import StrategyForm from "../../modules/strategies/components/StrategyForm";
+import PalleteForm from "../../modules/pallette/components/PalleteForm";
 
 const formMap = {
     ContactForm,
@@ -18,7 +19,8 @@ const formMap = {
     RefContinuoForm,
     CategoriaStockForm,
     ProductoStockForm,
-    StrategyForm
+    StrategyForm,
+    PalleteForm
 }
 
 function AllForms({ tableForm, ...props }) {
