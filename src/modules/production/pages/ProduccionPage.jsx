@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { checkRole } from "../../../helpers/roleChecker";
 
 function ProduccionPage() {
-    const { isAdmin, isProduccion } = checkRole();
+    const { isAdmin, isProduccion, isOficina } = checkRole();
     const [produccionPlanchas, setProduccionPlanchas] = useState(produccionPlanchasDetails);
     const [produccionExternos, setProduccionExternos] = useState(produccionTrabajosDetails);
     const [totales, setTotales] = useState({
@@ -151,7 +151,7 @@ function ProduccionPage() {
                 hideDeleteIcon={true}
             />
             <div className="detailsScroll">
-                {isProduccion || isAdmin ? (
+                {isProduccion || isAdmin || isOficina ? (
                     <>
                         <GridComponent
                             title={produccionReferenciasDetails.title}

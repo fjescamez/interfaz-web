@@ -384,8 +384,9 @@ function OrderKiosk({ configMode }) {
     if (!configMode) getOrder();
   }, [id]);
 
+
   useEffect(() => {
-    const shouldEnablePosMacula = Boolean((state.isActive?.plotter || state.isActive?.fichas) && state.orderXml?.numero?.cliente_codigo === "0172");
+    const shouldEnablePosMacula = Boolean((state.isActive?.plotter || state.isActive?.bocetos) && state.orderXml?.numero?.cliente_codigo === "0172");
 
     updateState("isActive", (prevIsActive) => {
       if (prevIsActive?.posMacula === shouldEnablePosMacula) return prevIsActive;
@@ -395,7 +396,15 @@ function OrderKiosk({ configMode }) {
         posMacula: shouldEnablePosMacula
       };
     });
-  }, [state.isActive?.plotter, state.isActive?.fichas, state.isActive?.posMacula, state.orderXml]);
+    updateState("isOpen", (prevIsOpen) => {
+      if (prevIsOpen?.posMacula === shouldEnablePosMacula) return prevIsOpen;
+
+      return {
+        ...prevIsOpen,
+        posMacula: shouldEnablePosMacula
+      };
+    });
+  }, [state.isActive?.plotter, state.isActive?.bocetos, state.isActive?.posMacula, state.orderXml]);
 
   useEffect(() => {
     if (Object.keys(state.otraDocumentacion).length > 0 && state.chosenKiosk === "Automática") {
