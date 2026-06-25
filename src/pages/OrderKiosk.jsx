@@ -384,7 +384,7 @@ function OrderKiosk({ configMode }) {
     if (!configMode) getOrder();
   }, [id]);
 
-
+  // posicion maculas para el cliente rodenas
   useEffect(() => {
     const shouldEnablePosMacula = Boolean((state.isActive?.plotter || state.isActive?.bocetos) && state.orderXml?.numero?.cliente_codigo === "0172");
 

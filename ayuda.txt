@@ -1,0 +1,2 @@
+comando para bajar cambios del repo a 112
+git pull origin main
