@@ -20,7 +20,7 @@ export const globalKioskVariables = {
     filas: ["0101"],
     anchoRound: ["FLEXIBLE"],
     anchoTopo: ["ETIQUETAS"],
-    muestraT: ["0022"]
+    muestraT: ["0022", "0014"]
 };
 
 export const globalKioskBocetoForm = [
