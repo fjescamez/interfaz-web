@@ -578,9 +578,6 @@ function OrderDetails() {
                               <td>
                                 <p
                                   className={paletteInfo ? "openEnlace" : ""}
-                                  onClick={() => paletteInfo && openColorPalette(paletteInfo)}
-                                >
-                                  <HiColorSwatch
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     if (!paletteInfo) return;
@@ -591,73 +588,92 @@ function OrderDetails() {
                                         : paletteInfo
                                     );
                                   }}
-                                  style={{
-                                    width: "2rem",
-                                    height: "2rem",
-                                    color: paletteInfo ? "green" : "#999",
-                                    marginRight: 8,
-                                    verticalAlign: "middle",
-                                    cursor: paletteInfo ? "pointer" : "default"
-                                  }}
-                                />
+                                >
+                                  <HiColorSwatch
+                                    style={{
+                                      width: "2rem",
+                                      height: "2rem",
+                                      color: paletteInfo ? "green" : "#999",
+                                      marginRight: 8,
+                                      verticalAlign: "middle",
+                                      cursor: paletteInfo ? "pointer" : "default"
+                                    }}
+                                  />
 
-                                {color.color}
+                                  {color.color}
 
-                              </p>
-                            </td>
+                                </p>
+                              </td>
 
-                            <td><p>{color.lineatura}</p></td>
-                            <td><p>{typeof color.angulo !== "object" && color.angulo}</p></td>
-                            <td><p>{color.trama}</p></td>
-                            <td><p>{color.planchaArchivo}</p></td>
-                          </tr>
+                              <td><p>{color.lineatura}</p></td>
+                              <td><p>{typeof color.angulo !== "object" && color.angulo}</p></td>
+                              <td><p>{color.trama}</p></td>
+                              <td><p>{color.planchaArchivo}</p></td>
+                            </tr>
 
                             {
-                          paletteInfo && selectedPaletteColor?._id === paletteInfo._id && (
-                            <tr className="paletteDetails">
-                              <td colSpan={5}>
-                                <div>
-                                  {paletteInfo.delta && (
-                                    <p>ΔE: {paletteInfo.delta}</p>
-                                  )}
+                              paletteInfo && selectedPaletteColor?._id === paletteInfo._id && (
+                                <tr className="paletteDetails">
+                                  <td colSpan={5}>
+                                    <div>
+                                      {paletteInfo.delta && (
+                                        <p>ΔE: {paletteInfo.delta}</p>
+                                      )}
 
-                                  <p>L: {paletteInfo.l_value}</p>
-                                  <p>A: {paletteInfo.a_value}</p>
-                                  <p>B: {paletteInfo.b_value}</p>
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          justifyContent: "space-between",
+                                          alignItems: "center",
+                                          gap: "1rem"
+                                        }}
+                                      >
+                                        <p>L: {paletteInfo.l_value}</p>
+                                        <p
+                                          className={paletteInfo ? "openEnlace" : ""}
+                                          onClick={() => paletteInfo && openColorPalette(paletteInfo)}
+                                        >
+                                          Ver paleta completa 🔗
+                                        </p>
+                                        
+                                      </div>
+                                      <p>L: {paletteInfo.l_value}</p>
+                                      <p>A: {paletteInfo.a_value}</p>
+                                      <p>B: {paletteInfo.b_value}</p>
 
-                                  {paletteInfo.observations && (
-                                    <p>
-                                      Observaciones: {paletteInfo.observations}
-                                    </p>
-                                  )}
-                                </div>
-                              </td>
-                            </tr>
-                          )
-                        }
+                                      {paletteInfo.observations && (
+                                        <p>
+                                          Observaciones: {paletteInfo.observations}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </td>
+                                </tr>
+                              )
+                            }
 
                           </Fragment>
-                    );
+                        );
                       })}
 
-                  </tbody>
-                </table>
+                    </tbody>
+                  </table>
 
+                </div>
               </div>
-            </div>
 
+            </div>
           </div>
-        </div>
-      </div >
+        </div >
       </>
     ) : (
-    <div className="detailsContainer">
-      <div className="executingContainer">
-        <BlinkBlur variant="dotted" color="var(--highlight)" size="large" speedPlus="0" />
-        <h1>Cargando</h1>
+      <div className="detailsContainer">
+        <div className="executingContainer">
+          <BlinkBlur variant="dotted" color="var(--highlight)" size="large" speedPlus="0" />
+          <h1>Cargando</h1>
+        </div>
       </div>
-    </div>
-  )
+    )
   )
 }
 

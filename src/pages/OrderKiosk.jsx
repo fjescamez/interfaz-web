@@ -14,6 +14,7 @@ import DetailsHeader from "../components/DetailsHeader";
 import MontajeComponent from "../components/orderKioskComponents/MontajeComponent";
 import OtraDocComponent from "../components/orderKioskComponents/OtraDocComponent";
 import ColoresComponent from "../components/orderKioskComponents/ColoresComponent";
+import LayersComponent from "../components/orderKioskComponents/LayersComponent";
 import FreecutComponent from "../modules/orders/components/FreecutComponent";
 import { notify } from "../helpers/notify";
 import MontajeAvanzadoComponent from "../components/orderKioskComponents/MontajeAvanzadoComponent";
@@ -84,6 +85,8 @@ function OrderKiosk({ configMode }) {
     unitarioData: {
       archivo: null
     },
+    layers: [],
+    layersActive: [],
     loadingUnitario: true,
     trappingData: {
       distancia_trapping: "0",
@@ -549,6 +552,7 @@ function OrderKiosk({ configMode }) {
       ...dataToReport,
       forceReport: action === "forceReport" ? true : false
     }, (res) => {
+
       const applyFileReport = (prev) => {
         const nextFileReport = res.report || [];
         const orderHasErrors = (prev.orderReport || []).some((item) => item.status === "error" && !item.type);
@@ -569,12 +573,15 @@ function OrderKiosk({ configMode }) {
           });
         }
 
+
+
         return {
           fileReport: nextFileReport,
           loadingFileReport: false,
           unitarioMetadata: {
-            number_of_pages: res.number_of_pages || 1
+            number_of_pages: res.number_of_pages || 1,
           },
+          layers: res.layers || [],
           step: canAdvance ? 3 : prev.step,
           orderColors,
           orderColorsObjects,
@@ -666,6 +673,8 @@ function OrderKiosk({ configMode }) {
     }
   }, [state.isActive]);
 
+
+
   const components = {
     "unitario": {
       title: `${state.unitarioData?.archivo?.name || ""} - ${state.unitarioData?.archivo?.type || ""}`,
@@ -694,6 +703,17 @@ function OrderKiosk({ configMode }) {
         "",
       component: <ColoresComponent state={state} updateState={updateState} formData={state.coloresForm} colores={state.orderColors} setColoresList={(value) => updateState("salidaColores", value)} inputData={state.coloresInputData} setInputData={(value) => updateState("coloresInputData", value)} />,
       data: state.salidaColores,
+      noSave: true
+    },
+    "layers": {
+      title: state?.layers?.length > 0 ?
+        `${state?.layers?.map(layer => layer.name).join(", ")}` :
+        "",
+      component:
+        <LayersComponent
+          state={state}
+          updateState={updateState}
+        />,
       noSave: true
     },
     "listDigimark": {
@@ -889,6 +909,7 @@ function OrderKiosk({ configMode }) {
                 ))}
 
               {/*  MADERA */}
+
               {maderaConfigBlocks.map((key) => {
                 const openKey = `configAvanzada${key}`;
                 const element = (state.configAvanzadaData || []).find((el) => el?.elementId === key);

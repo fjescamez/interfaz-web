@@ -19,6 +19,13 @@ export const kioskActions = [
         steps: [3]
     },
     {
+        title: "CAPAS",
+        id: "layers",
+        openOnActive: true,
+        hideWhenConfig: true,
+        steps: [3]
+    },
+    {
         title: "CAMBIAN COLORES",
         id: "salidaColores",
         openOnActive: true,
