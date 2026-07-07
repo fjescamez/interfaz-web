@@ -20,6 +20,10 @@ export const clientApps = [
     {
         client: "FLEXOGRÁFICA DEL MEDITERRÁNEO, S.L.",
         url: "http://192.4.26.120:9090/portal.cgi/RECURSOS_CLOUDFLOW/espacio_clientes/web_center/index.html?connector=whitepaper&collection=web_center_app&id=%7B%22inputname%22%3A%22actions%22%2C%22variables%22%3A%7B%7D%7D"
+    },
+    {
+        client: "EVERSIA SA",
+        url: "http://192.4.26.120:9090/portal.cgi/RECURSOS_CLOUDFLOW/Html/Eversia/Index.html"
     }
 ];
 
