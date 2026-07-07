@@ -36,15 +36,6 @@ export function kioskConfigAuto({ orderXml, actividad, fileReport, setIsActive, 
         }
     }
 
-    /*
-    if (cliente_codigo === "0101") {
-        setIsOpen(prev => ({
-            ...prev,
-            bocetos: true
-        }));
-    }
-        */
-
     // Fichas
     if ((actividad === "CARTON" && isCliche && (tecnicos.ficha_impresa === "-1" || tecnicos.ficha_por_email === "X")) || (actividad === "FLEXIBLE" && (cliente_codigo === "0055" || cliente_codigo === "0282"))) {
         setIsActive(prev => ({
@@ -179,10 +170,12 @@ export function kioskConfigAuto({ orderXml, actividad, fileReport, setIsActive, 
         }));
     }
 
-    const clientesPrueba = ["0101", "0160"];
+    const clientesPrueba = [];
+    const clientesEnvio = ["0101", "0160"];
     const clientesPruebaCliche = ["0022", "0135", "0177", "0030"];
 
     const isClientePrueba = clientesPrueba.includes(cliente_codigo);
+    const isClienteEnvio = clientesEnvio.includes(cliente_codigo);
     const isClienteCliche = clientesPruebaCliche.includes(cliente_codigo) && isCliche;
 
     if (isClientePrueba || isClienteCliche) {
@@ -193,6 +186,17 @@ export function kioskConfigAuto({ orderXml, actividad, fileReport, setIsActive, 
         setOtraDocumentacion(prev => ({
             ...prev,
             etiquetasPrueba: true
+        }));
+    }
+
+    if (isClienteEnvio) {
+        setIsActive(prev => ({
+            ...prev,
+            otraDocumentacion: true
+        }));
+        setOtraDocumentacion(prev => ({
+            ...prev,
+            etiquetasEnvio: true
         }));
     }
 }

@@ -56,7 +56,7 @@ export const get = async (collection, id) => {
     })
 }
 
-export const list_with_options = async (collection, query, order_by = [], fields = [], page = 1, limit = 30) => {
+export const list_with_options = async (collection, query=[], order_by = [], fields = [], page = 1, limit = 30) => {
     const skip = (page - 1) * limit;
     return postDataCloud({
         method: "custom_objects.list_with_options",

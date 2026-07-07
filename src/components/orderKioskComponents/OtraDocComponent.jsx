@@ -104,6 +104,19 @@ function OtraDocComponent({ state, updateState }) {
               />
               <p>Prueba</p>
             </div>
+            <div className="switchGroup">
+              <Switch
+                className="kioskSwitch"
+                checked={state.otraDocumentacion.etiquetasEnvio || false}
+                onChange={(e) => {
+                  updateState("otraDocumentacion", (prev) => ({
+                    ...prev,
+                    etiquetasEnvio: e.target.checked
+                  }));
+                }}
+              />
+              <p>De Envio</p>
+            </div>
           </div>
         </section>
         <section className="otraDocSection">

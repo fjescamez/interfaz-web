@@ -8,7 +8,7 @@ import { SlSpeech } from "react-icons/sl";
 import { TbSquareLetterKFilled } from "react-icons/tb";
 import { ImFilesEmpty } from "react-icons/im";
 import { BsInfoLg } from "react-icons/bs";
-import { FaTasks } from "react-icons/fa";
+import { FaTasks, FaCalculator } from "react-icons/fa";
 import { RiText } from "react-icons/ri";
 import { AiOutlineSignature } from "react-icons/ai";
 import LenFile from "../assets/svg/LenFile";
@@ -110,6 +110,12 @@ export const orderSidebarIcons = [
                 icon: <RiText />,
                 action: "traceText",
                 tooltip: "TRAZAR TEXTO",
+                first: true
+            },
+            {
+                icon: <FaCalculator />,
+                action: "calculadoraDist",
+                tooltip: "CALCULADORA DISTORSION",
                 first: true
             },
             {

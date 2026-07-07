@@ -6,7 +6,6 @@ import { useSession } from "../../../context/SessionContext";
 import AsignarPedidoForm from "../components/AsignarPedidoForm";
 import { postData } from "../../../helpers/fetchData";
 import { notify } from "../../../helpers/notify";
-import { BsFillInboxFill } from "react-icons/bs";
 import TableRefactor from "../../../components/TableRefactor";
 
 function OrdersPage({ filter, filterBandeja }) {

@@ -33,7 +33,11 @@ function GeneralForm({
     clickableSections,
     onClickSection,
     bigForm,
-    showIfCondition
+    showIfCondition,
+    buttonAction,
+    secondaryButtonAction,
+    functionAction,
+    secondaryFunctionAction
 }) {
 
     const {
@@ -338,7 +342,31 @@ function GeneralForm({
                             {errorMessage && (
                                 <div className="errorMessage">{error}</div>
                             )}
-                            {!noSubmit && <button type="submit">{submitText || "Guardar"}</button>}
+                            {buttonAction ? (
+                                <div className="formActions">
+                                    <button
+                                        type="button"
+                                        onClick={() => functionAction(inputData)}
+                                    >
+                                        {submitText || "Guardar"}
+                                    </button>
+
+                                    {secondaryButtonAction && (
+                                        <button
+                                            type="button"
+                                            onClick={() => secondaryFunctionAction(inputData)}
+                                        >
+                                            {secondaryButtonAction}
+                                        </button>
+                                    )}
+                                </div>
+                            ) : (
+                                !noSubmit && (
+                                    <button type="submit">
+                                        {submitText || "Guardar"}
+                                    </button>
+                                )
+                            )}
                         </form>
                         <div className="filler"></div>
                     </div>

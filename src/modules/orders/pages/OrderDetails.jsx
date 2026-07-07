@@ -20,9 +20,10 @@ import InfoTable from "../components/InfoTable";
 import { yesNo, safeValue } from "../helpers/orderFormatters";
 import { normalizeOrderData } from "../helpers/normalizeOrderData";
 import { collection as palleteCollection } from "../../pallette/config/pallete.config";
-import { list_with_options } from "../../../helpers/cloudflow/custom_objects";
-import { MdDescription } from "react-icons/md";
+import { list_with_options, create } from "../../../helpers/cloudflow/custom_objects";
 import { HiColorSwatch } from "react-icons/hi";
+import { calculadoraDistorsionForm } from "../../../helpers/formsData";
+
 
 
 function OrderDetails() {
@@ -39,6 +40,8 @@ function OrderDetails() {
   const navigate = useNavigate();
   const { closeTab, createTab } = useTabs();
   const [deletePopup, setDeletePopup] = useState(false);
+  const [distorsionEspecial, setDistorsionEspecial] = useState(null);
+  const [distorsionEspecialModal, setDistorsionEspecialModal] = useState(false);
 
   const getColorsInPalette = async () => {
     const colorNameList = orderColors.map(color => color.color);
@@ -87,6 +90,25 @@ function OrderDetails() {
     const response = await fetchData("colors", fullOrder?.unitario);
     setOrderColors(response);
   }
+
+  const searchSpecialDistortion = async () => {
+    if (!fullOrder?.id_pedido) {
+      setDistorsionEspecial(null);
+      return;
+    }
+
+    const distorsionEspecialCollection = "Distorsion_especial";
+    const query = ["id_pedido", "equal to", fullOrder.id_pedido];
+
+    const response = await list_with_options(
+      distorsionEspecialCollection,
+      query
+    );
+
+    const result = response?.results?.[0] || null;
+
+    setDistorsionEspecial(result);
+  };
 
   const openClient = async () => {
     const cliente = await fetchData("clients", orderXml.numero?.cliente_codigo, 1);
@@ -188,6 +210,7 @@ function OrderDetails() {
       getStrategyDetails();
       getUnitarioView();
       getOrderColors();
+      searchSpecialDistortion();
     }
   }, [fullOrder]);
 
@@ -195,11 +218,23 @@ function OrderDetails() {
   const fechaRevision = fechaHora?.split(" ");
   const filePath = fullOrder?.unitario?.includes("sinUnitario.png") ? "" : fullOrder?.unitario?.replace("cloudflow://", "").replace("PEDIDOS_", "Pedidos ");
 
+  const distorsionEspecialValor =
+    distorsionEspecial?.resultado ||
+    fullOrder?.xml?.tecnicos?.distorsionEspecial ||
+    "";
+
   return (
     fullOrder._id ? (
       <>
 
         {deletePopup && <DeleteForm setModal={setDeletePopup} id={fullOrder._id} tableInfo={orderTableInfo} />}
+        {distorsionEspecialModal && (
+          <CalculadoraDistorsionForm
+            setModal={setDistorsionEspecialModal}
+            fullOrder={fullOrder}
+            setFullOrder={setFullOrder}
+          />
+        )}
         <PedidoSideBar
           getOrderDetails={getOrderDetails}
           fullOrder={fullOrder}
@@ -420,12 +455,18 @@ function OrderDetails() {
                       "TIPO IMPRESIÓN",
                       orderXml.tecnicos?.tipo_impresion
                     ],
-
                     [
                       "DISTORSIÓN",
-                      orderXml.tecnicos?.distorsion
-                    ],
+                      <>
+                        {orderXml.tecnicos?.distorsion}
 
+                        {distorsionEspecial?.resultado && (
+                          <span className="distorsionEspecial">
+                            {"/"} {distorsionEspecial.resultado}
+                          </span>
+                        )}
+                      </>
+                    ],
                     [
                       "DIST. TRAPPING",
                       safeValue(orderXml.tecnicos?.trapping)
@@ -635,7 +676,7 @@ function OrderDetails() {
                                         >
                                           Ver paleta completa 🔗
                                         </p>
-                                        
+
                                       </div>
                                       <p>L: {paletteInfo.l_value}</p>
                                       <p>A: {paletteInfo.a_value}</p>

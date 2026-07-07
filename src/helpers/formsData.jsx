@@ -26,6 +26,64 @@ export const traceTextForm = {
     ]
 }
 
+export const calculadoraDistorsionForm = {
+    headerIcon: "FaCalculator",
+    headerTitle: "Calculadora Distorsion",
+    formSections: [
+        {
+            rows: [
+                {
+                    groups: ["desarolloReal"]
+                },
+                {
+                    groups: ["desarrolloEsperado",]
+                },
+                {
+                    groups: ["distorsion"]
+                },
+                {
+                    groups: ["resultado"]
+                }
+            ]
+        }
+    ],
+    formFields: [
+        {
+            htmlFor: "desarolloReal",
+            labelId: "desarrolloRealLabel",
+            labelTitle: "Desarrollo Archivo",
+            inputType: "number",
+            inputId: "desarolloReal",
+            inputName: "desarolloReal"
+        },
+        {
+            htmlFor: "desarrolloEsperado",
+            labelId: "desarrolloEsperadoLabel",
+            labelTitle: "Desarrollo Forzado",
+            inputType: "number",
+            inputId: "desarrolloEsperado",
+            inputName: "desarrolloEsperado"
+        },
+        {
+            htmlFor: "distorsion",
+            labelId: "distorsionLabel",
+            labelTitle: "Distorsion",
+            inputType: "number",
+            inputId: "distorsion",
+            inputName: "distorsion"
+        },
+        {
+            htmlFor: "resultado",
+            labelId: "resultadoLabel",
+            labelTitle: "Resultado",
+            inputType: "text",
+            inputId: "resultado",
+            inputName: "resultado",
+            disable: true
+        },
+    ]
+}
+
 export const incidenciaFormData = {
     headerIcon: "note",
     headerTitle: "GENERAR INCIDENCIA",

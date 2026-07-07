@@ -411,7 +411,7 @@ function OrderKiosk({ configMode }) {
   useEffect(() => {
     if (Object.keys(state.otraDocumentacion).length > 0 && state.chosenKiosk === "Automática") {
       const tiposCertificado = ['certificadoControl', 'certificadoContinuos', 'certificadoCodigos', 'unitarioPng'];
-      const tiposEtiqueta = ['etiquetasMontaje', 'etiquetasPlotter', 'etiquetasPrueba'];
+      const tiposEtiqueta = ['etiquetasMontaje', 'etiquetasPlotter', 'etiquetasPrueba', "etiquetasEnvio"];
 
       const certificadosTrue = tiposCertificado.filter((key) => state.otraDocumentacion[key]).length;
       const etiquetasTrue = tiposEtiqueta.filter((key) => state.otraDocumentacion[key]).length;

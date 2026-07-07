@@ -25,6 +25,7 @@ import SignJobForm from "./SignJobForm";
 import { orderTableInfo } from "../config/order.config";
 import DeleteForm from "../../../components/formComponents/DeleteForm";
 import TraceTextForm from "../../../components/formComponents/TraceTextForm";
+import CalculadoraDistorsionForm from "../../../components/formComponents/CalculadoraDistorsionForm";
 import { checkRole } from "../../../helpers/roleChecker";
 
 function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
@@ -39,6 +40,7 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
     const [lenModal, setLenModal] = useState(false);
     const [filesModal, setFilesModal] = useState(false);
     const [traceModal, setTraceModal] = useState(false);
+    const [calculadoraModal, setCalculadoraModal] = useState(false);
     const [deletePopUp, setDeletePopUp] = useState(false);
     const [signJobModal, setSignJobModal] = useState(false);
     const [montajeModal, setMontajeModal] = useState(false);
@@ -178,6 +180,9 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
             case "traceText":
                 setTraceModal(true);
                 break;
+            case "calculadoraDist":
+                setCalculadoraModal(true);
+                break;
             case "signJob":
                 setSignJobModal(true);
                 break;
@@ -268,6 +273,7 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
             {lenModal && <OrderLenTable setLenModal={setLenModal} orderId={fullOrder.id_pedido} />}
             {filesModal && <FileTable setFilesModal={setFilesModal} orderId={fullOrder.id_pedido} filePath={filePath} />}
             {traceModal && <TraceTextForm setModal={setTraceModal} rutaInfo={fullOrder.info || `${fullOrder.rutaTrabajo}INFO%20CLIENTE/`} />}
+            {calculadoraModal && <CalculadoraDistorsionForm setModal={setCalculadoraModal} fullOrder={fullOrder} setFullOrder={setFullOrder} />}
             {signJobModal && <SignJobForm setSignJobModal={setSignJobModal} fullOrder={fullOrder} />}
             {deletePopUp && <DeleteForm setModal={setDeletePopUp} id={fullOrder._id} tableInfo={orderTableInfo} />}
             {montajeModal && <MontajeTable setMontajeModal={setMontajeModal} fullOrder={fullOrder} filePath={filePath} />}

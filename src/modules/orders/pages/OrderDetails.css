@@ -520,3 +520,11 @@
 .openEnlace:hover {
     text-decoration: underline;
 }
+
+.distorsionEspecial {
+    margin-left: 8px;
+    font-size: 1.5rem;
+    color: #E9550D;
+    font-weight: 700;
+
+}
