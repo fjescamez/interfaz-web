@@ -133,16 +133,44 @@ function PedidoSideBar({ fullOrder, setFullOrder, filePath }) {
             case "openNotes":
                 setNoteModal(true);
                 break;
-            case "openFolder":
-                const openFolder = () => {
-                    if (isTeleWork) {
-                        window.location.href = `smb://192.4.26.120/Archivo%20Disengraf/TRABAJOS/${folderUrl}`;
-                    } else {
-                        window.location.href = `smb://CLOUDFLOW2023/Archivo%20Disengraf/TRABAJOS/${folderUrl}`;
-                    }
+            /*
+        case "openFolder":
+            const openFolder = () => {
+                if (isTeleWork) {
+                    window.location.href = `smb://192.4.26.120/Archivo%20Disengraf/TRABAJOS/${folderUrl}`;
+                } else {
+                    window.location.href = `smb://CLOUDFLOW2023/Archivo%20Disengraf/TRABAJOS/${folderUrl}`;
                 }
-                openFolder();
+            }
+            openFolder();
+            break;
+        */
+            case "openFolder": {
+                const isWindows =
+                    navigator.userAgentData?.platform === "Windows" ||
+                    navigator.userAgent.includes("Windows");
+
+                const normalizedFolder = decodeURIComponent(folderUrl)
+                    .replaceAll("\\", "/")
+                    .replace(/^\/+/, "");
+
+                if (isWindows) {
+                    const mode = isTeleWork ? "telework" : "office";
+
+                    window.location.href =
+                        `disengraf-folder://open?mode=${mode}` +
+                        `&folder=${encodeURIComponent(normalizedFolder)}`;
+                } else {
+                    const server = isTeleWork
+                        ? "192.4.26.120"
+                        : "CLOUDFLOW2023";
+
+                    window.location.href =
+                        `smb://${server}/Archivo%20Disengraf/TRABAJOS/${encodeURI(normalizedFolder)}`;
+                }
+
                 break;
+            }
             case "versions":
                 setVersionsModal(true);
                 break;
