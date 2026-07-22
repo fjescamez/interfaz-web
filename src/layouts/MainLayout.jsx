@@ -37,6 +37,7 @@ function MainLayout({
         "kiosco",
         "bandeja",
         "len",
+        "gestor",
         "clientes",
         "produccion",
         "pistola",

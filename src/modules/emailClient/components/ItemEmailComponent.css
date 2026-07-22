@@ -1,0 +1,73 @@
+.jacketItem {
+    display: flex;
+    justify-content: space-between;
+    padding: 1.4rem;
+    cursor: pointer;
+    border-radius: 0.2rem;
+    border: 2px solid var(--pantone431c);
+    background-color: var(--details);
+    transition: all 0.25s ease;
+    width: 100%;
+
+    &:hover {
+        background-color: var(--hover);
+    }
+
+    &.selected {
+        background: var(--orange-gradient);
+
+        &:hover {
+            filter: brightness(1.08);
+        }
+    }
+
+    .left {
+        display: flex;
+        column-gap: 1.5rem;
+        align-items: center;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .right {
+        display: flex;
+        column-gap: 1.5rem;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+    .left,
+    .right {
+        svg {
+            width: 2rem;
+            height: 2rem;
+        }
+
+        p {
+            font-size: 1.7rem;
+        }
+    }
+}
+
+.bloqueEmail {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.bloqueEmail .title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+}
+
+.jacketItem .icon {
+    flex-shrink: 0;
+}
+
+.jacketItem .right .date {
+    white-space: nowrap;
+    margin: 0;
+}

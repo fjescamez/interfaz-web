@@ -54,6 +54,8 @@ function ProduccionPage() {
     const externosGridClick = async (key, title) => {
         const path = `/produccion/${key}`;
 
+        console.log("click en", path)
+
         const tabTitle = `EXTERNOS ${title.toUpperCase()}`;
 
         if (!tabs.some(tab => tab.path === path)) {

@@ -13,6 +13,7 @@ import { FaScrewdriverWrench } from "react-icons/fa6";
 import { PiStorefrontLight } from "react-icons/pi"
 import { HiColorSwatch } from "react-icons/hi";
 import { checkRole } from "../helpers/roleChecker";
+import { TfiEmail } from "react-icons/tfi";
 
 function SideBarComponent({ isActive, setIsActive }) {
     const { createTab } = useTabs();
@@ -57,6 +58,7 @@ function SideBarComponent({ isActive, setIsActive }) {
                 <div className={`icons ${isActive.len ? "active" : ""}`} onClick={() => handleClick("len", "LEN")} data-tooltip-id="my-tooltip" data-tooltip-content={"FICHEROS LEN"} >
                     <LenFile />
                 </div>
+
                 <div className="border"></div>
                 <div className={`icons ${isActive.clientes ? "active" : ""}`} onClick={() => handleClick("clientes", "CLIENTES")} data-tooltip-id="my-tooltip" data-tooltip-content={"CLIENTES"} >
                     <SlBriefcase />
@@ -86,6 +88,16 @@ function SideBarComponent({ isActive, setIsActive }) {
                         </div>
                     </>
                 )}
+
+                {(isAdmin || isOficina) && (
+                    <>
+                        <div className="border"></div>
+                        <div className={`icons ${isActive.gestor ? "active" : ""}`} onClick={() => handleClick("gestor", "GESTOR")} data-tooltip-id="my-tooltip" data-tooltip-content={"GESTOR EMAIL"} >
+                            <TfiEmail />
+                        </div>
+                    </>
+                )}
+
                 {isAdmin && (
                     <>
                         <div className="border"></div>
@@ -106,6 +118,8 @@ function SideBarComponent({ isActive, setIsActive }) {
                         </div>
                     </>
                 )}
+
+
             </div>
             <ReactTooltip id="my-tooltip" delayShow={500} />
         </>
