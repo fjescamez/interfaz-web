@@ -7,6 +7,8 @@ import { fetchData } from "../../../helpers/fetchData";
 import { useEffect, useState } from "react";
 import { checkRole } from "../../../helpers/roleChecker";
 
+// cambios
+
 function ProduccionPage() {
     const { isAdmin, isProduccion, isOficina } = checkRole();
     const [produccionPlanchas, setProduccionPlanchas] = useState(produccionPlanchasDetails);
