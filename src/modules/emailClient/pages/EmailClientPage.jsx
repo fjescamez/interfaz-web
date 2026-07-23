@@ -254,35 +254,33 @@ function EmailClientPage() {
         fetchEmails(true);
     };
 
-    const handleBulkAction = async actionName => {
-        const selectedIds = Array.from(selectedEmailIds);
-
-        if (selectedIds.length < 1) return;
-
-
-
-        if (selectedIds.length === 0) return [];
+    const handleBulkAction = async (
+        actionName,
+        ids = Array.from(selectedEmailIds)
+    ) => {
+        if (ids.length === 0) return [];
 
         try {
             const emails = await Promise.all(
-                selectedIds.map(id => get(collection, id))
+                ids.map(id => get(collection, id))
             );
+
             let newBuzon;
 
             if (actionName === "entrada") {
-                newBuzon = `Bandeja Entrada`;
-
+                newBuzon = "Bandeja Entrada";
             } else if (actionName === "asignar") {
                 newBuzon = `Asignado ${username}`;
-
             } else if (actionName === "archivar") {
-                newBuzon = `Archivado`;
-
+                newBuzon = "Archivado";
             } else if (actionName === "parar") {
-                newBuzon = `Parado`;
-
+                newBuzon = "Parado";
             } else if (actionName === "eliminar") {
-                newBuzon = `papelera`;
+                newBuzon = "papelera";
+            }
+
+            if (!newBuzon) {
+                throw new Error(`Acción desconocida: ${actionName}`);
             }
 
             await Promise.all(
@@ -296,9 +294,9 @@ function EmailClientPage() {
             clearSelection();
             await fetchEmails();
 
-            return emailsToAssign;
+            return emails;
         } catch (error) {
-            console.error("Error asignando los correos:", error);
+            console.error(`Error ejecutando ${actionName}:`, error);
             return [];
         }
     };
@@ -447,11 +445,18 @@ function EmailClientPage() {
                                             key={emailId}
                                             email={email}
                                             index={index}
-                                            isSelected={selectedEmailIds.has(
-                                                emailId
-                                            )}
+                                            isSelected={selectedEmailIds.has(emailId)}
+                                            isSingleSelected={
+                                                selectedCount === 1 &&
+                                                selectedEmailIds.has(emailId)
+                                            }
                                             onSelect={handleSelectEmail}
-                                            cleanDeleted={cleanDeleted}
+                                            onQuickAction={(actionName, id) =>
+                                                handleBulkAction(actionName, [id])
+                                            }
+                                            canAssign={actionAsignar}
+                                            canArchive={actionArchivar}
+                                            canDelete={actionEliminar}
                                         />
                                     );
                                 })}
@@ -465,15 +470,15 @@ function EmailClientPage() {
 
                                 <>
                                     <div className="emailDetail">
-                                               <div className="multipleEmailSelection">
-                                        <strong>
-                                            {selectedCount} correos seleccionados
-                                        </strong>
+                                        <div className="multipleEmailSelection">
+                                            <strong>
+                                                {selectedCount} correos seleccionados
+                                            </strong>
 
-                                        <span>
-                                            Utiliza las acciones disponibles sobre la lista.
-                                        </span>
-                                    </div>
+                                            <span>
+                                                Utiliza las acciones disponibles sobre la lista.
+                                            </span>
+                                        </div>
                                     </div>
                                 </>
                             )}
