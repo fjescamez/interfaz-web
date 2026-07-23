@@ -11,6 +11,8 @@ import ItemEmailComponent from '../components/ItemEmailComponent';
 import DetailEmailComponent from '../components/DetailEmailComponent';
 import "./EmailClientPage2.css";
 import { HiOutlineRefresh } from "react-icons/hi";
+import { IoMdFolderOpen } from "react-icons/io";
+import { MdTurnLeft } from "react-icons/md";
 import { BlinkBlur } from "react-loading-indicators";
 import { useSession } from "../../../context/SessionContext";
 import {
@@ -313,6 +315,65 @@ function EmailClientPage() {
 
     const showEmptyState = !loading && !initialLoading && emailList.length === 0;
 
+
+    const encodeSmbPath = path =>
+        path
+            .split("/")
+            .filter(Boolean)
+            .map(segment => encodeURIComponent(segment))
+            .join("/");
+
+    const openEmailFolder = (fileEmail, isTeleWork=false) => {
+        if (!fileEmail) {
+            console.warn("El correo no tiene file_email");
+            return;
+        }
+
+        const cloudflowPrefix = "cloudflow://RECURSOS_CLOUDFLOW/";
+
+        if (!fileEmail.startsWith(cloudflowPrefix)) {
+            console.warn("Ruta de correo no reconocida:", fileEmail);
+            return;
+        }
+
+        const relativeFilePath = decodeURIComponent(
+            fileEmail.slice(cloudflowPrefix.length)
+        )
+            .replaceAll("\\", "/")
+            .replace(/^\/+/, "");
+
+        // Quitamos el archivo .eml para abrir su carpeta
+        const relativeFolderPath = relativeFilePath
+            .split("/")
+            .slice(0, -1)
+            .join("/");
+
+        const isWindows =
+            navigator.userAgentData?.platform === "Windows" ||
+            navigator.userAgent.includes("Windows");
+
+        if (isWindows) {
+            window.location.href =
+                "disengraf-folder://open" +
+                `?root=${encodeURIComponent("recursos")}` +
+                `&folder=${encodeURIComponent(relativeFolderPath)}`;
+
+            return;
+        }
+
+        const server = isTeleWork
+            ? "192.4.26.120"
+            : "CLOUDFLOW2023";
+
+        const encodedFolder = relativeFolderPath
+            .split("/")
+            .map(segment => encodeURIComponent(segment))
+            .join("/");
+
+        window.location.href =
+            `smb://${server}/Recursos/${encodedFolder}`;
+    };
+
     /* =========================
        RENDER
     ========================= */
@@ -379,6 +440,7 @@ function EmailClientPage() {
                         onClick={() => handleFilterChange("papelera")}>
                         <MdDelete /> Papelera
                     </div>
+
                 </div>
 
                 <div className="actionsBlock">
@@ -389,10 +451,24 @@ function EmailClientPage() {
                                     onClick={clearSelection}>
                                     Limpiar selección
                                 </div>
+
+                                {selectedCount === 1 && (
+                                    <div
+                                        className="filtersButton"
+                                        onClick={event => {
+                                            event.stopPropagation();
+                                            openEmailFolder(selectedEmails[0].file_email);
+                                        }}
+                                    >
+                                        <IoMdFolderOpen />
+                                        Carpeta
+                                    </div>
+                                )}
+
                                 {(actionEntrada) && (
                                     <div className={`filtersButton`}
                                         onClick={() => handleBulkAction("entrada")}>
-                                        <MdInbox />
+                                        <MdTurnLeft />
                                         A Entrada
                                     </div>
                                 )}
@@ -457,6 +533,8 @@ function EmailClientPage() {
                                             canAssign={actionAsignar}
                                             canArchive={actionArchivar}
                                             canDelete={actionEliminar}
+                                            canEntrada={actionEntrada}
+                                            openEmailFolder={openEmailFolder}
                                         />
                                     );
                                 })}

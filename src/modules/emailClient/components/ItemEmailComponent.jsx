@@ -4,6 +4,8 @@ import {
     MdArchive,
     MdDelete
 } from "react-icons/md";
+import { IoMdFolderOpen } from "react-icons/io";
+import { MdTurnLeft } from "react-icons/md";
 import "./ItemEmailComponent.css";
 
 const DEFAULT_TAG_RULES = [
@@ -122,10 +124,12 @@ function ItemEmailComponent({
     isSingleSelected,
     onSelect,
     onQuickAction,
-    canAssign = true,
-    canArchive = true,
-    canDelete = true,
-    tagRules = DEFAULT_TAG_RULES
+    canAssign = false,
+    canArchive = false,
+    canDelete = false,
+    canEntrada = false,
+    tagRules = DEFAULT_TAG_RULES,
+    openEmailFolder
 }) {
     const [workingAction, setWorkingAction] = useState(null);
 
@@ -304,6 +308,34 @@ function ItemEmailComponent({
 
             <div className="right">
                 <div className="emailQuickActions">
+
+                    {canEntrada && (
+                        <button
+                            type="button"
+                            title="A entrada"
+                            aria-label="mover a entrada"
+                            disabled={Boolean(workingAction)}
+                            onClick={event => {
+                                event.stopPropagation();
+                                runQuickAction("entrada");
+                            }}
+                        >
+                            <MdTurnLeft />
+                        </button>
+                    )}
+
+                    <button
+                        type="button"
+                        title="Carpeta"
+                        aria-label="Abrir carpeta"
+                        onClick={event => {
+                            event.stopPropagation();
+                            openEmailFolder(email.file_email);
+                        }}
+                    >
+                        <IoMdFolderOpen />
+                    </button>
+
                     {canAssign && (
                         <button
                             type="button"
