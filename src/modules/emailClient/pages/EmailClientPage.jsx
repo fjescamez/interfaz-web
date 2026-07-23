@@ -323,7 +323,7 @@ function EmailClientPage() {
             .map(segment => encodeURIComponent(segment))
             .join("/");
 
-    const openEmailFolder = (fileEmail, isTeleWork=false) => {
+    const openEmailFolder = (fileEmail, isTeleWork = false) => {
         if (!fileEmail) {
             console.warn("El correo no tiene file_email");
             return;
@@ -336,28 +336,52 @@ function EmailClientPage() {
             return;
         }
 
-        const relativeFilePath = decodeURIComponent(
-            fileEmail.slice(cloudflowPrefix.length)
-        )
-            .replaceAll("\\", "/")
-            .replace(/^\/+/, "");
+        let relativeFilePath;
 
-        // Quitamos el archivo .eml para abrir su carpeta
-        const relativeFolderPath = relativeFilePath
-            .split("/")
-            .slice(0, -1)
-            .join("/");
+        try {
+            relativeFilePath = decodeURIComponent(
+                fileEmail.slice(cloudflowPrefix.length)
+            )
+                .replaceAll("\\", "/")
+                .replace(/^\/+|\/+$/g, "");
+        } catch (error) {
+            console.error("No se pudo decodificar la ruta:", fileEmail, error);
+            return;
+        }
+
+        // Quitamos el archivo .eml y conservamos únicamente su carpeta
+        const pathParts = relativeFilePath.split("/");
+
+        if (pathParts.length < 2) {
+            console.warn("La ruta no contiene una carpeta válida:", fileEmail);
+            return;
+        }
+
+        pathParts.pop();
+
+        const relativeFolderPath = pathParts.join("/");
+
+        const platform =
+            navigator.userAgentData?.platform ||
+            navigator.platform ||
+            "";
 
         const isWindows =
-            navigator.userAgentData?.platform === "Windows" ||
-            navigator.userAgent.includes("Windows");
+            /windows|win32|win64/i.test(platform) ||
+            /windows/i.test(navigator.userAgent);
 
         if (isWindows) {
-            window.location.href =
+            const mode = isTeleWork ? "telework" : "office";
+
+            const protocolUrl =
                 "disengraf-folder://open" +
-                `?root=${encodeURIComponent("recursos")}` +
+                `?mode=${encodeURIComponent(mode)}` +
+                `&area=${encodeURIComponent("resources")}` +
                 `&folder=${encodeURIComponent(relativeFolderPath)}`;
 
+            console.log("Abriendo carpeta de correo:", protocolUrl);
+
+            window.location.href = protocolUrl;
             return;
         }
 
