@@ -13,11 +13,19 @@
 
 .emailDetailHeader {
     flex-shrink: 0;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+
     display: flex;
     flex-direction: column;
     gap: 1rem;
+
     border-bottom: 1px solid var(--pantone431c);
     padding-bottom: 1.2rem;
+
+    overflow: hidden;
 }
 
 .emailSubjectRow {
@@ -25,6 +33,21 @@
     align-items: center;
     gap: 1rem;
     min-width: 0;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.emailSubjectRow h2 {
+    flex: 1;
+    min-width: 0;
+    max-width: 100%;
+    margin: 0;
+
+    font-size: 2rem;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .emailSubjectRow svg {
@@ -33,24 +56,13 @@
     flex-shrink: 0;
 }
 
-.emailSubjectRow h2 {
-    margin: 0;
-    font-size: 2rem;
-    font-weight: 700;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .emailMeta {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
+    min-width: 0;
 }
 
 .emailMetaRow {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 1rem;
     min-width: 0;
 }
@@ -63,10 +75,12 @@
 }
 
 .emailMetaRow p {
+    flex: 1;
+    min-width: 0;
     margin: 0;
     font-size: 2rem;
-    white-space: nowrap;
     overflow: hidden;
+    white-space: nowrap;
     text-overflow: ellipsis;
 }
 
@@ -146,6 +160,137 @@
     align-items: center;
     justify-content: center;
     color: var(--text-secondary);
-    font-size: 1.6rem;
+    font-size: 2.6rem;
     opacity: 0.7;
+}
+
+.emailRecipientsRow {
+    align-items: flex-start;
+    margin-top: 0.5rem;
+}
+
+.emailRecipientsContent {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+}
+
+.emailRecipientsContent>strong {
+    flex-shrink: 0;
+    font-size: 2rem;
+    line-height: 2.8rem;
+}
+
+.emailRecipientList {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.emailRecipientTag {
+    padding: 0.35rem 0.8rem;
+    font-size: 1.6rem;
+    background: #f4f5f6;
+    border: 0.1rem solid #b9c0c5;
+    border-radius: 0.5rem;
+}
+
+.emailRecipientEmpty {
+    font-size: 1.6rem;
+    line-height: 2.8rem;
+    opacity: 0.7;
+}
+
+
+.emailListPanel {
+    min-width: 0;
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.jacketList {
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.emailBulkActions {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    padding: 0.8rem 0 1rem;
+}
+
+.emailBulkActions>strong {
+    font-size: 1.4rem;
+}
+
+.emailBulkActionOptions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+}
+
+.emailBulkActionOptions button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+
+    padding: 0;
+    border: 0;
+    background: transparent;
+
+    color: inherit;
+    font: inherit;
+    font-size: 1.35rem;
+    font-weight: 600;
+    text-decoration: underline;
+
+    cursor: pointer;
+}
+
+.emailBulkActionOptions button:hover {
+    opacity: 0.65;
+}
+
+.emailBulkActionOptions button.danger {
+    color: #b42318;
+}
+
+.emailBulkActionOptions button.clear {
+    color: var(--text-secondary);
+}
+
+.multipleEmailSelection {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+
+    color: var(--text-secondary);
+}
+
+.multipleEmailSelection strong {
+    font-size: 2rem;
+}
+
+.multipleEmailSelection span {
+    font-size: 1.4rem;
 }

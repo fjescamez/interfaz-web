@@ -1,0 +1,223 @@
+.detailsContainer.gestorPage {
+    height: auto;
+    min-height: 100% !important;
+    max-height: 100% !important;
+}
+
+.gestorContainer {
+    padding: 0 5rem;
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.5rem;
+    height: 100dvh;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+
+    .filterButtons {
+        display: flex;
+        column-gap: 1.3rem;
+        justify-content: start;
+
+        .filtersButton {
+            cursor: pointer;
+            display: flex;
+            column-gap: 0.5rem;
+            align-items: center;
+            font-size: 1.8rem;
+            padding: 0.5rem 1.5rem;
+            border: 2px solid var(--pantone431c);
+            border-radius: 1.5rem;
+            background-color: white;
+            min-height: 100%;
+
+            svg {
+                width: 2rem;
+                height: 2rem;
+            }
+
+            &:hover {
+                background: var(--hover);
+            }
+
+
+        }
+
+        .success {
+            color: rgb(0, 0, 150);
+            border: 2px solid rgb(0, 0, 120);
+
+            &:hover {
+                background: rgba(0, 0, 120, .3);
+            }
+        }
+
+        .danger {
+            color: #b42318;
+            border: 2px solid #b42318;
+
+            &:hover {
+                background: rgba(180, 35, 24, .3);
+            }
+        }
+
+        .clicked {
+            background: var(--orange-gradient);
+
+            &:hover {
+                background: var(--orange-gradient);
+            }
+        }
+
+        .enlace {
+            padding: 0.5rem 1.5rem;
+            cursor: pointer;
+            font-size: 1.8rem;
+            color: rgb(0, 0, 150);
+            text-decoration: underline;
+        }
+    }
+
+    .actionsBlock {
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        min-height: 5rem;
+    }
+
+    .executingContainer {
+        margin-top: 25rem;
+    }
+
+    .gestorColumns {
+        display: flex;
+        column-gap: 2rem;
+        min-height: 0;
+        flex: 1;
+        max-height: 100%;
+        column-gap: 2rem;
+
+        .emailList {
+            min-width: 60rem;
+            max-width: 0rem;
+            display: flex;
+            flex-direction: column;
+            row-gap: 0.5rem;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .emailDetailList {
+            flex: 1 1 0;
+            min-width: 0;
+            max-width: 100%;
+            min-height: 0;
+
+            display: flex;
+            flex-direction: column;
+            row-gap: 0.5rem;
+
+            overflow: hidden;
+        }
+    }
+}
+
+.contactInitials {
+    width: 3.8rem;
+    height: 3.8rem;
+    flex: 0 0 3.8rem;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 50%;
+    border: 1px solid var(--pantone431c);
+    background-color: var(--hover);
+
+    font-size: 1.3rem;
+    font-weight: 700;
+    line-height: 1;
+    user-select: none;
+}
+
+.emailItem.selected .contactInitials {
+    color: white;
+    background-color: var(--pantone431c);
+}
+
+.bloqueEmail {
+    flex: 1;
+    min-width: 0;
+}
+
+.bloqueEmail .title,
+.bloqueEmail .subtitle {
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.emailListColumn {
+    min-width: 0;
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.jacketList {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.emailBulkActions {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--pantone431c);
+}
+
+.emailSelectedCount {
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.emailBulkActionList {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.emailBulkAction {
+    padding: 0;
+    border: 0;
+    background: transparent;
+
+    font: inherit;
+    font-size: 1.4rem;
+    font-weight: 600;
+    text-decoration: underline;
+
+    cursor: pointer;
+}
+
+.emailBulkAction:hover {
+    opacity: 0.7;
+}
+
+.emailBulkAction.danger {
+    color: #b42318;
+}
+
+.emailBulkAction.secondary {
+    opacity: 0.7;
+}

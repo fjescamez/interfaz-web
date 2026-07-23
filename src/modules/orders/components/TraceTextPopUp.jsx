@@ -67,6 +67,17 @@ function TraceTextPopUp({ setTraceModal, rutaTrabajo, unitario }) {
         setTraceModal(false);
     }
 
+    const calculadoraDes = () => {
+        const data = {
+            rowObject: {
+                url: file.url
+            }
+        }
+
+        postData("tasks/calculadora", data);
+        notify("success", "Trazado de texto iniciado", "");
+        setTraceModal(false);
+    }
     return (
         <>
             <div className="overlay"></div>

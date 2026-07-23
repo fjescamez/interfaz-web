@@ -4,8 +4,10 @@ import "./DetailEmailComponent.css";
 function DetailEmailComponent({ email }) {
     if (!email) {
         return (
-            <div className="emptyEmailDetail">
-                Selecciona un correo para previsualizarlo
+            <div className="emailDetail">
+                <div className="emptyEmailDetail">
+                    Selecciona un correo para previsualizarlo
+                </div>
             </div>
         );
     }
@@ -44,6 +46,26 @@ function DetailEmailComponent({ email }) {
         </html>
     `;
 
+    const parseRecipients = (value) => {
+        if (!value) return [];
+
+        if (Array.isArray(value)) {
+            return value
+                .map(recipient => String(recipient).trim())
+                .filter(Boolean);
+        }
+
+        return String(value)
+            .split(";")
+            .map(recipient => recipient.trim())
+            .filter(Boolean);
+    };
+
+    const fromRecipients = parseRecipients(from);
+    const toRecipients = parseRecipients(to);
+    const ccRecipients = parseRecipients(cc);
+
+
     return (
         <div className="emailDetail">
 
@@ -54,37 +76,90 @@ function DetailEmailComponent({ email }) {
                 </div>
 
                 <div className="emailMeta">
-                    <div className="emailMetaRow">
+
+                    <div className="emailMetaRow emailRecipientsRow">
                         <MdPerson />
-                        <p>
-                            <strong>De:</strong> {from || "Sin remitente"}
-                        </p>
+
+                        <div className="emailRecipientsContent">
+                            <strong>De:</strong>
+
+                            <div className="emailRecipientList">
+                                {fromRecipients.length > 0 ? (
+                                    fromRecipients.map((recipient, index) => (
+                                        <span
+                                            key={`${recipient}-${index}`}
+                                            className="emailRecipientTag"
+                                            title={recipient}
+                                        >
+                                            {recipient}
+                                        </span>
+                                    ))
+                                ) : (
+                                    <span className="emailRecipientEmpty">
+                                        Sin destinatario
+                                    </span>
+                                )}
+                            </div>
+                        </div>
                     </div>
 
-                    <div className="emailMetaRow">
+                    <div className="emailMetaRow emailRecipientsRow">
                         <MdPerson />
-                        <p>
-                            <strong>Para:</strong> {to || "Sin destinatario"}
-                        </p>
+
+                        <div className="emailRecipientsContent">
+                            <strong>Para:</strong>
+
+                            <div className="emailRecipientList">
+                                {toRecipients.length > 0 ? (
+                                    toRecipients.map((recipient, index) => (
+                                        <span
+                                            key={`${recipient}-${index}`}
+                                            className="emailRecipientTag"
+                                            title={recipient}
+                                        >
+                                            {recipient}
+                                        </span>
+                                    ))
+                                ) : (
+                                    <span className="emailRecipientEmpty">
+                                        Sin destinatario
+                                    </span>
+                                )}
+                            </div>
+                        </div>
                     </div>
 
-                    {cc && (
-                        <div className="emailMetaRow">
+                    {ccRecipients.length > 0 && (
+                        <div className="emailMetaRow emailRecipientsRow">
                             <MdPerson />
-                            <p>
-                                <strong>CC:</strong> {cc}
-                            </p>
+
+                            <div className="emailRecipientsContent">
+                                <strong>CC:</strong>
+
+                                <div className="emailRecipientList">
+                                    {ccRecipients.map((recipient, index) => (
+                                        <span
+                                            key={`${recipient}-${index}`}
+                                            className="emailRecipientTag"
+                                            title={recipient}
+                                        >
+                                            {recipient}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     )}
 
                     {date && (
-                        <div className="emailMetaRow">
+                        <div className="emailMetaRow emailRecipientsRow">
                             <MdSchedule />
-                            <p>
-                                <strong>Fecha:</strong> {date}
-                            </p>
+                            <div className="emailRecipientsContent">
+                                <strong>Fecha: {date}</strong>
+                            </div>
                         </div>
                     )}
+
                 </div>
             </div>
 

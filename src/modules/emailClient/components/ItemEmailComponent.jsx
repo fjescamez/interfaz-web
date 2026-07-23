@@ -1,18 +1,42 @@
-import "./ItemEmailComponent.css";
-import { RiProhibited2Line } from "react-icons/ri";
-import { FaPause, FaPlay, FaFlag } from "react-icons/fa";
-import { RxCross2 } from "react-icons/rx";
+import { memo, useState } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { memo, useRef, useState } from "react";
-import { cleanup_jacket } from "../../../helpers/cloudflow/hub";
-import { notify } from "../../../helpers/notify";
+import "./ItemEmailComponent.css";
 
-function ItemEmailComponent({ email, selectedEmailId, setSelectedEmailId, actions, cleanDeleted }) {
-    const workables = Array.isArray(email?.log) ? email.log : [];
-    const requestRef = useRef(0);
+function getInitials(value = "") {
+    const words = String(value)
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
+
+    if (words.length === 0) {
+        return "?";
+    }
+
+    if (words.length === 1) {
+        return words[0].slice(0, 2).toUpperCase();
+    }
+
+    return `${words[0][0]}${words[words.length - 1][0]}`.toUpperCase();
+}
+
+function ItemEmailComponent({
+    email,
+    index,
+    isSelected,
+    onSelect,
+    cleanDeleted
+}) {
     const [deleting, setDeleting] = useState(false);
+    const emailId = email?._id ?? email?.id;
 
-    const { contacto, cliente, asunto, cuerpoHtml, aborted, done, hold_in_kiosk, name, birth } = email || {};
+    const {
+        contacto,
+        cliente,
+        asunto,
+        birth
+    } = email || {};
+
+    const initials = getInitials(contacto || cliente);
 
     const formattedDate = birth
         ? new Date(birth).toLocaleString("es-ES", {
@@ -20,68 +44,62 @@ function ItemEmailComponent({ email, selectedEmailId, setSelectedEmailId, action
             month: "2-digit",
             year: "2-digit",
             hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit"
+            minute: "2-digit"
         })
         : "";
 
-    //const hasError = workables.some(w => w?.workable_state === "error");
-    const hasError = email.state === "error";
-    const canDelete = actions?.some(
-        action =>
-            action.jacket_id === jacket?.id &&
-            action.action === "delete"
-    );
-
-
     const cleanupJacket = async () => {
-        alert("eliminar")
-    }
+        if (deleting) return;
 
+        setDeleting(true);
+
+        try {
+            await cleanDeleted(emailId);
+        } finally {
+            setDeleting(false);
+        }
+    };
+
+    const handleKeyDown = event => {
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            onSelect(email._id, index, event);
+        }
+    };
 
     return (
         <div
-            className={`jacketItem ${selectedEmailId === email?._id ? "selected" : ""}`}
-            onClick={() => setSelectedEmailId(email._id)}
+            className={`emailItem ${isSelected ? "selected" : ""}`}
+            onClick={event =>
+                onSelect(emailId, index, event)
+            }
         >
             <div className="left">
-                <div className="icon">
-                    {hasError
-                        ? <RxCross2 color="red" />
-                        : aborted
-                            ? <RiProhibited2Line color="red" />
-                            : done
-                                ? <FaFlag color="green" />
-                                : hold_in_kiosk
-                                    ? <FaPause />
-                                    : <FaPlay color="green" />
-                    }
+                <div
+                    className="contactInitials"
+                    title={contacto || cliente || "Sin contacto"}
+                >
+                    {initials}
                 </div>
 
                 <div className="bloqueEmail">
-                    <p className="title">{contacto} - {cliente}</p>
-                    <p className="title">{asunto}</p>
+                    <p className="title">
+                        {contacto || "Sin contacto"}
+
+                        {cliente && (
+                            <>
+                                {" - "}
+                                <span>{cliente}</span>
+                            </>
+                        )}
+                    </p>
+
+                    <p className="subtitle">
+                        {asunto || "Sin asunto"}
+                    </p>
                 </div>
             </div>
 
-            <div className="right">
-                <p className="date">{formattedDate}</p>
-
-                <div
-                    className={`icon deleteIcon ${canDelete && !deleting ? "enabled" : ""} ${deleting ? "deleting" : ""}`}
-                    onClick={(e) => {
-                        e.stopPropagation();
-
-                        if (!canDelete || deleting) return;
-
-                        cleanupJacket();
-                    }}
-                >
-                    {canDelete && (
-                        <RiDeleteBin6Line />
-                    )}
-                </div>
-            </div>
 
         </div>
     );

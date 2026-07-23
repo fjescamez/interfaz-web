@@ -1,9 +1,15 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import {
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState
+} from "react";
 import DetailsHeader from '../../../components/DetailsHeader';
-import { list_with_options } from '../../../helpers/cloudflow/custom_objects';
+import { list_with_options, get, set_keys } from '../../../helpers/cloudflow/custom_objects';
 import ItemEmailComponent from '../components/ItemEmailComponent';
 import DetailEmailComponent from '../components/DetailEmailComponent';
-//import "./EmailClientPage2.css";
+import "./EmailClientPage2.css";
 import { HiOutlineRefresh } from "react-icons/hi";
 import { BlinkBlur } from "react-loading-indicators";
 import { useSession } from "../../../context/SessionContext";
@@ -31,7 +37,7 @@ const loadState = () => {
     }
 };
 
-
+const getEmailId = email => email?._id ?? email?.id;
 
 
 const saveState = (state) => {
@@ -48,7 +54,11 @@ function EmailClientPage() {
     const [emailList, setEmailList] = useState([]);
     const [listProgress, setListProgress] = useState([]);
 
-    const [selectedEmailId, setSelectedEmailId] = useState(null);
+    const [selectedEmailIds, setSelectedEmailIds] = useState(
+        () => new Set()
+    );
+
+    const lastSelectedIndexRef = useRef(null);
 
     const [loading, setLoading] = useState(true);
     const [initialLoading, setInitialLoading] = useState(true);
@@ -115,32 +125,109 @@ function EmailClientPage() {
     }, []);
 
 
-
-
-    const selectedEmail = useMemo(
-        () => emailList.find(email => email._id === selectedEmailId),
-        [emailList, selectedEmailId]
+    const selectedEmails = useMemo(
+        () =>
+            emailList.filter(email =>
+                selectedEmailIds.has(getEmailId(email))
+            ),
+        [emailList, selectedEmailIds]
     );
 
+    const selectedEmail =
+        selectedEmails.length === 1
+            ? selectedEmails[0]
+            : null;
 
+    const selectedCount = selectedEmailIds.size;
 
-    const cleanDeleted = (id_email) => {
-        setEmailList(prev =>
-            prev.filter(j => j.id !== id_email)
+    const clearSelection = useCallback(() => {
+        setSelectedEmailIds(new Set());
+        lastSelectedIndexRef.current = null;
+    }, []);
+
+    const handleSelectEmail = useCallback(
+        (emailId, index, event) => {
+            const additiveSelection =
+                event.ctrlKey || event.metaKey;
+
+            const rangeSelection =
+                event.shiftKey &&
+                lastSelectedIndexRef.current !== null;
+
+            setSelectedEmailIds(currentSelection => {
+                const nextSelection = additiveSelection
+                    ? new Set(currentSelection)
+                    : new Set();
+
+                if (rangeSelection) {
+                    const start = Math.min(
+                        lastSelectedIndexRef.current,
+                        index
+                    );
+
+                    const end = Math.max(
+                        lastSelectedIndexRef.current,
+                        index
+                    );
+
+                    for (
+                        let currentIndex = start;
+                        currentIndex <= end;
+                        currentIndex += 1
+                    ) {
+                        const currentEmail = emailList[currentIndex];
+                        const currentId = getEmailId(currentEmail);
+
+                        if (currentId) {
+                            nextSelection.add(currentId);
+                        }
+                    }
+
+                    return nextSelection;
+                }
+
+                if (additiveSelection) {
+                    if (nextSelection.has(emailId)) {
+                        nextSelection.delete(emailId);
+                    } else {
+                        nextSelection.add(emailId);
+                    }
+                } else {
+                    nextSelection.add(emailId);
+                }
+
+                return nextSelection;
+            });
+
+            if (!event.shiftKey) {
+                lastSelectedIndexRef.current = index;
+            }
+        },
+        [emailList]
+    );
+
+    const cleanDeleted = useCallback(idEmail => {
+        setEmailList(currentEmails =>
+            currentEmails.filter(
+                email => getEmailId(email) !== idEmail
+            )
         );
 
-        // opcional: limpiar selección si era la eliminada
-        setSelectedEmailId(prev =>
-            prev === id_email ? null : prev
-        );
-    };
+        setSelectedEmailIds(currentSelection => {
+            const nextSelection = new Set(currentSelection);
+            nextSelection.delete(idEmail);
+            return nextSelection;
+        });
+    }, []);
+
+
 
 
     const defaultFilters = {
         entrada: false,
         asignado: false,
         misAsignados: false,
-        archivados: false,
+        archivado: false,
         parados: false,
         papelera: false
     }
@@ -157,24 +244,71 @@ function EmailClientPage() {
     /* =========================
        FILTERS
     ========================= */
-    const handleFilterChange = (key) => {
-        const next = {
-            ...defaultFilters,
-            [key]: true,
-        };
-
+    const handleFilterChange = key => {
         setLoading(true);
+
         activeFilter.current = key;
         saveState(key);
-        fetchEmails(true, next);
+
+        clearSelection();
+        fetchEmails(true);
+    };
+
+    const handleBulkAction = async actionName => {
+        const selectedIds = Array.from(selectedEmailIds);
+
+        if (selectedIds.length < 1) return;
+
+
+
+        if (selectedIds.length === 0) return [];
+
+        try {
+            const emails = await Promise.all(
+                selectedIds.map(id => get(collection, id))
+            );
+            let newBuzon;
+
+            if (actionName === "entrada") {
+                newBuzon = `Bandeja Entrada`;
+
+            } else if (actionName === "asignar") {
+                newBuzon = `Asignado ${username}`;
+
+            } else if (actionName === "archivar") {
+                newBuzon = `Archivado`;
+
+            } else if (actionName === "parar") {
+                newBuzon = `Parado`;
+
+            } else if (actionName === "eliminar") {
+                newBuzon = `papelera`;
+            }
+
+            await Promise.all(
+                emails.map(email =>
+                    set_keys(collection, email._id, {
+                        buzon: newBuzon
+                    })
+                )
+            );
+
+            clearSelection();
+            await fetchEmails();
+
+            return emailsToAssign;
+        } catch (error) {
+            console.error("Error asignando los correos:", error);
+            return [];
+        }
     };
 
     const setFilterName = (filter) => {
         if (filter === "entrada") return "Bandeja de Entrada";
         else if (filter === "asignado") return "Asignados";
         else if (filter === "misAsignados") return "Mis Asignados";
-        else if (filter === "archivados") return "Archivados";
-        else if (filter === "parados") return "Parados";
+        else if (filter === "archivado") return "Archivado";
+        else if (filter === "parado") return "Parados";
         else if (filter === "papelera") return "Papelera";
         return filter;
     }
@@ -186,9 +320,14 @@ function EmailClientPage() {
     ========================= */
 
     const title = `GESTOR DE CORREO - ${setFilterName(activeFilter.current)}`;
+    const actionEntrada = activeFilter.current !== "entrada";
+    const actionAsignar = activeFilter.current === "entrada" || activeFilter.current === "misAsignados";
+    const actionArchivar = activeFilter.current === "entrada" || activeFilter.current === "misAsignados";
+    const actionParar = activeFilter.current === "entrada" || activeFilter.current === "misAsignados";
+    const actionEliminar = activeFilter.current === "entrada" || activeFilter.current === "misAsignados";
 
     return (
-        <div className="detailsContainer kioskPage">
+        <div className="detailsContainer gestorPage">
 
             <DetailsHeader
                 title={title}
@@ -209,7 +348,8 @@ function EmailClientPage() {
                 </div>
             )}
 
-            <div className="kioskContainer">
+
+            <div className="gestorContainer">
 
                 <div className="filterButtons">
                     <div className={`filtersButton ${activeFilter.current === "entrada" ? 'clicked' : ''}`}
@@ -227,13 +367,13 @@ function EmailClientPage() {
                         <MdPersonPin /> Mis Asignados
                     </div>
 
-                    <div className={`filtersButton ${activeFilter.current === "archivados" ? 'clicked' : ''}`}
-                        onClick={() => handleFilterChange("archivados")}>
+                    <div className={`filtersButton ${activeFilter.current === "archivado" ? 'clicked' : ''}`}
+                        onClick={() => handleFilterChange("archivado")}>
                         <MdArchive /> Archivados
                     </div>
 
-                    <div className={`filtersButton ${activeFilter.current === "parados" ? 'clicked' : ''}`}
-                        onClick={() => handleFilterChange("parados")}>
+                    <div className={`filtersButton ${activeFilter.current === "parado" ? 'clicked' : ''}`}
+                        onClick={() => handleFilterChange("parado")}>
                         <MdPauseCircle /> Parados
                     </div>
 
@@ -243,36 +383,101 @@ function EmailClientPage() {
                     </div>
                 </div>
 
+                <div className="actionsBlock">
+                    <div className="filterButtons">
+                        {selectedCount > 0 && (
+                            <>
+                                <div className={`filtersButton success`}
+                                    onClick={clearSelection}>
+                                    Limpiar selección
+                                </div>
+                                {(actionEntrada) && (
+                                    <div className={`filtersButton`}
+                                        onClick={() => handleBulkAction("entrada")}>
+                                        <MdInbox />
+                                        A Entrada
+                                    </div>
+                                )}
+                                {(actionAsignar) && (
+                                    <div className={`filtersButton`}
+                                        onClick={() => handleBulkAction("asignar")}>
+                                        <MdAssignmentInd />
+                                        Asignar
+                                    </div>
+                                )}
+                                {(actionArchivar) && (
+                                    <div className={`filtersButton`}
+                                        onClick={() => handleBulkAction("archivar")}>
+                                        <MdArchive />
+                                        Archivar
+                                    </div>
+                                )}
+                                {(actionParar) && (
+                                    <div className={`filtersButton`}
+                                        onClick={() => handleBulkAction("parar")}>
+                                        <MdPauseCircle />
+                                        Parar
+                                    </div>
+                                )}
+                                {(actionEliminar) && (
+                                    <div className={`filtersButton danger`}
+                                        onClick={() => handleBulkAction("eliminar")}>
+                                        <MdDelete /> Papelera
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </div>
+                </div>
+
+
                 {initialLoading ? (
                     <div />
                 ) : showEmptyState ? (
                     <div />
                 ) : (
-                    <div className="kioskColumns">
-                        <div className="jacketList">
+                    <div className="gestorColumns">
+                        <div className="emailListPanel">
+                            <div className="emailList">
+                                {emailList.map((email, index) => {
+                                    const emailId = getEmailId(email);
 
-                            {emailList.map(j => (
-                                <ItemEmailComponent
-                                    key={j.id}
-                                    email={j}
-                                    selectedEmailId={selectedEmailId}
-                                    setSelectedEmailId={setSelectedEmailId}
-                                    actions={actions}
-                                    cleanDeleted={cleanDeleted}
-                                />
-                            ))}
+                                    return (
+                                        <ItemEmailComponent
+                                            key={emailId}
+                                            email={email}
+                                            index={index}
+                                            isSelected={selectedEmailIds.has(
+                                                emailId
+                                            )}
+                                            onSelect={handleSelectEmail}
+                                            cleanDeleted={cleanDeleted}
+                                        />
+                                    );
+                                })}
+                            </div>
                         </div>
 
-                        <div className="workableList">
-                            {selectedEmail ? (
+                        <div className="emailDetailList">
+                            {selectedCount <= 1 ? (
                                 <DetailEmailComponent email={selectedEmail} />
                             ) : (
-                                <div className="emptyEmailDetail">
-                                    Selecciona un correo para previsualizarlo
-                                </div>
+
+                                <>
+                                    <div className="emailDetail">
+                                               <div className="multipleEmailSelection">
+                                        <strong>
+                                            {selectedCount} correos seleccionados
+                                        </strong>
+
+                                        <span>
+                                            Utiliza las acciones disponibles sobre la lista.
+                                        </span>
+                                    </div>
+                                    </div>
+                                </>
                             )}
                         </div>
-
                     </div>
                 )}
 

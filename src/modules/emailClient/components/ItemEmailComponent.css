@@ -1,4 +1,4 @@
-.jacketItem {
+.emailItem {
     display: flex;
     justify-content: space-between;
     padding: 1.4rem;
@@ -51,6 +51,7 @@
 
 .bloqueEmail {
     display: flex;
+    gap: 0.15rem;
     flex-direction: column;
     flex: 1;
     min-width: 0;
@@ -58,16 +59,42 @@
 
 .bloqueEmail .title {
     white-space: nowrap;
+    color: rgb(0, 0, 0);
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 700;
     overflow: hidden;
     text-overflow: ellipsis;
     margin: 0;
 }
 
-.jacketItem .icon {
+.bloqueEmail .title span {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+.bloqueEmail .subtitle {
+    white-space: nowrap;
+    color: rgba(0, 0, 0, 0.7);
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 400;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+    font-size: 1.3rem;
+}
+
+
+
+.emailItem .icon {
     flex-shrink: 0;
 }
 
-.jacketItem .right .date {
+.emailItem .right .date {
     white-space: nowrap;
     margin: 0;
+}
+
+.emailItem.selected {
+    background: rgb(255, 207, 135);
 }
