@@ -221,3 +221,14 @@
 .emailBulkAction.secondary {
     opacity: 0.7;
 }
+
+.filtersButton.actionDisabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.actionsBlock.actionsBlocked {
+    opacity: 0.5;
+    pointer-events: none;
+}

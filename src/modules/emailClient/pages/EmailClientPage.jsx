@@ -13,6 +13,7 @@ import "./EmailClientPage2.css";
 import { HiOutlineRefresh } from "react-icons/hi";
 import { IoMdFolderOpen } from "react-icons/io";
 import { MdTurnLeft } from "react-icons/md";
+import { FaDownload } from "react-icons/fa6";
 import { BlinkBlur } from "react-loading-indicators";
 import { useSession } from "../../../context/SessionContext";
 import {
@@ -54,7 +55,11 @@ function EmailClientPage() {
     const collection = "Email";
 
     const [emailList, setEmailList] = useState([]);
-    const [listProgress, setListProgress] = useState([]);
+
+    const [pulsedAction, setPulsedAction] = useState(false);
+
+    const pulsedActionRef = useRef(false);
+    const actionTimerRef = useRef(null);
 
     const [selectedEmailIds, setSelectedEmailIds] = useState(
         () => new Set()
@@ -262,6 +267,10 @@ function EmailClientPage() {
     ) => {
         if (ids.length === 0) return [];
 
+        if (!startActionLock()) {
+            return [];
+        }
+
         try {
             const emails = await Promise.all(
                 ids.map(id => get(collection, id))
@@ -327,6 +336,10 @@ function EmailClientPage() {
         if (!fileEmail) {
             console.warn("El correo no tiene file_email");
             return;
+        }
+
+        if (!startActionLock()) {
+            return [];
         }
 
         const cloudflowPrefix = "cloudflow://RECURSOS_CLOUDFLOW/";
@@ -398,6 +411,31 @@ function EmailClientPage() {
             `smb://${server}/Recursos/${encodedFolder}`;
     };
 
+    const startActionLock = useCallback(() => {
+        if (pulsedActionRef.current) {
+            return false;
+        }
+
+        pulsedActionRef.current = true;
+        setPulsedAction(true);
+
+        clearTimeout(actionTimerRef.current);
+
+        actionTimerRef.current = setTimeout(() => {
+            pulsedActionRef.current = false;
+            setPulsedAction(false);
+        }, 2500);
+
+        return true;
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            clearTimeout(actionTimerRef.current);
+        };
+    }, []);
+
+
     /* =========================
        RENDER
     ========================= */
@@ -467,7 +505,10 @@ function EmailClientPage() {
 
                 </div>
 
-                <div className="actionsBlock">
+                <div
+                    className={`actionsBlock ${pulsedAction ? "actionsBlocked" : ""
+                        }`}
+                >
                     <div className="filterButtons">
                         {selectedCount > 0 && (
                             <>
@@ -477,17 +518,29 @@ function EmailClientPage() {
                                 </div>
 
                                 {selectedCount === 1 && (
-                                    <div
-                                        className="filtersButton"
-                                        onClick={event => {
-                                            event.stopPropagation();
-                                            openEmailFolder(selectedEmails[0].file_email);
-                                        }}
-                                    >
-                                        <IoMdFolderOpen />
-                                        Carpeta
-                                    </div>
+                                    <>
+                                        <div className={`filtersButton`}
+                                            onClick={event => {
+                                                event.stopPropagation();
+                                                openEmailFolder(selectedEmails[0].file_email);
+                                            }}
+                                        >
+                                            <IoMdFolderOpen />
+                                            Carpeta
+                                        </div>
+
+                                        <div className={`filtersButton`}
+                                            onClick={event => {
+                                                event.stopPropagation();
+                                                openEmailFolder(selectedEmails[0].file_email);
+                                            }}
+                                        >
+                                            <FaDownload />
+                                            Adjuntos
+                                        </div>
+                                    </>
                                 )}
+
 
                                 {(actionEntrada) && (
                                     <div className={`filtersButton`}
@@ -559,6 +612,7 @@ function EmailClientPage() {
                                             canDelete={actionEliminar}
                                             canEntrada={actionEntrada}
                                             openEmailFolder={openEmailFolder}
+                                            pulsedAction={pulsedAction}
                                         />
                                     );
                                 })}

@@ -1,4 +1,5 @@
-import { MdAttachFile, MdEmail, MdPerson, MdSchedule } from "react-icons/md";
+import { useState } from "react";
+import { MdAttachFile, MdEmail, MdPerson, MdSchedule, MdContentCopy, MdCheck } from "react-icons/md";
 import "./DetailEmailComponent.css";
 
 function DetailEmailComponent({ email }) {
@@ -65,6 +66,42 @@ function DetailEmailComponent({ email }) {
     const toRecipients = parseRecipients(to);
     const ccRecipients = parseRecipients(cc);
 
+    const [emailIdCopied, setEmailIdCopied] = useState(false);
+
+    const handleCopyEmailId = async () => {
+        const emailId = email?._id;
+
+        if (!emailId) return;
+
+        const textToCopy = `Id email: ${emailId}`;
+
+        try {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(textToCopy);
+            } else {
+                const textArea = document.createElement("textarea");
+
+                textArea.value = textToCopy;
+                textArea.style.position = "fixed";
+                textArea.style.opacity = "0";
+
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+
+                document.execCommand("copy");
+                textArea.remove();
+            }
+
+            setEmailIdCopied(true);
+
+            window.setTimeout(() => {
+                setEmailIdCopied(false);
+            }, 1500);
+        } catch (error) {
+            console.error("No se pudo copiar el identificador:", error);
+        }
+    };
 
     return (
         <div className="emailDetail">
@@ -77,31 +114,66 @@ function DetailEmailComponent({ email }) {
 
                 <div className="emailMeta">
 
-                    <div className="emailMetaRow emailRecipientsRow">
-                        <MdPerson />
+                    <div className="emailMetaRow emailSenderRow">
+                        <div className="emailFromBlock">
+                            <MdPerson className="emailMetaIcon" />
 
-                        <div className="emailRecipientsContent">
-                            <strong>De:</strong>
+                            <div className="emailRecipientsContent">
+                                <strong>De:</strong>
 
-                            <div className="emailRecipientList">
-                                {fromRecipients.length > 0 ? (
-                                    fromRecipients.map((recipient, index) => (
-                                        <span
-                                            key={`${recipient}-${index}`}
-                                            className="emailRecipientTag"
-                                            title={recipient}
-                                        >
-                                            {recipient}
+                                <div className="emailRecipientList">
+                                    {fromRecipients.length > 0 ? (
+                                        fromRecipients.map((recipient, index) => (
+                                            <span
+                                                key={`${recipient}-${index}`}
+                                                className="emailRecipientTag"
+                                                title={recipient}
+                                            >
+                                                {recipient}
+                                            </span>
+                                        ))
+                                    ) : (
+                                        <span className="emailRecipientEmpty">
+                                            Sin remitente
                                         </span>
-                                    ))
-                                ) : (
-                                    <span className="emailRecipientEmpty">
-                                        Sin destinatario
-                                    </span>
-                                )}
+                                    )}
+                                </div>
                             </div>
                         </div>
+
+                        <div className="emailFromBlock emailIdBlock">
+                            <div className="emailRecipientsContent">
+                                <strong>Identificador:</strong>
+
+                                <div className="emailRecipientList">
+                                    <span
+                                        className="emailRecipientTag emailIdTag"
+                                        title={email?._id}
+                                    >
+                                        {email?._id}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <button
+                                type="button"
+                                className={`emailCopyButton ${emailIdCopied ? "copied" : ""
+                                    }`}
+                                onClick={handleCopyEmailId}
+                                title={emailIdCopied ? "ID copiado" : "Copiar ID"}
+                                aria-label={emailIdCopied ? "ID copiado" : "Copiar ID"}
+                                disabled={!email?._id}
+                            >
+                                {emailIdCopied ? (
+                                    <MdCheck />
+                                ) : (
+                                    <MdContentCopy />
+                                )}
+                            </button>
+                        </div>
                     </div>
+
+
 
                     <div className="emailMetaRow emailRecipientsRow">
                         <MdPerson />

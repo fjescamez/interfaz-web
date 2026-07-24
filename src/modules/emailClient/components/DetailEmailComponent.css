@@ -62,7 +62,7 @@
 
 .emailMetaRow {
     display: flex;
-    align-items: flex-start;
+    align-items: end;
     gap: 1rem;
     min-width: 0;
 }
@@ -293,4 +293,67 @@
 
 .multipleEmailSelection span {
     font-size: 1.4rem;
+}
+
+.emailSenderRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    width: 100%;
+}
+
+.emailFromBlock {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.emailSenderRow > .emailFromBlock:first-child {
+    flex: 1;
+}
+
+.emailIdBlock {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex: 0 1 auto;
+    margin-left: auto;
+    min-width: 0;
+}
+
+.emailIdTag {
+    max-width: none;
+    overflow: visible;
+    text-overflow: unset;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-all;
+}
+
+.emailCopyButton.copied {
+    color: var(--success, #2e8b57);
+}
+
+.emailCopyButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.emailCopyButton:hover {
+    background: var(--hover-background);
+}
+
+.emailCopyButton:disabled {
+    opacity: 0.4;
+    cursor: default;
 }

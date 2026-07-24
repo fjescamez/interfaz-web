@@ -129,10 +129,10 @@ function ItemEmailComponent({
     canDelete = false,
     canEntrada = false,
     tagRules = DEFAULT_TAG_RULES,
-    openEmailFolder
+    openEmailFolder,
+    pulsedAction = false
 }) {
     const [workingAction, setWorkingAction] = useState(null);
-
 
     const emailId = email?._id ?? email?.id;
 
@@ -307,7 +307,14 @@ function ItemEmailComponent({
             </div>
 
             <div className="right">
-                <div className="emailQuickActions">
+
+
+
+
+                    <div
+                        className={`emailQuickActions ${pulsedAction ? "actionsBlocked" : ""
+                            }`}
+                    >
 
                     {canEntrada && (
                         <button
