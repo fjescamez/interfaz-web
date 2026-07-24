@@ -31,26 +31,35 @@
 .emailSubjectRow {
     display: flex;
     align-items: center;
+    flex-wrap: nowrap;
     gap: 1rem;
-    min-width: 0;
+
+    width: 100%;
     min-width: 0;
     max-width: 100%;
+    overflow: hidden;
 }
 
 .emailSubjectRow h2 {
-    flex: 1;
+    flex: 1 1 0;
     min-width: 0;
-    max-width: 100%;
     margin: 0;
 
     font-size: 2rem;
     font-weight: 700;
+
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .emailSubjectRow svg {
+    width: 2.2rem;
+    height: 2.2rem;
+    flex-shrink: 0;
+}
+
+.emailSubjectRow > svg {
     width: 2.2rem;
     height: 2.2rem;
     flex-shrink: 0;
@@ -310,7 +319,7 @@
     min-width: 0;
 }
 
-.emailSenderRow > .emailFromBlock:first-child {
+.emailSenderRow>.emailFromBlock:first-child {
     flex: 1;
 }
 
@@ -356,4 +365,91 @@
 .emailCopyButton:disabled {
     opacity: 0.4;
     cursor: default;
+}
+
+.emailIdTag.copied {
+    background-color: #d9f5e3;
+    color: #18713b;
+}
+
+.emailReferenceTags {
+    flex: 0 0 auto;
+    min-width: 0;
+    max-width: 45%;
+
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 0.6rem;
+
+    overflow: hidden;
+}
+
+.emailReferenceTag {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 0.5rem;
+
+    min-height: 2.6rem;
+    padding: 0.15rem 0.5rem 0.35rem 0.9rem;
+
+    border: 0.1rem solid transparent;
+    border-radius: 1rem;
+
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.6rem;
+    white-space: nowrap;
+}
+
+/* Etiqueta temporal después de copiar el ID */
+.emailReferenceTagPending {
+    color: #8a4700;
+    background-color: #fff0d8;
+    border-color: #e7a84d;
+}
+
+/* Etiquetas futuras con número de pedido */
+.emailReferenceTagOrder {
+    color: #145c74;
+    background-color: #dff4fa;
+    border-color: #91cedd;
+}
+
+.emailReferenceTagRemove {
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: currentColor;
+
+    cursor: pointer;
+    transition:
+        background-color 0.15s ease,
+        opacity 0.15s ease;
+}
+
+.emailReferenceTagRemove:hover:not(:disabled) {
+    background-color: rgba(0, 0, 0, 0.12);
+}
+
+.emailReferenceTagRemove:disabled {
+    opacity: 0.45;
+    cursor: wait;
+}
+
+/* Evita que herede los 2.2rem del icono del asunto */
+.emailReferenceTagRemove svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    flex-shrink: 0;
+    opacity: 1;
 }

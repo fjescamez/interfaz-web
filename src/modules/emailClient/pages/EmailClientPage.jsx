@@ -435,6 +435,43 @@ function EmailClientPage() {
         };
     }, []);
 
+    const handleReferenceTagsChange = useCallback(
+        async (emailId, previousTags, nextTags) => {
+            // Actualización inmediata de la interfaz
+            setEmailList(currentEmails =>
+                currentEmails.map(currentEmail =>
+                    getEmailId(currentEmail) === emailId
+                        ? {
+                            ...currentEmail,
+                            reference_tags: nextTags
+                        }
+                        : currentEmail
+                )
+            );
+
+            try {
+                await set_keys(collection, emailId, {
+                    reference_tags: nextTags
+                });
+            } catch (error) {
+                // Si falla el guardado, restauramos el estado anterior
+                setEmailList(currentEmails =>
+                    currentEmails.map(currentEmail =>
+                        getEmailId(currentEmail) === emailId
+                            ? {
+                                ...currentEmail,
+                                reference_tags: previousTags
+                            }
+                            : currentEmail
+                    )
+                );
+
+                throw error;
+            }
+        },
+        [collection]
+    );
+
 
     /* =========================
        RENDER
@@ -621,7 +658,10 @@ function EmailClientPage() {
 
                         <div className="emailDetailList">
                             {selectedCount <= 1 ? (
-                                <DetailEmailComponent email={selectedEmail} />
+                                <DetailEmailComponent
+                                    email={selectedEmail}
+                                    onReferenceTagsChange={handleReferenceTagsChange}
+                                />
                             ) : (
 
                                 <>

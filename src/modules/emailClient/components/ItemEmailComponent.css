@@ -216,3 +216,20 @@
     font-size: 1.35rem;
     color: rgba(0, 0, 0, 0.62);
 }
+
+.emailItem.pending {
+    border-color: #e39a2d;
+    background-color: #fff7e9;
+    box-shadow: inset 0.45rem 0 0 #e39a2d;
+}
+
+.emailItem.pending:hover {
+    background-color: #fff0d8;
+}
+
+/* Mantiene visible el estado pendiente aunque el correo esté seleccionado */
+.emailItem.pending.selected {
+    border-color: var(--highlight);
+    background-color: rgb(255, 237, 210);
+    box-shadow: inset 0.45rem 0 0 #e39a2d;
+}

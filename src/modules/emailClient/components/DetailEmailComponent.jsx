@@ -1,8 +1,31 @@
-import { useState } from "react";
-import { MdAttachFile, MdEmail, MdPerson, MdSchedule, MdContentCopy, MdCheck } from "react-icons/md";
+import { useState, useEffect } from "react";
+import {
+    MdAttachFile,
+    MdEmail,
+    MdPerson,
+    MdSchedule,
+    MdContentCopy,
+    MdCheck,
+    MdClose
+} from "react-icons/md";
 import "./DetailEmailComponent.css";
 
-function DetailEmailComponent({ email }) {
+const EMAIL_COLLECTION = "Email";
+
+const PENDING_TAG = {
+    id: "pending",
+    type: "pending",
+    label: "Pendiente"
+};
+
+
+function DetailEmailComponent({ email, onReferenceTagsChange }) {
+    const [updatingTags, setUpdatingTags] = useState(false);
+    const [emailIdCopied, setEmailIdCopied] = useState(false);
+    const referenceTags = Array.isArray(email?.reference_tags)
+        ? email.reference_tags
+        : [];
+
     if (!email) {
         return (
             <div className="emailDetail">
@@ -66,7 +89,7 @@ function DetailEmailComponent({ email }) {
     const toRecipients = parseRecipients(to);
     const ccRecipients = parseRecipients(cc);
 
-    const [emailIdCopied, setEmailIdCopied] = useState(false);
+
 
     const handleCopyEmailId = async () => {
         const emailId = email?._id;
@@ -76,7 +99,10 @@ function DetailEmailComponent({ email }) {
         const textToCopy = `Id email: ${emailId}`;
 
         try {
-            if (navigator.clipboard && window.isSecureContext) {
+            if (
+                navigator.clipboard &&
+                window.isSecureContext
+            ) {
                 await navigator.clipboard.writeText(textToCopy);
             } else {
                 const textArea = document.createElement("textarea");
@@ -84,24 +110,94 @@ function DetailEmailComponent({ email }) {
                 textArea.value = textToCopy;
                 textArea.style.position = "fixed";
                 textArea.style.opacity = "0";
+                textArea.style.pointerEvents = "none";
 
                 document.body.appendChild(textArea);
+
                 textArea.focus();
                 textArea.select();
 
-                document.execCommand("copy");
+                const copied = document.execCommand("copy");
+
                 textArea.remove();
+
+                if (!copied) {
+                    throw new Error(
+                        "El navegador no permitió copiar el identificador"
+                    );
+                }
             }
+
+            await addPendingTag();
 
             setEmailIdCopied(true);
 
             window.setTimeout(() => {
                 setEmailIdCopied(false);
-            }, 1500);
+            }, 2500);
         } catch (error) {
-            console.error("No se pudo copiar el identificador:", error);
+            console.error(
+                "No se pudo copiar el identificador:",
+                error
+            );
         }
     };
+
+    const saveReferenceTags = async nextTags => {
+        if (
+            !email?._id ||
+            updatingTags ||
+            !onReferenceTagsChange
+        ) {
+            return false;
+        }
+
+        const previousTags = referenceTags;
+
+        setUpdatingTags(true);
+
+        try {
+            await onReferenceTagsChange(
+                email._id,
+                previousTags,
+                nextTags
+            );
+
+            return true;
+        } catch (error) {
+            console.error(
+                "No se pudieron actualizar las etiquetas:",
+                error
+            );
+
+            return false;
+        } finally {
+            setUpdatingTags(false);
+        }
+    };
+
+    const addPendingTag = async () => {
+        const alreadyReferenced = referenceTags.some(tag =>
+            tag.type === "pending" || tag.type === "order"
+        );
+
+        if (alreadyReferenced) return true;
+
+        return saveReferenceTags([
+            ...referenceTags,
+            PENDING_TAG
+        ]);
+    };
+
+    const removeReferenceTag = async tagId => {
+        const nextTags = referenceTags.filter(
+            tag => tag.id !== tagId
+        );
+
+        await saveReferenceTags(nextTags);
+    };
+
+
 
     return (
         <div className="emailDetail">
@@ -109,7 +205,37 @@ function DetailEmailComponent({ email }) {
             <div className="emailDetailHeader">
                 <div className="emailSubjectRow">
                     <MdEmail />
+
                     <h2>{subject}</h2>
+
+                    {referenceTags.length > 0 && (
+                        <div className="emailReferenceTags">
+                            {referenceTags.map(tag => (
+                                <span
+                                    key={tag.id}
+                                    className={[
+                                        "emailReferenceTag",
+                                        tag.type === "pending"
+                                            ? "emailReferenceTagPending"
+                                            : "emailReferenceTagOrder"
+                                    ].join(" ")}
+                                >
+                                    <span>{tag.label}</span>
+
+                                    <button
+                                        type="button"
+                                        className="emailReferenceTagRemove"
+                                        onClick={() => removeReferenceTag(tag.id)}
+                                        disabled={updatingTags}
+                                        title={`Eliminar ${tag.label}`}
+                                        aria-label={`Eliminar ${tag.label}`}
+                                    >
+                                        <MdClose />
+                                    </button>
+                                </span>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 <div className="emailMeta">
@@ -147,7 +273,8 @@ function DetailEmailComponent({ email }) {
 
                                 <div className="emailRecipientList">
                                     <span
-                                        className="emailRecipientTag emailIdTag"
+                                        className={`emailRecipientTag emailIdTag ${emailIdCopied ? "copied" : ""
+                                            }`}
                                         title={email?._id}
                                     >
                                         {email?._id}

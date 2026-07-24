@@ -29,15 +29,27 @@ const DEFAULT_TAG_RULES = [
     },
     {
         id: "cliches",
-        label: "Cliches",
+        label: "Clichés",
         keywords: ["cliche"],
         color: "#ff9500"
     },
     {
         id: "albaran",
-        label: "Albaran",
+        label: "Albarán",
         keywords: ["albaran"],
         color: "#58b747"
+    },
+    {
+        id: "cambios",
+        label: "Cambios",
+        keywords: [
+            "cambio",
+            "cambios",
+            "modificacion",
+            "modificaciones",
+            "modificar"
+        ],
+        color: "#0e9384"
     }
 ];
 
@@ -130,7 +142,7 @@ function ItemEmailComponent({
     canEntrada = false,
     tagRules = DEFAULT_TAG_RULES,
     openEmailFolder,
-    pulsedAction = false
+    pulsedAction = false,
 }) {
     const [workingAction, setWorkingAction] = useState(null);
 
@@ -141,11 +153,24 @@ function ItemEmailComponent({
         cliente,
         asunto,
         fecha,
-        hora
+        hora,
+        reference_tags
     } = email || {};
+
+    const isPending = Array.isArray(reference_tags) &&
+        reference_tags.some(tag =>
+            tag?.type === "pending" ||
+            String(tag?.label || "").toLowerCase() === "pendiente"
+        );
 
     const initials = getInitials(contacto || cliente);
     const formattedDate = formatEmailDate(fecha, hora);
+
+    const normalizeText = value =>
+        String(value || "")
+            .toLocaleLowerCase("es")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "");
 
     const matchedTags = useMemo(() => {
         const normalizedSubject = String(asunto || "")
@@ -229,6 +254,7 @@ function ItemEmailComponent({
         <div
             className={[
                 "emailItem",
+                isPending ? "pending" : "",
                 isSelected ? "selected" : "",
                 isSingleSelected ? "singleSelected" : ""
             ].filter(Boolean).join(" ")}
@@ -311,10 +337,10 @@ function ItemEmailComponent({
 
 
 
-                    <div
-                        className={`emailQuickActions ${pulsedAction ? "actionsBlocked" : ""
-                            }`}
-                    >
+                <div
+                    className={`emailQuickActions ${pulsedAction ? "actionsBlocked" : ""
+                        }`}
+                >
 
                     {canEntrada && (
                         <button
