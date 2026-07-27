@@ -18,7 +18,7 @@ const DEFAULT_TAG_RULES = [
     {
         id: "presupuesto",
         label: "Presupuesto",
-        keywords: ["presupuesto", "oferta"],
+        keywords: ["presupuesto"],
         color: "#175cd3"
     },
     {
@@ -145,6 +145,7 @@ function ItemEmailComponent({
     pulsedAction = false,
 }) {
     const [workingAction, setWorkingAction] = useState(null);
+    const [showAllTags, setShowAllTags] = useState(false);
 
     const emailId = email?._id ?? email?.id;
 
@@ -154,7 +155,8 @@ function ItemEmailComponent({
         asunto,
         fecha,
         hora,
-        reference_tags
+        reference_tags,
+        cuerpoHtml
     } = email || {};
 
     const isPending = Array.isArray(reference_tags) &&
@@ -172,21 +174,40 @@ function ItemEmailComponent({
             .normalize("NFD")
             .replace(/[\u0300-\u036f]/g, "");
 
+    const htmlToText = html => {
+        if (!html) return "";
+
+        const documentHtml = new DOMParser().parseFromString(
+            String(html),
+            "text/html"
+        );
+
+        return documentHtml.body?.textContent || "";
+    };
+
     const matchedTags = useMemo(() => {
-        const normalizedSubject = String(asunto || "")
-            .toLocaleLowerCase("es");
+        const bodyText = htmlToText(cuerpoHtml);
+
+        const searchableText = normalizeText(
+            `${asunto || ""} ${bodyText}`
+        );
 
         return tagRules.filter(rule =>
             rule.keywords?.some(keyword =>
-                normalizedSubject.includes(
-                    String(keyword).toLocaleLowerCase("es")
-                )
+                searchableText.includes(normalizeText(keyword))
             )
         );
-    }, [asunto, tagRules]);
+    }, [asunto, cuerpoHtml, tagRules]);
+
+        const tagsToRender = showAllTags
+        ? matchedTags
+        : matchedTags.slice(0, 2);
 
     const visibleTags = matchedTags.slice(0, 2);
-    const hiddenTagCount = matchedTags.length - visibleTags.length;
+    const hiddenTagCount = Math.max(
+        matchedTags.length - 2,
+        0
+    );
 
     const runQuickAction = async actionName => {
         if (workingAction || !onQuickAction) return;
@@ -300,9 +321,9 @@ function ItemEmailComponent({
                             {asunto || "Sin asunto"}
                         </p>
 
-                        {visibleTags.length > 0 && (
+                        {matchedTags.length > 0 && (
                             <div className="emailItemTags">
-                                {visibleTags.map(tag => (
+                                {tagsToRender.map(tag => (
                                     <span
                                         key={tag.id}
                                         className="emailItemTag"
@@ -316,15 +337,27 @@ function ItemEmailComponent({
                                 ))}
 
                                 {hiddenTagCount > 0 && (
-                                    <span
+                                    <button
+                                        type="button"
                                         className="emailItemTag more"
-                                        title={matchedTags
-                                            .slice(2)
-                                            .map(tag => tag.label)
-                                            .join(", ")}
+                                        title={
+                                            showAllTags
+                                                ? "Ocultar etiquetas"
+                                                : matchedTags
+                                                    .slice(2)
+                                                    .map(tag => tag.label)
+                                                    .join(", ")
+                                        }
+                                        aria-expanded={showAllTags}
+                                        onClick={event => {
+                                            event.stopPropagation();
+                                            setShowAllTags(current => !current);
+                                        }}
                                     >
-                                        +{hiddenTagCount}
-                                    </span>
+                                        {showAllTags
+                                            ? "−"
+                                            : `+${hiddenTagCount}`}
+                                    </button>
                                 )}
                             </div>
                         )}

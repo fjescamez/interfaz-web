@@ -15,6 +15,7 @@
     overflow: hidden;
     box-sizing: border-box;
 
+
     .filterButtons {
         display: flex;
         column-gap: 1.3rem;
@@ -23,14 +24,13 @@
         .filtersButton {
             cursor: pointer;
             display: flex;
-            column-gap: 0.5rem;
+            column-gap: .5rem;
             align-items: center;
             font-size: 1.8rem;
-            padding: 0.5rem 1.5rem;
-            border: 2px solid var(--pantone431c);
-            border-radius: 1.5rem;
-            background-color: white;
             min-height: 100%;
+            border-bottom: 2px solid transparent;
+            margin-right: 1rem;
+
 
             svg {
                 width: 2rem;
@@ -38,36 +38,144 @@
             }
 
             &:hover {
-                background: var(--hover);
+                border-bottom-color: var(--hover);
             }
 
+            &.clicked {
+                border-bottom-color: #f28c28;
+            }
 
+            &.clicked:hover {
+                border-bottom-color: #f28c28;
+            }
+        }
+
+        .emailSearchBar {
+            margin-left: auto;
+            flex: 0 1 42rem;
+            min-width: 24rem;
+        }
+
+        .emailSearchInputContainer {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+
+            .emailSearchIcon {
+                position: absolute;
+                left: 1.2rem;
+                width: 1.8rem;
+                height: 1.8rem;
+                color: var(--pantone431c);
+                opacity: 0.7;
+                pointer-events: none;
+            }
+
+            input {
+                width: 100%;
+                height: 3.8rem;
+                padding: 0.5rem 3.8rem 0.5rem 4rem;
+                box-sizing: border-box;
+
+                border: 1px solid var(--pantone431c);
+                border-radius: 2rem;
+                outline: none;
+
+                background-color: white;
+                color: inherit;
+
+                font: inherit;
+                font-size: 1.5rem;
+
+
+                &:hover {
+                    background-color: var(--hover);
+                }
+
+                &:focus {
+                    background-color: white;
+                    border-color: var(--highlight);
+                    box-shadow: 0 0 0 0.2rem color-mix(in srgb,
+                            var(--highlight) 15%,
+                            transparent);
+                }
+
+                &::-webkit-search-cancel-button {
+                    appearance: none;
+                }
+            }
+
+            .emailSearchClear {
+                position: absolute;
+                right: 0.7rem;
+
+                display: grid;
+                place-items: center;
+
+                width: 2.8rem;
+                height: 2.8rem;
+                padding: 0;
+                font-size: 1.2rem;
+
+                border: 0;
+                border-radius: 50%;
+                background: transparent;
+
+                color: var(--pantone431c);
+                cursor: pointer;
+
+                svg {
+                    width: 1.8rem;
+                    height: 1.8rem;
+                }
+
+                &:hover {
+                    background-color: var(--hover);
+                }
+            }
         }
 
         .success {
             color: rgb(0, 0, 150);
-            border: 2px solid rgb(0, 0, 120);
 
             &:hover {
-                background: rgba(0, 0, 120, .3);
+                border-color: rgb(0, 0, 150);
+            }
+        }
+
+        .action {
+            padding: .5rem 1rem;
+            border-radius: 2rem;
+            margin: 0;
+            
+            &:hover {
+                background-color: rgba(128, 128, 128, .3);
             }
         }
 
         .danger {
             color: #b42318;
             border: 2px solid #b42318;
+            border-radius: 2rem;
+            padding: .5rem 1rem;
 
             &:hover {
+                border: 2px solid #b42318;
                 background: rgba(180, 35, 24, .3);
             }
         }
 
-        .clicked {
+        .select {
             background: var(--orange-gradient);
 
             &:hover {
                 background: var(--orange-gradient);
             }
+        }
+
+        .clicked {
+            border-bottom: solid 2px var(--hover);
         }
 
         .enlace {
@@ -99,7 +207,7 @@
         column-gap: 2rem;
 
         .emailList {
-            min-width: 60rem;
+            min-width: 70rem;
             max-width: 0rem;
             display: flex;
             flex-direction: column;

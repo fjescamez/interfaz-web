@@ -12,18 +12,19 @@ import DetailEmailComponent from '../components/DetailEmailComponent';
 import "./EmailClientPage2.css";
 import { HiOutlineRefresh } from "react-icons/hi";
 import { IoMdFolderOpen } from "react-icons/io";
-import { MdTurnLeft } from "react-icons/md";
-import { FaDownload } from "react-icons/fa6";
-import { BlinkBlur } from "react-loading-indicators";
-import { useSession } from "../../../context/SessionContext";
 import {
     MdInbox,
     MdAssignmentInd,
     MdPersonPin,
     MdArchive,
     MdPauseCircle,
-    MdDelete
+    MdDelete,
+    MdSearch,
+    MdTurnLeft
 } from "react-icons/md";
+import { FaDownload } from "react-icons/fa6";
+import { BlinkBlur } from "react-loading-indicators";
+import { useSession } from "../../../context/SessionContext";
 
 const STORAGE_KEY = "gestor_filters";
 
@@ -47,6 +48,54 @@ const saveState = (state) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 };
 
+function EmailSearchBar({ onSearch, onClear, loading }) {
+    const [value, setValue] = useState("");
+
+    const handleSubmit = event => {
+        event.preventDefault();
+
+        if (loading) return;
+
+        onSearch(value.trim());
+    };
+
+    const handleClear = () => {
+        setValue("");
+        onClear();
+    };
+
+    return (
+        <form
+            className="emailSearchBar"
+            onSubmit={handleSubmit}
+        >
+            <div className="emailSearchInputContainer">
+                <MdSearch className="emailSearchIcon" />
+
+                <input
+                    type="search"
+                    value={value}
+                    onChange={event => setValue(event.target.value)}
+                    placeholder="Buscar"
+                    aria-label="Buscar correos"
+                />
+
+                {value && (
+                    <button
+                        type="button"
+                        className="emailSearchClear"
+                        onClick={handleClear}
+                        aria-label="Limpiar búsqueda"
+                        title="Limpiar búsqueda"
+                    >
+                        ×
+                    </button>
+                )}
+            </div>
+        </form>
+    );
+}
+
 function EmailClientPage() {
 
     const { session } = useSession();
@@ -55,11 +104,11 @@ function EmailClientPage() {
     const collection = "Email";
 
     const [emailList, setEmailList] = useState([]);
-
     const [pulsedAction, setPulsedAction] = useState(false);
 
     const pulsedActionRef = useRef(false);
     const actionTimerRef = useRef(null);
+    const appliedSearchRef = useRef("");
 
     const [selectedEmailIds, setSelectedEmailIds] = useState(
         () => new Set()
@@ -88,7 +137,7 @@ function EmailClientPage() {
             const res = await list_with_options(
                 collection,
                 query,
-                order_by
+                order_by,
             );
 
             if (requestId !== requestRef.current) return;
@@ -239,14 +288,83 @@ function EmailClientPage() {
         papelera: false
     }
 
+    const normalizeDateSearch = value => {
+        const match = value.match(
+            /^(\d{2})[/-](\d{2})[/-](\d{4})$/
+        );
+
+        if (!match) {
+            return value;
+        }
+
+        const [, day, month, year] = match;
+
+        return `${year}-${month}-${day}`;
+    };
+
     const setQuery = () => {
+        if (!activeFilter.current) {
+            return [];
+        }
 
-        if (!activeFilter.current) return [];
-        if (activeFilter.current === "misAsignados")
-            return ["buzon", "contains text like", username];
+        let mailboxQuery;
 
-        return ["buzon", "contains text like", activeFilter.current];
-    }
+        if (activeFilter.current === "misAsignados") {
+            mailboxQuery = [
+                "buzon",
+                "contains text like",
+                username
+            ];
+        } else {
+            mailboxQuery = [
+                "buzon",
+                "contains text like",
+                activeFilter.current
+            ];
+        }
+
+        const searchValue = appliedSearchRef.current.trim();
+
+        if (!searchValue) {
+            return mailboxQuery;
+        }
+
+        const normalizedDate = normalizeDateSearch(searchValue);
+
+        const searchQuery = [
+            "(",
+            "emisor",
+            "contains text like",
+            searchValue,
+
+            "or",
+
+            "destinatario",
+            "contains text like",
+            searchValue,
+
+            "or",
+
+            "asunto",
+            "contains text like",
+            searchValue,
+
+            "or",
+
+            "entryDate",
+            "contains text like",
+            normalizedDate,
+            ")"
+        ];
+
+        return [
+            "(",
+            ...mailboxQuery,
+            ")",
+            "and",
+            ...searchQuery
+        ];
+    };
 
     /* =========================
        FILTERS
@@ -472,6 +590,32 @@ function EmailClientPage() {
         [collection]
     );
 
+    const handleSearch = async value => {
+        if (value === appliedSearchRef.current) {
+            return;
+        }
+
+        appliedSearchRef.current = value;
+
+        clearSelection();
+        setLoading(true);
+
+        await fetchEmails(true);
+    };
+
+    const handleClearSearch = async () => {
+        if (!appliedSearchRef.current) {
+            return;
+        }
+
+        appliedSearchRef.current = "";
+
+        clearSelection();
+        setLoading(true);
+
+        await fetchEmails(true);
+    };
+
 
     /* =========================
        RENDER
@@ -506,7 +650,6 @@ function EmailClientPage() {
                 </div>
             )}
 
-
             <div className="gestorContainer">
 
                 <div className="filterButtons">
@@ -540,7 +683,15 @@ function EmailClientPage() {
                         <MdDelete /> Papelera
                     </div>
 
+                    <EmailSearchBar
+                        onSearch={handleSearch}
+                        onClear={handleClearSearch}
+                        loading={loading}
+                    />
+
                 </div>
+
+
 
                 <div
                     className={`actionsBlock ${pulsedAction ? "actionsBlocked" : ""
@@ -556,7 +707,7 @@ function EmailClientPage() {
 
                                 {selectedCount === 1 && (
                                     <>
-                                        <div className={`filtersButton`}
+                                        <div className={`filtersButton action`}
                                             onClick={event => {
                                                 event.stopPropagation();
                                                 openEmailFolder(selectedEmails[0].file_email);
@@ -566,7 +717,7 @@ function EmailClientPage() {
                                             Carpeta
                                         </div>
 
-                                        <div className={`filtersButton`}
+                                        <div className={`filtersButton action`}
                                             onClick={event => {
                                                 event.stopPropagation();
                                                 openEmailFolder(selectedEmails[0].file_email);
@@ -580,35 +731,35 @@ function EmailClientPage() {
 
 
                                 {(actionEntrada) && (
-                                    <div className={`filtersButton`}
+                                    <div className={`filtersButton action`}
                                         onClick={() => handleBulkAction("entrada")}>
                                         <MdTurnLeft />
                                         A Entrada
                                     </div>
                                 )}
                                 {(actionAsignar) && (
-                                    <div className={`filtersButton`}
+                                    <div className={`filtersButton action`}
                                         onClick={() => handleBulkAction("asignar")}>
                                         <MdAssignmentInd />
                                         Asignar
                                     </div>
                                 )}
                                 {(actionArchivar) && (
-                                    <div className={`filtersButton`}
+                                    <div className={`filtersButton action`}
                                         onClick={() => handleBulkAction("archivar")}>
                                         <MdArchive />
                                         Archivar
                                     </div>
                                 )}
                                 {(actionParar) && (
-                                    <div className={`filtersButton`}
+                                    <div className={`filtersButton action`}
                                         onClick={() => handleBulkAction("parar")}>
                                         <MdPauseCircle />
                                         Parar
                                     </div>
                                 )}
                                 {(actionEliminar) && (
-                                    <div className={`filtersButton danger`}
+                                    <div className={`filtersButton action danger`}
                                         onClick={() => handleBulkAction("eliminar")}>
                                         <MdDelete /> Papelera
                                     </div>
