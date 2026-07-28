@@ -6,8 +6,11 @@ import {
     MdSchedule,
     MdContentCopy,
     MdCheck,
-    MdClose
+    MdClose,
+    MdExpandLess,
+    MdExpandMore,
 } from "react-icons/md";
+
 import "./DetailEmailComponent.css";
 
 const EMAIL_COLLECTION = "Email";
@@ -18,13 +21,78 @@ const PENDING_TAG = {
     label: "Pendiente"
 };
 
+function cleanSubjectForOrder(value) {
+    return String(value || "")
+        .trim()
+
+        // Elimina uno o varios prefijos iniciales:
+        // RV:, RE:, FW:, FWD:
+        .replace(
+            /^(?:(?:RV|RE|FW|FWD)\s*:\s*)+/i,
+            ""
+        )
+
+        // Elimina tildes
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+
+        // Sustituye símbolos por espacios
+        .replace(/[^a-zA-Z0-9\s]/g, " ")
+
+        // Elimina espacios repetidos
+        .replace(/\s+/g, " ")
+        .trim()
+
+        // Convierte a mayúsculas
+        .toUpperCase()
+
+        // Máximo de 35 caracteres
+        .slice(0, 35)
+        .trim();
+}
+
+
+async function copyToClipboard(value) {
+    if (
+        navigator.clipboard &&
+        window.isSecureContext
+    ) {
+        await navigator.clipboard.writeText(value);
+        return;
+    }
+
+    const textArea = document.createElement("textarea");
+
+    textArea.value = value;
+    textArea.style.position = "fixed";
+    textArea.style.opacity = "0";
+    textArea.style.pointerEvents = "none";
+
+    document.body.appendChild(textArea);
+
+    textArea.focus();
+    textArea.select();
+
+    const copied = document.execCommand("copy");
+
+    textArea.remove();
+
+    if (!copied) {
+        throw new Error(
+            "El navegador no permitió copiar el texto"
+        );
+    }
+}
+
 
 function DetailEmailComponent({ email, onReferenceTagsChange }) {
     const [updatingTags, setUpdatingTags] = useState(false);
     const [emailIdCopied, setEmailIdCopied] = useState(false);
+    const [collapsedHeader, setCollapsedHeader] = useState(false);
     const referenceTags = Array.isArray(email?.reference_tags)
         ? email.reference_tags
         : [];
+    const [subjectCopied, setSubjectCopied] = useState(false);
 
     if (!email) {
         return (
@@ -89,7 +157,29 @@ function DetailEmailComponent({ email, onReferenceTagsChange }) {
     const toRecipients = parseRecipients(to);
     const ccRecipients = parseRecipients(cc);
 
+    const handleCopySubject = async () => {
+        const cleanedSubject =
+            cleanSubjectForOrder(subject);
 
+        if (!cleanedSubject) {
+            return;
+        }
+
+        try {
+            await copyToClipboard(cleanedSubject);
+
+            setSubjectCopied(true);
+
+            window.setTimeout(() => {
+                setSubjectCopied(false);
+            }, 2000);
+        } catch (error) {
+            console.error(
+                "No se pudo copiar el asunto:",
+                error
+            );
+        }
+    };
 
     const handleCopyEmailId = async () => {
         const emailId = email?._id;
@@ -99,35 +189,7 @@ function DetailEmailComponent({ email, onReferenceTagsChange }) {
         const textToCopy = `Id email: ${emailId}`;
 
         try {
-            if (
-                navigator.clipboard &&
-                window.isSecureContext
-            ) {
-                await navigator.clipboard.writeText(textToCopy);
-            } else {
-                const textArea = document.createElement("textarea");
-
-                textArea.value = textToCopy;
-                textArea.style.position = "fixed";
-                textArea.style.opacity = "0";
-                textArea.style.pointerEvents = "none";
-
-                document.body.appendChild(textArea);
-
-                textArea.focus();
-                textArea.select();
-
-                const copied = document.execCommand("copy");
-
-                textArea.remove();
-
-                if (!copied) {
-                    throw new Error(
-                        "El navegador no permitió copiar el identificador"
-                    );
-                }
-            }
-
+            await copyToClipboard(textToCopy);
             await addPendingTag();
 
             setEmailIdCopied(true);
@@ -204,162 +266,261 @@ function DetailEmailComponent({ email, onReferenceTagsChange }) {
 
             <div className="emailDetailHeader">
                 <div className="emailSubjectRow">
-                    <MdEmail />
+                    <div className="emailSubjectMain">
+                        <button
+                            type="button"
+                            className={[
+                                "emailCopyButton",
+                                subjectCopied ? "copied" : ""
+                            ]
+                                .filter(Boolean)
+                                .join(" ")}
+                            onClick={handleCopySubject}
+                            title={
+                                subjectCopied
+                                    ? "Asunto copiado"
+                                    : "Copiar asunto para pedido"
+                            }
+                            aria-label={
+                                subjectCopied
+                                    ? "Asunto copiado"
+                                    : "Copiar asunto para pedido"
+                            }
+                        >
+                            {subjectCopied
+                                ? <MdCheck />
+                                : <MdEmail />
+                            }
+                        </button>
 
-                    <h2>{subject}</h2>
+                        <h2>{subject}</h2>
 
-                    {referenceTags.length > 0 && (
-                        <div className="emailReferenceTags">
-                            {referenceTags.map(tag => (
-                                <span
-                                    key={tag.id}
-                                    className={[
-                                        "emailReferenceTag",
-                                        tag.type === "pending"
-                                            ? "emailReferenceTagPending"
-                                            : "emailReferenceTagOrder"
-                                    ].join(" ")}
-                                >
-                                    <span>{tag.label}</span>
-
-                                    <button
-                                        type="button"
-                                        className="emailReferenceTagRemove"
-                                        onClick={() => removeReferenceTag(tag.id)}
-                                        disabled={updatingTags}
-                                        title={`Eliminar ${tag.label}`}
-                                        aria-label={`Eliminar ${tag.label}`}
+                        {referenceTags.length > 0 && (
+                            <div className="emailReferenceTags">
+                                {referenceTags.map(tag => (
+                                    <span
+                                        key={tag.id}
+                                        className={[
+                                            "emailReferenceTag",
+                                            tag.type === "pending"
+                                                ? "emailReferenceTagPending"
+                                                : "emailReferenceTagOrder"
+                                        ].join(" ")}
                                     >
-                                        <MdClose />
-                                    </button>
-                                </span>
-                            ))}
-                        </div>
-                    )}
+                                        <span>{tag.label}</span>
+
+                                        <button
+                                            type="button"
+                                            className="emailReferenceTagRemove"
+                                            onClick={() =>
+                                                removeReferenceTag(tag.id)
+                                            }
+                                            disabled={updatingTags}
+                                            title={`Eliminar ${tag.label}`}
+                                            aria-label={`Eliminar ${tag.label}`}
+                                        >
+                                            <MdClose />
+                                        </button>
+                                    </span>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="emailHeaderActions">
+                        {collapsedHeader && (
+                            <button
+                                type="button"
+                                className={[
+                                    "emailCopyButton",
+                                    "emailCopyButtonCollapsed",
+                                    emailIdCopied ? "copied" : ""
+                                ].filter(Boolean).join(" ")}
+                                onClick={handleCopyEmailId}
+                                title={
+                                    emailIdCopied
+                                        ? "ID copiado"
+                                        : "Copiar identificador"
+                                }
+                                aria-label={
+                                    emailIdCopied
+                                        ? "ID copiado"
+                                        : "Copiar identificador"
+                                }
+                                disabled={!email?._id}
+                            >
+                                {emailIdCopied
+                                    ? <MdCheck />
+                                    : <MdContentCopy />
+                                }
+                            </button>
+                        )}
+
+                        <button
+                            type="button"
+                            className="emailCollapseButton"
+                            onClick={() =>
+                                setCollapsedHeader(current => !current)
+                            }
+                            title={
+                                collapsedHeader
+                                    ? "Mostrar información del correo"
+                                    : "Ocultar información del correo"
+                            }
+                            aria-label={
+                                collapsedHeader
+                                    ? "Mostrar información del correo"
+                                    : "Ocultar información del correo"
+                            }
+                            aria-expanded={!collapsedHeader}
+                        >
+                            {collapsedHeader
+                                ? <MdExpandMore />
+                                : <MdExpandLess />
+                            }
+                        </button>
+                    </div>
                 </div>
 
-                <div className="emailMeta">
+                {!collapsedHeader && (
+                    <div className="emailMeta">
+                        <div className="emailMetaRow emailSenderRow">
+                            <div className="emailFromBlock">
+                                <MdPerson className="emailMetaIcon" />
 
-                    <div className="emailMetaRow emailSenderRow">
-                        <div className="emailFromBlock">
-                            <MdPerson className="emailMetaIcon" />
+                                <div className="emailRecipientsContent">
+                                    <strong>De:</strong>
+
+                                    <div className="emailRecipientList">
+                                        {fromRecipients.length > 0 ? (
+                                            fromRecipients.map(
+                                                (recipient, index) => (
+                                                    <span
+                                                        key={`${recipient}-${index}`}
+                                                        className="emailRecipientTag"
+                                                        title={recipient}
+                                                    >
+                                                        {recipient}
+                                                    </span>
+                                                )
+                                            )
+                                        ) : (
+                                            <span className="emailRecipientEmpty">
+                                                Sin remitente
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="emailFromBlock emailIdBlock">
+                                <div className="emailRecipientsContent">
+                                    <strong>Identificador:</strong>
+
+                                    <div className="emailRecipientList">
+                                        <span
+                                            className={[
+                                                "emailRecipientTag",
+                                                "emailIdTag",
+                                                emailIdCopied ? "copied" : ""
+                                            ].filter(Boolean).join(" ")}
+                                            title={email?._id}
+                                        >
+                                            {email?._id}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    className={[
+                                        "emailCopyButton",
+                                        emailIdCopied ? "copied" : ""
+                                    ].filter(Boolean).join(" ")}
+                                    onClick={handleCopyEmailId}
+                                    title={
+                                        emailIdCopied
+                                            ? "ID copiado"
+                                            : "Copiar ID"
+                                    }
+                                    aria-label={
+                                        emailIdCopied
+                                            ? "ID copiado"
+                                            : "Copiar ID"
+                                    }
+                                    disabled={!email?._id}
+                                >
+                                    {emailIdCopied
+                                        ? <MdCheck />
+                                        : <MdContentCopy />
+                                    }
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="emailMetaRow emailRecipientsRow">
+                            <MdPerson />
 
                             <div className="emailRecipientsContent">
-                                <strong>De:</strong>
+                                <strong>Para:</strong>
 
                                 <div className="emailRecipientList">
-                                    {fromRecipients.length > 0 ? (
-                                        fromRecipients.map((recipient, index) => (
-                                            <span
-                                                key={`${recipient}-${index}`}
-                                                className="emailRecipientTag"
-                                                title={recipient}
-                                            >
-                                                {recipient}
-                                            </span>
-                                        ))
+                                    {toRecipients.length > 0 ? (
+                                        toRecipients.map(
+                                            (recipient, index) => (
+                                                <span
+                                                    key={`${recipient}-${index}`}
+                                                    className="emailRecipientTag"
+                                                    title={recipient}
+                                                >
+                                                    {recipient}
+                                                </span>
+                                            )
+                                        )
                                     ) : (
                                         <span className="emailRecipientEmpty">
-                                            Sin remitente
+                                            Sin destinatario
                                         </span>
                                     )}
                                 </div>
                             </div>
                         </div>
 
-                        <div className="emailFromBlock emailIdBlock">
-                            <div className="emailRecipientsContent">
-                                <strong>Identificador:</strong>
+                        {ccRecipients.length > 0 && (
+                            <div className="emailMetaRow emailRecipientsRow">
+                                <MdPerson />
 
-                                <div className="emailRecipientList">
-                                    <span
-                                        className={`emailRecipientTag emailIdTag ${emailIdCopied ? "copied" : ""
-                                            }`}
-                                        title={email?._id}
-                                    >
-                                        {email?._id}
-                                    </span>
+                                <div className="emailRecipientsContent">
+                                    <strong>CC:</strong>
+
+                                    <div className="emailRecipientList">
+                                        {ccRecipients.map(
+                                            (recipient, index) => (
+                                                <span
+                                                    key={`${recipient}-${index}`}
+                                                    className="emailRecipientTag"
+                                                    title={recipient}
+                                                >
+                                                    {recipient}
+                                                </span>
+                                            )
+                                        )}
+                                    </div>
                                 </div>
                             </div>
+                        )}
 
-                            <button
-                                type="button"
-                                className={`emailCopyButton ${emailIdCopied ? "copied" : ""
-                                    }`}
-                                onClick={handleCopyEmailId}
-                                title={emailIdCopied ? "ID copiado" : "Copiar ID"}
-                                aria-label={emailIdCopied ? "ID copiado" : "Copiar ID"}
-                                disabled={!email?._id}
-                            >
-                                {emailIdCopied ? (
-                                    <MdCheck />
-                                ) : (
-                                    <MdContentCopy />
-                                )}
-                            </button>
-                        </div>
-                    </div>
+                        {date && (
+                            <div className="emailMetaRow emailRecipientsRow">
+                                <MdSchedule />
 
-
-
-                    <div className="emailMetaRow emailRecipientsRow">
-                        <MdPerson />
-
-                        <div className="emailRecipientsContent">
-                            <strong>Para:</strong>
-
-                            <div className="emailRecipientList">
-                                {toRecipients.length > 0 ? (
-                                    toRecipients.map((recipient, index) => (
-                                        <span
-                                            key={`${recipient}-${index}`}
-                                            className="emailRecipientTag"
-                                            title={recipient}
-                                        >
-                                            {recipient}
-                                        </span>
-                                    ))
-                                ) : (
-                                    <span className="emailRecipientEmpty">
-                                        Sin destinatario
-                                    </span>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-
-                    {ccRecipients.length > 0 && (
-                        <div className="emailMetaRow emailRecipientsRow">
-                            <MdPerson />
-
-                            <div className="emailRecipientsContent">
-                                <strong>CC:</strong>
-
-                                <div className="emailRecipientList">
-                                    {ccRecipients.map((recipient, index) => (
-                                        <span
-                                            key={`${recipient}-${index}`}
-                                            className="emailRecipientTag"
-                                            title={recipient}
-                                        >
-                                            {recipient}
-                                        </span>
-                                    ))}
+                                <div className="emailRecipientsContent">
+                                    <strong>Fecha: {date}</strong>
                                 </div>
                             </div>
-                        </div>
-                    )}
-
-                    {date && (
-                        <div className="emailMetaRow emailRecipientsRow">
-                            <MdSchedule />
-                            <div className="emailRecipientsContent">
-                                <strong>Fecha: {date}</strong>
-                            </div>
-                        </div>
-                    )}
-
-                </div>
+                        )}
+                    </div>
+                )}
             </div>
 
             {visibleAttachments.length > 0 && (

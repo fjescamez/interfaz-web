@@ -453,3 +453,87 @@
     flex-shrink: 0;
     opacity: 1;
 }
+
+.emailSubjectRow {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem;
+    width: 100%;
+}
+
+.emailSubjectMain {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    min-width: 0;
+    flex: 1;
+}
+
+.emailSubjectMain h2 {
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.emailSubjectIcon {
+    flex-shrink: 0;
+}
+
+.emailHeaderActions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.emailCollapseButton,
+.emailCopyButtonCollapsed {
+    display: grid;
+    place-items: center;
+
+    width: 3.4rem;
+    height: 3.4rem;
+    padding: 0;
+
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--pantone431c);
+
+    cursor: pointer;
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
+}
+
+.emailCollapseButton svg,
+.emailCopyButtonCollapsed svg {
+    width: 2.2rem;
+    height: 2.2rem;
+}
+
+.emailCollapseButton:hover,
+.emailCopyButtonCollapsed:hover {
+    background-color: var(--hover);
+}
+
+.emailCopyButtonCollapsed.copied {
+    color: #16803c;
+}
+
+.emailCollapseButton:disabled,
+.emailCopyButtonCollapsed:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.emailSubjectMain > .emailCopyButton {
+    flex-shrink: 0;
+}
+
+.emailCopyButton:hover {
+    background: var(--hover);
+}

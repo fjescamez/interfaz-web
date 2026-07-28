@@ -6,7 +6,7 @@ import {
     useState
 } from "react";
 import DetailsHeader from '../../../components/DetailsHeader';
-import { list_with_options, get, set_keys } from '../../../helpers/cloudflow/custom_objects';
+import { list_with_options, get, set_keys, count as countCustomObjects } from '../../../helpers/cloudflow/custom_objects';
 import ItemEmailComponent from '../components/ItemEmailComponent';
 import DetailEmailComponent from '../components/DetailEmailComponent';
 import "./EmailClientPage2.css";
@@ -48,26 +48,73 @@ const saveState = (state) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 };
 
-function EmailSearchBar({ onSearch, onClear, loading }) {
+function EmailSearchBar({
+    onSearch,
+    loading
+}) {
     const [value, setValue] = useState("");
+
+    const debounceRef = useRef(null);
+    const onSearchRef = useRef(onSearch);
+    const firstRenderRef = useRef(true);
+
+    /*
+     * Conservamos siempre la versión más reciente
+     * de onSearch sin reiniciar el debounce.
+     */
+    useEffect(() => {
+        onSearchRef.current = onSearch;
+    }, [onSearch]);
+
+    /*
+     * Búsqueda automática después de dejar
+     * de escribir durante 400 ms.
+     */
+    useEffect(() => {
+        if (firstRenderRef.current) {
+            firstRenderRef.current = false;
+            return;
+        }
+
+        clearTimeout(debounceRef.current);
+
+        debounceRef.current = setTimeout(() => {
+            onSearchRef.current(value.trim());
+        }, 400);
+
+        return () => {
+            clearTimeout(debounceRef.current);
+        };
+    }, [value]);
+
+    /*
+     * Limpieza al desmontar el buscador.
+     */
+    useEffect(() => {
+        return () => {
+            clearTimeout(debounceRef.current);
+        };
+    }, []);
 
     const handleSubmit = event => {
         event.preventDefault();
 
-        if (loading) return;
-
-        onSearch(value.trim());
+        clearTimeout(debounceRef.current);
+        onSearchRef.current(value.trim());
     };
 
     const handleClear = () => {
+        clearTimeout(debounceRef.current);
+
         setValue("");
-        onClear();
+        onSearchRef.current("");
     };
 
     return (
         <form
             className="emailSearchBar"
             onSubmit={handleSubmit}
+            aria-busy={loading}
         >
             <div className="emailSearchInputContainer">
                 <MdSearch className="emailSearchIcon" />
@@ -75,9 +122,12 @@ function EmailSearchBar({ onSearch, onClear, loading }) {
                 <input
                     type="search"
                     value={value}
-                    onChange={event => setValue(event.target.value)}
+                    onChange={event =>
+                        setValue(event.target.value)
+                    }
                     placeholder="Buscar"
                     aria-label="Buscar correos"
+                    autoComplete="off"
                 />
 
                 {value && (
@@ -105,6 +155,8 @@ function EmailClientPage() {
 
     const [emailList, setEmailList] = useState([]);
     const [pulsedAction, setPulsedAction] = useState(false);
+    const [searchActive, setSearchActive] = useState(false);
+    const [searchResetKey, setSearchResetKey] = useState(0);
 
     const pulsedActionRef = useRef(false);
     const actionTimerRef = useRef(null);
@@ -123,21 +175,93 @@ function EmailClientPage() {
     const requestRef = useRef(0);
     const activeFilter = useRef(stored || "entrada");
 
+    console.log("activeFilter", activeFilter.current)
 
+    const [mailboxCounts, setMailboxCounts] = useState({
+        entrada: null,
+        asignado: null,
+        misAsignados: null,
+        archivado: null,
+        parado: null,
+        papelera: null
+    });
+
+    const fetchMailboxCounts = async () => {
+        const filters = [
+            "entrada",
+            "asignado",
+            "misAsignados",
+            "archivado",
+            "parado",
+            "papelera"
+        ];
+
+        try {
+            const entries = await Promise.all(
+                filters.map(async filter => {
+                    const response = await countCustomObjects(
+                        collection,
+                        getMailboxQuery(filter)
+                    );
+
+                    /*
+                     * Según cómo responda postDataCloud,
+                     * count puede ser directamente un número
+                     * o venir dentro de un objeto.
+                     */
+                    const total =
+                        typeof response === "number"
+                            ? response
+                            : response?.count ?? 0;
+
+                    return [filter, total];
+                })
+            );
+
+            setMailboxCounts(
+                Object.fromEntries(entries)
+            );
+        } catch (error) {
+            console.error(
+                "Error obteniendo contadores:",
+                error
+            );
+        }
+    };
+
+    const formatMailboxCount = value => {
+        if (value === null) {
+            return "…";
+        }
+
+        return value > 100
+            ? "+100"
+            : value;
+    };
 
     /* =========================
        FETCH JACKETS
     ========================= */
     const fetchEmails = async (isInitial = false) => {
         const requestId = ++requestRef.current;
-        const order_by = ["_id", "descending"];
+        let order_by = ["_id", "descending"];
         const query = setQuery();
+        const fields = [];
+        const page = 1;
+        const limit = 101;
+
+        if (activeFilter.current === "misAsignados") {
+            order_by = ["_id", "ascending"];
+        }
 
         try {
             const res = await list_with_options(
                 collection,
                 query,
                 order_by,
+                fields,
+                page,
+                limit
             );
 
             if (requestId !== requestRef.current) return;
@@ -149,10 +273,58 @@ function EmailClientPage() {
             setLoading(false);
             setInitialLoading(false);
 
-
-
         } catch (err) {
             console.error("fetch error:", err);
+        }
+    };
+
+    const getMailboxQuery = filter => {
+
+        switch (filter) {
+            case "entrada":
+                return [
+                    "buzon",
+                    "is like",
+                    "Bandeja de Entrada"
+                ];
+
+            case "asignado":
+                return [
+                    "buzon",
+                    "begins like",
+                    "Asignado "
+                ];
+
+            case "misAsignados":
+                return [
+                    "buzon",
+                    "is like",
+                    `Asignado ${username}`
+                ];
+
+            case "archivado":
+                return [
+                    "buzon",
+                    "is like",
+                    "Archivado"
+                ];
+
+            case "parado":
+                return [
+                    "buzon",
+                    "is like",
+                    "Parado"
+                ];
+
+            case "papelera":
+                return [
+                    "buzon",
+                    "is like",
+                    "papelera"
+                ];
+
+            default:
+                return [];
         }
     };
 
@@ -303,80 +475,84 @@ function EmailClientPage() {
     };
 
     const setQuery = () => {
+        const searchValue =
+            appliedSearchRef.current.trim();
+
+        /*
+         * Si hay búsqueda, buscamos en todos los buzones.
+         */
+        if (searchValue) {
+            const normalizedDate =
+                normalizeDateSearch(searchValue);
+
+            return [
+                "(",
+                "emisor",
+                "contains text like",
+                searchValue,
+
+                "or",
+
+                "destinatario",
+                "contains text like",
+                searchValue,
+
+                "or",
+
+                "asunto",
+                "contains text like",
+                searchValue,
+
+                "or",
+
+                "entryDate",
+                "contains text like",
+                normalizedDate,
+                ")"
+            ];
+        }
+
+        /*
+         * Si no hay búsqueda, mostramos únicamente
+         * el buzón seleccionado.
+         */
         if (!activeFilter.current) {
             return [];
         }
 
-        let mailboxQuery;
-
-        if (activeFilter.current === "misAsignados") {
-            mailboxQuery = [
-                "buzon",
-                "contains text like",
-                username
-            ];
-        } else {
-            mailboxQuery = [
-                "buzon",
-                "contains text like",
-                activeFilter.current
-            ];
-        }
-
-        const searchValue = appliedSearchRef.current.trim();
-
-        if (!searchValue) {
-            return mailboxQuery;
-        }
-
-        const normalizedDate = normalizeDateSearch(searchValue);
-
-        const searchQuery = [
-            "(",
-            "emisor",
-            "contains text like",
-            searchValue,
-
-            "or",
-
-            "destinatario",
-            "contains text like",
-            searchValue,
-
-            "or",
-
-            "asunto",
-            "contains text like",
-            searchValue,
-
-            "or",
-
-            "entryDate",
-            "contains text like",
-            normalizedDate,
-            ")"
-        ];
-
-        return [
-            "(",
-            ...mailboxQuery,
-            ")",
-            "and",
-            ...searchQuery
-        ];
+        return getMailboxQuery(
+            activeFilter.current
+        );
     };
 
     /* =========================
        FILTERS
     ========================= */
-    const handleFilterChange = key => {
-        setLoading(true);
-
+    const handleFilterChange = async key => {
+        /*
+         * Primero cambiamos el buzón.
+         */
         activeFilter.current = key;
         saveState(key);
 
+        /*
+         * Después anulamos la búsqueda.
+         */
+        appliedSearchRef.current = "";
+        setSearchActive(false);
+
+        /*
+         * Reinicia visualmente el input y cancela
+         * cualquier debounce que estuviera pendiente.
+         */
+        setSearchResetKey(current =>
+            current + 1
+        );
+
         clearSelection();
-        fetchEmails(true);
+        setLoading(true);
+
+        await fetchEmails(true);
     };
 
     const handleBulkAction = async (
@@ -421,7 +597,11 @@ function EmailClientPage() {
             );
 
             clearSelection();
-            await fetchEmails();
+
+            await Promise.all([
+                fetchEmails(),
+                fetchMailboxCounts()
+            ]);
 
             return emails;
         } catch (error) {
@@ -553,6 +733,18 @@ function EmailClientPage() {
         };
     }, []);
 
+    useEffect(() => {
+        fetchMailboxCounts();
+
+        const intervalId = setInterval(() => {
+            fetchMailboxCounts();
+        }, 30000);
+
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, []);
+
     const handleReferenceTagsChange = useCallback(
         async (emailId, previousTags, nextTags) => {
             // Actualización inmediata de la interfaz
@@ -591,24 +783,26 @@ function EmailClientPage() {
     );
 
     const handleSearch = async value => {
-        if (value === appliedSearchRef.current) {
+        const normalizedValue =
+            String(value || "").trim();
+
+        /*
+         * Evitamos repetir exactamente
+         * la misma consulta.
+         */
+        if (
+            normalizedValue ===
+            appliedSearchRef.current
+        ) {
             return;
         }
 
-        appliedSearchRef.current = value;
+        appliedSearchRef.current =
+            normalizedValue;
 
-        clearSelection();
-        setLoading(true);
-
-        await fetchEmails(true);
-    };
-
-    const handleClearSearch = async () => {
-        if (!appliedSearchRef.current) {
-            return;
-        }
-
-        appliedSearchRef.current = "";
+        setSearchActive(
+            Boolean(normalizedValue)
+        );
 
         clearSelection();
         setLoading(true);
@@ -627,6 +821,10 @@ function EmailClientPage() {
     const actionArchivar = activeFilter.current === "entrada" || activeFilter.current === "misAsignados";
     const actionParar = activeFilter.current === "entrada" || activeFilter.current === "misAsignados";
     const actionEliminar = activeFilter.current === "entrada" || activeFilter.current === "misAsignados";
+
+    const shouldShowMailboxCount = value => {
+        return typeof value === "number" && value > 1;
+    };
 
     return (
         <div className="detailsContainer gestorPage">
@@ -653,42 +851,101 @@ function EmailClientPage() {
             <div className="gestorContainer">
 
                 <div className="filterButtons">
-                    <div className={`filtersButton ${activeFilter.current === "entrada" ? 'clicked' : ''}`}
-                        onClick={() => handleFilterChange("entrada")}>
-                        <MdInbox /> Bandeja de Entrada
+                    <div
+                        className={`filtersButton ${activeFilter.current === "entrada" ? "clicked" : ""
+                            }`}
+                        onClick={() => handleFilterChange("entrada")}
+                    >
+                        <MdInbox />
+                        Bandeja de Entrada
+
+                        {shouldShowMailboxCount(mailboxCounts.entrada) && (
+                            <span className="mailboxCount">
+                                {formatMailboxCount(mailboxCounts.entrada)}
+                            </span>
+                        )}
                     </div>
 
-                    <div className={`filtersButton ${activeFilter.current === "asignado" ? 'clicked' : ''}`}
-                        onClick={() => handleFilterChange("asignado")}>
-                        <MdAssignmentInd /> Asignados
+                    <div
+                        className={`filtersButton ${activeFilter.current === "asignado" ? "clicked" : ""
+                            }`}
+                        onClick={() => handleFilterChange("asignado")}
+                    >
+                        <MdAssignmentInd />
+                        Asignados
+
+                        {shouldShowMailboxCount(mailboxCounts.asignado) && (
+                            <span className="mailboxCount">
+                                {formatMailboxCount(mailboxCounts.asignado)}
+                            </span>
+                        )}
                     </div>
 
-                    <div className={`filtersButton ${activeFilter.current === "misAsignados" ? 'clicked' : ''}`}
-                        onClick={() => handleFilterChange("misAsignados")}>
-                        <MdPersonPin /> Mis Asignados
+                    <div
+                        className={`filtersButton ${activeFilter.current === "misAsignados" ? "clicked" : ""
+                            }`}
+                        onClick={() => handleFilterChange("misAsignados")}
+                    >
+                        <MdPersonPin />
+                        Mis Asignados
+
+                        {shouldShowMailboxCount(mailboxCounts.misAsignados) && (
+                            <span className="mailboxCount">
+                                {formatMailboxCount(mailboxCounts.misAsignados)}
+                            </span>
+                        )}
                     </div>
 
-                    <div className={`filtersButton ${activeFilter.current === "archivado" ? 'clicked' : ''}`}
-                        onClick={() => handleFilterChange("archivado")}>
-                        <MdArchive /> Archivados
+                    <div
+                        className={`filtersButton ${activeFilter.current === "archivado" ? "clicked" : ""
+                            }`}
+                        onClick={() => handleFilterChange("archivado")}
+                    >
+                        <MdArchive />
+                        Archivados
+
+                        {shouldShowMailboxCount(mailboxCounts.archivado) && (
+                            <span className="mailboxCount">
+                                {formatMailboxCount(mailboxCounts.archivado)}
+                            </span>
+                        )}
                     </div>
 
-                    <div className={`filtersButton ${activeFilter.current === "parado" ? 'clicked' : ''}`}
-                        onClick={() => handleFilterChange("parado")}>
-                        <MdPauseCircle /> Parados
+                    <div
+                        className={`filtersButton ${activeFilter.current === "parado" ? "clicked" : ""
+                            }`}
+                        onClick={() => handleFilterChange("parado")}
+                    >
+                        <MdPauseCircle />
+                        Parados
+
+                        {shouldShowMailboxCount(mailboxCounts.parado) && (
+                            <span className="mailboxCount">
+                                {formatMailboxCount(mailboxCounts.parado)}
+                            </span>
+                        )}
                     </div>
 
-                    <div className={`filtersButton ${activeFilter.current === "papelera" ? 'clicked' : ''}`}
-                        onClick={() => handleFilterChange("papelera")}>
-                        <MdDelete /> Papelera
+                    <div
+                        className={`filtersButton ${activeFilter.current === "papelera" ? "clicked" : ""
+                            }`}
+                        onClick={() => handleFilterChange("papelera")}
+                    >
+                        <MdDelete />
+                        Papelera
+
+                        {shouldShowMailboxCount(mailboxCounts.papelera) && (
+                            <span className="mailboxCount">
+                                {formatMailboxCount(mailboxCounts.papelera)}
+                            </span>
+                        )}
                     </div>
 
                     <EmailSearchBar
+                        key={searchResetKey}
                         onSearch={handleSearch}
-                        onClear={handleClearSearch}
                         loading={loading}
                     />
-
                 </div>
 
 
@@ -801,6 +1058,11 @@ function EmailClientPage() {
                                             canEntrada={actionEntrada}
                                             openEmailFolder={openEmailFolder}
                                             pulsedAction={pulsedAction}
+                                            showAssignedUser={
+                                                !searchActive &&
+                                                activeFilter.current === "asignado"
+                                            }
+                                            showMailbox={searchActive}
                                         />
                                     );
                                 })}

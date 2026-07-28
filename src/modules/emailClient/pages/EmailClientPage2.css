@@ -37,6 +37,29 @@
                 height: 2rem;
             }
 
+            .mailboxCount {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+
+                min-width: 2rem;
+                height: 2rem;
+                padding: 0 .65rem;
+                box-sizing: border-box;
+
+                border-radius: 999px;
+                background-color: var(--hover);
+                color: var(--pantone431c);
+
+                font-family: inherit;
+                font-size: 1.3rem;
+                font-weight: 800;
+                font-synthesis: weight;
+                line-height: 1;
+
+                pointer-events: none;
+            }
+
             &:hover {
                 border-bottom-color: var(--hover);
             }
@@ -148,7 +171,7 @@
             padding: .5rem 1rem;
             border-radius: 2rem;
             margin: 0;
-            
+
             &:hover {
                 background-color: rgba(128, 128, 128, .3);
             }

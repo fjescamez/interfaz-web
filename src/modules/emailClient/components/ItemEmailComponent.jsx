@@ -1,42 +1,62 @@
-import { memo, useMemo, useState } from "react";
 import {
-    MdAssignmentInd,
+    memo,
+    useMemo,
+    useState
+} from "react";
+
+import {
     MdArchive,
-    MdDelete
+    MdAssignmentInd,
+    MdDelete,
+    MdTurnLeft
 } from "react-icons/md";
+
 import { IoMdFolderOpen } from "react-icons/io";
-import { MdTurnLeft } from "react-icons/md";
+
 import "./ItemEmailComponent.css";
+
 
 const DEFAULT_TAG_RULES = [
     {
         id: "urgente",
         label: "Urgente",
-        keywords: ["urgente", "urgencia"],
+        keywords: [
+            "urgente",
+            "urgencia"
+        ],
         color: "#b42318"
     },
     {
         id: "presupuesto",
         label: "Presupuesto",
-        keywords: ["presupuesto"],
+        keywords: [
+            "presupuesto"
+        ],
         color: "#175cd3"
     },
     {
         id: "boceto",
         label: "Boceto",
-        keywords: ["boceto", "diseño"],
+        keywords: [
+            "boceto",
+            "diseño"
+        ],
         color: "#6941c6"
     },
     {
         id: "cliches",
         label: "Clichés",
-        keywords: ["cliche"],
+        keywords: [
+            "cliche"
+        ],
         color: "#ff9500"
     },
     {
         id: "albaran",
         label: "Albarán",
-        keywords: ["albaran"],
+        keywords: [
+            "albaran"
+        ],
         color: "#58b747"
     },
     {
@@ -53,81 +73,175 @@ const DEFAULT_TAG_RULES = [
     }
 ];
 
+function getMailboxTag(buzon) {
+    const value = String(buzon || "").trim();
+
+    if (!value) {
+        return null;
+    }
+
+    const assignedMatch = value.match(
+        /^Asignado\s+(.+)$/i
+    );
+
+    if (assignedMatch) {
+        const username =
+            assignedMatch[1]?.trim();
+
+        return {
+            label: username
+                ? `Asignado · ${username}`
+                : "Asignado",
+            color: "#3874a8"
+        };
+    }
+
+    const normalizedValue =
+        value.toLocaleLowerCase("es");
+
+    if (normalizedValue === "bandeja entrada") {
+        return {
+            label: "Entrada",
+            color: "#175cd3"
+        };
+    }
+
+    if (normalizedValue === "archivado") {
+        return {
+            label: "Archivado",
+            color: "#667085"
+        };
+    }
+
+    if (normalizedValue === "parado") {
+        return {
+            label: "Parado",
+            color: "#e39a2d"
+        };
+    }
+
+    if (normalizedValue === "papelera") {
+        return {
+            label: "Papelera",
+            color: "#b42318"
+        };
+    }
+
+    return {
+        label: value,
+        color: "#667085"
+    };
+}
+
+
 function getInitials(value = "") {
     const words = String(value)
         .trim()
         .split(/\s+/)
         .filter(Boolean);
 
-    if (words.length === 0) return "?";
+    if (words.length === 0) {
+        return "?";
+    }
 
     if (words.length === 1) {
-        return words[0].slice(0, 2).toUpperCase();
+        return words[0]
+            .slice(0, 2)
+            .toUpperCase();
     }
 
     return `${words[0][0]}${words[words.length - 1][0]}`
         .toUpperCase();
 }
 
-function getRelativeDate(value) {
-    if (!value) {
-        return {
-            label: "",
-            full: ""
-        };
+
+function normalizeText(value) {
+    return String(value || "")
+        .toLocaleLowerCase("es")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+}
+
+
+function htmlToText(html) {
+    if (!html) {
+        return "";
     }
 
-    const date = new Date(value);
+    const documentHtml = new DOMParser().parseFromString(
+        String(html),
+        "text/html"
+    );
 
-    if (Number.isNaN(date.getTime())) {
-        return {
-            label: "",
-            full: ""
-        };
+    return documentHtml.body?.textContent || "";
+}
+
+
+function formatEmailDate(fecha, hora) {
+    if (!fecha) {
+        return "";
     }
+
+    const [day, month, year] = String(fecha)
+        .split("-")
+        .map(Number);
+
+    if (!day || !month || !year) {
+        return fecha;
+    }
+
+    const emailDate = new Date(
+        year,
+        month - 1,
+        day
+    );
 
     const today = new Date();
 
-    const dateDay = new Date(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate()
+    const emailDay = new Date(
+        emailDate.getFullYear(),
+        emailDate.getMonth(),
+        emailDate.getDate()
     );
 
-    const todayDay = new Date(
+    const currentDay = new Date(
         today.getFullYear(),
         today.getMonth(),
         today.getDate()
     );
 
     const differenceDays = Math.round(
-        (todayDay - dateDay) / 86400000
+        (currentDay - emailDay) / 86400000
     );
 
-    const time = date.toLocaleTimeString("es-ES", {
-        hour: "2-digit",
-        minute: "2-digit"
-    });
-
-    let label;
+    const timeText = hora
+        ? ` · ${hora}`
+        : "";
 
     if (differenceDays === 0) {
-        label = `Hoy · ${time}`;
-    } else if (differenceDays === 1) {
-        label = `Ayer · ${time}`;
-    } else {
-        label = date.toLocaleDateString("es-ES", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "2-digit"
-        });
+        return `Hoy${timeText}`;
     }
 
-    return {
-        label,
-        full: date.toLocaleString("es-ES")
-    };
+    if (differenceDays === 1) {
+        return `Ayer${timeText}`;
+    }
+
+    return `${fecha}${timeText}`;
 }
+
+
+function getAssignedUsername(buzon) {
+    if (typeof buzon !== "string") {
+        return "";
+    }
+
+    const match = buzon.match(
+        /^Asignado\s+(.+)$/i
+    );
+
+    return match?.[1]?.trim() || "";
+}
+
 
 function ItemEmailComponent({
     email,
@@ -143,11 +257,18 @@ function ItemEmailComponent({
     tagRules = DEFAULT_TAG_RULES,
     openEmailFolder,
     pulsedAction = false,
+    showAssignedUser = false,
+    showMailbox = false
 }) {
-    const [workingAction, setWorkingAction] = useState(null);
-    const [showAllTags, setShowAllTags] = useState(false);
+    const [workingAction, setWorkingAction] =
+        useState(null);
 
-    const emailId = email?._id ?? email?.id;
+    const [showAllTags, setShowAllTags] =
+        useState(false);
+
+    const emailId =
+        email?._id ??
+        email?.id;
 
     const {
         contacto,
@@ -156,34 +277,42 @@ function ItemEmailComponent({
         fecha,
         hora,
         reference_tags,
-        cuerpoHtml
+        cuerpoHtml,
+        buzon,
+        file_email
     } = email || {};
 
-    const isPending = Array.isArray(reference_tags) &&
-        reference_tags.some(tag =>
+    const normalizedReferenceTags = Array.isArray(
+        reference_tags
+    )
+        ? reference_tags
+        : reference_tags
+            ? [reference_tags]
+            : [];
+
+    const isPending = normalizedReferenceTags.some(
+        tag =>
             tag?.type === "pending" ||
-            String(tag?.label || "").toLowerCase() === "pendiente"
-        );
+            String(tag?.label || "")
+                .toLowerCase() === "pendiente"
+    );
 
-    const initials = getInitials(contacto || cliente);
-    const formattedDate = formatEmailDate(fecha, hora);
+    const initials = getInitials(
+        contacto || cliente
+    );
 
-    const normalizeText = value =>
-        String(value || "")
-            .toLocaleLowerCase("es")
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "");
+    const formattedDate = formatEmailDate(
+        fecha,
+        hora
+    );
 
-    const htmlToText = html => {
-        if (!html) return "";
+    const assignedUsername = showAssignedUser
+        ? getAssignedUsername(buzon)
+        : "";
 
-        const documentHtml = new DOMParser().parseFromString(
-            String(html),
-            "text/html"
-        );
-
-        return documentHtml.body?.textContent || "";
-    };
+    const mailboxTag = showMailbox
+        ? getMailboxTag(email?.buzon)
+        : null;
 
     const matchedTags = useMemo(() => {
         const bodyText = htmlToText(cuerpoHtml);
@@ -194,82 +323,74 @@ function ItemEmailComponent({
 
         return tagRules.filter(rule =>
             rule.keywords?.some(keyword =>
-                searchableText.includes(normalizeText(keyword))
+                searchableText.includes(
+                    normalizeText(keyword)
+                )
             )
         );
-    }, [asunto, cuerpoHtml, tagRules]);
+    }, [
+        asunto,
+        cuerpoHtml,
+        tagRules
+    ]);
 
-        const tagsToRender = showAllTags
+    const tagsToRender = showAllTags
         ? matchedTags
         : matchedTags.slice(0, 2);
 
-    const visibleTags = matchedTags.slice(0, 2);
     const hiddenTagCount = Math.max(
         matchedTags.length - 2,
         0
     );
 
+
     const runQuickAction = async actionName => {
-        if (workingAction || !onQuickAction) return;
+        if (
+            workingAction ||
+            !onQuickAction
+        ) {
+            return;
+        }
 
         setWorkingAction(actionName);
 
         try {
-            await onQuickAction(actionName, emailId);
+            await onQuickAction(
+                actionName,
+                emailId
+            );
         } finally {
             setWorkingAction(null);
         }
     };
 
+
     const handleKeyDown = event => {
-        if (event.key === "Enter" || event.key === " ") {
+        if (
+            event.key === "Enter" ||
+            event.key === " "
+        ) {
             event.preventDefault();
-            onSelect(emailId, index, event);
+
+            onSelect(
+                emailId,
+                index,
+                event
+            );
         }
     };
 
-    function formatEmailDate(fecha, hora) {
-        if (!fecha) return "";
 
-        const [day, month, year] = String(fecha)
-            .split("-")
-            .map(Number);
+    const handleOpenFolder = event => {
+        event.stopPropagation();
 
-        if (!day || !month || !year) {
-            return fecha;
+        if (!openEmailFolder || !file_email) {
+            return;
         }
 
-        const emailDate = new Date(year, month - 1, day);
-        const today = new Date();
+        openEmailFolder(file_email);
+    };
 
-        const emailDay = new Date(
-            emailDate.getFullYear(),
-            emailDate.getMonth(),
-            emailDate.getDate()
-        );
-
-        const currentDay = new Date(
-            today.getFullYear(),
-            today.getMonth(),
-            today.getDate()
-        );
-
-        const differenceDays = Math.round(
-            (currentDay - emailDay) / 86400000
-        );
-
-        const timeText = hora ? ` · ${hora}` : "";
-
-        if (differenceDays === 0) {
-            return `Hoy${timeText}`;
-        }
-
-        if (differenceDays === 1) {
-            return `Ayer${timeText}`;
-        }
-
-        return `${fecha}${timeText}`;
-    }
 
     return (
         <div
@@ -277,46 +398,100 @@ function ItemEmailComponent({
                 "emailItem",
                 isPending ? "pending" : "",
                 isSelected ? "selected" : "",
-                isSingleSelected ? "singleSelected" : ""
-            ].filter(Boolean).join(" ")}
+                isSingleSelected
+                    ? "singleSelected"
+                    : ""
+            ]
+                .filter(Boolean)
+                .join(" ")}
             role="option"
             tabIndex={0}
             aria-selected={isSelected}
-            onClick={event =>
-                onSelect(emailId, index, event)
-            }
+            onClick={event => {
+                /*
+                 * En un doble clic:
+                 * - el primer clic tiene detail === 1
+                 * - el segundo tiene detail === 2
+                 *
+                 * Seleccionamos solamente con el primero.
+                 */
+                if (event.detail === 1) {
+                    onSelect(
+                        emailId,
+                        index,
+                        event
+                    );
+                }
+            }}
+            onDoubleClick={handleOpenFolder}
             onKeyDown={handleKeyDown}
         >
             <div className="left">
                 <div
                     className="contactInitials"
-                    title={contacto || cliente || "Sin contacto"}
+                    title={
+                        contacto ||
+                        cliente ||
+                        "Sin contacto"
+                    }
                 >
                     {initials}
                 </div>
 
                 <div className="bloqueEmail">
-                    <p
-                        className="title"
-                        title={[
-                            contacto,
-                            cliente
-                        ].filter(Boolean).join(" - ")}
-                    >
-                        {contacto || "Sin contacto"}
+                    <div className="emailItemTitleRow">
+                        <p
+                            className="title"
+                            title={[
+                                contacto,
+                                cliente
+                            ].filter(Boolean).join(" - ")}
+                        >
+                            {contacto || "Sin contacto"}
 
-                        {cliente && (
-                            <>
-                                {" - "}
-                                <span>{cliente}</span>
-                            </>
+                            {cliente && (
+                                <>
+                                    {" - "}
+                                    <span>{cliente}</span>
+                                </>
+                            )}
+                        </p>
+
+                        {mailboxTag && (
+                            <span
+                                className="emailItemTag"
+                                title={`Buzón: ${mailboxTag.label}`}
+                                style={{
+                                    "--email-tag-color":
+                                        mailboxTag.color
+                                }}
+                            >
+                                {mailboxTag.label}
+                            </span>
                         )}
-                    </p>
+
+                        {!mailboxTag &&
+                            showAssignedUser &&
+                            assignedUsername && (
+                                <span
+                                    className="emailItemTag"
+                                    title={`Asignado a ${assignedUsername}`}
+                                    style={{
+                                        "--email-tag-color": "#3874a8"
+                                    }}
+                                >
+                                    {assignedUsername}
+                                </span>
+                            )}
+                    </div>
 
                     <div className="emailItemBottomRow">
                         <p
                             className="subtitle"
-                            title={asunto || "Sin asunto"}
+                            title={
+                                asunto ||
+                                "Sin asunto"
+                            }
                         >
                             {asunto || "Sin asunto"}
                         </p>
@@ -329,7 +504,8 @@ function ItemEmailComponent({
                                         className="emailItemTag"
                                         title={tag.label}
                                         style={{
-                                            "--email-tag-color": tag.color
+                                            "--email-tag-color":
+                                                tag.color
                                         }}
                                     >
                                         {tag.label}
@@ -345,13 +521,22 @@ function ItemEmailComponent({
                                                 ? "Ocultar etiquetas"
                                                 : matchedTags
                                                     .slice(2)
-                                                    .map(tag => tag.label)
+                                                    .map(
+                                                        tag =>
+                                                            tag.label
+                                                    )
                                                     .join(", ")
                                         }
-                                        aria-expanded={showAllTags}
+                                        aria-expanded={
+                                            showAllTags
+                                        }
                                         onClick={event => {
                                             event.stopPropagation();
-                                            setShowAllTags(current => !current);
+
+                                            setShowAllTags(
+                                                current =>
+                                                    !current
+                                            );
                                         }}
                                     >
                                         {showAllTags
@@ -366,24 +551,30 @@ function ItemEmailComponent({
             </div>
 
             <div className="right">
-
-
-
-
                 <div
-                    className={`emailQuickActions ${pulsedAction ? "actionsBlocked" : ""
-                        }`}
+                    className={[
+                        "emailQuickActions",
+                        pulsedAction
+                            ? "actionsBlocked"
+                            : ""
+                    ]
+                        .filter(Boolean)
+                        .join(" ")}
                 >
-
                     {canEntrada && (
                         <button
                             type="button"
                             title="A entrada"
-                            aria-label="mover a entrada"
-                            disabled={Boolean(workingAction)}
+                            aria-label="Mover a entrada"
+                            disabled={Boolean(
+                                workingAction
+                            )}
                             onClick={event => {
                                 event.stopPropagation();
-                                runQuickAction("entrada");
+
+                                runQuickAction(
+                                    "entrada"
+                                );
                             }}
                         >
                             <MdTurnLeft />
@@ -394,10 +585,8 @@ function ItemEmailComponent({
                         type="button"
                         title="Carpeta"
                         aria-label="Abrir carpeta"
-                        onClick={event => {
-                            event.stopPropagation();
-                            openEmailFolder(email.file_email);
-                        }}
+                        disabled={!file_email}
+                        onClick={handleOpenFolder}
                     >
                         <IoMdFolderOpen />
                     </button>
@@ -407,10 +596,15 @@ function ItemEmailComponent({
                             type="button"
                             title="Asignar"
                             aria-label="Asignar correo"
-                            disabled={Boolean(workingAction)}
+                            disabled={Boolean(
+                                workingAction
+                            )}
                             onClick={event => {
                                 event.stopPropagation();
-                                runQuickAction("asignar");
+
+                                runQuickAction(
+                                    "asignar"
+                                );
                             }}
                         >
                             <MdAssignmentInd />
@@ -422,10 +616,15 @@ function ItemEmailComponent({
                             type="button"
                             title="Archivar"
                             aria-label="Archivar correo"
-                            disabled={Boolean(workingAction)}
+                            disabled={Boolean(
+                                workingAction
+                            )}
                             onClick={event => {
                                 event.stopPropagation();
-                                runQuickAction("archivar");
+
+                                runQuickAction(
+                                    "archivar"
+                                );
                             }}
                         >
                             <MdArchive />
@@ -438,10 +637,15 @@ function ItemEmailComponent({
                             className="danger"
                             title="Mover a papelera"
                             aria-label="Mover correo a papelera"
-                            disabled={Boolean(workingAction)}
+                            disabled={Boolean(
+                                workingAction
+                            )}
                             onClick={event => {
                                 event.stopPropagation();
-                                runQuickAction("eliminar");
+
+                                runQuickAction(
+                                    "eliminar"
+                                );
                             }}
                         >
                             <MdDelete />
@@ -452,7 +656,12 @@ function ItemEmailComponent({
                 {formattedDate && (
                     <time
                         className="date"
-                        title={[fecha, hora].filter(Boolean).join(" ")}
+                        title={[
+                            fecha,
+                            hora
+                        ]
+                            .filter(Boolean)
+                            .join(" ")}
                     >
                         {formattedDate}
                     </time>
@@ -461,5 +670,6 @@ function ItemEmailComponent({
         </div>
     );
 }
+
 
 export default memo(ItemEmailComponent);
