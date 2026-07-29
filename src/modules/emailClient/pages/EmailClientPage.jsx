@@ -25,6 +25,7 @@ import {
 import { FaDownload } from "react-icons/fa6";
 import { BlinkBlur } from "react-loading-indicators";
 import { useSession } from "../../../context/SessionContext";
+import { postData } from "../../../helpers/fetchData";
 
 const STORAGE_KEY = "gestor_filters";
 
@@ -573,7 +574,7 @@ function EmailClientPage() {
             let newBuzon;
 
             if (actionName === "entrada") {
-                newBuzon = "Bandeja Entrada";
+                newBuzon = "Bandeja de Entrada";
             } else if (actionName === "asignar") {
                 newBuzon = `Asignado ${username}`;
             } else if (actionName === "archivar") {
@@ -690,8 +691,6 @@ function EmailClientPage() {
                 `&area=${encodeURIComponent("resources")}` +
                 `&folder=${encodeURIComponent(relativeFolderPath)}`;
 
-            console.log("Abriendo carpeta de correo:", protocolUrl);
-
             window.location.href = protocolUrl;
             return;
         }
@@ -709,23 +708,43 @@ function EmailClientPage() {
             `smb://${server}/Recursos/${encodedFolder}`;
     };
 
-    const startActionLock = useCallback(() => {
-        if (pulsedActionRef.current) {
-            return false;
-        }
-
-        pulsedActionRef.current = true;
-        setPulsedAction(true);
-
+    const releaseActionLock = useCallback(() => {
         clearTimeout(actionTimerRef.current);
+        actionTimerRef.current = null;
 
-        actionTimerRef.current = setTimeout(() => {
-            pulsedActionRef.current = false;
-            setPulsedAction(false);
-        }, 2500);
-
-        return true;
+        pulsedActionRef.current = false;
+        setPulsedAction(false);
     }, []);
+
+    const startActionLock = useCallback(
+        (autoReleaseMs = 2500) => {
+            if (pulsedActionRef.current) {
+                return false;
+            }
+
+            pulsedActionRef.current = true;
+            setPulsedAction(true);
+
+            clearTimeout(actionTimerRef.current);
+            actionTimerRef.current = null;
+
+            /*
+             * Para acciones inmediatas, como abrir carpeta,
+             * liberamos automáticamente tras 2,5 segundos.
+             *
+             * Si recibimos 0, el bloqueo deberá liberarse
+             * manualmente cuando termine la acción asíncrona.
+             */
+            if (autoReleaseMs > 0) {
+                actionTimerRef.current = setTimeout(() => {
+                    releaseActionLock();
+                }, autoReleaseMs);
+            }
+
+            return true;
+        },
+        [releaseActionLock]
+    );
 
     useEffect(() => {
         return () => {
@@ -809,6 +828,67 @@ function EmailClientPage() {
 
         await fetchEmails(true);
     };
+
+    const extractEmlAttachments = useCallback(
+        async file => {
+            if (!file) {
+                console.warn(
+                    "No se ha indicado ningún archivo EML"
+                );
+
+                return [];
+            }
+
+            /*
+             * Pasamos 0 para que no se libere automáticamente.
+             * El bloqueo continuará hasta llegar al finally.
+             */
+            if (!startActionLock(0)) {
+                return [];
+            }
+
+            try {
+                const result = await postData(
+                    "email/attachments",
+                    {
+                        file
+                    }
+                );
+
+                if (result.status !== "success") {
+                    console.error(
+                        "No se pudieron extraer los adjuntos:",
+                        result.message
+                    );
+
+                    return [];
+                }
+
+                console.log(
+                    "Adjuntos guardados:",
+                    result.attachments
+                );
+
+                return result.attachments || [];
+            } catch (error) {
+                console.error(
+                    "Error solicitando los adjuntos:",
+                    error
+                );
+
+                return [];
+            } finally {
+                /*
+                 * Se ejecuta tanto si funciona como si falla.
+                 */
+                releaseActionLock();
+            }
+        },
+        [
+            startActionLock,
+            releaseActionLock
+        ]
+    );
 
 
     /* =========================
@@ -977,7 +1057,7 @@ function EmailClientPage() {
                                         <div className={`filtersButton action`}
                                             onClick={event => {
                                                 event.stopPropagation();
-                                                openEmailFolder(selectedEmails[0].file_email);
+                                                extractEmlAttachments(selectedEmails[0].file_email);
                                             }}
                                         >
                                             <FaDownload />

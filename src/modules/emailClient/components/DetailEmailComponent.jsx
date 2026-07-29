@@ -21,21 +21,74 @@ const PENDING_TAG = {
     label: "Pendiente"
 };
 
-function cleanSubjectForOrder(value) {
+const SUBJECT_WORDS_TO_REMOVE = [
+    "Flexomed",
+    "URGENTE",
+];
+
+function escapeRegExp(value) {
+    return String(value)
+        .replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function normalizeSubjectText(value) {
     return String(value || "")
-        .trim()
-
-        // Elimina uno o varios prefijos iniciales:
-        // RV:, RE:, FW:, FWD:
-        .replace(
-            /^(?:(?:RV|RE|FW|FWD)\s*:\s*)+/i,
-            ""
-        )
-
-        // Elimina tildes
         .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[\u0300-\u036f]/g, "");
+}
 
+
+function cleanSubjectForOrder(value) {
+    let cleanedSubject = String(value || "").trim();
+
+    /*
+     * Si contiene dos puntos, empieza después
+     * del último. Ejemplo:
+     *
+     * RV: RE: Pedido cliente
+     * Resultado inicial: Pedido cliente
+     */
+    const lastColonIndex =
+        cleanedSubject.lastIndexOf(":");
+
+    if (lastColonIndex !== -1) {
+        cleanedSubject = cleanedSubject
+            .slice(lastColonIndex + 1);
+    }
+
+    /*
+     * Quitamos tildes antes de comparar
+     * las palabras excluidas.
+     */
+    cleanedSubject =
+        normalizeSubjectText(cleanedSubject);
+
+    /*
+     * Elimina las palabras o expresiones
+     * configuradas, sin distinguir mayúsculas.
+     */
+    const removableWords =
+        SUBJECT_WORDS_TO_REMOVE
+            .map(word =>
+                normalizeSubjectText(word).trim()
+            )
+            .filter(Boolean)
+            .map(escapeRegExp);
+
+    if (removableWords.length > 0) {
+        const removableWordsRegex =
+            new RegExp(
+                `\\b(?:${removableWords.join("|")})\\b`,
+                "gi"
+            );
+
+        cleanedSubject = cleanedSubject.replace(
+            removableWordsRegex,
+            " "
+        );
+    }
+
+    return cleanedSubject
         // Sustituye símbolos por espacios
         .replace(/[^a-zA-Z0-9\s]/g, " ")
 
@@ -46,8 +99,8 @@ function cleanSubjectForOrder(value) {
         // Convierte a mayúsculas
         .toUpperCase()
 
-        // Máximo de 35 caracteres
-        .slice(0, 35)
+        // El corte se hace al final
+        //.slice(0, 30)
         .trim();
 }
 
