@@ -6,7 +6,14 @@ import {
     useState
 } from "react";
 import DetailsHeader from '../../../components/DetailsHeader';
-import { list_with_options, get, set_keys, count as countCustomObjects } from '../../../helpers/cloudflow/custom_objects';
+import {
+    create,
+    delete_multiple,
+    list_with_options,
+    get,
+    set_keys,
+    count as countCustomObjects
+} from '../../../helpers/cloudflow/custom_objects';
 import ItemEmailComponent from '../components/ItemEmailComponent';
 import DetailEmailComponent from '../components/DetailEmailComponent';
 import "./EmailClientPage2.css";
@@ -26,8 +33,10 @@ import { FaDownload } from "react-icons/fa6";
 import { BlinkBlur } from "react-loading-indicators";
 import { useSession } from "../../../context/SessionContext";
 import { postData } from "../../../helpers/fetchData";
+import { start_from_whitepaper_with_options } from "../../../helpers/cloudflow/hub";
 
 const STORAGE_KEY = "gestor_filters";
+const EMAIL_REPLY_COLLECTION = "EmailReply";
 
 /* =========================
    LOCAL STORAGE
@@ -48,6 +57,21 @@ const getEmailId = email => email?._id ?? email?.id;
 const saveState = (state) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 };
+
+function buildReplySubject(value) {
+    const subject =
+        String(value || "").trim();
+
+    if (!subject) {
+        return "RE:";
+    }
+
+    if (/^re\s*:/i.test(subject)) {
+        return subject;
+    }
+
+    return `RE: ${subject}`;
+}
 
 function EmailSearchBar({
     onSearch,
@@ -96,6 +120,7 @@ function EmailSearchBar({
             clearTimeout(debounceRef.current);
         };
     }, []);
+
 
     const handleSubmit = event => {
         event.preventDefault();
@@ -171,12 +196,327 @@ function EmailClientPage() {
 
     const [loading, setLoading] = useState(true);
     const [initialLoading, setInitialLoading] = useState(true);
-    const [actions, setActions] = useState([]);
+    const [replyingEmail, setReplyingEmail] = useState(null);
+    const [sendingReply, setSendingReply] = useState(false);
+
+    const [replyDraftId, setReplyDraftId] = useState(null);
+
+    const [
+        creatingReplyDraft,
+        setCreatingReplyDraft
+    ] = useState(false);
+
+    const [
+        deletingReplyDraft,
+        setDeletingReplyDraft
+    ] = useState(false);
+
+    const [
+        loadingReplyDraft,
+        setLoadingReplyDraft
+    ] = useState(false);
+
+    const [
+        replyDraftMessage,
+        setReplyDraftMessage
+    ] = useState("");
+
+    const [
+        emailReplies,
+        setEmailReplies
+    ] = useState([]);
+
+    const [
+        replyDraftSaveStatus,
+        setReplyDraftSaveStatus
+    ] = useState("saved");
+
+    const replyDraftSaveTimerRef =
+        useRef(null);
+
+    const replyDraftSaveVersionRef =
+        useRef(0);
+
+    const replyDraftSaveChainRef =
+        useRef(Promise.resolve());
+
+    const handleReplyEmail = useCallback(
+        async email => {
+            if (
+                !email?._id ||
+                replyingEmail ||
+                creatingReplyDraft ||
+                loadingReplyDraft
+            ) {
+                return;
+            }
+
+            setCreatingReplyDraft(true);
+
+            try {
+                const now = new Date().toISOString();
+
+                const recipient = String(
+                    email.from ||
+                    email.emisor ||
+                    ""
+                ).trim();
+
+                const originalSubject =
+                    email.subject ||
+                    email.asunto ||
+                    "";
+
+                const draftData = {
+                    email_id: email._id,
+                    status: "draft",
+                    recipient,
+                    subject: buildReplySubject(
+                        originalSubject
+                    ),
+                    message: "",
+                    created_at: now,
+                    updated_at: now,
+                    created_by: username || ""
+                };
+
+                const createResult = await create(
+                    EMAIL_REPLY_COLLECTION,
+                    draftData
+                );
+
+                const createdDraftId =
+                    typeof createResult === "string"
+                        ? createResult
+                        : createResult?._id;
+
+                if (!createdDraftId) {
+                    throw new Error(
+                        "Cloudflow no devolvió el ID del borrador"
+                    );
+                }
+
+                clearTimeout(
+                    replyDraftSaveTimerRef.current
+                );
+
+                replyDraftSaveVersionRef.current += 1;
+
+                setReplyDraftId(createdDraftId);
+                setReplyDraftMessage("");
+                setReplyDraftSaveStatus("saved");
+                setReplyingEmail(email);
+
+                setEmailReplies(currentReplies => [
+                    {
+                        _id: createdDraftId,
+                        ...draftData
+                    },
+                    ...currentReplies.filter(
+                        reply =>
+                            reply._id !== createdDraftId
+                    )
+                ]);
+
+                console.log(
+                    "Borrador EmailReply creado:",
+                    createdDraftId
+                );
+            } catch (error) {
+                console.error(
+                    "No se pudo crear el borrador:",
+                    error
+                );
+
+                setReplyDraftId(null);
+                setReplyingEmail(null);
+                setReplyDraftMessage("");
+                setReplyDraftSaveStatus("saved");
+            } finally {
+                setCreatingReplyDraft(false);
+            }
+        },
+        [
+            replyingEmail,
+            creatingReplyDraft,
+            loadingReplyDraft,
+            username
+        ]
+    );
+
+    const handleCancelReply = useCallback(
+        async () => {
+            if (
+                sendingReply ||
+                creatingReplyDraft ||
+                deletingReplyDraft
+            ) {
+                return;
+            }
+
+            if (!replyDraftId) {
+                setReplyingEmail(null);
+                return;
+            }
+
+            const draftId = replyDraftId;
+
+            clearTimeout(
+                replyDraftSaveTimerRef.current
+            );
+
+            replyDraftSaveVersionRef.current += 1;
+            setDeletingReplyDraft(true);
+
+            try {
+                await replyDraftSaveChainRef.current
+                    .catch(() => undefined);
+
+                await delete_multiple(
+                    EMAIL_REPLY_COLLECTION,
+                    [draftId]
+                );
+
+                setEmailReplies(currentReplies =>
+                    currentReplies.filter(
+                        reply =>
+                            reply._id !== draftId
+                    )
+                );
+
+                setReplyDraftId(null);
+                setReplyDraftMessage("");
+                setReplyDraftSaveStatus("saved");
+                setReplyingEmail(null);
+
+                console.log(
+                    "Borrador EmailReply eliminado:",
+                    draftId
+                );
+            } catch (error) {
+                console.error(
+                    "No se pudo eliminar el borrador:",
+                    error
+                );
+            } finally {
+                setDeletingReplyDraft(false);
+            }
+        },
+        [
+            replyDraftId,
+            sendingReply,
+            creatingReplyDraft,
+            deletingReplyDraft
+        ]
+    );
+
+    const handleReplyDraftMessageChange =
+        useCallback(
+            nextMessage => {
+                const normalizedMessage =
+                    String(nextMessage ?? "");
+
+                setReplyDraftMessage(
+                    normalizedMessage
+                );
+
+                if (replyDraftId) {
+                    setEmailReplies(currentReplies =>
+                        currentReplies.map(reply =>
+                            reply._id === replyDraftId
+                                ? {
+                                    ...reply,
+                                    message:
+                                        normalizedMessage
+                                }
+                                : reply
+                        )
+                    );
+                }
+
+                clearTimeout(
+                    replyDraftSaveTimerRef.current
+                );
+
+                if (!replyDraftId) {
+                    return;
+                }
+
+                const draftId = replyDraftId;
+
+                const saveVersion =
+                    ++replyDraftSaveVersionRef.current;
+
+                setReplyDraftSaveStatus(
+                    "pending"
+                );
+
+                replyDraftSaveTimerRef.current =
+                    window.setTimeout(() => {
+                        if (
+                            saveVersion ===
+                            replyDraftSaveVersionRef.current
+                        ) {
+                            setReplyDraftSaveStatus(
+                                "saving"
+                            );
+                        }
+
+                        const updatedAt =
+                            new Date().toISOString();
+
+                        const saveRequest =
+                            replyDraftSaveChainRef.current
+                                .catch(() => undefined)
+                                .then(() =>
+                                    set_keys(
+                                        EMAIL_REPLY_COLLECTION,
+                                        draftId,
+                                        {
+                                            message:
+                                                normalizedMessage,
+                                            updated_at:
+                                                updatedAt
+                                        }
+                                    )
+                                );
+
+                        replyDraftSaveChainRef.current =
+                            saveRequest;
+
+                        saveRequest
+                            .then(() => {
+                                if (
+                                    saveVersion ===
+                                    replyDraftSaveVersionRef.current
+                                ) {
+                                    setReplyDraftSaveStatus(
+                                        "saved"
+                                    );
+                                }
+                            })
+                            .catch(error => {
+                                console.error(
+                                    "No se pudo guardar el borrador:",
+                                    error
+                                );
+
+                                if (
+                                    saveVersion ===
+                                    replyDraftSaveVersionRef.current
+                                ) {
+                                    setReplyDraftSaveStatus(
+                                        "error"
+                                    );
+                                }
+                            });
+                    }, 800);
+            },
+            [replyDraftId]
+        );
 
     const requestRef = useRef(0);
     const activeFilter = useRef(stored || "entrada");
-
-    console.log("activeFilter", activeFilter.current)
 
     const [mailboxCounts, setMailboxCounts] = useState({
         entrada: null,
@@ -268,8 +608,6 @@ function EmailClientPage() {
             if (requestId !== requestRef.current) return;
 
             const results = res?.results || [];
-            const count = res?.count || 0;
-
             setEmailList(results)
             setLoading(false);
             setInitialLoading(false);
@@ -329,31 +667,6 @@ function EmailClientPage() {
         }
     };
 
-
-
-    /* =========================
-       POLLING LOOP
-    ========================= */
-    useEffect(() => {
-        let cancelled = false;
-
-        const run = async () => {
-            await fetchEmails(true);
-
-            while (!cancelled) {
-                await fetchEmails(false);
-                await new Promise(r => setTimeout(r, 8500));
-            }
-        };
-
-        run();
-
-        return () => {
-            cancelled = true;
-        };
-    }, []);
-
-
     const selectedEmails = useMemo(
         () =>
             emailList.filter(email =>
@@ -366,6 +679,8 @@ function EmailClientPage() {
         selectedEmails.length === 1
             ? selectedEmails[0]
             : null;
+
+    const selectedEmailId = getEmailId(selectedEmail);
 
     const selectedCount = selectedEmailIds.size;
 
@@ -434,32 +749,6 @@ function EmailClientPage() {
         },
         [emailList]
     );
-
-    const cleanDeleted = useCallback(idEmail => {
-        setEmailList(currentEmails =>
-            currentEmails.filter(
-                email => getEmailId(email) !== idEmail
-            )
-        );
-
-        setSelectedEmailIds(currentSelection => {
-            const nextSelection = new Set(currentSelection);
-            nextSelection.delete(idEmail);
-            return nextSelection;
-        });
-    }, []);
-
-
-
-
-    const defaultFilters = {
-        entrada: false,
-        asignado: false,
-        misAsignados: false,
-        archivado: false,
-        parados: false,
-        papelera: false
-    }
 
     const normalizeDateSearch = value => {
         const match = value.match(
@@ -624,12 +913,6 @@ function EmailClientPage() {
     const showEmptyState = !loading && !initialLoading && emailList.length === 0;
 
 
-    const encodeSmbPath = path =>
-        path
-            .split("/")
-            .filter(Boolean)
-            .map(segment => encodeURIComponent(segment))
-            .join("/");
 
     const openEmailFolder = (fileEmail, isTeleWork = false) => {
         if (!fileEmail) {
@@ -745,24 +1028,6 @@ function EmailClientPage() {
         },
         [releaseActionLock]
     );
-
-    useEffect(() => {
-        return () => {
-            clearTimeout(actionTimerRef.current);
-        };
-    }, []);
-
-    useEffect(() => {
-        fetchMailboxCounts();
-
-        const intervalId = setInterval(() => {
-            fetchMailboxCounts();
-        }, 30000);
-
-        return () => {
-            clearInterval(intervalId);
-        };
-    }, []);
 
     const handleReferenceTagsChange = useCallback(
         async (emailId, previousTags, nextTags) => {
@@ -890,6 +1155,421 @@ function EmailClientPage() {
         ]
     );
 
+    const handleSendReply = useCallback(
+        async ({
+            email,
+            recipient,
+            subject,
+            message
+        }) => {
+            if (
+                sendingReply ||
+                !replyDraftId
+            ) {
+                return;
+            }
+
+            const draftId = replyDraftId;
+            const processingAt =
+                new Date().toISOString();
+
+            setSendingReply(true);
+
+            clearTimeout(
+                replyDraftSaveTimerRef.current
+            );
+
+            replyDraftSaveVersionRef.current += 1;
+
+            try {
+                await replyDraftSaveChainRef.current
+                    .catch(() => undefined);
+
+                /*
+                 * Marcamos el registro como processing antes
+                 * de iniciar el whitepaper. Así Cloudflow puede
+                 * cambiarlo después a sent sin que React vuelva
+                 * a sobrescribir ese estado.
+                 */
+                await set_keys(
+                    EMAIL_REPLY_COLLECTION,
+                    draftId,
+                    {
+                        recipient:
+                            String(recipient || ""),
+                        subject:
+                            String(subject || ""),
+                        message:
+                            String(message || ""),
+                        status: "processing",
+                        processing_at: processingAt,
+                        updated_at: processingAt,
+                        error_message: ""
+                    }
+                );
+
+                setEmailReplies(currentReplies =>
+                    currentReplies.map(reply =>
+                        reply._id === draftId
+                            ? {
+                                ...reply,
+                                recipient:
+                                    String(recipient || ""),
+                                subject:
+                                    String(subject || ""),
+                                message:
+                                    String(message || ""),
+                                status: "processing",
+                                processing_at:
+                                    processingAt,
+                                updated_at:
+                                    processingAt,
+                                error_message: ""
+                            }
+                            : reply
+                    )
+                );
+
+                const options = {
+                    variables: {
+                        reply_id: draftId,
+                        email_id: email._id,
+                        id_pedido:
+                            email.id_pedido || "",
+                        asunto:
+                            subject || "",
+                        responder:
+                            email.file_email ||
+                            email._id,
+                        contacto:
+                            recipient || "",
+                        mensaje:
+                            message || "",
+                        created_by:
+                            username || ""
+                    },
+                    files: []
+                };
+
+                const result =
+                    await start_from_whitepaper_with_options(
+                        "Funciones_Genericas",
+                        "start_email_reply",
+                        options
+                    );
+
+                console.log(
+                    "Resultado completo start_email_reply:",
+                    JSON.stringify(result, null, 2)
+                );
+
+                const cloudflowMessages =
+                    Array.isArray(result?.messages)
+                        ? result.messages
+                            .map(item =>
+                                item?.description ||
+                                item?.message ||
+                                item?.error ||
+                                JSON.stringify(item)
+                            )
+                            .filter(Boolean)
+                            .join(" | ")
+                        : "";
+
+                const cloudflowError =
+                    cloudflowMessages ||
+                    result?.message ||
+                    result?.error ||
+                    result?.error_code ||
+                    "";
+
+                if (
+                    result?.error ||
+                    result?.error_code ||
+                    result?.status === "error"
+                ) {
+                    throw new Error(
+                        cloudflowError ||
+                        "No se pudo iniciar el flujo"
+                    );
+                }
+
+                /*
+                 * El editor se cierra, pero emailReplies conserva
+                 * el registro como processing. El polling lo
+                 * actualizará a sent cuando Cloudflow termine.
+                 */
+                setReplyDraftId(null);
+                setReplyDraftMessage("");
+                setReplyDraftSaveStatus("saved");
+                setReplyingEmail(null);
+            } catch (error) {
+                console.error(
+                    "No se pudo iniciar la respuesta:",
+                    error
+                );
+
+                const failedAt =
+                    new Date().toISOString();
+
+                /*
+                 * Si no se pudo arrancar el whitepaper, el contenido
+                 * sigue siendo un borrador editable para reintentar.
+                 */
+                try {
+                    await set_keys(
+                        EMAIL_REPLY_COLLECTION,
+                        draftId,
+                        {
+                            status: "draft",
+                            updated_at: failedAt,
+                            error_message:
+                                error?.message ||
+                                String(error)
+                        }
+                    );
+                } catch (registerError) {
+                    console.error(
+                        "No se pudo restaurar el borrador:",
+                        registerError
+                    );
+                }
+
+                setEmailReplies(currentReplies =>
+                    currentReplies.map(reply =>
+                        reply._id === draftId
+                            ? {
+                                ...reply,
+                                status: "draft",
+                                updated_at: failedAt,
+                                error_message:
+                                    error?.message ||
+                                    String(error)
+                            }
+                            : reply
+                    )
+                );
+
+                setReplyDraftId(draftId);
+                setReplyDraftSaveStatus("error");
+                setReplyingEmail(email);
+            } finally {
+                setSendingReply(false);
+            }
+        },
+        [
+            sendingReply,
+            replyDraftId,
+            username
+        ]
+    );
+
+    /* =========================
+       PAGE LIFECYCLE / POLLING
+    ========================= */
+    useEffect(() => {
+        let disposed = false;
+
+        const refreshEmails = async isInitial => {
+            if (disposed) {
+                return;
+            }
+
+            await fetchEmails(isInitial);
+        };
+
+        refreshEmails(true);
+        fetchMailboxCounts();
+
+        const emailIntervalId =
+            window.setInterval(
+                () => {
+                    refreshEmails(false);
+                },
+                8500
+            );
+
+        const mailboxIntervalId =
+            window.setInterval(
+                () => {
+                    fetchMailboxCounts();
+                },
+                30000
+            );
+
+        return () => {
+            disposed = true;
+
+            window.clearInterval(
+                emailIntervalId
+            );
+
+            window.clearInterval(
+                mailboxIntervalId
+            );
+
+            clearTimeout(
+                actionTimerRef.current
+            );
+
+            clearTimeout(
+                replyDraftSaveTimerRef.current
+            );
+        };
+    }, []);
+
+    /* =========================
+       EMAIL REPLIES
+    ========================= */
+    useEffect(() => {
+        let cancelled = false;
+        let requestInFlight = false;
+
+        /*
+         * Al cambiar de correo retiramos inmediatamente
+         * la información perteneciente al anterior.
+         */
+        setEmailReplies([]);
+        setReplyingEmail(null);
+        setReplyDraftId(null);
+        setReplyDraftMessage("");
+        setReplyDraftSaveStatus("saved");
+
+        if (
+            !selectedEmailId ||
+            !selectedEmail
+        ) {
+            setLoadingReplyDraft(false);
+            return undefined;
+        }
+
+        setLoadingReplyDraft(true);
+
+        const loadEmailReplies = async ({
+            initial = false
+        } = {}) => {
+            if (
+                cancelled ||
+                requestInFlight
+            ) {
+                return;
+            }
+
+            requestInFlight = true;
+
+            try {
+                const response =
+                    await list_with_options(
+                        EMAIL_REPLY_COLLECTION,
+                        [
+                            "email_id",
+                            "is like",
+                            selectedEmailId
+                        ],
+                        [
+                            "created_at",
+                            "ascending"
+                        ],
+                        [],
+                        1,
+                        100
+                    );
+
+                if (cancelled) {
+                    return;
+                }
+
+                const replies =
+                    Array.isArray(response?.results)
+                        ? response.results
+                        : [];
+
+                setEmailReplies(replies);
+
+                const existingDraft =
+                    replies.find(
+                        reply =>
+                            reply.status === "draft"
+                    ) || null;
+
+                if (existingDraft?._id) {
+                    /*
+                     * Solo hidratamos el texto al abrir un borrador
+                     * distinto. El polling no debe sobrescribir lo
+                     * que el usuario está escribiendo.
+                     */
+                    setReplyDraftId(currentDraftId => {
+                        if (
+                            currentDraftId !==
+                            existingDraft._id
+                        ) {
+                            setReplyDraftMessage(
+                                String(
+                                    existingDraft.message ||
+                                    ""
+                                )
+                            );
+
+                            setReplyDraftSaveStatus(
+                                "saved"
+                            );
+                        }
+
+                        return existingDraft._id;
+                    });
+
+                    setReplyingEmail(
+                        currentEmail =>
+                            getEmailId(currentEmail) ===
+                            selectedEmailId
+                                ? currentEmail
+                                : selectedEmail
+                    );
+                } else {
+                    setReplyDraftId(null);
+                    setReplyDraftMessage("");
+                    setReplyDraftSaveStatus("saved");
+                    setReplyingEmail(null);
+                }
+            } catch (error) {
+                if (!cancelled) {
+                    console.error(
+                        "No se pudieron cargar las respuestas:",
+                        error
+                    );
+                }
+            } finally {
+                requestInFlight = false;
+
+                if (
+                    initial &&
+                    !cancelled
+                ) {
+                    setLoadingReplyDraft(false);
+                }
+            }
+        };
+
+        loadEmailReplies({
+            initial: true
+        });
+
+        const repliesIntervalId =
+            window.setInterval(
+                () => {
+                    loadEmailReplies();
+                },
+                3000
+            );
+
+        return () => {
+            cancelled = true;
+
+            window.clearInterval(
+                repliesIntervalId
+            );
+        };
+    }, [selectedEmailId]);
 
     /* =========================
        RENDER
@@ -1153,23 +1833,45 @@ function EmailClientPage() {
                             {selectedCount <= 1 ? (
                                 <DetailEmailComponent
                                     email={selectedEmail}
-                                    onReferenceTagsChange={handleReferenceTagsChange}
+                                    emailReplies={emailReplies}
+
+                                    onReferenceTagsChange={
+                                        handleReferenceTagsChange
+                                    }
+
+                                    onReply={handleReplyEmail}
+                                    replyingEmail={replyingEmail}
+
+                                    replyDraftId={replyDraftId}
+                                    replyDraftMessage={replyDraftMessage}
+
+                                    replyDraftSaveStatus={
+                                        replyDraftSaveStatus
+                                    }
+
+                                    onReplyDraftMessageChange={
+                                        handleReplyDraftMessageChange
+                                    }
+
+                                    sendingReply={sendingReply}
+                                    loadingReplyDraft={loadingReplyDraft}
+
+                                    onCancelReply={handleCancelReply}
+                                    onSendReply={handleSendReply}
                                 />
                             ) : (
+                                <div className="emailDetail">
+                                    <div className="multipleEmailSelection">
+                                        <strong>
+                                            {selectedCount} correos seleccionados
+                                        </strong>
 
-                                <>
-                                    <div className="emailDetail">
-                                        <div className="multipleEmailSelection">
-                                            <strong>
-                                                {selectedCount} correos seleccionados
-                                            </strong>
-
-                                            <span>
-                                                Utiliza las acciones disponibles sobre la lista.
-                                            </span>
-                                        </div>
+                                        <span>
+                                            Utiliza las acciones disponibles
+                                            sobre la lista.
+                                        </span>
                                     </div>
-                                </>
+                                </div>
                             )}
                         </div>
                     </div>

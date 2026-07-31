@@ -1,8 +1,4 @@
-import {
-    useState,
-    useEffect,
-    useRef
-} from "react";
+import { useState, useEffect } from "react";
 import {
     MdAttachFile,
     MdEmail,
@@ -18,7 +14,6 @@ import {
 
 import ReplyEmailComposer from "./ReplyEmailComposer";
 import "./DetailEmailComponent.css";
-import "./DetailEmailComponent-reply-status.css";
 
 const EMAIL_COLLECTION = "Email";
 
@@ -145,68 +140,12 @@ async function copyToClipboard(value) {
 }
 
 
-const REPLY_STATUS_CONFIG = {
-    draft: {
-        label: "Borrador"
-    },
-    pending: {
-        label: "Pendiente"
-    },
-    queued: {
-        label: "Pendiente"
-    },
-    processing: {
-        label: "Enviando"
-    },
-    sent: {
-        label: "Enviado"
-    },
-    failed: {
-        label: "Error de envío"
-    }
-};
-
-function normalizeReplyStatus(value) {
-    return String(value || "draft")
-        .trim()
-        .toLowerCase();
-}
-
-function getReplyStatusLabel(status) {
-    return REPLY_STATUS_CONFIG[status]?.label || status;
-}
-
-function formatReplyDate(value) {
-    if (!value) return "";
-
-    const parsedDate = new Date(value);
-
-    if (Number.isNaN(parsedDate.getTime())) {
-        return String(value);
-    }
-
-    return parsedDate.toLocaleString("es-ES", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit"
-    });
-}
-
-
 function DetailEmailComponent({
     email,
-    emailReplies = [],
     onReferenceTagsChange,
     onReply,
     replyingEmail,
-    replyDraftId,
-    replyDraftMessage = "",
-    replyDraftSaveStatus = "saved",
-    onReplyDraftMessageChange,
     sendingReply = false,
-    loadingReplyDraft = false,
     onCancelReply,
     onSendReply
 }) {
@@ -217,42 +156,6 @@ function DetailEmailComponent({
         ? email.reference_tags
         : [];
     const [subjectCopied, setSubjectCopied] = useState(false);
-    const iframeRef = useRef(null);
-    const iframeResizeObserverRef = useRef(null);
-
-    const [
-        iframeHeight,
-        setIframeHeight
-    ] = useState(0);
-
-    const replies = Array.isArray(emailReplies)
-        ? [...emailReplies].sort((firstReply, secondReply) => {
-            const firstDate =
-                firstReply.created_at ||
-                firstReply.updated_at ||
-                "";
-
-            const secondDate =
-                secondReply.created_at ||
-                secondReply.updated_at ||
-                "";
-
-            return String(firstDate).localeCompare(
-                String(secondDate)
-            );
-        })
-        : [];
-
-    const hasActiveReply = replies.some(reply =>
-        [
-            "draft",
-            "pending",
-            "queued",
-            "processing"
-        ].includes(
-            normalizeReplyStatus(reply.status)
-        )
-    );
 
     if (!email) {
         return (
@@ -420,12 +323,7 @@ function DetailEmailComponent({
     };
 
     const handleReply = () => {
-        if (
-            !email ||
-            !onReply ||
-            hasActiveReply ||
-            loadingReplyDraft
-        ) {
+        if (!email || !onReply || replyingEmail) {
             return;
         }
 
@@ -504,23 +402,16 @@ function DetailEmailComponent({
                             className="emailHeaderActionButton emailReplyAction"
                             onClick={handleReply}
                             title={
-                                loadingReplyDraft
-                                    ? "Cargando respuestas"
-                                    : hasActiveReply
-                                        ? "Hay una respuesta en curso"
-                                        : "Responder correo"
+                                replyingEmail
+                                    ? "Respuesta en borrador"
+                                    : "Responder correo"
                             }
                             aria-label={
-                                loadingReplyDraft
-                                    ? "Cargando respuestas"
-                                    : hasActiveReply
-                                        ? "Hay una respuesta en curso"
-                                        : "Responder correo"
+                                replyingEmail
+                                    ? "Respuesta en borrador"
+                                    : "Responder correo"
                             }
-                            disabled={
-                                loadingReplyDraft ||
-                                hasActiveReply
-                            }
+                            disabled={Boolean(replyingEmail)}
                         >
                             <MdOutlineReply />
                         </button>
@@ -751,140 +642,38 @@ function DetailEmailComponent({
             <div
                 className={[
                     "emailBody",
-                    replies.length > 0
-                        ? "emailBodyReplying"
-                        : ""
+                    replyingEmail ? "emailBodyReplying" : ""
                 ]
                     .filter(Boolean)
                     .join(" ")}
             >
-                {replies.length > 0 && (
-                    <div className="emailReplyThread">
-                        {replies.map(reply => {
-                            const status =
-                                normalizeReplyStatus(
-                                    reply.status
-                                );
+                {replyingEmail && (
+                    <>
+                        <ReplyEmailComposer
+                            email={replyingEmail}
+                            sending={sendingReply}
+                            onCancel={onCancelReply}
+                            onSend={onSendReply}
+                        />
 
-                            const isEditableDraft =
-                                status === "draft" &&
-                                reply._id === replyDraftId &&
-                                Boolean(replyingEmail);
+                        <div className="emailOriginalDivider">
+                            <div className="emailOriginalDividerInfo">
+                                <strong>Mensaje original</strong>
 
-                            if (isEditableDraft) {
-                                return (
-                                    <ReplyEmailComposer
-                                        key={reply._id}
-                                        email={replyingEmail}
-                                        draftId={reply._id}
-                                        initialMessage={
-                                            replyDraftMessage
-                                        }
-                                        draftSaveStatus={
-                                            replyDraftSaveStatus
-                                        }
-                                        onMessageChange={
-                                            onReplyDraftMessageChange
-                                        }
-                                        sending={sendingReply}
-                                        onCancel={onCancelReply}
-                                        onSend={onSendReply}
-                                    />
-                                );
-                            }
+                                {from && (
+                                    <span title={from}>
+                                        {from}
+                                    </span>
+                                )}
+                            </div>
 
-                            const replyDate =
-                                reply.sent_at ||
-                                reply.processing_at ||
-                                reply.queued_at ||
-                                reply.updated_at ||
-                                reply.created_at;
-
-                            return (
-                                <article
-                                    key={reply._id}
-                                    className={[
-                                        "emailReplyEntry",
-                                        `emailReplyEntry--${status}`
-                                    ].join(" ")}
-                                >
-                                    <div className="emailReplyEntryHeader">
-                                        <div className="emailReplyEntryIdentity">
-                                            <MdOutlineReply />
-
-                                            <div>
-                                                <strong>
-                                                    Respuesta
-                                                </strong>
-
-                                                <span title={reply.recipient}>
-                                                    Para: {reply.recipient || "Sin destinatario"}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        <div className="emailReplyEntryStatusBlock">
-                                            <span
-                                                className={[
-                                                    "emailReplyStatusBadge",
-                                                    `emailReplyStatusBadge--${status}`
-                                                ].join(" ")}
-                                            >
-                                                {getReplyStatusLabel(status)}
-                                            </span>
-
-                                            {replyDate && (
-                                                <time
-                                                    dateTime={String(replyDate)}
-                                                    title={String(replyDate)}
-                                                >
-                                                    {formatReplyDate(replyDate)}
-                                                </time>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    <div className="emailReplyEntrySubject">
-                                        <span>Asunto</span>
-                                        <strong>
-                                            {reply.subject || "Sin asunto"}
-                                        </strong>
-                                    </div>
-
-                                    <div className="emailReplyEntryMessage">
-                                        {reply.message || "Sin contenido"}
-                                    </div>
-
-                                    {status === "failed" &&
-                                        reply.error_message && (
-                                            <div className="emailReplyEntryError">
-                                                {reply.error_message}
-                                            </div>
-                                        )}
-                                </article>
-                            );
-                        })}
-                    </div>
-                )}
-
-                {replies.length > 0 && (
-                    <div className="emailOriginalDivider">
-                        <div className="emailOriginalDividerInfo">
-                            <strong>Mensaje original</strong>
-
-                            {from && (
-                                <span title={from}>
-                                    {from}
+                            {date && (
+                                <span className="emailOriginalDividerDate">
+                                    {date}
                                 </span>
                             )}
                         </div>
-
-                        {date && (
-                            <span className="emailOriginalDividerDate">
-                                {date}
-                            </span>
-                        )}
-                    </div>
+                    </>
                 )}
 
                 <iframe

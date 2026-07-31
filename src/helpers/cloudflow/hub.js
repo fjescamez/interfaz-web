@@ -117,3 +117,12 @@ export const abort_jacket = (jacket_id, immediate_kill = false) => {
         immediate_kill
     })
 }
+
+export const start_from_whitepaper_with_options = (whitepaper_name, input_name, options) => {
+    return postDataCloud({
+        method: "hub.start_from_whitepaper_with_options",
+        whitepaper_name,
+        input_name,
+        options
+    })
+}

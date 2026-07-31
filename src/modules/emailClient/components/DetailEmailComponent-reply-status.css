@@ -1,0 +1,181 @@
+/* Respuestas asociadas al correo */
+.emailReplyThread {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 auto;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--details);
+}
+
+.emailReplyEntry {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.2rem;
+    border: 1px solid var(--pantone431c);
+    border-left: 0.4rem solid var(--pantone431c);
+    border-radius: 0.6rem;
+    background: var(--details);
+}
+
+.emailReplyEntry--draft {
+    border-left-color: #b66a20;
+    background: #fffaf2;
+}
+
+.emailReplyEntry--pending,
+.emailReplyEntry--queued,
+.emailReplyEntry--processing {
+    border-left-color: #277da1;
+    background: #f4f9fc;
+}
+
+.emailReplyEntry--sent {
+    border-left-color: #27805a;
+    background: #f5fbf8;
+}
+
+.emailReplyEntry--failed {
+    border-left-color: #b83232;
+    background: #fff7f7;
+}
+
+.emailReplyEntryHeader,
+.emailReplyEntryIdentity,
+.emailReplyEntryStatusBlock {
+    display: flex;
+    align-items: center;
+}
+
+.emailReplyEntryHeader {
+    justify-content: space-between;
+    gap: 1.2rem;
+}
+
+.emailReplyEntryIdentity {
+    min-width: 0;
+    gap: 0.9rem;
+}
+
+.emailReplyEntryIdentity > svg {
+    flex: 0 0 auto;
+    font-size: 2rem;
+}
+
+.emailReplyEntryIdentity > div {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 0.2rem;
+}
+
+.emailReplyEntryIdentity strong {
+    font-size: 1.4rem;
+}
+
+.emailReplyEntryIdentity span {
+    overflow: hidden;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.emailReplyEntryStatusBlock {
+    flex: 0 0 auto;
+    justify-content: flex-end;
+    gap: 0.8rem;
+}
+
+.emailReplyEntryStatusBlock time {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+}
+
+.emailReplyStatusBadge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2rem;
+    padding: 0.2rem 0.7rem;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.emailReplyStatusBadge--draft {
+    color: #8f531a;
+    background: #fff0d9;
+}
+
+.emailReplyStatusBadge--pending,
+.emailReplyStatusBadge--queued,
+.emailReplyStatusBadge--processing {
+    color: #1d6686;
+    background: #e5f2f8;
+}
+
+.emailReplyStatusBadge--sent {
+    color: #176c49;
+    background: #dff3e8;
+}
+
+.emailReplyStatusBadge--failed {
+    color: #a12626;
+    background: #f9dfdf;
+}
+
+.emailReplyEntrySubject {
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+    min-width: 0;
+}
+
+.emailReplyEntrySubject span {
+    flex: 0 0 auto;
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+
+.emailReplyEntrySubject strong {
+    overflow: hidden;
+    font-size: 1.3rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.emailReplyEntryMessage {
+    padding: 1rem;
+    border-radius: 0.4rem;
+    background: var(--background, rgba(0, 0, 0, 0.035));
+    font-size: 1.35rem;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.emailReplyEntryError {
+    padding: 0.8rem 1rem;
+    border-radius: 0.4rem;
+    background: #f9dfdf;
+    color: #8f2020;
+    font-size: 1.2rem;
+}
+
+@media (max-width: 700px) {
+    .emailReplyEntryHeader {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .emailReplyEntryStatusBlock {
+        width: 100%;
+        justify-content: space-between;
+    }
+}

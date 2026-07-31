@@ -1,0 +1,276 @@
+.replyEmailComposer {
+    position: static;
+    inset: auto;
+    z-index: auto;
+
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 1.2rem 1.4rem;
+
+    border: 0;
+    border-left: 0.4rem solid #c83232;
+    border-radius: 0;
+
+    background: #fff7f7;
+    box-shadow: none;
+}
+
+.replyComposerHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 0;
+    gap: 1.2rem;
+}
+
+.replyComposerIdentity {
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
+    min-width: 0;
+    gap: 1rem;
+}
+
+.replyComposerIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+
+    width: 3.2rem;
+    height: 3.2rem;
+
+    border-radius: 0.6rem;
+    background: #f8dddd;
+    color: #a92222;
+}
+
+.replyComposerIcon svg {
+    width: 1.9rem;
+    height: 1.9rem;
+}
+
+.replyComposerRecipient {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-width: 0;
+    gap: 0.2rem;
+}
+
+.replyComposerTitleRow {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+
+.replyComposerTitleRow strong {
+    font-size: 1.5rem;
+    line-height: 1.8rem;
+}
+
+.replyComposerDraftBadge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 2rem;
+    padding: 0.15rem 0.7rem;
+
+    border: 1px solid #d46b6b;
+    border-radius: 1rem;
+
+    background: #fbe1e1;
+    color: #a61f1f;
+
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.replyComposerRecipient > span {
+    overflow: hidden;
+    color: var(--text-secondary);
+    font-size: 1.3rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.replyComposerClose {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+
+    width: 3.2rem;
+    height: 3.2rem;
+    padding: 0;
+
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--pantone431c);
+
+    cursor: pointer;
+}
+
+.replyComposerClose:hover:not(:disabled) {
+    background: rgba(168, 34, 34, 0.1);
+    color: #a92222;
+}
+
+.replyComposerClose svg {
+    width: 2rem;
+    height: 2rem;
+}
+
+.replyComposerSubject {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: 1rem;
+
+    padding: 0.7rem 0;
+
+    border-top: 1px solid rgba(168, 34, 34, 0.16);
+    border-bottom: 1px solid rgba(168, 34, 34, 0.16);
+}
+
+.replyComposerSubject span {
+    flex: 0 0 auto;
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.replyComposerSubject strong {
+    overflow: hidden;
+    min-width: 0;
+    font-size: 1.3rem;
+    font-weight: 500;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.replyComposerTextarea {
+    box-sizing: border-box;
+    display: block;
+
+    width: 100%;
+    min-width: 0;
+    min-height: 10rem;
+    max-height: 20rem;
+    padding: 1rem 1.2rem;
+
+    border: 1px solid #c8cdd1;
+    border-radius: 0.4rem;
+
+    background: white;
+    color: inherit;
+
+    font: inherit;
+    font-size: 1.5rem;
+    line-height: 1.5;
+
+    resize: vertical;
+}
+
+.replyComposerTextarea:focus {
+    border-color: #b53232;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(181, 50, 50, 0.12);
+}
+
+.replyComposerTextarea::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.65;
+}
+
+.replyComposerFooter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 0;
+    gap: 1.2rem;
+}
+
+.replyComposerShortcut {
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+    opacity: 0.75;
+}
+
+.replyComposerActions {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.replyComposerCancel,
+.replyComposerSend {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+
+    min-height: 3.6rem;
+    padding: 0.7rem 1.4rem;
+
+    border: 0;
+    border-radius: 0.4rem;
+
+    font: inherit;
+    font-size: 1.4rem;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.replyComposerCancel {
+    background: transparent;
+    color: var(--text-secondary);
+}
+
+.replyComposerCancel:hover:not(:disabled) {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.replyComposerSend {
+    background: var(--highlight);
+    color: white;
+}
+
+.replyComposerSend:hover:not(:disabled) {
+    filter: brightness(0.94);
+}
+
+.replyComposerSend svg {
+    width: 1.7rem;
+    height: 1.7rem;
+}
+
+.replyComposerClose:disabled,
+.replyComposerCancel:disabled,
+.replyComposerSend:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+}
+
+@media (max-width: 700px) {
+    .replyComposerShortcut {
+        display: none;
+    }
+
+    .replyComposerFooter {
+        justify-content: flex-end;
+    }
+}
