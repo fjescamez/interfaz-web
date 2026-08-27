@@ -8,17 +8,24 @@ import { notify } from '../../../helpers/notify';
 function ExternosPendientesPage() {
     const [externosChecked, setExternosChecked] = useState([]);
     const { session } = useSession();
+    const { username, departments } = session;
+
+    const isSolido = Array.isArray(departments) && departments.includes("Solido");
+    const solicitudAnulacion = isSolido ? false : true;
+    
 
     const externosActions = async (variables) => {
         const { action, data, setTableData } = variables;
         const trabajosCompletos = data.filter(item => externosChecked.includes(item._id));
+
 
         if (action === "Firmar" || action === "Anular") {
             const signData = {
                 action,
                 idsTrabajos: externosChecked,
                 trabajosCompletos,
-                usuario: session.username
+                usuario: username,
+                solicitudAnulacion
             }
 
             const response = await postData('externalJobs/firmar', signData);
