@@ -168,6 +168,245 @@
     font-size: 1.2rem;
 }
 
+/* ============================================================
+   ARCHIVAR CORREO
+   Mantiene el mismo lenguaje visual de las respuestas
+   pero utilizando azul como color identificativo
+   ============================================================ */
+
+.emailArchiveComposer {
+    margin: 1rem;
+    border-color: #277da1;
+    border-left-color: #277da1;
+    background: #f4f9fc;
+}
+
+
+/* Icono de archivado */
+
+.emailArchiveComposer .emailReplyEntryIdentity > svg {
+    color: #277da1;
+}
+
+
+/* ============================================================
+   CAMPO Nº PEDIDO
+   ============================================================ */
+
+.emailArchiveField {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+
+.emailArchiveFieldLabel {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+
+
+.emailArchiveField input {
+    width: 100%;
+    min-height: 4rem;
+
+    padding: 0.8rem 1rem;
+
+    border: 1px solid var(--pantone431c);
+    border-radius: 0.4rem;
+
+    background: var(--details);
+
+    font: inherit;
+    font-size: 1.35rem;
+
+    box-sizing: border-box;
+
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+
+.emailArchiveField input:hover {
+    border-color: #277da1;
+}
+
+
+.emailArchiveField input:focus {
+    outline: none;
+
+    border-color: #277da1;
+
+    box-shadow:
+        0 0 0 0.2rem
+        rgba(39, 125, 161, 0.15);
+}
+
+
+.emailArchiveField input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.7;
+}
+
+
+/* ============================================================
+   BOTÓN CERRAR
+   ============================================================ */
+
+.emailArchiveCloseButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 auto;
+
+    width: 3rem;
+    height: 3rem;
+
+    padding: 0;
+
+    border: none;
+    border-radius: 0.4rem;
+
+    background: transparent;
+
+    color: var(--text-secondary);
+
+    cursor: pointer;
+
+    transition:
+        background 0.15s ease,
+        color 0.15s ease;
+}
+
+
+.emailArchiveCloseButton:hover:not(:disabled) {
+    background: rgba(39, 125, 161, 0.1);
+    color: #277da1;
+}
+
+
+.emailArchiveCloseButton svg {
+    font-size: 1.8rem;
+}
+
+
+/* ============================================================
+   ACCIONES
+   ============================================================ */
+
+.emailArchiveActions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 0.8rem;
+}
+
+
+/* CANCELAR */
+
+.emailArchiveCancelButton {
+    min-height: 3.6rem;
+
+    padding: 0.6rem 1.2rem;
+
+    border: 1px solid var(--pantone431c);
+    border-radius: 0.4rem;
+
+    background: var(--details);
+
+    color: var(--text-primary);
+
+    font: inherit;
+    font-size: 1.2rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.15s ease,
+        background 0.15s ease;
+}
+
+
+.emailArchiveCancelButton:hover:not(:disabled) {
+    border-color: #277da1;
+    background: #eef6fa;
+}
+
+
+/* ARCHIVAR */
+
+.emailArchiveSubmitButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 0.6rem;
+
+    min-height: 3.6rem;
+
+    padding: 0.6rem 1.4rem;
+
+    border: 1px solid #277da1;
+    border-radius: 0.4rem;
+
+    background: #277da1;
+
+    color: #ffffff;
+
+    font: inherit;
+    font-size: 1.2rem;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background 0.15s ease,
+        border-color 0.15s ease,
+        opacity 0.15s ease;
+}
+
+
+.emailArchiveSubmitButton:hover:not(:disabled) {
+    background: #1d6686;
+    border-color: #1d6686;
+}
+
+
+.emailArchiveSubmitButton svg {
+    font-size: 1.5rem;
+}
+
+
+.emailArchiveSubmitButton:disabled,
+.emailArchiveCancelButton:disabled,
+.emailArchiveCloseButton:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 700px) {
+
+    .emailArchiveActions {
+        width: 100%;
+    }
+
+    .emailArchiveCancelButton,
+    .emailArchiveSubmitButton {
+        flex: 1;
+    }
+}
+
+
 @media (max-width: 700px) {
     .emailReplyEntryHeader {
         align-items: flex-start;
