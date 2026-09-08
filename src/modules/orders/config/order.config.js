@@ -1118,6 +1118,10 @@ export const ripTableInfo = {
             action: "ripPixel"
         },
         {
+            title: "Rip No Pixel",
+            action: "ripNoPixel"
+        },
+        {
             title: "Freecut Manual",
             action: "freecutManual",
             noCheck: true

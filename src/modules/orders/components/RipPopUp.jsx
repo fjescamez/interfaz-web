@@ -74,7 +74,7 @@ function RipPopUp({ setRipModal, idMontaje, fullOrder, multiRip }) {
 
     const ripActions = async (variables) => {
         const { action, title, data, setCheckedIndexes } = variables;
-        const ripTypes = ["ripAuto", "ripInterior", "ripExterior", "ripPixel"];
+        const ripTypes = ["ripAuto", "ripInterior", "ripExterior", "ripPixel","ripNoPixel"];
 
         if (ripTypes.includes(action)) {
             if (action === "ripAuto" && fullOrder?.xml?.tecnicos?.tipo_impresion !== "INTERIOR" && fullOrder?.xml?.tecnicos?.tipo_impresion !== "EXTERIOR") {
