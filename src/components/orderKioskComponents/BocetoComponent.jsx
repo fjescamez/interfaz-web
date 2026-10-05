@@ -45,7 +45,7 @@ const { cliente_codigo, marca } = orderXml?.numero || {};
     }
 
     useEffect(() => {
-        if (marca?.toLowerCase().includes("hacendado") || marca?.toLowerCase().includes("mercadona")) {
+        if (marca?.toLowerCase().includes("hacendado") || marca?.toLowerCase().includes("mercadona") || cliente_codigo === "0159") {
             setOpciones(prev =>
                 prev.map(opcion => ({
                     ...opcion,
